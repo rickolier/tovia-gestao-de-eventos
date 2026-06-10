@@ -10,8 +10,8 @@ import { auth } from '../firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LogIn, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '../components/Logo';
 import { useAuth } from '../lib/AuthContext';
@@ -20,12 +20,13 @@ import { cn } from '@/lib/utils';
 export default function Login() {
   const { user, isAuthReady, loginAsDemo } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   React.useEffect(() => {
     if (isAuthReady && user) navigate('/dashboard');
   }, [user, isAuthReady, navigate]);
 
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
