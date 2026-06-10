@@ -7,6 +7,7 @@ import CreateEvent from './pages/CreateEvent';
 import EventDetail from './pages/EventDetail';
 import EditEvent from './pages/EditEvent';
 import Onboarding from './pages/Onboarding';
+import Plans from './pages/Plans';
 import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
 import { Toaster } from '@/components/ui/sonner';
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
             <Route
               path="/dashboard"
               element={

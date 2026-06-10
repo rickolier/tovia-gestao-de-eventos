@@ -119,15 +119,16 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         </div>
 
         {/* Stat card 4 — Plano */}
-        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+        <Link to="/planos" className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4 hover:border-primary/40 hover:shadow-sm transition-all group">
           <div className="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
             <Star className="w-5 h-5 text-violet-500" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-base font-bold text-foreground leading-none capitalize">{profile?.plano ?? 'Start'}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Plano atual</p>
           </div>
-        </div>
+          <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+        </Link>
       </motion.div>
 
       {/* ── Progress overview (shown when there are events) ── */}
