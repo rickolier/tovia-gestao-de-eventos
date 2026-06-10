@@ -122,11 +122,11 @@ export default function Dashboard() {
   };
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
-    { id: 'inicio', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'agenda', label: 'Agenda', icon: CalendarIcon },
-    { id: 'calculadora', label: 'Calculadora', icon: Calculator },
-    { id: 'relatorios', label: 'Relatórios', icon: BarChart3 },
-    { id: 'perfil', label: 'Meu Perfil', icon: User },
+    { id: 'inicio',      label: 'Dashboard',   icon: LayoutDashboard },
+    { id: 'perfil',      label: 'Meu Perfil',  icon: User },
+    { id: 'agenda',      label: 'Agenda',       icon: CalendarIcon },
+    { id: 'calculadora', label: 'Calculadora',  icon: Calculator },
+    { id: 'relatorios',  label: 'Relatórios',   icon: BarChart3 },
   ];
 
   if (loading) {
