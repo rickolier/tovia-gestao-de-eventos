@@ -2,118 +2,85 @@ import { PlanLevel } from '../types';
 
 export interface PlanConfig {
   name: string;
+  label: string;
+  description: string;
   maxActiveEvents: number;
   maxAttendeesPerEvent: number;
   maxTicketsPerEvent: number;
   modules: {
+    // Módulo 1 — Inscrições (todos os planos)
     registrations: boolean;
+    // Módulo 2 — Financeiro (Plano B e C)
     manualPayments: boolean;
-    automaticPayments: boolean;
-    reports: boolean;
+    donations: boolean;
+    financeiroConfig: boolean;
+    // Módulo 3 — Gestão do Evento (Plano C)
     eventManagement: boolean;
     tasksAndTeam: boolean;
-    donations: boolean;
     checkIn: boolean;
-    teamManagement: boolean;
-  };
-  features: {
-    customFormLimit: number;
-    revenuePerTicket: boolean;
-    netValue: boolean;
-    costPerAttendee: boolean;
-    marginPerAttendee: boolean;
-    kanban: boolean;
-    schedule: boolean;
-    teamInvites: boolean;
-    teamAccess: boolean;
+    // Sempre disponível
+    reports: boolean;
   };
 }
 
 export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
+  // Plano A — apenas Inscrições
   start: {
-    name: 'Start (Gratuito)',
-    maxActiveEvents: 1,
-    maxAttendeesPerEvent: 100,
-    maxTicketsPerEvent: 2,
-    modules: {
-      registrations: true,
-      manualPayments: true,
-      automaticPayments: false,
-      reports: true,
-      eventManagement: false,
-      tasksAndTeam: false,
-      donations: false,
-      checkIn: false,
-      teamManagement: false,
-    },
-    features: {
-      customFormLimit: 10,
-      revenuePerTicket: false,
-      netValue: false,
-      costPerAttendee: false,
-      marginPerAttendee: false,
-      kanban: false,
-      schedule: false,
-      teamInvites: false,
-      teamAccess: false,
-    }
-  },
-  essencial: {
-    name: 'Essencial',
+    name: 'Plano A',
+    label: 'Inscrições',
+    description: 'Crie eventos e gerencie inscrições e participantes.',
     maxActiveEvents: 3,
-    maxAttendeesPerEvent: 200,
+    maxAttendeesPerEvent: 300,
     maxTicketsPerEvent: 5,
     modules: {
       registrations: true,
-      manualPayments: true,
-      automaticPayments: true,
+      manualPayments: false,
+      donations: false,
+      financeiroConfig: false,
+      eventManagement: false,
+      tasksAndTeam: false,
+      checkIn: false,
       reports: true,
-      eventManagement: true,
-      tasksAndTeam: true,
-      donations: true,
-      checkIn: true,
-      teamManagement: false,
     },
-    features: {
-      customFormLimit: 10, // Assuming 10 is standard max for now
-      revenuePerTicket: true,
-      netValue: true,
-      costPerAttendee: true,
-      marginPerAttendee: true,
-      kanban: true,
-      schedule: true,
-      teamInvites: false,
-      teamAccess: false,
-    }
   },
-  pro: {
-    name: 'Pro',
+  // Plano B — Inscrições + Financeiro
+  essencial: {
+    name: 'Plano B',
+    label: 'Inscrições + Financeiro',
+    description: 'Tudo do Plano A mais controle financeiro, pagamentos e doações.',
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
     modules: {
       registrations: true,
       manualPayments: true,
-      automaticPayments: true,
+      donations: true,
+      financeiroConfig: true,
+      eventManagement: false,
+      tasksAndTeam: false,
+      checkIn: false,
       reports: true,
+    },
+  },
+  // Plano C — Inscrições + Financeiro + Gestão do Evento
+  pro: {
+    name: 'Plano C',
+    label: 'Inscrições + Financeiro + Gestão',
+    description: 'Acesso completo: inscrições, financeiro, recursos, grupos e tarefas.',
+    maxActiveEvents: 9999,
+    maxAttendeesPerEvent: 9999,
+    maxTicketsPerEvent: 9999,
+    modules: {
+      registrations: true,
+      manualPayments: true,
+      donations: true,
+      financeiroConfig: true,
       eventManagement: true,
       tasksAndTeam: true,
-      donations: true,
       checkIn: true,
-      teamManagement: true,
+      reports: true,
     },
-    features: {
-      customFormLimit: 10,
-      revenuePerTicket: true,
-      netValue: true,
-      costPerAttendee: true,
-      marginPerAttendee: true,
-      kanban: true,
-      schedule: true,
-      teamInvites: true,
-      teamAccess: true,
-    }
-  }
+  },
 };
 
 export const getPlanConfig = (level: PlanLevel = 'pro'): PlanConfig => {

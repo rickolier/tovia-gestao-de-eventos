@@ -120,7 +120,7 @@ export default function EventDetail() {
     { value: 'checkin',        label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: plan.modules.checkIn },
     { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: plan.modules.tasksAndTeam },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: plan.modules.registrations },
-    { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: plan.modules.eventManagement },
+    { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: plan.modules.financeiroConfig },
     { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: plan.modules.reports },
   ].filter(t => t.show);
 
@@ -145,7 +145,7 @@ export default function EventDetail() {
     {
       category: 'Financeiro',
       items: [
-        { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: plan.modules.eventManagement },
+        { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: plan.modules.financeiroConfig },
         { value: 'financial',         label: 'Pagamentos',    icon: DollarSign, show: plan.modules.manualPayments },
         { value: 'donations',         label: 'Doações',       icon: Heart,      show: plan.modules.donations },
       ],
