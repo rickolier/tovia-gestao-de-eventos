@@ -22,7 +22,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (isAuthReady && user) navigate('/onboarding');
+    if (isAuthReady && user) navigate('/dashboard');
   }, [user, isAuthReady, navigate]);
 
   const [isRegistering, setIsRegistering] = useState(false);
@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      navigate('/onboarding');
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }
@@ -49,11 +49,12 @@ export default function Login() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
         toast.success('Conta criada com sucesso!');
+        navigate('/onboarding');
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         toast.success('Bem-vindo de volta!');
+        navigate('/dashboard');
       }
-      navigate('/onboarding');
     } catch (error: any) {
       toast.error('Erro na autenticação: ' + error.message);
     } finally {

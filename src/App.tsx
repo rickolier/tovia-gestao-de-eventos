@@ -26,6 +26,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  // Novo usuário sem plano → onboarding
+  if (profile && !profile.plano) return <Navigate to="/onboarding" replace />;
+
   return <>{children}</>;
 }
 
