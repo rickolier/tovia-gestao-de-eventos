@@ -188,17 +188,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Demo access */}
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            className="text-white/40 text-xs hover:text-white/60 transition-colors underline underline-offset-2"
-          >
-            Acessar modo demonstração
-          </button>
-        </div>
-
         <p className="text-center text-white/20 text-xs mt-8">
           Ekko Eventos © 2026
         </p>
