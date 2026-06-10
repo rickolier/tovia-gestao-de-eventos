@@ -21,6 +21,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
   const [loading, setLoading] = useState(true);
 
   const plan = getPlanConfig(profile?.plano);
+  const onlyFreeTickets = !plan.modules.manualPayments;
   const reachedTicketLimit = tickets.length >= plan.maxTicketsPerEvent;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -142,7 +143,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
             setEditingTicketId(null);
             setFormData({
               nome: '',
-              tipo: 'pago',
+              tipo: onlyFreeTickets ? 'gratuito' : 'pago',
               valor: 0,
               limite_vagas: 0,
               data_limite: '',
@@ -192,7 +193,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Tipo</Label>
                   <Select
                     value={formData.tipo}
-                    onValueChange={v => setFormData({...formData, tipo: v as 'pago' | 'gratuito' | 'doacao'})}
+                    onValueChange={v => !onlyFreeTickets && setFormData({...formData, tipo: v as 'pago' | 'gratuito' | 'doacao'})}
+                    disabled={onlyFreeTickets}
                   >
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                       <SelectValue>
@@ -200,18 +202,21 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-none shadow-2xl">
-                      <SelectItem value="pago" className="font-medium">Pago</SelectItem>
                       <SelectItem value="gratuito" className="font-medium">Gratuito</SelectItem>
-                      <SelectItem value="doacao" className="font-medium">Doação</SelectItem>
+                      {!onlyFreeTickets && <SelectItem value="pago" className="font-medium">Pago</SelectItem>}
+                      {!onlyFreeTickets && <SelectItem value="doacao" className="font-medium">Doação</SelectItem>}
                     </SelectContent>
                   </Select>
+                  {onlyFreeTickets && (
+                    <p className="text-[11px] text-muted-foreground mt-1">Ingressos pagos disponíveis no Plano B ou superior.</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="valor" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
                   <Input 
                     id="valor" 
                     type="number" 
-                    disabled={formData.tipo === 'gratuito' || formData.tipo === 'doacao'}
+                    disabled={formData.tipo === 'gratuito' || formData.tipo === 'doacao' || onlyFreeTickets}
                     value={formData.valor || ''}
                     onChange={e => setFormData({...formData, valor: Number(e.target.value)})}
                     className="rounded-xl border-none bg-muted/50 h-12 font-black tracking-tight focus-visible:ring-primary transition-colors disabled:opacity-30"

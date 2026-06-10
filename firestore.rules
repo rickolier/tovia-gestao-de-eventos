@@ -68,9 +68,9 @@ service cloud.firestore {
       allow create: if isOwner(userId) && isValidUser(incoming());
       allow update: if isOwner(userId) && isValidUser(incoming()) && (
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao', 
-          'redes_social', 'link_importante_1', 'link_importante_2', 
-          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt'
+          'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao',
+          'redes_social', 'link_importante_1', 'link_importante_2',
+          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano'
         ])
       );
       allow list: if isAdmin();
