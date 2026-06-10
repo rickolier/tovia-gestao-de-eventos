@@ -207,7 +207,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-6 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-foreground tracking-tight">Módulo Tarefas e Equipe</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Tarefas e Equipe</h2>
           <p className="text-sm text-muted-foreground font-medium">Organize a execução do seu evento com agilidade.</p>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
@@ -237,12 +237,12 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
             <Table className="min-w-[600px]">
               <TableHeader className="bg-muted/30">
                 <TableRow className="hover:bg-transparent border-border/50">
-                  <TableHead className="font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5 px-6">Tarefa</TableHead>
-                  <TableHead className="font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5">Categoria</TableHead>
-                  <TableHead className="font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5">Responsável</TableHead>
-                  <TableHead className="font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5">Limite</TableHead>
-                  <TableHead className="font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5">Status</TableHead>
-                  <TableHead className="text-right font-black text-muted-foreground uppercase text-[10px] tracking-widest py-5 px-6">Ações</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 px-6">Tarefa</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Categoria</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Responsável</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Limite</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Status</TableHead>
+                  <TableHead className="text-right font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 px-6">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -355,7 +355,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
                                     </div>
                                     <div>
                                       <h4 className="text-base font-black text-foreground line-clamp-2 leading-tight tracking-tight">{task.titulo}</h4>
-                                      <p className="text-[11px] text-muted-foreground line-clamp-2 mt-1.5 leading-snug font-medium italic">"{task.descricao}"</p>
+                                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1.5 leading-snug font-medium italic">"{task.descricao}"</p>
                                     </div>
                                     <div className="flex items-center justify-between pt-3 border-t border-border/50 mt-1">
                                       <div className="flex items-center gap-3 text-[9px] text-muted-foreground font-black uppercase tracking-widest">
@@ -409,7 +409,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Título da Tarefa</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Título da Tarefa</Label>
               <Input 
                 value={formData.titulo} 
                 onChange={e => setFormData({...formData, titulo: e.target.value})} 
@@ -420,7 +420,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Descrição</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Descrição</Label>
               <Textarea 
                 value={formData.descricao} 
                 onChange={e => setFormData({...formData, descricao: e.target.value})} 
@@ -431,7 +431,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Categoria</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Categoria</Label>
                 <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
@@ -444,7 +444,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Prioridade</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Prioridade</Label>
                 <Select value={formData.prioridade} onValueChange={(v: any) => setFormData({...formData, prioridade: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
@@ -460,7 +460,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Responsável</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Responsável</Label>
                 <Input 
                   value={formData.responsavel} 
                   onChange={e => setFormData({...formData, responsavel: e.target.value})} 
@@ -470,7 +470,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
                 <Input 
                   type="date"
                   value={formData.dataLimite} 

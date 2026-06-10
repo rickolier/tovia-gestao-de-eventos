@@ -127,7 +127,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-8 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-3xl font-black text-foreground tracking-tight">Categorias de Ingressos</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Categorias de Ingressos</h2>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">Plano {plan.name}</span>
             <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{tickets.length}/{plan.maxTicketsPerEvent} ingressos</span>
@@ -178,7 +178,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6 pt-2">
               <div className="space-y-2">
-                <Label htmlFor="nome" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Nome do Ingresso</Label>
+                <Label htmlFor="nome" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Nome do Ingresso</Label>
                 <Input 
                   id="nome" 
                   required 
@@ -190,7 +190,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Tipo</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Tipo</Label>
                   <Select
                     value={formData.tipo}
                     onValueChange={v => !onlyFreeTickets && setFormData({...formData, tipo: v as 'pago' | 'gratuito' | 'doacao'})}
@@ -208,11 +208,11 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                     </SelectContent>
                   </Select>
                   {onlyFreeTickets && (
-                    <p className="text-[11px] text-muted-foreground mt-1">Ingressos pagos disponíveis no Plano B ou superior.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Ingressos pagos disponíveis no Plano B ou superior.</p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="valor" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
+                  <Label htmlFor="valor" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
                   <Input 
                     id="valor" 
                     type="number" 
@@ -226,7 +226,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="limite" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Limite de Vagas</Label>
+                  <Label htmlFor="limite" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Limite de Vagas</Label>
                   <Input 
                     id="limite" 
                     type="number" 
@@ -237,7 +237,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="data_limite" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
+                  <Label htmlFor="data_limite" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
                   <Input 
                     id="data_limite" 
                     type="datetime-local" 
@@ -248,7 +248,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                 </div>
               </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento Aceitas</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento Aceitas</Label>
                   <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-xl">
                     {[
                       { id: 'pix', label: 'PIX' },
@@ -351,7 +351,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               <div className={`h-2 w-full absolute top-0 left-0 ${ticket.tipo === 'gratuito' ? 'bg-blue-400' : ticket.tipo === 'doacao' ? 'bg-pink-400' : 'bg-primary'}`} />
               <CardHeader className="pb-4 pt-10 px-8 relative z-10">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-2xl font-black text-foreground tracking-tight">{ticket.nome}</CardTitle>
+                  <CardTitle className="text-base font-bold text-foreground">{ticket.nome}</CardTitle>
                   <Badge variant="secondary" className={`font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg ${
                     ticket.tipo === 'gratuito' ? 'bg-blue-500/10 text-blue-500' : ticket.tipo === 'doacao' ? 'bg-pink-500/10 text-pink-500' : 'bg-primary/10 text-primary'
                   }`}>

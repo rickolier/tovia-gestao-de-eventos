@@ -554,7 +554,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
     filterKey: string, 
     columnKey: string 
   }) => (
-    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 group">
+    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 group">
       <div className="flex items-center">
         <button 
           onClick={() => requestSort(columnKey)}
@@ -664,7 +664,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Lote para as inscrições</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Lote para as inscrições</Label>
                   <Select value={importTicketId} onValueChange={setImportTicketId}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold focus:ring-primary">
                       <SelectValue placeholder="Selecione o Lote" />
@@ -679,7 +679,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Status Padrão</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Status Padrão</Label>
                   <Select value={importStatus} onValueChange={v => setImportStatus(v as any)}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold focus:ring-primary">
                       <SelectValue />
@@ -846,7 +846,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                   </div>
                   {selectedPagina.campos_formulario.map((campo: CampoFormulario) => (
                     <div key={campo.id} className="space-y-2">
-                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">
+                      <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">
                         {campo.label}{campo.obrigatorio && <span className="text-red-500 ml-1">*</span>}
                       </Label>
                       {campo.tipo === 'select' ? (
@@ -895,7 +895,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                   ))}
                   {/* Ingresso select — filtered to page's ticketIds */}
                   <div className="space-y-2">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Ingresso</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Ingresso</Label>
                     <Select value={formData.ticketId} onValueChange={v => setFormData(prev => ({ ...prev, ticketId: v }))}>
                       <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                         <SelectValue placeholder="Selecione um ingresso">
@@ -917,31 +917,31 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="nome" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Nome Completo</Label>
+                      <Label htmlFor="nome" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Nome Completo</Label>
                       <Input id="nome" required value={formData.nome} onChange={e => setFormData({...formData, nome: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Email</Label>
+                      <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Email</Label>
                       <Input id="email" type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="cpf" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">CPF</Label>
+                      <Label htmlFor="cpf" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">CPF</Label>
                       <Input id="cpf" value={formData.cpf} onChange={e => setFormData({...formData, cpf: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="telefone" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Telefone</Label>
+                      <Label htmlFor="telefone" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Telefone</Label>
                       <Input id="telefone" value={formData.telefone} onChange={e => setFormData({...formData, telefone: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="idade" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Idade</Label>
+                      <Label htmlFor="idade" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Idade</Label>
                       <Input id="idade" type="number" value={formData.idade} onChange={e => setFormData({...formData, idade: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Gênero</Label>
+                      <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Gênero</Label>
                       <Select value={formData.genero} onValueChange={v => setFormData({...formData, genero: v as any})}>
                         <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                           <SelectValue>
@@ -955,12 +955,12 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="celula" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Célula</Label>
+                      <Label htmlFor="celula" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Célula</Label>
                       <Input id="celula" value={formData.celula} onChange={e => setFormData({...formData, celula: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Ingresso / Lote</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Ingresso / Lote</Label>
                     <Select value={formData.ticketId} onValueChange={v => setFormData({...formData, ticketId: v})}>
                       <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                         <SelectValue placeholder="Selecione um lote">
@@ -979,7 +979,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
                   <Select value={formData.forma_pagamento} onValueChange={v => {
                     const isPixOrDinheiro = ['pix', 'dinheiro'].includes(v);
                     setFormData({
@@ -1008,7 +1008,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                 </div>
                 {!editingId && !['pix', 'dinheiro'].includes(formData.forma_pagamento) && (
                    <div className="space-y-2">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Parcelas</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Parcelas</Label>
                     <Select value={formData.parcelas.toString()} onValueChange={v => setFormData({...formData, parcelas: Number(v)})}>
                       <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                         <SelectValue>
@@ -1075,7 +1075,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
           <Table>
             <TableHeader className="bg-muted/50 border-b border-border/50 hover:bg-muted/50">
               <TableRow className="hover:bg-transparent">
-                <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 px-6 group">
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-6 group">
                   <div className="flex items-center">
                     <button 
                       onClick={() => requestSort('nome')}
@@ -1122,7 +1122,7 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                 <FilterHeader label="Financeiro" filterKey="financeiro" columnKey="financeiro" />
                 <FilterHeader label="Método" filterKey="metodo" columnKey="metodo" />
                 <FilterHeader label="Célula" filterKey="celula" columnKey="celula" />
-                <TableHead className="text-right font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 px-6">Gerenciar</TableHead>
+                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-6">Gerenciar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

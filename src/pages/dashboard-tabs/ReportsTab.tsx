@@ -31,8 +31,8 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 px-2">
         <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black text-foreground tracking-tight">Relatórios Gerais</h2>
-          <p className="text-muted-foreground font-medium text-sm">Visão consolidada de performance e escala.</p>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Relatórios Gerais</h2>
+          <p className="text-sm text-muted-foreground font-medium">Visão consolidada de performance e escala.</p>
         </div>
         
         <Dialog>
@@ -114,7 +114,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
         {config.showPerformanceHighlight && focusEvent && (
           <Card className="border-none shadow-2xl shadow-black/[0.02] bg-card rounded-3xl overflow-hidden flex flex-col">
             <CardHeader className="bg-muted/30 border-b border-border/50 p-6">
-              <CardTitle className="text-[10px] font-black flex items-center gap-3 uppercase tracking-widest text-primary">
+              <CardTitle className="text-xs font-semibold flex items-center gap-3 uppercase tracking-widest text-muted-foreground">
                 <BarChart3 className="w-4 h-4" />
                 Destaque de Capacidade
               </CardTitle>
@@ -144,7 +144,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
         {config.showCapacityAnalysis && (
           <Card className="border-none shadow-2xl shadow-black/[0.02] bg-card rounded-3xl overflow-hidden flex flex-col">
             <CardHeader className="bg-muted/30 border-b border-border/50 p-6">
-              <CardTitle className="text-[10px] font-black flex items-center gap-3 uppercase tracking-widest text-primary">
+              <CardTitle className="text-xs font-semibold flex items-center gap-3 uppercase tracking-widest text-muted-foreground">
                 <PieChart className="w-4 h-4" />
                 Ocupação Consolidada
               </CardTitle>

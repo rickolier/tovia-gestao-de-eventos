@@ -264,7 +264,7 @@ export default function CreateEvent() {
         <Card className="border border-border shadow-sm rounded-2xl overflow-hidden card-flat">
           <div className="h-1.5 bg-primary" />
           <CardHeader className="border-b border-border bg-muted/30">
-            <CardTitle className="text-xl font-bold text-foreground">Informações do Evento</CardTitle>
+            <CardTitle className="text-base font-bold text-foreground">Informações do Evento</CardTitle>
             <p className="text-sm text-muted-foreground">Preencha os dados abaixo para criar seu evento.</p>
           </CardHeader>
           <CardContent>
@@ -341,7 +341,7 @@ export default function CreateEvent() {
                 {/* Imagem do evento */}
                 <div className="space-y-2">
                   <Label>Imagem de Capa do Evento</Label>
-                  <p className="text-[11px] text-muted-foreground -mt-1">PNG ou JPEG · mínimo 1920×1080px</p>
+                  <p className="text-xs text-muted-foreground -mt-1">PNG ou JPEG · mínimo 1920×1080px</p>
 
                   {!imagemPreview ? (
                     <label
@@ -379,7 +379,7 @@ export default function CreateEvent() {
                         <X className="w-4 h-4" />
                       </button>
                       <div className="absolute bottom-0 left-0 right-0 bg-black/40 px-3 py-1.5">
-                        <p className="text-white text-[11px] font-medium truncate">{imagemFile?.name}</p>
+                        <p className="text-white text-xs font-medium truncate">{imagemFile?.name}</p>
                       </div>
                     </div>
                   )}

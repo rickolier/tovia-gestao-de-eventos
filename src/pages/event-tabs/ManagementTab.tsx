@@ -122,7 +122,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-3xl font-black text-foreground tracking-tight">Gestão do Evento</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Gestão do Evento</h2>
         </div>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95">
@@ -196,7 +196,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2.5rem] overflow-hidden">
               <CardHeader className="p-8 pb-4">
-                <CardTitle className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-primary">
+                <CardTitle className="text-base font-bold flex items-center gap-3 text-foreground">
                   <Target className="w-5 h-5" />
                   Performance por Participante
                 </CardTitle>
@@ -231,7 +231,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
 
             <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2.5rem] overflow-hidden">
               <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-primary">
+                <CardTitle className="text-base font-bold flex items-center gap-3 text-foreground">
                   <Activity className="w-5 h-5" />
                   Movimentação Financeira
                 </CardTitle>
@@ -298,7 +298,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest px-1">Tipo de Operação</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest px-1">Tipo de Operação</Label>
                 <Select value={formData.tipo} onValueChange={v => setFormData({...formData, tipo: v as any})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
@@ -310,7 +310,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest px-1">Categoria</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest px-1">Categoria</Label>
                 <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue placeholder="Selecione" />
@@ -329,7 +329,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="val_lan" className="text-[10px] font-black uppercase tracking-widest px-1">Valor (R$)</Label>
+                <Label htmlFor="val_lan" className="text-xs font-semibold uppercase tracking-widest px-1">Valor (R$)</Label>
                 <Input 
                     id="val_lan" 
                     type="number" 
@@ -341,7 +341,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dat_lan" className="text-[10px] font-black uppercase tracking-widest px-1">Data</Label>
+                <Label htmlFor="dat_lan" className="text-xs font-semibold uppercase tracking-widest px-1">Data</Label>
                 <Input 
                     id="dat_lan" 
                     type="date" 
@@ -353,7 +353,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="des_lan" className="text-[10px] font-black uppercase tracking-widest px-1">Descrição Detalhada</Label>
+              <Label htmlFor="des_lan" className="text-xs font-semibold uppercase tracking-widest px-1">Descrição Detalhada</Label>
               <Input 
                 id="des_lan" 
                 required 

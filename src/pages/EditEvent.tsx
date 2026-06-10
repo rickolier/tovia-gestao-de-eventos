@@ -182,7 +182,7 @@ export default function EditEvent() {
         <Card className="border border-border shadow-sm rounded-2xl overflow-hidden card-flat">
           <div className="h-1.5 bg-primary" />
           <CardHeader className="border-b border-border bg-muted/30">
-            <CardTitle className="text-xl font-bold text-foreground">Informações do Evento</CardTitle>
+            <CardTitle className="text-base font-bold text-foreground">Informações do Evento</CardTitle>
             <p className="text-sm text-muted-foreground">Atualize os dados do seu evento.</p>
           </CardHeader>
           <CardContent>

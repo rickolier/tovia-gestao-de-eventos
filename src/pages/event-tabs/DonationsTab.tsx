@@ -406,7 +406,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-8 text-foreground pb-20 pt-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-foreground tracking-tight">Módulo Doações</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Doações</h2>
           <p className="text-sm text-muted-foreground font-medium">Gestão de ofertas e destinação de recursos.</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
@@ -497,7 +497,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Valor Bruto (R$)</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor Bruto (R$)</Label>
                 <Input 
                   type="number" 
                   step="0.01"
@@ -511,7 +511,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
                 <Select value={formData.formaPagamento} onValueChange={v => setFormData({...formData, formaPagamento: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
@@ -526,7 +526,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data do Pagamento</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data do Pagamento</Label>
                 <Input 
                   type="date"
                   value={formData.dataPagamento} 
@@ -540,7 +540,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             <div className="space-y-4 pt-2 border-t border-border/50">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Doador (Identificação)</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Doador (Identificação)</Label>
                   <Input 
                     placeholder="Nome do doador" 
                     value={formData.doadorNome} 
@@ -549,7 +549,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Tipo de Destino</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Tipo de Destino</Label>
                   <Select value={formData.destino} onValueChange={(v: 'inscrito' | 'livre') => setFormData({...formData, destino: v})}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                       <SelectValue />
@@ -564,7 +564,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
             {formData.destino === 'inscrito' ? (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Vincular a Inscrito</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Vincular a Inscrito</Label>
                 <Select value={formData.inscritoId} onValueChange={v => setFormData({...formData, inscritoId: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue placeholder="Selecione o inscrito" />
@@ -580,7 +580,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               </div>
             ) : (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Finalidade / Observação</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Finalidade / Observação</Label>
                 <Input 
                   placeholder="Ex: Compra de Som, Fundo de Reserva..." 
                   value={formData.finalidade} 
@@ -617,7 +617,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
       {donationTicketInscricoes.length > 0 && (
         <Card className="border-none shadow-sm rounded-[2rem] bg-card overflow-hidden transition-colors">
           <CardHeader className="bg-pink-50 dark:bg-pink-950/20 border-b border-border p-6">
-            <CardTitle className="text-xs font-black text-pink-600 flex items-center gap-2 uppercase tracking-widest">
+            <CardTitle className="text-xs font-semibold text-pink-600 flex items-center gap-2 uppercase tracking-widest">
               <Heart className="w-5 h-5" />
               Inscrições por Ingresso Doação
             </CardTitle>
@@ -627,11 +627,11 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               <Table>
                 <TableHeader className="bg-muted/10">
                   <TableRow className="hover:bg-transparent border-border/50">
-                    <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground px-6">Data</TableHead>
-                    <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Participante</TableHead>
-                    <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">E-mail</TableHead>
-                    <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Ingresso</TableHead>
-                    <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Status</TableHead>
+                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground px-6">Data</TableHead>
+                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Participante</TableHead>
+                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">E-mail</TableHead>
+                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Ingresso</TableHead>
+                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -667,7 +667,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
       <Card className="border-none shadow-sm rounded-[2rem] bg-card overflow-hidden transition-colors">
         <CardHeader className="bg-muted/30 border-b border-border p-6">
-          <CardTitle className="text-xs font-black text-primary flex items-center gap-2 uppercase tracking-widest">
+          <CardTitle className="text-xs font-semibold text-primary flex items-center gap-2 uppercase tracking-widest">
             <Heart className="w-5 h-5" />
             Histórico de Doações
           </CardTitle>
@@ -677,13 +677,13 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             <Table>
               <TableHeader className="bg-muted/10">
                 <TableRow className="hover:bg-transparent border-border/50">
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground px-6">Data Pag.</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Doador</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Destino</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Forma</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Bruto</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Líquido</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-muted-foreground">Status</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground px-6">Data Pag.</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Doador</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Destino</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Forma</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Bruto</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Líquido</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Status</TableHead>
                   <TableHead className="py-5 text-right font-black uppercase text-[10px] tracking-widest text-muted-foreground px-6">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -828,7 +828,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
           <form onSubmit={handleAllocate} className="space-y-6 pt-2">
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Escolher Doação Disponível</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Escolher Doação Disponível</Label>
               <Select value={allocationForm.doacaoId} onValueChange={v => setAllocationForm({...allocationForm, doacaoId: v})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                   <SelectValue placeholder="Selecione uma doação com saldo" />
@@ -850,7 +850,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Inscrito Destinatário</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Inscrito Destinatário</Label>
               <Select value={allocationForm.inscritoId} onValueChange={v => setAllocationForm({...allocationForm, inscritoId: v})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                   <SelectValue placeholder="Selecione o inscrito" />
@@ -872,7 +872,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Valor a Destinar (R$)</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor a Destinar (R$)</Label>
               <div className="relative">
                 <Input 
                   type="number" 

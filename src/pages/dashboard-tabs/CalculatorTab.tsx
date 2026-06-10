@@ -91,11 +91,11 @@ export default function CalculatorTab() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-20">
       <div className="flex flex-col gap-2">
-        <h2 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+        <h2 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-3">
           <Calculator className="w-8 h-8 text-primary" />
           Calculadora de Custos
         </h2>
-        <p className="text-muted-foreground text-sm font-medium">
+        <p className="text-sm text-muted-foreground font-medium">
           Planeje seu evento com precisão. Escolha como deseja calcular e defina seu valor ideal.
         </p>
       </div>
@@ -114,7 +114,7 @@ export default function CalculatorTab() {
               {/* Venue Cost Section */}
               <div className="space-y-6">
                 <div>
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 block">Forma de cálculo do Local</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Forma de cálculo do Local</Label>
                   <div className="grid grid-cols-2 gap-2 bg-muted/30 p-1.5 rounded-2xl border border-border/50">
                     <button 
                       onClick={() => setVenueCostType('total')}
@@ -133,7 +133,7 @@ export default function CalculatorTab() {
 
                 <div className="space-y-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="venueValue" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    <Label htmlFor="venueValue" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                       {venueCostType === 'total' ? 'Custo Total do Contrato (R$)' : 'Custo por Inscrição/Vaga (R$)'}
                     </Label>
                     <div className="relative">
@@ -151,7 +151,7 @@ export default function CalculatorTab() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="minParticipants" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vagas Mínimas</Label>
+                      <Label htmlFor="minParticipants" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Vagas Mínimas</Label>
                       <div className="relative">
                         <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input 
@@ -165,7 +165,7 @@ export default function CalculatorTab() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="maxParticipants" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vagas Máximas</Label>
+                      <Label htmlFor="maxParticipants" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Vagas Máximas</Label>
                       <div className="relative">
                         <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input 
@@ -185,7 +185,7 @@ export default function CalculatorTab() {
               {/* Margin Section */}
               <div className="space-y-6 pt-6 border-t border-dashed border-border/80">
                 <div>
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 block">Tipo de Margem Desejada</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Tipo de Margem Desejada</Label>
                   <div className="grid grid-cols-2 gap-2 bg-muted/30 p-1.5 rounded-2xl border border-border/50">
                     <button 
                       onClick={() => setMarginType('percentage')}
@@ -203,7 +203,7 @@ export default function CalculatorTab() {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="marginValue" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <Label htmlFor="marginValue" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                     {marginType === 'percentage' ? 'Margem Adicional (%)' : 'Margem Adicional em Reais (R$)'}
                   </Label>
                   <div className="relative">
@@ -226,7 +226,7 @@ export default function CalculatorTab() {
 
               {/* Fees Section */}
               <div className="pt-6 border-t border-dashed border-border/80">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">Taxas de Operação das Formas de Pagamento (%)</h4>
+                <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Taxas de Operação das Formas de Pagamento (%)</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label className="text-[9px] font-bold text-muted-foreground">PIX</Label>
@@ -396,7 +396,7 @@ export default function CalculatorTab() {
 
       {/* Disclaimer */}
       <div className="bg-muted/30 p-6 rounded-3xl border border-border/50 text-center">
-        <p className="text-[11px] text-muted-foreground font-medium max-w-2xl mx-auto">
+        <p className="text-xs text-muted-foreground font-medium max-w-2xl mx-auto">
           Nota: Estes cálculos são estimativas baseadas nos valores fornecidos. Podem haver variações dependendo de outros custos fixos ou variáveis não listados aqui. Recomendamos sempre uma margem de segurança para imprevistos.
         </p>
       </div>

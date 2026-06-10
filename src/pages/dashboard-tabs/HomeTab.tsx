@@ -72,7 +72,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold text-foreground">
+        <h1 className="text-2xl font-black tracking-tight text-foreground">
           {getGreeting()}, {profile?.nome?.split(' ')[0] || 'Produtor'}!
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5 capitalize">{dayName}, {dateStr}</p>
@@ -92,7 +92,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground leading-none">{eventos.length}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Total de eventos</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Total de eventos</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground leading-none">{activeEvents.length}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Ativos</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Ativos</p>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground leading-none">{archivedEvents.length}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Arquivados</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Arquivados</p>
           </div>
         </div>
 
@@ -125,7 +125,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           </div>
           <div>
             <p className="text-base font-bold text-foreground leading-none capitalize">{profile?.plano ?? 'Start'}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Plano atual</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Plano atual</p>
           </div>
         </div>
       </motion.div>
@@ -141,7 +141,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-foreground">Visão geral</h2>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Seus eventos em números</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Seus eventos em números</p>
             </div>
             <TrendingUp className="w-4 h-4 text-primary" />
           </div>
@@ -193,7 +193,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-base font-semibold text-foreground">Meus Eventos</h2>
-            <p className="text-[11px] text-muted-foreground">{eventos.length} eventos cadastrados</p>
+            <p className="text-xs text-muted-foreground">{eventos.length} eventos cadastrados</p>
           </div>
           <div className="flex items-center gap-2">
             {hasMore && (
@@ -273,7 +273,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
 
                         {/* Meta info */}
                         <div className="space-y-1.5 mb-4">
-                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Calendar className="w-3.5 h-3.5 shrink-0" />
                             <span>
                               {isNaN(dataInicio.getTime())
@@ -281,11 +281,11 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                                 : dataInicio.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
                             </span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <MapPin className="w-3.5 h-3.5 shrink-0" />
                             <span className="line-clamp-1">{evento.local || 'Local não informado'}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Users className="w-3.5 h-3.5 shrink-0" />
                             <span>{evento.vagas_totais || 0} vagas</span>
                           </div>

@@ -192,7 +192,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
       {/* ── Header ── */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Páginas de Venda</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Páginas de Venda</h2>
           <p className="text-sm text-muted-foreground mt-0.5">Crie páginas públicas com ingressos e formulário de inscrição. Cada uma tem seu próprio link.</p>
         </div>
         <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95">
@@ -243,7 +243,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                     }
                   </div>
                   {/* Campos */}
-                  <p className="text-[11px] text-muted-foreground">{p.campos_formulario.length} campo(s) no formulário</p>
+                  <p className="text-xs text-muted-foreground">{p.campos_formulario.length} campo(s) no formulário</p>
                   {/* Actions */}
                   <div className="flex gap-2 pt-1 border-t border-border/50">
                     <button onClick={() => copyLink(p.slug)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
@@ -310,7 +310,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2 col-span-2">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome da página</Label>
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Nome da página</Label>
                     <Input
                       placeholder="Ex: Inscrições Adultos"
                       value={form.nome}
@@ -319,7 +319,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                     />
                   </div>
                   <div className="space-y-2 col-span-2">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
                       <Link2 className="w-3 h-3" /> Slug (URL)
                     </Label>
                     <div className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 h-12 border border-border/0">
@@ -335,7 +335,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
                   <Textarea
                     placeholder="Uma breve descrição que aparecerá na página pública..."
                     value={form.descricao}
@@ -346,7 +346,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Ingressos disponíveis nesta página</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Ingressos disponíveis nesta página</Label>
                   {tickets.length === 0 ? (
                     <p className="text-sm text-muted-foreground/60 italic">Nenhum ingresso criado para este evento ainda.</p>
                   ) : (
@@ -387,7 +387,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
               <>
                 {/* Active fields */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Campos do formulário</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Campos do formulário</Label>
                   <div className="space-y-2">
                     {form.campos_formulario.map(campo => (
                       <div key={campo.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border border-border/40">
@@ -416,7 +416,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
 
                 {/* Add preset field */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Adicionar campo pré-definido</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Adicionar campo pré-definido</Label>
                   <div className="flex flex-wrap gap-2">
                     {CAMPOS_PADRAO.filter(c => !form.campos_formulario.some(f => f.label === c.label)).map(c => (
                       <button
@@ -433,7 +433,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
 
                 {/* Add custom field */}
                 <div className="space-y-3 border border-border/50 rounded-2xl p-4 bg-muted/10">
-                  <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Campo personalizado</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Campo personalizado</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label className="text-xs text-muted-foreground">Nome do campo</Label>

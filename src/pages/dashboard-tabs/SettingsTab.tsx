@@ -21,7 +21,7 @@ export default function SettingsTab() {
       className="space-y-6 max-w-4xl"
     >
       <div>
-        <h1 className="text-3xl font-black text-foreground mb-2">Configurações</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">Configurações</h1>
         <p className="text-muted-foreground">Gerencie sua experiência no Ekko</p>
       </div>
 

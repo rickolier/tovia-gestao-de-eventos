@@ -61,7 +61,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card className="border-none shadow-sm rounded-[2rem] bg-card border border-border/50 group hover:shadow-xl transition-all">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <Users className="w-4 h-4 text-primary" />
               Total Inscritos
             </CardTitle>
@@ -72,7 +72,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
         </Card>
         <Card className="border-none shadow-sm rounded-[2rem] bg-card border border-border/50 group hover:shadow-xl transition-all">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-primary" />
               Vagas Ocupadas
             </CardTitle>
@@ -84,7 +84,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
         </Card>
         <Card className="border-none shadow-sm rounded-[2rem] bg-card border border-border/50 group hover:shadow-xl transition-all">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-primary" />
               Total Pago
             </CardTitle>
@@ -97,7 +97,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
         </Card>
         <Card className="border-none shadow-sm rounded-[2rem] bg-card border border-border/50 group hover:shadow-xl transition-all">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-amber-500" />
               Total Pendente
             </CardTitle>
@@ -110,7 +110,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
         </Card>
         <Card className="border-none shadow-sm rounded-[2rem] bg-card border border-border/50 group hover:shadow-xl transition-all">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <Heart className="w-4 h-4 text-red-500" />
               Total Doações
             </CardTitle>
@@ -126,7 +126,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border-none shadow-sm rounded-[2.5rem] bg-card border border-border/50">
           <CardHeader className="px-8 pt-8">
-            <CardTitle className="text-xl font-black flex items-center gap-3 tracking-tight">
+            <CardTitle className="text-base font-bold flex items-center gap-3 text-foreground">
               <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                 <PieChartIcon className="w-6 h-6" />
               </div>
@@ -137,10 +137,10 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
             {loading ? (
               <div className="flex flex-col items-center justify-center h-full gap-3">
                 <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Processando gráficos...</span>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Processando gráficos...</span>
               </div>
             ) : stats.statusData.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-muted-foreground font-black text-[10px] uppercase tracking-widest opacity-40">Sem dados para exibir</div>
+              <div className="flex items-center justify-center h-full text-muted-foreground font-semibold text-xs uppercase tracking-widest opacity-40">Sem dados para exibir</div>
             ) : (
               <div className="w-full h-full relative">
                 <ResponsiveContainer width="100%" height="80%">
@@ -179,7 +179,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
                   <p className="text-4xl font-black text-foreground">
                     {stats.totalInscritos}
                   </p>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1">Inscrições</p>
+                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-widest mt-1">Inscrições</p>
                 </div>
 
                 {/* Legend Area */}
@@ -187,7 +187,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
                   {stats.statusData.map((entry, index) => (
                     <div key={entry.name} className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{entry.name}</span>
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">{entry.name}</span>
                     </div>
                   ))}
                 </div>
@@ -198,11 +198,11 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
 
         <Card className="border-none shadow-sm rounded-[2.5rem] bg-card border border-border/50 p-10 flex flex-col justify-center relative overflow-hidden group">
           <div className="relative z-10">
-            <h3 className="text-2xl font-black mb-8 tracking-tight">Resumo Financeiro</h3>
+            <h3 className="text-base font-bold mb-8 text-foreground">Resumo Financeiro</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-6 bg-primary/5 hover:bg-primary/10 transition-colors rounded-2xl border border-primary/10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary/70 mb-1">Receita Bruta</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1">Receita Bruta</span>
                   <span className="font-bold text-primary">Ingressos + Doações</span>
                 </div>
                 <span className="text-3xl font-black text-primary tracking-tighter">
@@ -211,7 +211,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
               </div>
               <div className="flex justify-between items-center p-6 bg-amber-500/5 hover:bg-amber-500/10 transition-colors rounded-2xl border border-amber-500/10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-600/70 mb-1">Receita Prevista</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-600/70 mb-1">Receita Prevista</span>
                   <span className="font-bold text-amber-600">Total Potencial</span>
                 </div>
                 <span className="text-3xl font-black text-amber-600 tracking-tighter">
@@ -226,7 +226,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
                   <PieChartIcon className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary/70 mb-0.5">Eficiência de Arrecadação</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-0.5">Eficiência de Arrecadação</p>
                   <p className="text-xl font-black text-foreground">
                     {Math.round((stats.totalPago / (stats.totalPago + stats.totalPendente)) * 100) || 0}% dos ingressos quitados
                   </p>

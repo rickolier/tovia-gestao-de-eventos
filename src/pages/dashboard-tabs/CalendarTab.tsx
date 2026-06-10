@@ -56,8 +56,8 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-black text-foreground tracking-tight">Agenda de Eventos</h2>
-        <p className="text-muted-foreground">Visualize seus eventos programados no calendário e lista.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Agenda de Eventos</h2>
+        <p className="text-sm text-muted-foreground">Visualize seus eventos programados no calendário e lista.</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
@@ -141,7 +141,7 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
         {/* Upcoming Events Sidebar */}
         <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden flex flex-col transition-colors">
           <CardHeader className="bg-muted/30 border-b border-border p-5">
-            <CardTitle className="text-xs font-black flex items-center gap-2 uppercase tracking-widest text-foreground">
+            <CardTitle className="text-xs font-semibold flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
               <List className="w-4 h-4 text-primary" />
               Próximos Eventos
             </CardTitle>

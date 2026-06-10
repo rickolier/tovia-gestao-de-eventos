@@ -325,7 +325,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     columnKey: string,
     className?: string
   }) => (
-    <TableHead className={`font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 group ${className}`}>
+    <TableHead className={`font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 group ${className}`}>
       <div className="flex items-center">
         <button 
           onClick={() => requestSort(columnKey)}
@@ -381,7 +381,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-6 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-foreground tracking-tight">Módulo Financeiro</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Financeiro</h2>
           <p className="text-sm text-muted-foreground font-medium">Controle de pagamentos e destinação de doações.</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
@@ -416,13 +416,13 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
 
       <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden bg-card transition-colors border border-border/50">
         <CardHeader className="bg-muted/50 border-b border-border/50 px-8 py-6">
-          <CardTitle className="text-sm font-black text-muted-foreground uppercase tracking-widest">Gestão de Pagamentos por Inscrito</CardTitle>
+          <CardTitle className="text-base font-bold text-foreground">Gestão de Pagamentos por Inscrito</CardTitle>
         </CardHeader>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-muted/30 border-b border-border/50">
               <TableRow className="hover:bg-transparent">
-                <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 px-8 group">
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-8 group">
                   <div className="flex items-center">
                     <button 
                       onClick={() => requestSort('nome')}
@@ -467,9 +467,9 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                 <FilterHeader label="Valor Total" filterKey="total" columnKey="total" />
                 <FilterHeader label="Valor Pago" filterKey="pago" columnKey="pago" />
                 <FilterHeader label="Saldo Devedor" filterKey="saldo" columnKey="saldo" />
-                <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14">Progresso</TableHead>
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14">Progresso</TableHead>
                 <FilterHeader label="Status" filterKey="status" columnKey="status" />
-                <TableHead className="text-right font-black text-[10px] uppercase tracking-widest text-muted-foreground h-14 px-8">Ações</TableHead>
+                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-8">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -568,7 +568,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Selecione o Inscrito</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Selecione o Inscrito</Label>
               <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                   <SelectValue placeholder="Selecione o inscrito" />
@@ -584,11 +584,11 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="valor_pay" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
+                <Label htmlFor="valor_pay" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
                 <Input id="valor_pay" type="number" step="0.01" value={formData.valor} onChange={e => setFormData({...formData, valor: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Método</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Método</Label>
                 <Select value={formData.metodo} onValueChange={v => setFormData({...formData, metodo: v as any})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                     <SelectValue />
@@ -604,7 +604,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Status</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Status</Label>
                 <Select value={formData.status} onValueChange={v => setFormData({...formData, status: v as any})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                     <SelectValue />
@@ -617,7 +617,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
               </div>
               {formData.status === 'pago' && (
                 <div className="space-y-2">
-                  <Label htmlFor="data_pagamento" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data do Pagamento</Label>
+                  <Label htmlFor="data_pagamento" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data do Pagamento</Label>
                   <Input 
                     id="data_pagamento" 
                     type="date" 
@@ -630,7 +630,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
             </div>
             {formData.status === 'pago' && (
               <div className="space-y-2">
-                <Label htmlFor="comprovante" className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Anexar Comprovante (Opcional)</Label>
+                <Label htmlFor="comprovante" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Anexar Comprovante (Opcional)</Label>
                 <div className="flex items-center gap-3">
                   <Input 
                     id="comprovante" 
@@ -684,12 +684,12 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
               <Table>
                 <TableHeader className="bg-muted/30">
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12 px-6">Data</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12">Método</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12">Valor</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12">Status</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12">Anexo</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12 px-6 text-right">Ações</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12 px-6">Data</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12">Método</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12">Valor</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12">Status</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12">Anexo</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-12 px-6 text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -62,14 +62,14 @@ export default function ProfileTab() {
   return (
     <div className="max-w-4xl mx-auto space-y-8 text-foreground">
       <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-black text-foreground tracking-tight">Perfil</h2>
-        <p className="text-muted-foreground">Configure as informações públicas da sua instituição e perfil de produtor.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Perfil</h2>
+        <p className="text-sm text-muted-foreground">Configure as informações públicas da sua instituição e perfil de produtor.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden transition-colors">
           <CardHeader className="bg-muted/30 border-b border-border">
-            <CardTitle className="text-lg font-black flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <User className="w-5 h-5 text-primary" />
               Informações Básicas
             </CardTitle>
@@ -97,7 +97,7 @@ export default function ProfileTab() {
 
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome do Produtor/Responsável</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Nome do Produtor/Responsável</Label>
                   <Input 
                     value={formData.nome}
                     onChange={e => setFormData({...formData, nome: e.target.value})}
@@ -106,7 +106,7 @@ export default function ProfileTab() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome da Instituição</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Nome da Instituição</Label>
                   <Input 
                     value={formData.instituicao}
                     onChange={e => setFormData({...formData, instituicao: e.target.value})}
@@ -115,7 +115,7 @@ export default function ProfileTab() {
                   />
                 </div>
                 <div className="col-span-full space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Bio Curta (Aparece abaixo do nome)</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Bio Curta (Aparece abaixo do nome)</Label>
                   <Input 
                     value={formData.bio}
                     onChange={e => setFormData({...formData, bio: e.target.value})}
@@ -127,7 +127,7 @@ export default function ProfileTab() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Descrição Detalhada</Label>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição Detalhada</Label>
               <Textarea 
                 value={formData.descricao}
                 onChange={e => setFormData({...formData, descricao: e.target.value})}
@@ -142,7 +142,7 @@ export default function ProfileTab() {
 
         <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden transition-colors">
           <CardHeader className="bg-muted/30 border-b border-border">
-            <CardTitle className="text-lg font-black flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Phone className="w-5 h-5 text-primary" />
               Contato e Redes Sociais
             </CardTitle>
@@ -150,7 +150,7 @@ export default function ProfileTab() {
           <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-5">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> E-mail de Contato</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> E-mail de Contato</Label>
                 <Input 
                   value={formData.contato_email}
                   onChange={e => setFormData({...formData, contato_email: e.target.value})}
@@ -159,7 +159,7 @@ export default function ProfileTab() {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> Telefone/WhatsApp</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> Telefone/WhatsApp</Label>
                 <Input 
                   value={formData.telefone}
                   onChange={e => setFormData({...formData, telefone: e.target.value})}
@@ -168,7 +168,7 @@ export default function ProfileTab() {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Globe className="w-4 h-4 text-primary" /> Website</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Globe className="w-4 h-4 text-primary" /> Website</Label>
                 <Input 
                   value={formData.site}
                   onChange={e => setFormData({...formData, site: e.target.value})}
@@ -180,7 +180,7 @@ export default function ProfileTab() {
 
             <div className="space-y-5">
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Instagram className="w-4 h-4 text-primary" /> Instagram</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Instagram className="w-4 h-4 text-primary" /> Instagram</Label>
                 <Input 
                   value={formData.instagram}
                   onChange={e => setFormData({...formData, instagram: e.target.value})}
@@ -189,7 +189,7 @@ export default function ProfileTab() {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> LINKS IMPORTANTES</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> LINKS IMPORTANTES</Label>
                 <div className="space-y-3">
                   <Input 
                     value={formData.link_importante_1}

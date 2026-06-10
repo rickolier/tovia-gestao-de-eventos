@@ -38,7 +38,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
       <div className="md:col-span-2 space-y-6">
         <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-black flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Info className="w-5 h-5 text-primary" />
               Informações do Evento
             </CardTitle>
@@ -54,28 +54,28 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Data e Hora</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Data e Hora</p>
                 <div className="flex items-center gap-2 text-foreground font-bold">
                   <Calendar className="w-4 h-4 text-primary" />
                   {new Date(evento.data_inicio).toLocaleString('pt-BR')}
                 </div>
               </div>
               <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Local</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Local</p>
                 <div className="flex items-center gap-2 text-foreground font-bold">
                   <MapPin className="w-4 h-4 text-primary" />
                   {evento.local}
                 </div>
               </div>
               <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Instituição</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Instituição</p>
                 <div className="flex items-center gap-2 text-foreground font-bold">
                   <Building className="w-4 h-4 text-primary" />
                   {evento.instituicao || 'Não informada'}
                 </div>
               </div>
               <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Capacidade</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Capacidade</p>
                 <div className="flex items-center gap-2 text-foreground font-bold">
                   <Users className="w-4 h-4 text-primary" />
                   {evento.vagas_totais} pessoas
@@ -88,7 +88,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
             <CardHeader className="p-6">
-              <CardTitle className="text-xs font-black flex items-center gap-2 text-foreground uppercase tracking-[0.15em]">
+              <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
                 <TrendingUp className="w-4 h-4 text-primary" />
                 Ocupação de Vagas
               </CardTitle>
@@ -134,7 +134,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
                   <p className="text-3xl font-black text-foreground">
                     {evento.vagas_totais > 0 ? Math.round((occupiedSlots / evento.vagas_totais) * 100) : 0}%
                   </p>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-0.5">Ocupação</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-0.5">Ocupação</p>
                 </div>
 
                 {/* Custom Legend */}
@@ -154,14 +154,14 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
 
           <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
             <CardHeader profile="p-6">
-              <CardTitle className="text-sm font-black flex items-center gap-2 text-foreground uppercase tracking-widest">
+              <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
                 <DollarSign className="w-4 h-4 text-primary" />
                 Resumo Financeiro
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 p-6 pt-0">
               <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Total Arrecadado</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Total Arrecadado</p>
                 <p className="text-2xl font-black text-foreground">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRevenue)}
                 </p>
