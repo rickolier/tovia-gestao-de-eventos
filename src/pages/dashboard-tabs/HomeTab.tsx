@@ -1,0 +1,314 @@
+import React from 'react';
+import { useAuth } from '../../lib/AuthContext';
+import { Evento } from '../../types';
+import { Button } from '@/components/ui/button';
+import { Calendar, MapPin, Users, ArrowRight, TrendingUp, CheckCircle2, Clock, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+
+interface HomeTabProps {
+  eventos: Evento[];
+}
+
+// Circular progress ring component
+function ProgressRing({ value, max, color, label, sublabel }: { value: number; max: number; color: string; label: string; sublabel: string }) {
+  const pct = max > 0 ? Math.min(value / max, 1) : 0;
+  const r = 28;
+  const circ = 2 * Math.PI * r;
+  const dash = circ * pct;
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative w-16 h-16">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r={r} fill="none" stroke="currentColor" strokeWidth="5" className="text-muted/60" />
+          <circle
+            cx="36" cy="36" r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${circ}`}
+            className="transition-all duration-700"
+          />
+        </svg>
+        <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-foreground">
+          {value}<span className="text-[9px] text-muted-foreground">/{max}</span>
+        </span>
+      </div>
+      <div className="text-center">
+        <p className="text-xs font-semibold text-foreground leading-tight">{label}</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">{sublabel}</p>
+      </div>
+    </div>
+  );
+}
+
+export default function HomeTab({ eventos }: HomeTabProps) {
+  const { profile } = useAuth();
+  const [showAll, setShowAll] = React.useState(false);
+
+  const activeEvents = eventos.filter(e => e.ativo !== false);
+  const archivedEvents = eventos.filter(e => e.ativo === false);
+  const displayedEvents = showAll ? eventos : eventos.slice(0, 6);
+  const hasMore = eventos.length > 6;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bom dia';
+    if (hour < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
+
+  const today = new Date();
+  const dayName = today.toLocaleDateString('pt-BR', { weekday: 'long' });
+  const dateStr = today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+
+  return (
+    <div className="space-y-6">
+      {/* ── Welcome Header ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h1 className="text-2xl font-bold text-foreground">
+          {getGreeting()}, {profile?.nome?.split(' ')[0] || 'Produtor'}!
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5 capitalize">{dayName}, {dateStr}</p>
+      </motion.div>
+
+      {/* ── Stats Row ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.05 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4"
+      >
+        {/* Stat card 1 — Total eventos */}
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-foreground leading-none">{eventos.length}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Total de eventos</p>
+          </div>
+        </div>
+
+        {/* Stat card 2 — Ativos */}
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-foreground leading-none">{activeEvents.length}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Ativos</p>
+          </div>
+        </div>
+
+        {/* Stat card 3 — Arquivados */}
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+            <Clock className="w-5 h-5 text-orange-400" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-foreground leading-none">{archivedEvents.length}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Arquivados</p>
+          </div>
+        </div>
+
+        {/* Stat card 4 — Plano */}
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
+            <Star className="w-5 h-5 text-violet-500" />
+          </div>
+          <div>
+            <p className="text-base font-bold text-foreground leading-none capitalize">{profile?.plano ?? 'Start'}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Plano atual</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Progress overview (shown when there are events) ── */}
+      {eventos.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="bg-card rounded-xl border border-border p-5 card-flat"
+        >
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">Visão geral</h2>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Seus eventos em números</p>
+            </div>
+            <TrendingUp className="w-4 h-4 text-primary" />
+          </div>
+          <div className="flex items-center justify-around gap-4 flex-wrap">
+            <ProgressRing
+              value={activeEvents.length}
+              max={eventos.length}
+              color="#1a7a45"
+              label="Eventos Ativos"
+              sublabel="do total"
+            />
+            <ProgressRing
+              value={Math.min(eventos.length, 3)}
+              max={3}
+              color="#8b5cf6"
+              label="Limite do Plano"
+              sublabel={`plano ${profile?.plano ?? 'start'}`}
+            />
+            <ProgressRing
+              value={eventos.filter(e => {
+                const d = new Date(e.data_inicio);
+                return d > new Date();
+              }).length}
+              max={eventos.length}
+              color="#f59e0b"
+              label="Futuros"
+              sublabel="aguardando"
+            />
+            <ProgressRing
+              value={eventos.filter(e => {
+                const d = new Date(e.data_fim || e.data_inicio);
+                return d < new Date();
+              }).length}
+              max={eventos.length}
+              color="#10b981"
+              label="Concluídos"
+              sublabel="realizados"
+            />
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── Events List ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-base font-semibold text-foreground">Meus Eventos</h2>
+            <p className="text-[11px] text-muted-foreground">{eventos.length} eventos cadastrados</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasMore && (
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+              >
+                {showAll ? 'Ver menos' : 'Ver todos'}
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
+            <Link to="/eventos/novo">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 px-3 text-xs font-semibold rounded-lg shadow-sm">
+                + Novo evento
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {eventos.length === 0 ? (
+          <div className="bg-card border border-dashed border-border rounded-xl py-20 text-center">
+            <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-7 h-7 text-muted-foreground" />
+            </div>
+            <h3 className="text-base font-semibold text-foreground mb-1">Nenhum evento ainda</h3>
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
+              Crie seu primeiro evento e comece a vender ingressos em minutos.
+            </p>
+            <Link to="/eventos/novo">
+              <Button className="bg-primary hover:bg-primary/90 text-white h-10 px-6 font-semibold rounded-lg shadow-sm">
+                Criar primeiro evento
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {displayedEvents.map((evento, index) => {
+              const dataInicio = new Date(evento.data_inicio);
+              const eventColor = evento.cor_tema || '#1a7a45';
+
+              return (
+                <motion.div
+                  key={evento.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
+                >
+                  <Link to={`/eventos/${evento.id}`}>
+                    <div className={cn(
+                      'group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer',
+                      evento.ativo === false && 'opacity-70 grayscale-[40%]',
+                    )}>
+                      {/* Color header strip */}
+                      <div className="h-2 w-full" style={{ backgroundColor: eventColor }} />
+
+                      {/* Card body */}
+                      <div className="p-4">
+                        {/* Top row: badge + status */}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+                            #{(evento.id || 'EV0').slice(0, 6).toUpperCase()}
+                          </span>
+                          <span className={cn(
+                            'text-[10px] font-semibold px-2 py-0.5 rounded-full',
+                            evento.ativo
+                              ? 'bg-emerald-50 text-emerald-600'
+                              : 'bg-muted text-muted-foreground',
+                          )}>
+                            {evento.ativo ? 'Ativo' : 'Arquivado'}
+                          </span>
+                        </div>
+
+                        {/* Event name */}
+                        <h3 className="font-semibold text-foreground text-sm leading-snug line-clamp-2 mb-3">
+                          {evento.nome}
+                        </h3>
+
+                        {/* Meta info */}
+                        <div className="space-y-1.5 mb-4">
+                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <Calendar className="w-3.5 h-3.5 shrink-0" />
+                            <span>
+                              {isNaN(dataInicio.getTime())
+                                ? 'Data a definir'
+                                : dataInicio.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <MapPin className="w-3.5 h-3.5 shrink-0" />
+                            <span className="line-clamp-1">{evento.local || 'Local não informado'}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <Users className="w-3.5 h-3.5 shrink-0" />
+                            <span>{evento.vagas_totais || 0} vagas</span>
+                          </div>
+                        </div>
+
+                        {/* CTA row */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border">
+                          <span className="text-[11px] font-semibold text-primary">Gerenciar</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-primary transition-transform group-hover:translate-x-0.5" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function cn(...classes: (string | undefined | false)[]) {
+  return classes.filter(Boolean).join(' ');
+}

@@ -1,0 +1,233 @@
+export type UserRole = 'admin' | 'user';
+export type PlanLevel = 'start' | 'essencial' | 'pro';
+
+export interface UserProfile {
+  uid: string;
+  nome: string;
+  email: string;
+  whatsapp?: string;
+  instituicao?: string;
+  cargo?: string;
+  bio?: string;
+  descricao?: string;
+  redes_social?: {
+    instagram?: string;
+  };
+  link_importante_1?: string;
+  link_importante_2?: string;
+  contato_email?: string;
+  site?: string;
+  telefone?: string;
+  imagem_url?: string;
+  plano: PlanLevel;
+  isDemo?: boolean;
+}
+
+export interface FormField {
+  id: string;
+  label: string;
+  tipo: 'text' | 'number' | 'email' | 'select' | 'checkbox';
+  obrigatorio: boolean;
+  opcoes?: string[]; // For select type
+}
+
+export interface PaymentMethodConfig {
+  ativo: boolean;
+  taxa: number;
+  tipo_taxa: 'fixo' | 'porcentagem';
+}
+
+export interface Evento {
+  id: string;
+  nome: string;
+  data_inicio: string;
+  data_fim: string;
+  local: string;
+  instituicao: string;
+  vagas_totais: number;
+  descricao?: string;
+  imagem_url?: string;
+  criado_por: string;
+  habilita_doacoes: boolean;
+  ativo: boolean;
+  cor_tema?: string;
+  
+  // New Settings
+  config_pagamento: {
+    pix: PaymentMethodConfig;
+    cartao_credito: PaymentMethodConfig & { parcelas_max: number };
+    boleto: PaymentMethodConfig;
+    parcelamento_limite_data: boolean; // Must be paid before event
+    installmentLogic: 'free' | 'limited';
+  };
+  
+  config_comunicacao: {
+    email_confirmacao: {
+      assunto: string;
+      corpo: string;
+      ativo: boolean;
+    };
+    lembrete_evento: {
+      dias_antes: number;
+      assunto: string;
+      corpo: string;
+      ativo: boolean;
+    };
+  };
+  
+  campos_customizados: FormField[];
+}
+
+export interface Ticket {
+  id: string;
+  eventoId: string;
+  nome: string;
+  tipo: 'pago' | 'gratuito' | 'doacao';
+  valor: number;
+  limite_vagas?: number;
+  data_limite: string;
+  permite_parcelamento: boolean;
+  metodos_pagamento: string[];
+}
+
+export interface Pessoa {
+  id: string;
+  nome: string;
+  idade: number;
+  genero?: 'masculino' | 'feminino';
+  cpf: string;
+  email: string;
+  telefone: string;
+  celula?: string;
+  nome_responsavel?: string;
+  telefone_responsavel?: string;
+}
+
+export interface Inscricao {
+  id: string;
+  pessoaId?: string; // Optional for public registrations without pre-existing person
+  nome?: string;
+  email?: string;
+  telefone?: string;
+  eventoId: string;
+  ticketId: string;
+  ticket_nome?: string;
+  status: 'pendente' | 'pagamento_iniciado' | 'pago' | 'ajuda_solicitada' | 'analise' | 'cancelada';
+  valor_total: number;
+  valor_pago: number;
+  forma_pagamento?: string;
+  precisa_ajuda: boolean;
+  validada_manual: boolean;
+  data_inscricao: string;
+}
+
+export interface Pagamento {
+  id: string;
+  inscricaoId: string;
+  eventoId: string;
+  valor: number;
+  status: 'pendente' | 'pago' | 'atrasado' | 'cancelado';
+  metodo: 'pix' | 'cartao' | 'credito_recorrencia' | 'boleto' | 'dinheiro' | 'transferencia';
+  data_vencimento: string;
+  data_pagamento?: string;
+  comprovante_url?: string;
+  isSignal?: boolean;
+  isDonation?: boolean;
+  doadorNome?: string;
+  destino?: string;
+  origem: 'manual' | 'automatico';
+}
+
+export interface FinancialTransaction {
+  id: string;
+  eventoId: string;
+  tipo: 'entrada' | 'saida';
+  categoria: string;
+  valor: number;
+  descricao: string;
+  data: string;
+}
+
+export interface Donation {
+  id: string;
+  eventoId: string;
+  valor: number;
+  valorLiquido: number;
+  taxaAdm: number;
+  formaPagamento: string;
+  dataPagamento: string;
+  inscritoId?: string;
+  doadorNome?: string;
+  destino: 'inscrito' | 'livre';
+  finalidade?: string;
+  data: string;
+  status: 'pendente' | 'aprovada' | 'cancelada';
+  valorRestante: number;
+}
+
+export interface AlocacaoDoacao {
+  id: string;
+  doacaoId: string;
+  inscritoId: string;
+  valor: number;
+  data: string;
+  eventoId: string;
+}
+
+export interface Quarto {
+  id: string;
+  eventoId: string;
+  nome: string;
+  numero: string;
+  vagas: number;
+  genero?: 'masculino' | 'feminino' | 'misto';
+  hospedes: string[]; // IDs of Inscricao or Pessoa
+  responsaveis: string[]; // IDs of Inscricao or Pessoa
+}
+
+export interface AppNotification {
+  id: string;
+  tipo: 'doacao_direcionada' | 'doacao_livre' | 'resumo_diario' | 'tarefa' | 'alerta';
+  titulo: string;
+  mensagem: string;
+  data: string;
+  lida: boolean;
+  acao_requirida?: boolean;
+  dados_acao?: any;
+  eventoId?: string;
+  userId: string;
+}
+
+export interface CampoFormulario {
+  id: string;
+  tipo: 'texto' | 'email' | 'telefone' | 'numero' | 'select' | 'data' | 'checkbox' | 'textarea';
+  label: string;
+  obrigatorio: boolean;
+  placeholder?: string;
+  opcoes?: string[]; // for select type
+}
+
+export interface PaginaVenda {
+  id: string;
+  eventoId: string;
+  nome: string;
+  slug: string;
+  ativa: boolean;
+  descricao?: string;
+  ticketIds: string[];
+  campos_formulario: CampoFormulario[];
+  criado_em: string;
+}
+
+export interface Task {
+  id: string;
+  eventoId: string;
+  titulo: string;
+  descricao: string;
+  categoria: string;
+  responsavel: string;
+  dataLimite: string;
+  status: 'pendente' | 'em_progresso' | 'concluida' | 'atrasada';
+  prioridade: 'baixa' | 'media' | 'alta';
+  dataCriacao: string;
+}

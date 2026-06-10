@@ -1,0 +1,206 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "whatsapp": { "type": "string" },
+        "instituicao": { "type": "string" },
+        "cargo": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "plano": { "type": "string", "enum": ["start", "essencial", "pro"] },
+        "isDemo": { "type": "boolean" }
+      },
+      "required": ["nome", "email", "plano"]
+    },
+    "Evento": {
+      "title": "Evento",
+      "description": "Event details",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "data_inicio": { "type": "string", "format": "date-time" },
+        "data_fim": { "type": "string", "format": "date-time" },
+        "local": { "type": "string" },
+        "instituicao": { "type": "string" },
+        "vagas_totais": { "type": "number" },
+        "imagem_url": { "type": "string" },
+        "criado_por": { "type": "string" },
+        "habilita_doacoes": { "type": "boolean" },
+        "ativo": { "type": "boolean" },
+        "cor_tema": { "type": "string" },
+        "config_pagamento": { "type": "object" },
+        "config_comunicacao": { "type": "object" },
+        "campos_customizados": { "type": "array" }
+      },
+      "required": ["nome", "data_inicio", "data_fim", "criado_por", "ativo"]
+    },
+    "Ticket": {
+      "title": "Ticket",
+      "description": "Event ticket categories",
+      "type": "object",
+      "properties": {
+        "eventoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["pago", "gratuito"] },
+        "valor": { "type": "number" },
+        "limite_vagas": { "type": "number" },
+        "data_limite": { "type": "string", "format": "date-time" },
+        "permite_parcelamento": { "type": "boolean" },
+        "metodos_pagamento": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["eventoId", "nome", "tipo"]
+    },
+    "Pessoa": {
+      "title": "Pessoa",
+      "description": "Attendee personal information",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "idade": { "type": "number" },
+        "cpf": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "telefone": { "type": "string" },
+        "celula": { "type": "string" },
+        "nome_responsavel": { "type": "string" },
+        "telefone_responsavel": { "type": "string" }
+      },
+      "required": ["nome", "email"]
+    },
+    "Inscricao": {
+      "title": "Inscricao",
+      "description": "Event registration",
+      "type": "object",
+      "properties": {
+        "pessoaId": { "type": "string" },
+        "eventoId": { "type": "string" },
+        "ticketId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pendente", "confirmada", "analise"] },
+        "valor_total": { "type": "number" },
+        "valor_pago": { "type": "number" },
+        "precisa_ajuda": { "type": "boolean" },
+        "validada_manual": { "type": "boolean" }
+      },
+      "required": ["pessoaId", "eventoId", "ticketId", "status"]
+    },
+    "Pagamento": {
+      "title": "Pagamento",
+      "description": "Payment record",
+      "type": "object",
+      "properties": {
+        "inscricaoId": { "type": "string" },
+        "eventoId": { "type": "string" },
+        "valor": { "type": "number" },
+        "status": { "type": "string", "enum": ["pendente", "pago", "atrasado"] },
+        "metodo": { "type": "string", "enum": ["pix", "cartao", "credito_recorrencia", "boleto"] },
+        "data_vencimento": { "type": "string", "format": "date-time" }
+      },
+      "required": ["inscricaoId", "eventoId", "valor", "status", "metodo"]
+    },
+    "FinancialTransaction": {
+      "title": "FinancialTransaction",
+      "description": "Internal financial management (entries/exits)",
+      "type": "object",
+      "properties": {
+        "eventoId": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["entrada", "saida"] },
+        "categoria": { "type": "string" },
+        "valor": { "type": "number" },
+        "descricao": { "type": "string" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventoId", "tipo", "valor", "data"]
+    },
+    "Donation": {
+      "title": "Donation",
+      "description": "Event donations",
+      "type": "object",
+      "properties": {
+        "eventoId": { "type": "string" },
+        "valor": { "type": "number" },
+        "inscritoId": { "type": "string" },
+        "doadorNome": { "type": "string" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventoId", "valor", "data"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "System and user notifications",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "tipo": { "type": "string" },
+        "titulo": { "type": "string" },
+        "mensagem": { "type": "string" },
+        "data": { "type": "string", "format": "date-time" },
+        "lida": { "type": "boolean" },
+        "acao_requirida": { "type": "boolean" }
+      },
+      "required": ["userId", "tipo", "titulo", "mensagem", "data", "lida"]
+    },
+    "Quarto": {
+      "title": "Quarto",
+      "description": "Room/Accommodation details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "eventoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "numero": { "type": "string" },
+        "vagas": { "type": "number" },
+        "genero": { "type": "string", "enum": ["masculino", "feminino", "misto"] },
+        "hospedes": { "type": "array", "items": { "type": "string" } },
+        "responsaveis": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "eventoId", "nome", "vagas"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Event management tasks",
+      "type": "object",
+      "properties": {
+        "eventoId": { "type": "string" },
+        "titulo": { "type": "string" },
+        "descricao": { "type": "string" },
+        "categoria": { "type": "string" },
+        "responsavel": { "type": "string" },
+        "dataLimite": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pendente", "em_progresso", "concluida", "atrasada"] },
+        "prioridade": { "type": "string", "enum": ["baixa", "media", "alta"] },
+        "dataCriacao": { "type": "string", "format": "date-time" }
+      },
+      "required": ["eventoId", "titulo", "status", "prioridade"]
+    },
+    "AlocacaoDoacao": {
+      "title": "AlocacaoDoacao",
+      "description": "Allocation of donations to specific registrations",
+      "type": "object",
+      "properties": {
+        "doacaoId": { "type": "string" },
+        "inscritoId": { "type": "string" },
+        "valor": { "type": "number" },
+        "data": { "type": "string", "format": "date-time" },
+        "eventoId": { "type": "string" }
+      },
+      "required": ["doacaoId", "inscritoId", "valor", "eventoId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/notificacoes/{notificationId}": { "schema": "AppNotification", "description": "User notifications" },
+    "/eventos/{eventoId}": { "schema": "Evento", "description": "Events" },
+    "/eventos/{eventoId}/tickets/{ticketId}": { "schema": "Ticket", "description": "Tickets for an event" },
+    "/eventos/{eventoId}/inscricoes/{inscricaoId}": { "schema": "Inscricao", "description": "Registrations for an event" },
+    "/eventos/{eventoId}/pessoas/{pessoaId}": { "schema": "Pessoa", "description": "People registered for an event" },
+    "/eventos/{eventoId}/pagamentos/{pagamentoId}": { "schema": "Pagamento", "description": "Payments for an event" },
+    "/eventos/{eventoId}/transacoes/{transacaoId}": { "schema": "FinancialTransaction", "description": "Financial transactions for an event" },
+    "/eventos/{eventoId}/doacoes/{doacaoId}": { "schema": "Donation", "description": "Donations for an event" },
+    "/eventos/{eventoId}/quartos/{quartoId}": { "schema": "Quarto", "description": "Rooms for an event" },
+    "/eventos/{eventoId}/tarefas/{taskId}": { "schema": "Task", "description": "Tasks for an event" },
+    "/eventos/{eventoId}/alocacoes_doacoes/{alocacaoId}": { "schema": "AlocacaoDoacao", "description": "Allocation of donations" }
+  }
+}
