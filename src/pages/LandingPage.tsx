@@ -51,7 +51,7 @@ const FEATURES = [
 const PLANS = [
   {
     id: 'start',
-    name: 'Plano A',
+    name: 'Start',
     subtitle: 'Inscrições',
     description: 'Para eventos simples com foco em inscrições e participantes.',
     modules: ['Ingressos gratuitos', 'Páginas de venda', 'Gestão de participantes', 'Relatórios'],
@@ -59,18 +59,18 @@ const PLANS = [
   },
   {
     id: 'essencial',
-    name: 'Plano B',
+    name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
     description: 'Para quem precisa cobrar ingressos e controlar o financeiro.',
-    modules: ['Tudo do Plano A', 'Ingressos pagos', 'Pagamentos e doações', 'Configuração financeira'],
+    modules: ['Tudo do Start', 'Ingressos pagos', 'Pagamentos e doações', 'Configuração financeira'],
     highlight: true,
   },
   {
     id: 'pro',
-    name: 'Plano C',
+    name: 'Pro',
     subtitle: 'Completo',
     description: 'Para eventos complexos com equipe, hospedagem e tarefas.',
-    modules: ['Tudo do Plano B', 'Recursos e grupos', 'Gestão de tarefas', 'Equipe e responsáveis'],
+    modules: ['Tudo do Essencial', 'Recursos e grupos', 'Gestão de tarefas', 'Equipe e responsáveis'],
     highlight: false,
   },
 ];

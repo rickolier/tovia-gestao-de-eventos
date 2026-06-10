@@ -24,9 +24,8 @@ export interface PlanConfig {
 }
 
 export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
-  // Plano A — apenas Inscrições
   start: {
-    name: 'Plano A',
+    name: 'Start',
     label: 'Inscrições',
     description: 'Crie eventos e gerencie inscrições e participantes.',
     maxActiveEvents: 3,
@@ -43,11 +42,10 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       reports: true,
     },
   },
-  // Plano B — Inscrições + Financeiro
   essencial: {
-    name: 'Plano B',
+    name: 'Essencial',
     label: 'Inscrições + Financeiro',
-    description: 'Tudo do Plano A mais controle financeiro, pagamentos e doações.',
+    description: 'Tudo do Start mais controle financeiro, pagamentos e doações.',
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
@@ -62,9 +60,8 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       reports: true,
     },
   },
-  // Plano C — Inscrições + Financeiro + Gestão do Evento
   pro: {
-    name: 'Plano C',
+    name: 'Pro',
     label: 'Inscrições + Financeiro + Gestão',
     description: 'Acesso completo: inscrições, financeiro, recursos, grupos e tarefas.',
     maxActiveEvents: 9999,
