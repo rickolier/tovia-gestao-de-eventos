@@ -67,13 +67,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
                   {evento.local}
                 </div>
               </div>
-              <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Instituição</p>
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <Building className="w-4 h-4 text-primary" />
-                  {evento.instituicao || 'Não informada'}
-                </div>
-              </div>
+
               <div className="p-4 bg-muted rounded-xl transition-colors">
                 <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Capacidade</p>
                 <div className="flex items-center gap-2 text-foreground font-bold">
