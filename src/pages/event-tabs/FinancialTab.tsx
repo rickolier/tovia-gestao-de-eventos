@@ -82,13 +82,28 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     fetchData();
   }, [eventoId]);
 
+  const ALLOWED_RECEIPT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+  const MAX_RECEIPT_SIZE = 5 * 1024 * 1024; // 5MB
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
+    if (!ALLOWED_RECEIPT_TYPES.includes(file.type)) {
+      toast.error('Formato inválido. Use JPEG, PNG, WebP ou PDF.');
+      e.target.value = '';
+      return;
+    }
+    if (file.size > MAX_RECEIPT_SIZE) {
+      toast.error('Arquivo muito grande. Máximo permitido: 5MB.');
+      e.target.value = '';
+      return;
+    }
+
     setUploadingReceipt(true);
     try {
-      const fileRef = ref(storage, `eventos/${eventoId}/comprovantes/${uuidv4()}_${file.name}`);
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
+      const fileRef = ref(storage, `eventos/${eventoId}/comprovantes/${uuidv4()}.${ext}`);
       await uploadBytes(fileRef, file);
       const url = await getDownloadURL(fileRef);
       setFormData(prev => ({ ...prev, comprovante_url: url }));

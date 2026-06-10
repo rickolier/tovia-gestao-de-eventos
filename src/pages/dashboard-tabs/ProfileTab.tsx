@@ -26,17 +26,30 @@ export default function ProfileTab() {
     imagem_url: profile?.imagem_url || ''
   });
 
+  const isValidUrl = (url: string) => {
+    if (!url) return true;
+    try {
+      const p = new URL(url);
+      return p.protocol === 'http:' || p.protocol === 'https:';
+    } catch { return false; }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    
+
+    if (!isValidUrl(formData.site)) { toast.error('URL do website inválida. Use http:// ou https://'); return; }
+    if (!isValidUrl(formData.link_importante_1)) { toast.error('Link Importante 1 inválido. Use http:// ou https://'); return; }
+    if (!isValidUrl(formData.link_importante_2)) { toast.error('Link Importante 2 inválido. Use http:// ou https://'); return; }
+    if (!isValidUrl(formData.imagem_url)) { toast.error('URL da imagem inválida. Use http:// ou https://'); return; }
+
     setLoading(true);
     try {
+      const { instagram, ...rest } = formData;
       await updateDocument('users', user.uid, {
-        ...formData,
-        redes_social: {
-          instagram: formData.instagram
-        }
+        ...rest,
+        redes_social: { instagram },
+        updatedAt: new Date().toISOString(),
       });
       toast.success('Perfil atualizado com sucesso!');
     } catch (error) {

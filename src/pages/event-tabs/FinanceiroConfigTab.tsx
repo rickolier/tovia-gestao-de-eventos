@@ -4,49 +4,52 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, Coins, TrendingDown, Percent, FileText } from 'lucide-react';
 import { updateDocument } from '../../lib/firebase-utils';
 import { Evento } from '../../types';
 import { toast } from 'sonner';
 
 export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Evento; onUpdate?: () => void }) {
+  const ev = evento as any;
   const [calcData, setCalcData] = useState({
-    valorTicket: (evento as any).valor_ticket_projeccao || 0,
-    taxaPix: evento?.config_pagamento?.pix?.taxa || 0,
-    tipoTaxaPix: evento?.config_pagamento?.pix?.tipo_taxa || 'porcentagem',
-    taxaCartao: evento?.config_pagamento?.cartao_credito?.taxa || 0,
-    tipoTaxaCartao: evento?.config_pagamento?.cartao_credito?.tipo_taxa || 'porcentagem',
-    taxaBoleto: evento?.config_pagamento?.boleto?.taxa || 0,
-    tipoTaxaBoleto: evento?.config_pagamento?.boleto?.tipo_taxa || 'porcentagem',
-    custoInscrito: (evento as any).custo_estimado_por_pessoa || 0,
+    valorTicket: ev.valor_ticket_projeccao || 0,
+    taxaPix:      evento?.config_pagamento?.pix?.taxa || 0,
+    taxaDebito:   ev.config_pagamento?.debito?.taxa ?? 1.99,
+    taxaCartao:   evento?.config_pagamento?.cartao_credito?.taxa || 0,
+    taxaCorrente: ev.config_pagamento?.corrente?.taxa ?? 4.99,
+    taxaBoleto:   ev.config_pagamento?.boleto?.taxa ?? 3.50,
+    custoInscrito: ev.custo_estimado_por_pessoa || 0,
     installmentLogic: evento?.config_pagamento?.installmentLogic || 'free',
   });
 
   useEffect(() => {
+    const ev2 = evento as any;
     setCalcData({
-      valorTicket: (evento as any).valor_ticket_projeccao || 0,
-      taxaPix: evento?.config_pagamento?.pix?.taxa || 0,
-      tipoTaxaPix: evento?.config_pagamento?.pix?.tipo_taxa || 'porcentagem',
-      taxaCartao: evento?.config_pagamento?.cartao_credito?.taxa || 0,
-      tipoTaxaCartao: evento?.config_pagamento?.cartao_credito?.tipo_taxa || 'porcentagem',
-      taxaBoleto: evento?.config_pagamento?.boleto?.taxa || 0,
-      tipoTaxaBoleto: evento?.config_pagamento?.boleto?.tipo_taxa || 'porcentagem',
-      custoInscrito: (evento as any).custo_estimado_por_pessoa || 0,
+      valorTicket: ev2.valor_ticket_projeccao || 0,
+      taxaPix:      evento?.config_pagamento?.pix?.taxa || 0,
+      taxaDebito:   ev2.config_pagamento?.debito?.taxa ?? 1.99,
+      taxaCartao:   evento?.config_pagamento?.cartao_credito?.taxa || 0,
+      taxaCorrente: ev2.config_pagamento?.corrente?.taxa ?? 4.99,
+      taxaBoleto:   ev2.config_pagamento?.boleto?.taxa ?? 3.50,
+      custoInscrito: ev2.custo_estimado_por_pessoa || 0,
       installmentLogic: evento?.config_pagamento?.installmentLogic || 'free',
     });
   }, [evento.id, JSON.stringify(evento.config_pagamento)]);
 
-  const calc = (taxa: number, tipo: 'fixo' | 'porcentagem') => {
-    const valorTaxa = tipo === 'porcentagem' ? (calcData.valorTicket * taxa) / 100 : taxa;
-    const valorRecebido = calcData.valorTicket - valorTaxa;
-    const margem = valorRecebido - calcData.custoInscrito;
-    return { valorTaxa, valorRecebido, margem };
+  // valorTicket = base price (cost + margin, before fee)
+  // suggestedPrice = what participant pays = base / (1 - fee%)
+  const calc = (taxa: number) => {
+    const suggestedPrice = taxa >= 100 ? 0 : calcData.valorTicket / (1 - taxa / 100);
+    const valorTaxa = suggestedPrice - calcData.valorTicket;
+    const margem = calcData.valorTicket - calcData.custoInscrito;
+    return { suggestedPrice, valorTaxa, margem };
   };
 
-  const resultsPix    = calc(calcData.taxaPix,    calcData.tipoTaxaPix    as any);
-  const resultsCartao = calc(calcData.taxaCartao, calcData.tipoTaxaCartao as any);
-  const resultsBoleto = calc(calcData.taxaBoleto, calcData.tipoTaxaBoleto as any);
+  const resultsPix      = calc(calcData.taxaPix);
+  const resultsDebito   = calc(calcData.taxaDebito);
+  const resultsCartao   = calc(calcData.taxaCartao);
+  const resultsCorrente = calc(calcData.taxaCorrente);
+  const resultsBoleto   = calc(calcData.taxaBoleto);
 
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
@@ -55,9 +58,11 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
       await updateDocument('eventos', evento.id, {
         config_pagamento: {
           ...evento.config_pagamento,
-          pix:           { ...evento.config_pagamento?.pix,           taxa: calcData.taxaPix,    tipo_taxa: calcData.tipoTaxaPix },
-          cartao_credito:{ ...evento.config_pagamento?.cartao_credito, taxa: calcData.taxaCartao, tipo_taxa: calcData.tipoTaxaCartao },
-          boleto:        { ...evento.config_pagamento?.boleto,         taxa: calcData.taxaBoleto, tipo_taxa: calcData.tipoTaxaBoleto },
+          pix:            { ...evento.config_pagamento?.pix,            taxa: calcData.taxaPix,      tipo_taxa: 'porcentagem' },
+          debito:         { ativo: true,                                 taxa: calcData.taxaDebito,   tipo_taxa: 'porcentagem' },
+          cartao_credito: { ...evento.config_pagamento?.cartao_credito,  taxa: calcData.taxaCartao,  tipo_taxa: 'porcentagem' },
+          corrente:       { ativo: true,                                 taxa: calcData.taxaCorrente, tipo_taxa: 'porcentagem' },
+          boleto:         { ativo: true,                                 taxa: calcData.taxaBoleto,   tipo_taxa: 'porcentagem' },
           installmentLogic: calcData.installmentLogic,
         },
         valor_ticket_projeccao: calcData.valorTicket,
@@ -89,7 +94,7 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
             <div className="space-y-8">
               <div className="space-y-3">
                 <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                  <Coins className="w-3 h-3 text-primary" /> Valor do Ingresso Unitário (R$)
+                  <Coins className="w-3 h-3 text-primary" /> Valor Base do Ingresso — Custo + Margem (R$)
                 </Label>
                 <Input
                   type="number"
@@ -125,29 +130,21 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
               </h4>
 
               {[
-                { label: 'Taxa PIX',                taxa: 'taxaPix',    tipo: 'tipoTaxaPix'    },
-                { label: 'Taxa Cartão de Crédito',  taxa: 'taxaCartao', tipo: 'tipoTaxaCartao' },
-                { label: 'Custo de Emissão Boleto', taxa: 'taxaBoleto', tipo: 'tipoTaxaBoleto' },
-              ].map(({ label, taxa, tipo }) => (
-                <div key={taxa} className="space-y-2">
+                { label: 'Taxa PIX (%)',             key: 'taxaPix'      },
+                { label: 'Taxa Débito (%)',           key: 'taxaDebito'   },
+                { label: 'Taxa Cartão de Crédito (%)',key: 'taxaCartao'   },
+                { label: 'Taxa Corrente (%)',         key: 'taxaCorrente' },
+                { label: 'Taxa Boleto (%)',           key: 'taxaBoleto'   },
+              ].map(({ label, key }) => (
+                <div key={key} className="space-y-2">
                   <Label className="text-[11px] font-black uppercase tracking-widest px-1">{label}</Label>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      type="number"
-                      value={(calcData as any)[taxa]}
-                      onChange={e => setCalcData(p => ({ ...p, [taxa]: Number(e.target.value) }))}
-                      className="h-12 font-bold rounded-xl border-none bg-card shadow-sm"
-                    />
-                    <Select value={(calcData as any)[tipo]} onValueChange={v => setCalcData(p => ({ ...p, [tipo]: v }))}>
-                      <SelectTrigger className="h-12 w-32 rounded-xl font-bold border-none bg-card shadow-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-none shadow-2xl">
-                        <SelectItem value="porcentagem">% Porcentagem</SelectItem>
-                        <SelectItem value="fixo">$ Valor Fixo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={(calcData as any)[key]}
+                    onChange={e => setCalcData(p => ({ ...p, [key]: Number(e.target.value) }))}
+                    className="h-12 font-bold rounded-xl border-none bg-card shadow-sm"
+                  />
                 </div>
               ))}
 
@@ -183,22 +180,25 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
           </div>
 
           {/* Results */}
-          <div className="pt-6 border-t border-border/30 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="pt-6 border-t border-border/30 grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { label: 'PIX GATEWAY',    result: resultsPix,    color: 'primary' },
-              { label: 'CARTÃO CRÉDITO', result: resultsCartao, color: 'primary' },
-              { label: 'BOLETO BANCÁRIO',result: resultsBoleto, color: 'amber'   },
-            ].map(({ label, result, color }) => (
-              <Card key={label} className={`rounded-[2rem] border overflow-hidden group hover:shadow-xl transition-all ${color === 'amber' ? 'bg-amber-50/50 border-amber-100' : 'bg-primary/5 border-primary/10'}`}>
-                <div className="p-8 text-center space-y-4">
-                  <Badge className={`font-black px-4 py-1.5 rounded-full ${color === 'amber' ? 'bg-amber-600' : 'bg-primary'} text-white`}>{label}</Badge>
+              { label: 'PIX',     result: resultsPix      },
+              { label: 'DÉBITO',  result: resultsDebito   },
+              { label: 'CRÉDITO', result: resultsCartao   },
+              { label: 'CORRENTE',result: resultsCorrente },
+              { label: 'BOLETO',  result: resultsBoleto   },
+            ].map(({ label, result }) => (
+              <Card key={label} className="rounded-[2rem] border bg-primary/5 border-primary/10 overflow-hidden group hover:shadow-xl transition-all">
+                <div className="p-6 text-center space-y-3">
+                  <Badge className="font-black px-3 py-1 rounded-full bg-primary text-white text-[10px]">{label}</Badge>
                   <div>
-                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${color === 'amber' ? 'text-amber-600' : 'text-primary'}`}>Valor Líquido</p>
-                    <p className="text-2xl font-black text-foreground">{fmt(result.valorRecebido)}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-muted-foreground">Cobrar do participante</p>
+                    <p className="text-xl font-black text-foreground">{fmt(result.suggestedPrice)}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">taxa: {fmt(result.valorTaxa)}</p>
                   </div>
-                  <div className={`p-4 rounded-2xl border group-hover:bg-primary group-hover:text-white transition-all ${color === 'amber' ? 'bg-white border-amber-100' : 'bg-white border-primary/10'}`}>
-                    <p className="text-[10px] uppercase font-black tracking-widest mb-1 group-hover:text-white/70">Lucro Bruto Un.</p>
-                    <p className={`text-xl font-black group-hover:text-white transition-colors ${result.margem >= 0 ? (color === 'amber' ? 'text-amber-700' : 'text-primary') : 'text-red-500'}`}>
+                  <div className="p-3 rounded-2xl border bg-white border-primary/10 group-hover:bg-primary transition-all">
+                    <p className="text-[10px] uppercase font-black tracking-widest mb-0.5 text-muted-foreground group-hover:text-white/70">Sua margem</p>
+                    <p className={`text-lg font-black transition-colors group-hover:text-white ${result.margem >= 0 ? 'text-primary' : 'text-red-500'}`}>
                       {fmt(result.margem)}
                     </p>
                   </div>

@@ -107,12 +107,14 @@ service cloud.firestore {
       }
 
       match /inscricoes/{inscricaoId} {
+        // get: público para permitir participante consultar própria inscrição por ID
         allow get: if isValidId(inscricaoId);
         allow list: if isEventOwner(eventoId);
-        allow create: if isValidInscricao(incoming());
-        allow update: if (isEventOwner(eventoId) || (isSignedIn() && existing().get('userId', '') == request.auth.uid)) && (
-          isValidInscricao(incoming())
-        );
+        // create: público para páginas de venda, mas eventoId deve corresponder ao path
+        allow create: if isValidInscricao(incoming()) && incoming().eventoId == eventoId;
+        allow update: if (isEventOwner(eventoId) || (isSignedIn() && existing().get('userId', '') == request.auth.uid)) &&
+          isValidInscricao(incoming()) &&
+          incoming().eventoId == eventoId;
         allow delete: if isEventOwner(eventoId);
       }
 
@@ -123,7 +125,10 @@ service cloud.firestore {
 
       match /pagamentos/{pagamentoId} {
         allow read: if isEventOwner(eventoId);
-        allow create: if isValidId(incoming().inscricaoId) && exists(/databases/$(database)/documents/eventos/$(eventoId)/inscricoes/$(incoming().inscricaoId));
+        // create: apenas dono do evento pode registrar pagamentos manualmente
+        allow create: if isEventOwner(eventoId) &&
+          isValidId(incoming().inscricaoId) &&
+          exists(/databases/$(database)/documents/eventos/$(eventoId)/inscricoes/$(incoming().inscricaoId));
         allow update, delete: if isEventOwner(eventoId);
       }
 
@@ -133,8 +138,7 @@ service cloud.firestore {
 
       match /doacoes/{doacaoId} {
         allow read: if isEventOwner(eventoId);
-        allow create: if isSignedIn() && isValidId(eventoId);
-        allow update, delete: if isEventOwner(eventoId);
+        allow create, update, delete: if isEventOwner(eventoId);
       }
 
       match /quartos/{quartoId} {

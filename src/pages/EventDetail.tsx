@@ -137,15 +137,15 @@ export default function EventDetail() {
     {
       category: 'Inscrições',
       items: [
-        { value: 'registrations', label: 'Participantes', icon: Users, show: plan.modules.registrations },
-        { value: 'sales-pages',   label: 'Páginas',       icon: Globe, show: plan.modules.registrations },
+        { value: 'tickets',       label: 'Ingressos',     icon: TicketIcon,  show: plan.modules.registrations },
+        { value: 'sales-pages',   label: 'Páginas',       icon: Globe,       show: plan.modules.registrations },
+        { value: 'registrations', label: 'Participantes', icon: Users,       show: plan.modules.registrations },
       ],
     },
     {
       category: 'Financeiro',
       items: [
         { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: plan.modules.eventManagement },
-        { value: 'tickets',           label: 'Ingressos',     icon: TicketIcon, show: plan.modules.registrations },
         { value: 'financial',         label: 'Pagamentos',    icon: DollarSign, show: plan.modules.manualPayments },
         { value: 'donations',         label: 'Doações',       icon: Heart,      show: plan.modules.donations },
       ],

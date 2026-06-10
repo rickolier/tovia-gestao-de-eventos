@@ -3,10 +3,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Calculator, Users, CreditCard, DollarSign, Percent, TrendingUp, Info } from 'lucide-react';
+import { Calculator, Users, CreditCard, DollarSign, Percent, TrendingUp, Info, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CalculatorTab() {
+  const navigate = useNavigate();
   const [venueCostType, setVenueCostType] = useState<'total' | 'per_person'>('total');
   const [venueValue, setVenueValue] = useState<number>(0);
   const [minParticipants, setMinParticipants] = useState<number>(0);
@@ -368,6 +370,28 @@ export default function CalculatorTab() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* CTA */}
+      <div className="flex justify-center">
+        <Button
+          onClick={() => {
+            sessionStorage.setItem('ekko_calc_config', JSON.stringify({
+              pixFee,
+              creditFee,
+              debitFee,
+              recurringFee,
+              maxParticipants,
+              minParticipants,
+              results,
+            }));
+            navigate('/eventos/novo');
+          }}
+          className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-10 font-black text-sm shadow-xl shadow-primary/20 transition-all active:scale-95 gap-3"
+        >
+          <Plus className="w-5 h-5" />
+          Criar evento com essas configurações
+        </Button>
       </div>
 
       {/* Disclaimer */}

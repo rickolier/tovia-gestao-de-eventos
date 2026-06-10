@@ -31,16 +31,7 @@ interface FirestoreErrorInfo {
   path: string | null;
   authInfo: {
     userId: string | undefined;
-    email: string | null | undefined;
-    emailVerified: boolean | undefined;
     isAnonymous: boolean | undefined;
-    tenantId: string | null | undefined;
-    providerInfo: {
-      providerId: string;
-      displayName: string | null;
-      email: string | null;
-      photoUrl: string | null;
-    }[];
   }
 }
 
@@ -49,20 +40,11 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
       userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
       isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData?.map(provider => ({
-        providerId: provider.providerId,
-        displayName: provider.displayName,
-        email: provider.email,
-        photoUrl: provider.photoURL
-      })) || []
     },
     operationType,
-    path
-  }
+    path,
+  };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
@@ -110,12 +92,9 @@ export const updateDocument = async <T extends DocumentData>(path: string, id: s
 
 export const removeDocument = async (path: string, id: string): Promise<void> => {
   try {
-    console.log(`[Firestore] Attempting to delete document: ${path}/${id}`);
     const docRef = doc(db, path, id);
     await deleteDoc(docRef);
-    console.log(`[Firestore] Successfully deleted document: ${path}/${id}`);
   } catch (error) {
-    console.error(`[Firestore] Error deleting document: ${path}/${id}`, error);
     handleFirestoreError(error, OperationType.DELETE, `${path}/${id}`);
   }
 };

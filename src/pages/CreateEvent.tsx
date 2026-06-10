@@ -29,6 +29,25 @@ export default function CreateEvent() {
 
   const plano = getPlanConfig(perfil?.plano);
 
+  const calcConfig = React.useMemo(() => {
+    try {
+      const raw = sessionStorage.getItem('ekko_calc_config');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      // Validate expected shape — reject if tampered
+      if (
+        typeof parsed !== 'object' || parsed === null ||
+        typeof parsed.pixFee !== 'number' ||
+        typeof parsed.creditFee !== 'number' ||
+        typeof parsed.debitFee !== 'number' ||
+        typeof parsed.recurringFee !== 'number' ||
+        typeof parsed.maxParticipants !== 'number' ||
+        typeof parsed.results !== 'object'
+      ) return null;
+      return parsed;
+    } catch { return null; }
+  }, []);
+
   const [dadosFormulario, setDadosFormulario] = useState({
     nome: '',
     data_inicio_data: '',
@@ -38,7 +57,7 @@ export default function CreateEvent() {
     local: '',
     instituicao: '',
     descricao: '',
-    vagas_totais: 0,
+    vagas_totais: calcConfig?.maxParticipants || 0,
     cor_tema: 'default',
     habilita_doacoes: false
   });
@@ -171,9 +190,11 @@ export default function CreateEvent() {
         criado_por: usuario.uid,
         ativo: true,
         config_pagamento: {
-          pix: { ativo: true, taxa: 0, tipo_taxa: 'porcentagem' },
-          cartao_credito: { ativo: true, taxa: 3.99, tipo_taxa: 'porcentagem', parcelas_max: 12 },
-          boleto: { ativo: false, taxa: 3.50, tipo_taxa: 'fixo' },
+          pix:            { ativo: true, taxa: calcConfig?.pixFee     ?? 0,    tipo_taxa: 'porcentagem' },
+          debito:         { ativo: true, taxa: calcConfig?.debitFee   ?? 1.99, tipo_taxa: 'porcentagem' },
+          cartao_credito: { ativo: true, taxa: calcConfig?.creditFee  ?? 3.99, tipo_taxa: 'porcentagem', parcelas_max: 12 },
+          corrente:       { ativo: true, taxa: calcConfig?.recurringFee ?? 4.99, tipo_taxa: 'porcentagem' },
+          boleto:         { ativo: false, taxa: 3.50, tipo_taxa: 'fixo' },
           parcelamento_limite_data: true,
           installmentLogic: 'free',
         },
@@ -191,12 +212,21 @@ export default function CreateEvent() {
           }
         },
         campos_customizados: [],
-        valor_ticket_projeccao: 0,
-        custo_estimado_por_pessoa: 0
+        valor_ticket_projeccao: calcConfig
+          ? ((calcConfig.results.costPerPersonMin + calcConfig.results.costPerPersonMax) / 2 || calcConfig.results.costPerPersonMax || calcConfig.results.costPerPersonMin) + calcConfig.results.marginAmountPerPerson
+          : 0,
+        custo_estimado_por_pessoa: calcConfig
+          ? (calcConfig.results.costPerPersonMin + calcConfig.results.costPerPersonMax) / 2 || calcConfig.results.costPerPersonMax || calcConfig.results.costPerPersonMin
+          : 0,
       };
 
       await createDocument('eventos', id, dadosEvento);
-      toast.success('Evento criado com sucesso!');
+      if (calcConfig) {
+        sessionStorage.removeItem('ekko_calc_config');
+        toast.success('Evento criado com as configurações da calculadora!');
+      } else {
+        toast.success('Evento criado com sucesso!');
+      }
       navegar(`/eventos/${id}`);
     } catch (erro: any) {
       console.error('Error creating event:', erro);
