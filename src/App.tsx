@@ -26,9 +26,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   if (!user) return <Navigate to="/login" replace />;
 
-  // Redirect to onboarding if user has no plan selected yet
-  if (profile && !profile.plano) return <Navigate to="/onboarding" replace />;
-
   return <>{children}</>;
 }
 

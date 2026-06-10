@@ -22,7 +22,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (isAuthReady && user) navigate('/dashboard');
+    if (isAuthReady && user) navigate('/onboarding');
   }, [user, isAuthReady, navigate]);
 
   const [isRegistering, setIsRegistering] = useState(false);
@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      navigate('/dashboard');
+      navigate('/onboarding');
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }
@@ -53,7 +53,7 @@ export default function Login() {
         await signInWithEmailAndPassword(auth, email, password);
         toast.success('Bem-vindo de volta!');
       }
-      navigate('/dashboard');
+      navigate('/onboarding');
     } catch (error: any) {
       toast.error('Erro na autenticação: ' + error.message);
     } finally {
@@ -64,7 +64,7 @@ export default function Login() {
   const handleDemoLogin = async () => {
     try {
       await loginAsDemo();
-      navigate('/dashboard');
+      navigate('/onboarding');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao acessar demonstração');
     }
