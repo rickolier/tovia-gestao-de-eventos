@@ -474,18 +474,6 @@ export default function CreateEvent() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 pt-2">
-                  <input 
-                    type="checkbox" 
-                    id="habilita_doacoes"
-                    checked={dadosFormulario.habilita_doacoes}
-                    onChange={e => setDadosFormulario({...dadosFormulario, habilita_doacoes: e.target.checked})}
-                    className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
-                  />
-                  <Label htmlFor="habilita_doacoes" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Habilitar Doações para este evento
-                  </Label>
-                </div>
               </div>
 
               <div className="pt-4">
