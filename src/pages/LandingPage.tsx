@@ -31,7 +31,7 @@ const FEATURES = [
   {
     icon: DollarSign,
     title: 'Controle Financeiro',
-    description: 'Registre pagamentos, gerencie doações e acompanhe o financeiro do seu evento com clareza.',
+    description: 'Registre manualmente pagamentos recebidos e doações, acompanhe o financeiro do evento com clareza. Não realizamos cobranças.',
     color: 'bg-orange-50 text-orange-600',
   },
   {
@@ -61,8 +61,8 @@ const PLANS = [
     id: 'essencial',
     name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
-    description: 'Para quem precisa cobrar ingressos e controlar o financeiro.',
-    modules: ['Tudo do Start', 'Ingressos pagos', 'Pagamentos e doações', 'Configuração financeira'],
+    description: 'Para quem precisa organizar o financeiro do evento — registre pagamentos recebidos, doações e acompanhe tudo com clareza.',
+    modules: ['Tudo do Start', 'Ingressos pagos', 'Registro de pagamentos e doações', 'Configuração financeira'],
     highlight: true,
   },
   {

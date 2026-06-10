@@ -45,7 +45,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
   essencial: {
     name: 'Essencial',
     label: 'Inscrições + Financeiro',
-    description: 'Tudo do Start mais controle financeiro, pagamentos e doações.',
+    description: 'Tudo do Start mais organização financeira: registre pagamentos recebidos, doações e acompanhe o fluxo do evento.',
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
