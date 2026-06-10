@@ -17,11 +17,9 @@ service cloud.firestore {
     function existing() { return resource.data; }
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
 
-    // Admin detection (verified email + hardcoded for initial setup)
     function isAdmin() {
-      return isSignedIn() && 
-             request.auth.token.email_verified == true &&
-             (request.auth.token.email == "olierprado@gmail.com" || 
+      return isSignedIn() &&
+             (request.auth.token.email == "olierprado@gmail.com" ||
               exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
@@ -64,7 +62,7 @@ service cloud.firestore {
     // ===============================================================
 
     match /users/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
+      allow get: if true; // perfis públicos — exibidos em páginas de venda
       allow create: if isOwner(userId) && isValidUser(incoming());
       allow update: if isOwner(userId) && isValidUser(incoming()) && (
         incoming().diff(existing()).affectedKeys().hasOnly([
