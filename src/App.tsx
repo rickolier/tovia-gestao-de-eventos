@@ -32,6 +32,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  // Admin nunca vai para onboarding
+  if (user.email === ADMIN_EMAIL) return <Navigate to="/admin" replace />;
+
   // Novo usuário sem plano → onboarding
   if (profile && !profile.plano) return <Navigate to="/onboarding" replace />;
 

@@ -22,8 +22,12 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const ADMIN_EMAIL = 'admin@ekko.app';
+
   React.useEffect(() => {
-    if (isAuthReady && user) navigate('/dashboard');
+    if (isAuthReady && user) {
+      navigate(user.email === ADMIN_EMAIL ? '/admin' : '/dashboard');
+    }
   }, [user, isAuthReady, navigate]);
 
   const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
@@ -52,9 +56,9 @@ export default function Login() {
         toast.success('Conta criada com sucesso!');
         navigate('/onboarding');
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        const cred = await signInWithEmailAndPassword(auth, email, password);
         toast.success('Bem-vindo de volta!');
-        navigate('/dashboard');
+        navigate(cred.user.email === 'admin@ekko.app' ? '/admin' : '/dashboard');
       }
     } catch (error: any) {
       toast.error('Erro na autenticação: ' + error.message);
