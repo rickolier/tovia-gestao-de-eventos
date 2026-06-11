@@ -73,8 +73,10 @@ export default function BillingTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.uid }),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error);
+      const text = await res.text();
+      if (!text) throw new Error(`Servidor retornou resposta vazia (${res.status}).`);
+      const json = JSON.parse(text);
+      if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
       setData(json);
     } catch (e: any) {
       setError(e.message || 'Erro ao carregar dados.');
