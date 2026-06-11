@@ -125,7 +125,7 @@ export default function EventDetail() {
   ].filter(t => t.show);
 
   // Categorised sidebar structure
-  const sidebarSections = [
+  const sidebarSections: Array<{ category: string | null; items: Array<{ value: string; label: string; icon: React.ForwardRefExoticComponent<any>; show: boolean; badge?: number }> }> = [
     {
       category: null,
       items: [

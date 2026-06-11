@@ -44,7 +44,7 @@ interface Props {
   onSuccess?: (inscricaoId: string) => void;
 }
 
-export default function SalesPageContent({ evento, pagina, tickets, eventoId, onSuccess }: Props) {
+const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, onSuccess }) => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [step, setStep] = useState<Step>('ticket');
   const [submitting, setSubmitting] = useState(false);
@@ -62,7 +62,7 @@ export default function SalesPageContent({ evento, pagina, tickets, eventoId, on
 
   const selectedTickets = tickets.filter(t => (quantities[t.id] || 0) > 0);
   const total = selectedTickets.reduce((s, t) => s + t.valor * (quantities[t.id] || 0), 0);
-  const totalQty = Object.values(quantities).reduce((a, b) => a + b, 0);
+  const totalQty: number = (Object.values(quantities) as number[]).reduce((a, b) => a + b, 0);
 
   const updateQty = (id: string, delta: number) =>
     setQuantities(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + delta) }));
@@ -410,14 +410,16 @@ export default function SalesPageContent({ evento, pagina, tickets, eventoId, on
       </footer>
     </div>
   );
-}
+};
+
+export default SalesPageContent;
 
 // ─── Form field renderer ──────────────────────────────────────────────────────
-function FormField({ campo, value, onChange }: {
+const FormField: React.FC<{
   campo: CampoFormulario;
   value: string | boolean | undefined;
   onChange: (v: string | boolean) => void;
-}) {
+}> = ({ campo, value, onChange }) => {
   const inputClass = "rounded-lg border border-gray-200 bg-white h-10 text-gray-900 focus:ring-primary focus:border-primary text-sm";
   return (
     <div className="space-y-1.5">
