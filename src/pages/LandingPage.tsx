@@ -53,24 +53,30 @@ const PLANS = [
     id: 'start',
     name: 'Start',
     subtitle: 'Inscrições',
+    price: 'Grátis',
+    limits: '1 evento · 200 vagas · 1 tipo de ingresso · 1 página de venda',
     description: 'Para eventos simples com foco em inscrições e participantes.',
-    modules: ['Ingressos gratuitos', 'Páginas de venda', 'Gestão de participantes', 'Relatórios'],
+    modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios'],
     highlight: false,
   },
   {
     id: 'essencial',
     name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
+    price: 'R$ 39,90/mês',
+    limits: '3 eventos · 500 vagas/evento · 3 ingressos · 3 páginas de venda',
     description: 'Para quem precisa organizar o financeiro do evento — registre pagamentos recebidos, doações e acompanhe tudo com clareza.',
-    modules: ['Tudo do Start', 'Ingressos pagos', 'Registro de pagamentos e doações', 'Configuração financeira'],
+    modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro de pagamentos e doações', 'Configuração de Taxas e Margens para gestão real'],
     highlight: true,
   },
   {
     id: 'pro',
     name: 'Pro',
     subtitle: 'Completo',
-    description: 'Para eventos complexos com equipe, hospedagem e tarefas.',
-    modules: ['Tudo do Essencial', 'Recursos e grupos', 'Gestão de tarefas', 'Equipe e responsáveis'],
+    price: 'R$ 99,00/mês',
+    limits: 'Eventos ilimitados · Inscrições ilimitadas · Páginas ilimitadas',
+    description: 'O plano para quem não quer preocupações!',
+    modules: ['Tudo do Essencial', 'Administre recursos, contratações e fornecedores', 'Gestão de Tarefas com equipe integrada', 'Distribua participantes em grupos, quartos, mesas'],
     highlight: false,
   },
 ];
@@ -560,19 +566,46 @@ export default function LandingPage() {
                     : 'border-border bg-white hover:border-primary/30 hover:shadow-md'
                 )}
               >
-                {plan.highlight && (
-                  <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full self-start mb-4">
-                    Mais popular
-                  </span>
-                )}
-                <div className="mb-6">
-                  <span className={cn('text-xs font-semibold uppercase tracking-widest', plan.highlight ? 'text-white/60' : 'text-primary')}>
+                {/* Preço em destaque no topo */}
+                <div className="mb-5">
+                  {plan.highlight && (
+                    <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-4">
+                      Mais popular
+                    </span>
+                  )}
+                  {plan.price ? (
+                    <div className="flex items-baseline gap-1 mb-1">
+                      {plan.id === 'start' ? (
+                        <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                          {plan.price}
+                        </span>
+                      ) : (
+                        <>
+                          <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                            {plan.price.replace('/mês', '')}
+                          </span>
+                          <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="h-3 mb-1" />
+                  )}
+                  <span className={cn('text-xs font-semibold uppercase tracking-widest', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
                     {plan.name}
                   </span>
-                  <h3 className={cn('text-xl font-black mt-1', plan.highlight ? 'text-white' : 'text-foreground')}>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className={cn('text-xl font-black', plan.highlight ? 'text-white' : 'text-foreground')}>
                     {plan.subtitle}
                   </h3>
-                  <p className={cn('text-sm mt-2', plan.highlight ? 'text-white/70' : 'text-muted-foreground')}>
+                  {plan.limits && (
+                    <p className={cn('text-[11px] font-medium rounded-lg px-3 py-1.5 mt-3 leading-relaxed', plan.highlight ? 'bg-white/10 text-white/70' : 'bg-gray-50 border border-border text-muted-foreground')}>
+                      {plan.limits}
+                    </p>
+                  )}
+                  <p className={cn('text-sm mt-3', plan.highlight ? 'text-white/70' : 'text-muted-foreground')}>
                     {plan.description}
                   </p>
                 </div>
