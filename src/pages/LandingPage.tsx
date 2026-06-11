@@ -317,10 +317,10 @@ export default function LandingPage() {
   const [billing, setBilling] = useState<'mensal' | 'anual'>('mensal');
 
   return (
-    <div className="min-h-screen bg-white font-sans text-foreground">
+    <div className="min-h-screen bg-white font-sans text-foreground pt-16">
 
       {/* ── Navbar ── */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-border">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -381,11 +381,6 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
           {/* Texto */}
           <div className="flex-1 max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-8">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-white/80 uppercase tracking-widest">Plataforma para igrejas</span>
-            </div>
-
             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
               Gestão de eventos para quem{' '}
               <span className="text-emerald-400">transforma vidas</span>
