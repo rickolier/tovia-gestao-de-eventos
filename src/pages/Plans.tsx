@@ -9,8 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { httpsCallable } from 'firebase/functions';
-import { functions } from '../firebase';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
 const MODULE_LABELS = ['Inscrições', 'Financeiro', 'Gestão do Evento'];
@@ -44,22 +42,25 @@ export default function Plans() {
         return;
       }
 
-      // Planos pagos: chama a Cloud Function para gerar o link de pagamento
-      const createCheckout = httpsCallable<
-        { planLevel: string; userId: string; userName: string; userEmail: string },
-        { paymentUrl?: string; free?: boolean }
-      >(functions, 'createCheckout');
-
-      const result = await createCheckout({
-        planLevel: selected,
-        userId: user.uid,
-        userName: user.displayName || '',
-        userEmail: user.email || '',
+      // Planos pagos: chama a API Vercel para gerar o link de pagamento
+      const response = await fetch('/api/createCheckout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planLevel: selected,
+          userId: user.uid,
+          userName: user.displayName || '',
+          userEmail: user.email || '',
+        }),
       });
 
-      if (result.data.paymentUrl) {
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
+
+      if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
-        window.open(result.data.paymentUrl, '_blank');
+        window.open(data.paymentUrl, '_blank');
         navigate('/planos/aguardando');
       }
     } catch (err: any) {
