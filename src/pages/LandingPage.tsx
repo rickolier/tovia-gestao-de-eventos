@@ -314,6 +314,7 @@ function FAQ() {
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [demoTab, setDemoTab] = useState('vendas');
+  const [billing, setBilling] = useState<'mensal' | 'anual'>('mensal');
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
@@ -692,12 +693,35 @@ export default function LandingPage() {
       {/* ── Planos ── */}
       <section id="planos" className="pt-12 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Planos</span>
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Escolha o plano ideal<br />para o seu evento
             </h2>
             <p className="text-muted-foreground mt-3 text-sm">Comece grátis e escale conforme sua necessidade.</p>
+
+            {/* Toggle Mensal / Anual */}
+            <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-8">
+              <button
+                onClick={() => setBilling('mensal')}
+                className={cn(
+                  'px-5 py-2 rounded-xl text-sm font-bold transition-all',
+                  billing === 'mensal' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                Mensal
+              </button>
+              <button
+                onClick={() => setBilling('anual')}
+                className={cn(
+                  'px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
+                  billing === 'anual' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                Anual
+                <span className="text-[10px] font-black bg-primary text-white px-2 py-0.5 rounded-full">2 meses grátis</span>
+              </button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -729,20 +753,54 @@ export default function LandingPage() {
                 </div>
 
                 {/* Preço */}
-                <div className="flex items-baseline gap-1 mb-4">
-                  {plan.id === 'start' ? (
+                {plan.id === 'start' ? (
+                  <div className="flex items-baseline gap-1 mb-4">
                     <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                      {plan.price}
+                      Grátis
                     </span>
-                  ) : (
-                    <>
+                  </div>
+                ) : billing === 'mensal' ? (
+                  <div className="mb-4">
+                    <div className="flex items-baseline gap-1">
                       <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                        {plan.price?.replace('/mês', '')}
+                        {plan.id === 'essencial' ? 'R$39,90' : 'R$99,00'}
                       </span>
                       <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
-                    </>
-                  )}
-                </div>
+                    </div>
+                    <p className={cn('text-xs mt-1', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
+                      Cartão de crédito recorrente
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mb-4">
+                    <div className="flex items-baseline gap-1">
+                      <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                        {plan.id === 'essencial' ? 'R$33,25' : 'R$82,50'}
+                      </span>
+                      <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
+                    </div>
+                    <p className={cn('text-xs line-through mt-0.5', plan.highlight ? 'text-white/40' : 'text-muted-foreground/60')}>
+                      {plan.id === 'essencial' ? 'R$478,80' : 'R$1.188,00'}/ano
+                    </p>
+                    <p className={cn('text-xs font-bold', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                      {plan.id === 'essencial' ? 'R$399,00' : 'R$990,00'}/ano
+                    </p>
+                    {/* Formas de pagamento anual */}
+                    <div className={cn('mt-3 rounded-xl p-3 space-y-1.5 text-xs', plan.highlight ? 'bg-white/10' : 'bg-muted/50')}>
+                      <p className={cn('font-bold text-[10px] uppercase tracking-widest mb-2', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>Formas de pagamento</p>
+                      {[
+                        'Cartão em 12x sem juros',
+                        'Pix à vista',
+                        'Boleto à vista',
+                      ].map(m => (
+                        <div key={m} className={cn('flex items-center gap-2', plan.highlight ? 'text-white/80' : 'text-foreground')}>
+                          <CheckCircle className={cn('w-3.5 h-3.5 shrink-0', plan.highlight ? 'text-emerald-300' : 'text-primary')} />
+                          {m}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Limites */}
                 {plan.limits && (
