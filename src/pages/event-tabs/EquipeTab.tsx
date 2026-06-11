@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { getDocument, updateDocument } from '../../lib/firebase-utils';
-import { Evento, EquipeMembro, EquipePermissao } from '../../types';
-import { listDocuments } from '../../lib/firebase-utils';
+import React, { useState } from 'react';
+import { updateDocument, listDocuments, createDocument } from '../../lib/firebase-utils';
+import { Evento, EquipeMembro, EquipePermissao, UserProfile, ConvitePendente } from '../../types';
 import { where } from 'firebase/firestore';
-import { UserProfile } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, Mail, Users, ShieldCheck } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Users, ShieldCheck, Clock, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../../lib/AuthContext';
 
 const PERMISSAO_LABELS: Record<EquipePermissao, string> = {
   registrations: 'Ver inscritos',
-  management: 'Editar recursos',
-  rooms: 'Editar grupos',
-  tasks: 'Editar tarefas',
+  management:    'Editar recursos',
+  rooms:         'Editar grupos',
+  tasks:         'Editar tarefas',
 };
+
+const DEFAULT_PERMS: EquipePermissao[] = ['registrations', 'management', 'rooms', 'tasks'];
 
 interface Props {
   evento: Evento;
@@ -23,9 +25,23 @@ interface Props {
 }
 
 export default function EquipeTab({ evento, onUpdate }: Props) {
+  const { profile } = useAuth();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pendingInvites, setPendingInvites] = useState<ConvitePendente[]>([]);
+  const [loadedPending, setLoadedPending] = useState(false);
+
   const equipe: EquipeMembro[] = evento.equipe || [];
+
+  const signupUrl = `${window.location.origin}/login?cadastro=true`;
+
+  // Carrega convites pendentes uma vez ao montar
+  React.useEffect(() => {
+    if (loadedPending) return;
+    listDocuments<ConvitePendente>('convites', [where('eventoId', '==', evento.id)])
+      .then(data => { setPendingInvites(data); setLoadedPending(true); })
+      .catch(() => setLoadedPending(true));
+  }, [evento.id]);
 
   const handleConvidar = async () => {
     const trimmed = email.trim().toLowerCase();
@@ -35,33 +51,49 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
       toast.error('Este usuário já está na equipe.');
       return;
     }
+    if (pendingInvites.some(c => c.email === trimmed)) {
+      toast.error('Já existe um convite pendente para este e-mail.');
+      return;
+    }
 
     setLoading(true);
     try {
-      // Buscar usuário pelo email
+      // Tentar encontrar usuário existente
       const usuarios = await listDocuments<UserProfile>('users', [where('email', '==', trimmed)]);
-      if (!usuarios.length) {
-        toast.error('Nenhum usuário encontrado com esse e-mail. Peça para ele criar uma conta no Ekko primeiro.');
-        setLoading(false);
-        return;
+
+      if (usuarios.length > 0) {
+        // Usuário já tem conta → adiciona direto
+        const usuario = usuarios[0];
+        const novoMembro: EquipeMembro = {
+          userId: usuario.uid,
+          email: trimmed,
+          nome: usuario.nome || trimmed,
+          permissoes: DEFAULT_PERMS,
+          adicionadoEm: new Date().toISOString(),
+        };
+        await updateDocument('eventos', evento.id, {
+          equipe: [...equipe, novoMembro],
+        });
+        toast.success(`${usuario.nome || trimmed} adicionado à equipe!`);
+        onUpdate();
+      } else {
+        // Usuário não tem conta → convite pendente
+        const conviteId = uuidv4();
+        const convite: ConvitePendente = {
+          id: conviteId,
+          email: trimmed,
+          eventoId: evento.id,
+          eventoNome: evento.nome,
+          donoNome: profile?.nome || 'Administrador',
+          permissoes: DEFAULT_PERMS,
+          criadoEm: new Date().toISOString(),
+        };
+        await createDocument('convites', conviteId, convite);
+        setPendingInvites(prev => [...prev, convite]);
+        toast.success(`Convite salvo! Compartilhe o link de cadastro com ${trimmed}.`);
       }
 
-      const usuario = usuarios[0];
-      const novoMembro: EquipeMembro = {
-        userId: usuario.uid,
-        email: trimmed,
-        nome: usuario.nome || trimmed,
-        permissoes: ['registrations', 'management', 'rooms', 'tasks'],
-        adicionadoEm: new Date().toISOString(),
-      };
-
-      await updateDocument('eventos', evento.id, {
-        equipe: [...equipe, novoMembro],
-      });
-
-      toast.success(`${usuario.nome || trimmed} adicionado à equipe!`);
       setEmail('');
-      onUpdate();
     } catch (err) {
       toast.error('Erro ao convidar usuário.');
     } finally {
@@ -76,6 +108,13 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
     onUpdate();
   };
 
+  const handleCancelarConvite = async (conviteId: string) => {
+    const { removeDocument } = await import('../../lib/firebase-utils');
+    await removeDocument('convites', conviteId);
+    setPendingInvites(prev => prev.filter(c => c.id !== conviteId));
+    toast.success('Convite cancelado.');
+  };
+
   const togglePermissao = async (userId: string, perm: EquipePermissao) => {
     const nova = equipe.map(m => {
       if (m.userId !== userId) return m;
@@ -87,6 +126,11 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
     });
     await updateDocument('eventos', evento.id, { equipe: nova });
     onUpdate();
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(signupUrl);
+    toast.success('Link copiado!');
   };
 
   return (
@@ -120,22 +164,70 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
             {loading ? 'Buscando...' : 'Convidar'}
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          O usuário precisa ter uma conta no Ekko. Qualquer plano é aceito.
-        </p>
+
+        {/* Link de cadastro para compartilhar */}
+        <div className="bg-muted/50 rounded-2xl p-4 space-y-2">
+          <p className="text-xs font-semibold text-muted-foreground">
+            Se o colaborador ainda não tem conta, compartilhe este link:
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-xs bg-background rounded-xl px-3 py-2 border border-border text-foreground truncate">
+              {signupUrl}
+            </code>
+            <button
+              onClick={copyLink}
+              className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              title="Copiar link"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            Após criar a conta com o mesmo e-mail do convite, ele será adicionado à equipe automaticamente.
+          </p>
+        </div>
       </div>
 
-      {/* Lista de membros */}
-      {equipe.length === 0 ? (
+      {/* Convites pendentes */}
+      {pendingInvites.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-2">
+            <Clock className="w-3.5 h-3.5" /> Aguardando cadastro
+          </h3>
+          {pendingInvites.map(convite => (
+            <div key={convite.id} className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                  <Mail className="w-4 h-4 text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground">{convite.email}</p>
+                  <p className="text-xs text-amber-600">Convite pendente — aguardando criação de conta</p>
+                </div>
+              </div>
+              <button
+                onClick={() => handleCancelarConvite(convite.id)}
+                className="text-amber-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50"
+                title="Cancelar convite"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Membros ativos */}
+      {equipe.length === 0 && pendingInvites.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border p-12 flex flex-col items-center gap-3 text-center">
           <Users className="w-10 h-10 text-muted-foreground/40" />
           <p className="text-sm font-semibold text-muted-foreground">Nenhum membro na equipe ainda</p>
           <p className="text-xs text-muted-foreground/60">Convide alguém pelo e-mail acima.</p>
         </div>
-      ) : (
+      ) : equipe.length > 0 && (
         <div className="space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground px-1">
-            {equipe.length} membro{equipe.length !== 1 ? 's' : ''}
+            {equipe.length} membro{equipe.length !== 1 ? 's' : ''} ativo{equipe.length !== 1 ? 's' : ''}
           </h3>
           {equipe.map(membro => (
             <div key={membro.userId} className="bg-card rounded-2xl border border-border p-5 space-y-4">
@@ -162,7 +254,6 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
                 </button>
               </div>
 
-              {/* Permissões */}
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" /> Permissões

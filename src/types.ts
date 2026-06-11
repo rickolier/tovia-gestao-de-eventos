@@ -42,6 +42,16 @@ export interface PaymentMethodConfig {
 
 export type EquipePermissao = 'registrations' | 'management' | 'rooms' | 'tasks';
 
+export interface ConvitePendente {
+  id: string;
+  email: string;
+  eventoId: string;
+  eventoNome: string;
+  donoNome: string;
+  permissoes: EquipePermissao[];
+  criadoEm: string;
+}
+
 export interface EquipeMembro {
   userId: string;
   email: string;

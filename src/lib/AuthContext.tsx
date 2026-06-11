@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '../firebase';
-import { getDocument, createDocument } from './firebase-utils';
-import { UserProfile, PlanLevel } from '../types';
+import { getDocument, createDocument, listDocuments, updateDocument, removeDocument } from './firebase-utils';
+import { UserProfile, PlanLevel, ConvitePendente, EquipeMembro, Evento } from '../types';
+import { where } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -101,6 +102,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               plano: isAdmin ? null : 'start',
             };
             await createDocument('users', firebaseUser.uid, userProfile);
+
+            // Processar convites pendentes para este e-mail
+            if (firebaseUser.email && !isAdmin) {
+              try {
+                const convites = await listDocuments<ConvitePendente>('convites', [
+                  where('email', '==', firebaseUser.email.toLowerCase()),
+                ]);
+                for (const convite of convites) {
+                  const evento = await getDocument<Evento>('eventos', convite.eventoId);
+                  if (evento) {
+                    const jaEMembro = (evento.equipe || []).some(m => m.userId === firebaseUser.uid);
+                    if (!jaEMembro) {
+                      const novoMembro: EquipeMembro = {
+                        userId: firebaseUser.uid,
+                        email: firebaseUser.email.toLowerCase(),
+                        nome: firebaseUser.displayName || firebaseUser.email,
+                        permissoes: convite.permissoes,
+                        adicionadoEm: new Date().toISOString(),
+                      };
+                      await updateDocument('eventos', convite.eventoId, {
+                        equipe: [...(evento.equipe || []), novoMembro],
+                      });
+                    }
+                  }
+                  await removeDocument('convites', convite.id);
+                }
+              } catch (e) {
+                console.warn('Erro ao processar convites pendentes:', e);
+              }
+            }
           }
           setProfile(userProfile);
         } else {
