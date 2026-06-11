@@ -315,15 +315,15 @@ export default function LandingPage() {
         <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
         <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] rounded-full bg-primary/20" />
 
-        <div className="max-w-6xl mx-auto relative">
-          <div className="max-w-2xl">
-            {/* Tag */}
+        <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
+          {/* Texto */}
+          <div className="flex-1 max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-8">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs font-semibold text-white/80 uppercase tracking-widest">Plataforma para igrejas</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
               Gestão de eventos para quem{' '}
               <span className="text-emerald-400">transforma vidas</span>
             </h1>
@@ -345,6 +345,64 @@ export default function LandingPage() {
               >
                 Ver funcionalidades <ChevronDown className="w-4 h-4" />
               </a>
+            </div>
+          </div>
+
+          {/* Hero visual — foto + circle + floating cards */}
+          <div className="hidden md:flex flex-1 justify-center items-end relative" style={{ minHeight: '420px' }}>
+            {/* Círculo de contraste */}
+            <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-emerald-400/20 border border-emerald-400/30" />
+            <div className="absolute bottom-6 right-10 w-64 h-64 rounded-full bg-white/5" />
+
+            {/* Foto dentro da elipse */}
+            <div
+              className="relative z-10 overflow-hidden border-4 border-white/10"
+              style={{
+                width: '420px',
+                height: '520px',
+                borderRadius: '50% 50% 50% 50% / 45% 45% 55% 55%',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
+              }}
+            >
+              <img
+                src="/foto-hero.jpg"
+                alt="Organizador de eventos"
+                className="w-full h-full object-cover"
+                style={{ objectPosition: 'center 20%', transform: 'scale(1.15)', transformOrigin: 'center 30%' }}
+              />
+            </div>
+
+            {/* Card flutuante — inscrições */}
+            <div className="absolute top-6 left-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Inscrições</p>
+                <p className="text-lg font-black text-foreground leading-none">142</p>
+              </div>
+            </div>
+
+            {/* Card flutuante — doações */}
+            <div className="absolute top-28 right-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
+              <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
+                <Heart className="w-4 h-4 text-violet-500" />
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Doações</p>
+                <p className="text-lg font-black text-foreground leading-none">R$ 4.320</p>
+              </div>
+            </div>
+
+            {/* Card flutuante — evento criado */}
+            <div className="absolute bottom-12 left-2 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                <CheckCircle className="w-4 h-4 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-foreground">Evento criado!</p>
+                <p className="text-[10px] text-muted-foreground">Em menos de 1 minuto</p>
+              </div>
             </div>
           </div>
         </div>
@@ -374,10 +432,14 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Visual */}
           <div className="relative">
-            <div className="w-full aspect-square max-w-md mx-auto bg-gradient-to-br from-[var(--sidebar)] to-primary rounded-[3rem] flex items-center justify-center relative overflow-hidden">
-              <div className="absolute top-8 right-8 w-24 h-24 rounded-2xl bg-white/10" />
-              <div className="absolute bottom-8 left-8 w-16 h-16 rounded-xl bg-white/10" />
-              <span className="text-8xl font-black text-white/20 select-none">ekko</span>
+            <div className="w-full aspect-square max-w-md mx-auto rounded-[3rem] overflow-hidden relative shadow-2xl">
+              <img
+                src="/foto-sobre.jpg"
+                alt="Organizador de eventos usando o Ekko"
+                className="w-full h-full object-cover object-center"
+              />
+              {/* Overlay sutil com a cor da marca */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--sidebar)]/40 to-transparent" />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-white border border-border rounded-2xl shadow-xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -566,50 +628,52 @@ export default function LandingPage() {
                     : 'border-border bg-white hover:border-primary/30 hover:shadow-md'
                 )}
               >
-                {/* Preço em destaque no topo */}
-                <div className="mb-5">
-                  {plan.highlight && (
-                    <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-4">
-                      Mais popular
-                    </span>
-                  )}
-                  {plan.price ? (
-                    <div className="flex items-baseline gap-1 mb-1">
-                      {plan.id === 'start' ? (
-                        <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                          {plan.price}
-                        </span>
-                      ) : (
-                        <>
-                          <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                            {plan.price.replace('/mês', '')}
-                          </span>
-                          <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="h-3 mb-1" />
-                  )}
+                {/* Badge mais popular */}
+                {plan.highlight && (
+                  <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-5">
+                    Mais popular
+                  </span>
+                )}
+
+                {/* Nome */}
+                <div className="mb-3">
                   <span className={cn('text-xs font-semibold uppercase tracking-widest', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
                     {plan.name}
                   </span>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className={cn('text-xl font-black', plan.highlight ? 'text-white' : 'text-foreground')}>
+                  <h3 className={cn('text-xl font-black mt-0.5', plan.highlight ? 'text-white' : 'text-foreground')}>
                     {plan.subtitle}
                   </h3>
-                  {plan.limits && (
-                    <p className={cn('text-[11px] font-medium rounded-lg px-3 py-1.5 mt-3 leading-relaxed', plan.highlight ? 'bg-white/10 text-white/70' : 'bg-gray-50 border border-border text-muted-foreground')}>
-                      {plan.limits}
-                    </p>
-                  )}
-                  <p className={cn('text-sm mt-3', plan.highlight ? 'text-white/70' : 'text-muted-foreground')}>
-                    {plan.description}
-                  </p>
                 </div>
 
+                {/* Preço */}
+                <div className="flex items-baseline gap-1 mb-4">
+                  {plan.id === 'start' ? (
+                    <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                      {plan.price}
+                    </span>
+                  ) : (
+                    <>
+                      <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
+                        {plan.price?.replace('/mês', '')}
+                      </span>
+                      <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Limites */}
+                {plan.limits && (
+                  <p className={cn('text-[11px] font-medium rounded-lg px-3 py-1.5 mb-5 leading-relaxed', plan.highlight ? 'bg-white/10 text-white/70' : 'bg-gray-50 border border-border text-muted-foreground')}>
+                    {plan.limits}
+                  </p>
+                )}
+
+                {/* Descrição */}
+                <p className={cn('text-sm mb-6', plan.highlight ? 'text-white/70' : 'text-muted-foreground')}>
+                  {plan.description}
+                </p>
+
+                {/* Módulos */}
                 <ul className="space-y-3 flex-1 mb-8">
                   {plan.modules.map((mod) => (
                     <li key={mod} className="flex items-center gap-3">
