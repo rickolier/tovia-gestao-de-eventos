@@ -153,9 +153,9 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       {/* ── Header ── */}
       <header className="bg-white border-b border-gray-100 px-6 py-3 sticky top-0 z-30 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          {/* Esquerda: feito com + tovia */}
-          <a href="/" className="flex flex-col items-center leading-none hover:opacity-80 transition-opacity">
-            <span className="text-[9px] font-light tracking-[0.2em] text-primary/60 uppercase">feito com</span>
+          {/* Esquerda: feito com tovia */}
+          <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
+            <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
             <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
           </a>
 
