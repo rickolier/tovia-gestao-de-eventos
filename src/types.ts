@@ -19,7 +19,10 @@ export interface UserProfile {
   site?: string;
   telefone?: string;
   imagem_url?: string;
-  plano: PlanLevel;
+  plano: PlanLevel | null;
+  planoPendente?: string | null;
+  asaasCustomerId?: string | null;
+  asaasSubscriptionId?: string | null;
   isDemo?: boolean;
 }
 

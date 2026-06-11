@@ -6,9 +6,11 @@ import { PlanLevel } from '../types';
 import { PLAN_CONFIGS } from '../lib/plan-limits';
 import Logo from '../components/Logo';
 import { Button } from '@/components/ui/button';
-import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react';
+import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../firebase';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
 const MODULE_LABELS = ['Inscrições', 'Financeiro', 'Gestão do Evento'];
@@ -34,11 +36,35 @@ export default function Plans() {
     if (!selected || !user || selected === currentPlan) return;
     setSaving(true);
     try {
-      await updateDocument('users', user.uid, { plano: selected });
-      toast.success('Plano atualizado com sucesso!');
-      navigate('/dashboard');
-    } catch {
-      toast.error('Erro ao salvar o plano. Tente novamente.');
+      // Plano gratuito: ativa direto sem pagamento
+      if (selected === 'start') {
+        await updateDocument('users', user.uid, { plano: 'start', asaasSubscriptionId: null, planoPendente: null });
+        toast.success('Plano Start ativado!');
+        navigate('/dashboard');
+        return;
+      }
+
+      // Planos pagos: chama a Cloud Function para gerar o link de pagamento
+      const createCheckout = httpsCallable<
+        { planLevel: string; userId: string; userName: string; userEmail: string },
+        { paymentUrl?: string; free?: boolean }
+      >(functions, 'createCheckout');
+
+      const result = await createCheckout({
+        planLevel: selected,
+        userId: user.uid,
+        userName: user.displayName || '',
+        userEmail: user.email || '',
+      });
+
+      if (result.data.paymentUrl) {
+        toast.success('Redirecionando para o pagamento...');
+        window.open(result.data.paymentUrl, '_blank');
+        navigate('/planos/aguardando');
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || 'Erro ao processar. Tente novamente.');
     } finally {
       setSaving(false);
     }
@@ -179,11 +205,13 @@ export default function Plans() {
             className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
           >
             {saving ? (
-              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Salvando...</>
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
             ) : selected === currentPlan ? (
               <><CheckCircle2 className="w-5 h-5 mr-2" /> Plano atual</>
+            ) : selected === 'start' ? (
+              <>Ativar gratuitamente</>
             ) : (
-              <>Confirmar plano</>
+              <><ExternalLink className="w-5 h-5 mr-2" /> Ir para o pagamento</>
             )}
           </Button>
           <p className="text-white/40 text-xs">Você pode alterar o plano a qualquer momento.</p>

@@ -8,6 +8,7 @@ import EventDetail from './pages/EventDetail';
 import EditEvent from './pages/EditEvent';
 import Onboarding from './pages/Onboarding';
 import Plans from './pages/Plans';
+import AguardandoPagamento from './pages/AguardandoPagamento';
 import LandingPage from './pages/LandingPage';
 import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
+            <Route path="/planos/aguardando" element={<PrivateRoute><AguardandoPagamento /></PrivateRoute>} />
             <Route
               path="/dashboard"
               element={
