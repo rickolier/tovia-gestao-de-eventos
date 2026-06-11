@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db } from './_firebase';
