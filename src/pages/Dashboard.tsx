@@ -48,14 +48,18 @@ export default function Dashboard() {
     if (user) {
       const fetchData = async () => {
         try {
-          const [eventosData, notifications] = await Promise.all([
+          const [eventosData, eventosConvidado, notifications] = await Promise.all([
             listDocuments<Evento>('eventos', [where('criado_por', '==', user.uid)]),
+            listDocuments<Evento>('eventos', [where('equipe', 'array-contains-any', [{ userId: user.uid }])]).catch(() => [] as Evento[]),
             listDocuments<AppNotification>('notificacoes', [
               where('userId', '==', user.uid),
               where('lida', '==', false),
             ]),
           ]);
-          setEventos(eventosData);
+          // Merge sem duplicatas (caso improvável de convidado no próprio evento)
+          const idsOwn = new Set(eventosData.map(e => e.id));
+          const convidados = eventosConvidado.filter(e => !idsOwn.has(e.id));
+          setEventos([...eventosData, ...convidados]);
           setUnreadCount(notifications.length);
           generateDailySummary(eventosData);
         } catch (error: any) {

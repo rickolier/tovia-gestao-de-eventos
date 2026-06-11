@@ -29,7 +29,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Globe,
-  Settings2
+  Settings2,
+  UserCog,
 } from 'lucide-react';
 import OverviewTab from './event-tabs/OverviewTab';
 import TicketsTab from './event-tabs/TicketsTab';
@@ -44,6 +45,7 @@ import TasksTab from './event-tabs/TasksTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
 import SalesPagesTab from './event-tabs/SalesPagesTab';
 import FinanceiroConfigTab from './event-tabs/FinanceiroConfigTab';
+import EquipeTab from './event-tabs/EquipeTab';
 import { toast } from 'sonner';
 import { getPlanConfig } from '../lib/plan-limits';
 
@@ -59,6 +61,12 @@ export default function EventDetail() {
   const navigate = useNavigate();
 
   const plan = getPlanConfig(profile?.plano);
+
+  // Roles — calculados assim que o evento carrega
+  const isOwner = !!user && !!evento && evento.criado_por === user.uid;
+  const guestEntry = user && evento ? (evento.equipe || []).find(m => m.userId === user.uid) : null;
+  const isGuest = !!guestEntry && !isOwner;
+  const guestPerms = guestEntry?.permissoes ?? [];
 
   const handleLogout = async () => {
     await logout();
@@ -108,20 +116,28 @@ export default function EventDetail() {
 
   if (!evento) return null;
 
+  // Para convidados, visibilidade baseada nas permissões concedidas
+  // Para donos, visibilidade baseada no plano como antes
+  const showTab = (key: 'registrations' | 'management' | 'rooms' | 'tasks', planFlag: boolean) => {
+    if (isGuest) return guestPerms.includes(key);
+    return planFlag;
+  };
+
   // Flat tab list — used by mobile bottom bar
   const allTabs = [
-    { value: 'overview',       label: 'Dashboard',    shortLabel: 'Início',    icon: LayoutDashboard, show: true },
-    { value: 'notifications',  label: 'Notificações', shortLabel: 'Notif.',    icon: Bell,            show: true,                            badge: unreadNotifications },
-    { value: 'tickets',        label: 'Ingressos',    shortLabel: 'Ingressos', icon: TicketIcon,      show: plan.modules.registrations },
-    { value: 'registrations',  label: 'Participantes',shortLabel: 'Pessoas',   icon: Users,           show: plan.modules.registrations },
-    { value: 'financial',      label: 'Pagamentos',   shortLabel: 'Pagam.',    icon: DollarSign,      show: plan.modules.manualPayments },
-    { value: 'donations',      label: 'Doações',      shortLabel: 'Doações',   icon: Heart,           show: plan.modules.donations },
-    { value: 'management',     label: 'Recursos',     shortLabel: 'Recursos',  icon: Wallet,          show: plan.modules.eventManagement },
-    { value: 'checkin',        label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: plan.modules.checkIn },
-    { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: plan.modules.tasksAndTeam },
-    { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: plan.modules.registrations },
-    { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: plan.modules.financeiroConfig },
-    { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: plan.modules.reports },
+    { value: 'overview',       label: 'Dashboard',    shortLabel: 'Início',    icon: LayoutDashboard, show: !isGuest },
+    { value: 'notifications',  label: 'Notificações', shortLabel: 'Notif.',    icon: Bell,            show: !isGuest, badge: unreadNotifications },
+    { value: 'tickets',        label: 'Ingressos',    shortLabel: 'Ingressos', icon: TicketIcon,      show: !isGuest && plan.modules.registrations },
+    { value: 'registrations',  label: 'Participantes',shortLabel: 'Pessoas',   icon: Users,           show: showTab('registrations', plan.modules.registrations) },
+    { value: 'financial',      label: 'Pagamentos',   shortLabel: 'Pagam.',    icon: DollarSign,      show: !isGuest && plan.modules.manualPayments },
+    { value: 'donations',      label: 'Doações',      shortLabel: 'Doações',   icon: Heart,           show: !isGuest && plan.modules.donations },
+    { value: 'management',     label: 'Recursos',     shortLabel: 'Recursos',  icon: Wallet,          show: showTab('management', plan.modules.eventManagement) },
+    { value: 'checkin',        label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.checkIn) },
+    { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: showTab('tasks', plan.modules.tasksAndTeam) },
+    { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
+    { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: !isGuest && plan.modules.financeiroConfig },
+    { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: !isGuest && plan.modules.reports },
+    { value: 'equipe',            label: 'Equipe',         shortLabel: 'Equipe',   icon: UserCog,    show: isOwner && plan.modules.tasksAndTeam },
   ].filter(t => t.show);
 
   // Categorised sidebar structure
@@ -129,33 +145,34 @@ export default function EventDetail() {
     {
       category: null,
       items: [
-        { value: 'overview',      label: 'Dashboard',    icon: LayoutDashboard, show: true },
-        { value: 'notifications', label: 'Notificações', icon: Bell,            show: true, badge: unreadNotifications },
-        { value: 'reports',       label: 'Relatórios',   icon: BarChart3,       show: plan.modules.reports },
+        { value: 'overview',      label: 'Dashboard',    icon: LayoutDashboard, show: !isGuest },
+        { value: 'notifications', label: 'Notificações', icon: Bell,            show: !isGuest, badge: unreadNotifications },
+        { value: 'reports',       label: 'Relatórios',   icon: BarChart3,       show: !isGuest && plan.modules.reports },
       ],
     },
     {
       category: 'Inscrições',
       items: [
-        { value: 'tickets',       label: 'Ingressos',     icon: TicketIcon,  show: plan.modules.registrations },
-        { value: 'sales-pages',   label: 'Páginas',       icon: Globe,       show: plan.modules.registrations },
-        { value: 'registrations', label: 'Participantes', icon: Users,       show: plan.modules.registrations },
+        { value: 'tickets',       label: 'Ingressos',     icon: TicketIcon,  show: !isGuest && plan.modules.registrations },
+        { value: 'sales-pages',   label: 'Páginas',       icon: Globe,       show: !isGuest && plan.modules.registrations },
+        { value: 'registrations', label: 'Participantes', icon: Users,       show: showTab('registrations', plan.modules.registrations) },
       ],
     },
     {
       category: 'Financeiro',
       items: [
-        { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: plan.modules.financeiroConfig },
-        { value: 'financial',         label: 'Pagamentos',    icon: DollarSign, show: plan.modules.manualPayments },
-        { value: 'donations',         label: 'Doações',       icon: Heart,      show: plan.modules.donations },
+        { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: !isGuest && plan.modules.financeiroConfig },
+        { value: 'financial',         label: 'Pagamentos',    icon: DollarSign, show: !isGuest && plan.modules.manualPayments },
+        { value: 'donations',         label: 'Doações',       icon: Heart,      show: !isGuest && plan.modules.donations },
       ],
     },
     {
       category: 'Gestão do Evento',
       items: [
-        { value: 'management', label: 'Recursos', icon: Wallet,      show: plan.modules.eventManagement },
-        { value: 'checkin',    label: 'Grupos',   icon: Bed,         show: plan.modules.checkIn },
-        { value: 'tasks',      label: 'Tarefas',  icon: CheckSquare, show: plan.modules.tasksAndTeam },
+        { value: 'management', label: 'Recursos', icon: Wallet,      show: showTab('management', plan.modules.eventManagement) },
+        { value: 'checkin',    label: 'Grupos',   icon: Bed,         show: showTab('rooms', plan.modules.checkIn) },
+        { value: 'tasks',      label: 'Tarefas',  icon: CheckSquare, show: showTab('tasks', plan.modules.tasksAndTeam) },
+        { value: 'equipe',     label: 'Equipe',   icon: UserCog,     show: isOwner && plan.modules.tasksAndTeam },
       ],
     },
   ].map(s => ({ ...s, items: s.items.filter(i => i.show) }))
@@ -209,6 +226,11 @@ export default function EventDetail() {
               <p className="text-[10px] text-white/40 mt-1">
                 {new Date(evento.data_inicio).toLocaleDateString('pt-BR')}
               </p>
+              {isGuest && (
+                <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full">
+                  <UserCog className="w-3 h-3" /> Convidado
+                </span>
+              )}
             </div>
           )}
 
@@ -350,7 +372,7 @@ export default function EventDetail() {
               <TicketsTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="registrations" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <RegistrationsTab eventoId={evento.id} />
+              <RegistrationsTab eventoId={evento.id} readOnly={isGuest} />
             </TabsContent>
             <TabsContent value="financial" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <FinancialTab eventoId={evento.id} />
@@ -381,6 +403,9 @@ export default function EventDetail() {
             </TabsContent>
             <TabsContent value="internal" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <InternalManagementTab evento={evento} />
+            </TabsContent>
+            <TabsContent value="equipe" className="mt-0 border-none p-0 shadow-none bg-transparent">
+              <EquipeTab evento={evento} onUpdate={fetchEventoData} />
             </TabsContent>
           </main>
         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../../lib/AuthContext';
 import { Evento } from '../../types';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Users, ArrowRight, TrendingUp, CheckCircle2, Clock, Star } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight, TrendingUp, CheckCircle2, Clock, Star, UserCog } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 
@@ -45,7 +45,7 @@ function ProgressRing({ value, max, color, label, sublabel }: { value: number; m
 }
 
 export default function HomeTab({ eventos }: HomeTabProps) {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
 
   const activeEvents = eventos.filter(e => e.ativo !== false);
@@ -234,6 +234,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
             {displayedEvents.map((evento, index) => {
               const dataInicio = new Date(evento.data_inicio);
               const eventColor = evento.cor_tema || '#1a7a45';
+              const isGuestEvent = !!user && evento.criado_por !== user.uid;
 
               return (
                 <motion.div
@@ -257,14 +258,21 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
                             #{(evento.id || 'EV0').slice(0, 6).toUpperCase()}
                           </span>
-                          <span className={cn(
-                            'text-[10px] font-semibold px-2 py-0.5 rounded-full',
-                            evento.ativo
-                              ? 'bg-emerald-50 text-emerald-600'
-                              : 'bg-muted text-muted-foreground',
-                          )}>
-                            {evento.ativo ? 'Ativo' : 'Arquivado'}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            {isGuestEvent && (
+                              <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
+                                <UserCog className="w-3 h-3" /> Convidado
+                              </span>
+                            )}
+                            <span className={cn(
+                              'text-[10px] font-semibold px-2 py-0.5 rounded-full',
+                              evento.ativo
+                                ? 'bg-emerald-50 text-emerald-600'
+                                : 'bg-muted text-muted-foreground',
+                            )}>
+                              {evento.ativo ? 'Ativo' : 'Arquivado'}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Event name */}

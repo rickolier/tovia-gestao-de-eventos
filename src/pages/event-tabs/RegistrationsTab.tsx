@@ -18,7 +18,7 @@ import { differenceInMonths } from 'date-fns';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 
-export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
+export default function RegistrationsTab({ eventoId, readOnly = false }: { eventoId: string; readOnly?: boolean }) {
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa, ticket?: Ticket })[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [evento, setEvento] = useState<Evento | null>(null);
@@ -621,34 +621,36 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 w-full md:w-auto">
-          <Button 
-            variant="outline"
-            onClick={() => setIsImportDialogOpen(true)}
-            className="border-primary/20 text-primary hover:bg-primary/5 gap-2 rounded-2xl h-12 px-6 font-black transition-all active:scale-95 flex-1 md:flex-none"
-          >
-            <Upload className="w-5 h-5 shrink-0" />
-            Importar
-          </Button>
-          <Button
-            onClick={() => {
-              const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
-              if (paginasComFormulario.length === 0) {
-                toast.error('Crie uma página de vendas com formulário antes de realizar inscrições manuais.');
-                return;
-              }
-              resetForm();
-              setEditingId(null);
-              setSelectedPagina(null);
-              setDynamicValues({});
-              setShowPageSelector(true);
-            }}
-            className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95 flex-1 md:flex-none"
-          >
-            <UserPlus className="w-5 h-5 shrink-0" />
-            Inscrição Manual
-          </Button>
-        </div>
+        {!readOnly && (
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => setIsImportDialogOpen(true)}
+              className="border-primary/20 text-primary hover:bg-primary/5 gap-2 rounded-2xl h-12 px-6 font-black transition-all active:scale-95 flex-1 md:flex-none"
+            >
+              <Upload className="w-5 h-5 shrink-0" />
+              Importar
+            </Button>
+            <Button
+              onClick={() => {
+                const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
+                if (paginasComFormulario.length === 0) {
+                  toast.error('Crie uma página de vendas com formulário antes de realizar inscrições manuais.');
+                  return;
+                }
+                resetForm();
+                setEditingId(null);
+                setSelectedPagina(null);
+                setDynamicValues({});
+                setShowPageSelector(true);
+              }}
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95 flex-1 md:flex-none"
+            >
+              <UserPlus className="w-5 h-5 shrink-0" />
+              Inscrição Manual
+            </Button>
+          </div>
+        )}
 
         <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
           <DialogContent className="sm:max-w-2xl rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors max-h-[90vh] overflow-y-auto scrollbar-hide">
@@ -1172,12 +1174,16 @@ export default function RegistrationsTab({ eventoId }: { eventoId: string }) {
                     </TableCell>
                     <TableCell className="text-right px-6">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all">
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {!readOnly && (
+                          <>
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all">
+                              <Edit2 className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

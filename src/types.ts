@@ -40,6 +40,16 @@ export interface PaymentMethodConfig {
   tipo_taxa: 'fixo' | 'porcentagem';
 }
 
+export type EquipePermissao = 'registrations' | 'management' | 'rooms' | 'tasks';
+
+export interface EquipeMembro {
+  userId: string;
+  email: string;
+  nome: string;
+  permissoes: EquipePermissao[];
+  adicionadoEm: string;
+}
+
 export interface Evento {
   id: string;
   nome: string;
@@ -51,6 +61,7 @@ export interface Evento {
   descricao?: string;
   imagem_url?: string;
   criado_por: string;
+  equipe?: EquipeMembro[];
   habilita_doacoes: boolean;
   ativo: boolean;
   cor_tema?: string;
