@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Ekko <noreply@ekko.app>';
+const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@tovia.app>';
 
 const PLAN_NAMES: Record<string, string> = {
   essencial: 'Essencial',
@@ -84,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           : '');
         await sendEmail(
           userEmail,
-          'Pagamento confirmado — Ekko 💳',
+          'Pagamento confirmado — Tovia 💳',
           emailPagamentoConfirmado(userName, PLAN_NAMES[planLevel] || planLevel, PLAN_VALUES[planLevel] || '', proxVencimento),
         );
       }
@@ -102,7 +102,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const { emailPagamentoNaoRealizado } = await import('../src/lib/email-templates.js');
         await sendEmail(
           userEmail,
-          'Atenção: pagamento pendente na sua conta Ekko ⚠️',
+          'Atenção: pagamento pendente na sua conta Tovia ⚠️',
           emailPagamentoNaoRealizado(userName, PLAN_NAMES[planLevel] || planLevel, fmtDate(payment.dueDate)),
         );
       }

@@ -139,7 +139,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           )}
           <div className="flex items-center gap-2 mt-2">
             <Logo showTagline={false} />
-            <span className="text-xs text-gray-400">Powered by Ekko</span>
+            <span className="text-xs text-gray-400">Powered by Tovia</span>
           </div>
         </div>
       </div>
@@ -405,7 +405,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         </div>
         <div className="border-t border-gray-200 py-4 flex items-center justify-center gap-2">
           <Logo showTagline={false} />
-          <span className="text-xs text-gray-400">Powered by Ekko</span>
+          <span className="text-xs text-gray-400">Powered by Tovia</span>
         </div>
       </footer>
     </div>

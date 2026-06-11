@@ -117,7 +117,7 @@ function MockupVendas() {
           <span className="w-3 h-3 rounded-full bg-green-400" />
         </div>
         <div className="flex-1 bg-white rounded-md px-3 py-1 text-[10px] text-gray-400 font-mono truncate ml-2">
-          ekko.app/e/acampamento-jovem
+          tovia.app/e/acampamento-jovem
         </div>
       </div>
       {/* Page content */}
@@ -251,27 +251,27 @@ function MockupTarefas() {
 
 const FAQ_ITEMS = [
   {
-    q: 'O Ekko é gratuito?',
+    q: 'O Tovia é gratuito?',
     a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 página de inscrição. Para mais eventos e funcionalidades financeiras, temos os planos Essencial e Pro.',
   },
   {
-    q: 'O Ekko realiza cobranças de ingressos?',
-    a: 'Não. O Ekko é uma plataforma de organização — você registra manualmente os pagamentos recebidos e doações. Nós não intermediamos nem processamos cobranças.',
+    q: 'O Tovia realiza cobranças de ingressos?',
+    a: 'Não. O Tovia é uma plataforma de organização — você registra manualmente os pagamentos recebidos e doações. Nós não intermediamos nem processamos cobranças.',
   },
   {
     q: 'Posso criar mais de um evento ao mesmo tempo?',
     a: 'No plano Start você pode ter 1 evento ativo. No Essencial, até 3 eventos simultâneos. No Pro, eventos ilimitados.',
   },
   {
-    q: 'Preciso saber programar para usar o Ekko?',
-    a: 'Não. O Ekko foi feito para qualquer pessoa conseguir usar. Crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
+    q: 'Preciso saber programar para usar o Tovia?',
+    a: 'Não. O Tovia foi feito para qualquer pessoa conseguir usar. Crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
   },
   {
     q: 'Posso cancelar meu plano a qualquer momento?',
     a: 'Sim. Não há fidelidade ou multa. Você pode cancelar ou mudar de plano quando quiser, diretamente pelo painel.',
   },
   {
-    q: 'O Ekko funciona para qualquer tipo de evento?',
+    q: 'O Tovia funciona para qualquer tipo de evento?',
     a: 'Sim! Foi criado pensando em igrejas que organizam acampamentos, conferências, retiros e encontros. Mas funciona para qualquer evento que precise de inscrições e organização.',
   },
 ];
@@ -323,7 +323,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span className="text-3xl font-black text-primary tracking-tight leading-none">ekko</span>
+            <span className="text-3xl font-black text-primary tracking-tight leading-none">tovia</span>
             <span className="hidden sm:block text-[10px] font-semibold tracking-widest uppercase text-muted-foreground border-l border-border pl-3 leading-tight">
               Gestão de<br />Eventos
             </span>
@@ -391,7 +391,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
-              Do acampamento à conferência, o Ekko reúne inscrições, financeiro e gestão de equipe em uma plataforma simples e profissional.
+              Do acampamento à conferência, o Tovia reúne inscrições, financeiro e gestão de equipe em uma plataforma simples e profissional.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -497,7 +497,7 @@ export default function LandingPage() {
             <div className="w-full aspect-square max-w-md mx-auto rounded-[3rem] overflow-hidden relative shadow-2xl">
               <img
                 src="/foto-sobre.jpg"
-                alt="Organizador de eventos usando o Ekko"
+                alt="Organizador de eventos usando o Tovia"
                 className="w-full h-full object-cover object-center"
               />
               {/* Overlay sutil com a cor da marca */}
@@ -521,7 +521,7 @@ export default function LandingPage() {
               Uma plataforma feita para quem organiza com propósito
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              O Ekko nasceu para resolver um problema real: igrejas e organizações que precisam de uma ferramenta profissional para gerenciar eventos, mas sem a complexidade de sistemas corporativos.
+              O Tovia nasceu para resolver um problema real: igrejas e organizações que precisam de uma ferramenta profissional para gerenciar eventos, mas sem a complexidade de sistemas corporativos.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-8">
               Simples para o organizador. Claro para o participante. Completo para o evento.
@@ -569,7 +569,7 @@ export default function LandingPage() {
               Funcionalidades que fazem<br />a diferença no dia a dia
             </h2>
             <p className="text-muted-foreground mt-3 text-sm max-w-lg mx-auto">
-              Veja como o Ekko simplifica as partes mais trabalhosas de organizar um evento.
+              Veja como o Tovia simplifica as partes mais trabalhosas de organizar um evento.
             </p>
           </div>
 
@@ -893,8 +893,8 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="bg-[var(--sidebar)] py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-2xl font-black text-white tracking-tight">ekko</span>
-          <p className="text-white/30 text-xs">© 2026 Ekko Gestão de Eventos. Todos os direitos reservados.</p>
+          <span className="text-2xl font-black text-white tracking-tight">tovia</span>
+          <p className="text-white/30 text-xs">© 2026 Tovia Gestão de Eventos. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             {NAV_LINKS.map(link => (
               <a key={link.label} href={link.href} className="text-xs text-white/40 hover:text-white/70 transition-colors">

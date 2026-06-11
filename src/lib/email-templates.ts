@@ -27,7 +27,7 @@ function wrap(content: string, preview = '') {
         <!-- Header -->
         <tr>
           <td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
-            <span style="font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;">ekko</span>
+            <span style="font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;">tovia</span>
             <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);display:block;letter-spacing:3px;margin-top:2px;">GESTÃO DE EVENTOS</span>
           </td>
         </tr>
@@ -42,8 +42,8 @@ function wrap(content: string, preview = '') {
         <!-- Footer -->
         <tr>
           <td style="padding:24px 40px;text-align:center;">
-            <p style="font-size:12px;color:${MUTED};margin:0;">© ${new Date().getFullYear()} Ekko Gestão de Eventos · Todos os direitos reservados</p>
-            <p style="font-size:12px;color:${MUTED};margin:4px 0 0;">Você recebeu este e-mail porque tem uma conta na plataforma Ekko.</p>
+            <p style="font-size:12px;color:${MUTED};margin:0;">© ${new Date().getFullYear()} Tovia Gestão de Eventos · Todos os direitos reservados</p>
+            <p style="font-size:12px;color:${MUTED};margin:4px 0 0;">Você recebeu este e-mail porque tem uma conta na plataforma Tovia.</p>
           </td>
         </tr>
 
@@ -91,18 +91,18 @@ function feature(icon: string, title: string, desc: string) {
 
 export function emailBoasVindas(nome: string) {
   return wrap(`
-    ${h1(`Bem-vindo ao Ekko, ${nome || 'organizador'}! 🎉`)}
-    ${p('Sua conta foi criada com sucesso. O Ekko é a plataforma completa para gestão de eventos — inscrições, financeiro, equipe e muito mais.')}
+    ${h1(`Bem-vindo ao Tovia, ${nome || 'organizador'}! 🎉`)}
+    ${p('Sua conta foi criada com sucesso. O Tovia é a plataforma completa para gestão de eventos — inscrições, financeiro, equipe e muito mais.')}
     ${p('Você está no plano <strong>Start gratuito</strong>. Pode criar seu primeiro evento agora mesmo!')}
-    ${btn('Criar meu primeiro evento', 'https://ekko-gestao-de-eventos.vercel.app/dashboard')}
+    ${btn('Criar meu primeiro evento', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
     ${divider()}
     ${p('Qualquer dúvida, estamos aqui. Bom evento!')}
-  `, 'Sua conta Ekko foi criada com sucesso!');
+  `, 'Sua conta Tovia foi criada com sucesso!');
 }
 
 export function emailTutorial(nome: string) {
   return wrap(`
-    ${h1(`${nome || 'Olá'}, conheça o Ekko por dentro 👋`)}
+    ${h1(`${nome || 'Olá'}, conheça o Tovia por dentro 👋`)}
     ${p('Aqui está um guia rápido das principais funcionalidades para você começar com tudo:')}
     <table cellpadding="0" cellspacing="0" width="100%" style="margin-top:16px;">
       ${feature('📋', 'Páginas de Inscrição', 'Crie formulários personalizados com link único para cada evento.')}
@@ -110,8 +110,8 @@ export function emailTutorial(nome: string) {
       ${feature('💰', 'Módulo Financeiro (Essencial+)', 'Registre pagamentos, doações e controle taxas e margens.')}
       ${feature('✅', 'Tarefas e Equipe (Pro)', 'Distribua tarefas, convide colaboradores e gerencie grupos.')}
     </table>
-    ${btn('Acessar o painel', 'https://ekko-gestao-de-eventos.vercel.app/dashboard')}
-  `, 'Veja tudo que o Ekko pode fazer pelo seu evento');
+    ${btn('Acessar o painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
+  `, 'Veja tudo que o Tovia pode fazer pelo seu evento');
 }
 
 export function emailPrimeiroEvento(nome: string, eventoNome: string) {
@@ -124,7 +124,7 @@ export function emailPrimeiroEvento(nome: string, eventoNome: string) {
       <li>Compartilhar o link com os participantes</li>
       <li>Acompanhar as inscrições em tempo real</li>
     </ul>
-    ${btn('Ver meu evento', 'https://ekko-gestao-de-eventos.vercel.app/dashboard')}
+    ${btn('Ver meu evento', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
   `, `${eventoNome} foi criado com sucesso!`);
 }
 
@@ -146,7 +146,7 @@ export function emailConfirmacaoInscricao(participanteNome: string, eventoNome: 
 export function emailPagamentoConfirmado(nome: string, plano: string, valor: string, proxVencimento: string) {
   return wrap(`
     ${h1('Pagamento confirmado! 💳')}
-    ${p(`Olá, <strong>${nome}</strong>! Recebemos o pagamento da sua assinatura Ekko.`)}
+    ${p(`Olá, <strong>${nome}</strong>! Recebemos o pagamento da sua assinatura Tovia.`)}
     <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:20px 0;">
       <tr><td>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">${plano}</strong></p>
@@ -154,7 +154,7 @@ export function emailPagamentoConfirmado(nome: string, plano: string, valor: str
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Próximo vencimento: <strong style="color:${TEXT};">${proxVencimento}</strong></p>
       </td></tr>
     </table>
-    ${btn('Ver detalhes do plano', 'https://ekko-gestao-de-eventos.vercel.app/dashboard')}
+    ${btn('Ver detalhes do plano', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
   `, 'Seu pagamento foi confirmado');
 }
 
@@ -163,10 +163,10 @@ export function emailPagamentoNaoRealizado(nome: string, plano: string, vencimen
     ${h1('Pagamento não identificado ⚠️')}
     ${p(`Olá, <strong>${nome}</strong>. Não identificamos o pagamento da sua assinatura do plano <strong>${plano}</strong>, com vencimento em <strong>${vencimento}</strong>.`)}
     ${p('Para manter o acesso às funcionalidades do seu plano, regularize o pagamento o quanto antes.')}
-    ${btn('Regularizar pagamento', 'https://ekko-gestao-de-eventos.vercel.app/planos')}
+    ${btn('Regularizar pagamento', 'https://tovia-gestao-de-eventos.vercel.app/planos')}
     ${divider()}
     ${p('Se já realizou o pagamento, aguarde alguns minutos para a confirmação automática.')}
-  `, 'Atenção: pagamento pendente na sua conta Ekko');
+  `, 'Atenção: pagamento pendente na sua conta Tovia');
 }
 
 export function emailConviteEquipe(eventoNome: string, donoNome: string, loginUrl: string) {
@@ -174,7 +174,7 @@ export function emailConviteEquipe(eventoNome: string, donoNome: string, loginUr
     ${h1(`Você foi convidado para a equipe! 🤝`)}
     ${p(`<strong>${donoNome}</strong> convidou você para colaborar na organização do evento <strong>${eventoNome}</strong>.`)}
     ${p('Como membro da equipe, você poderá visualizar inscritos e ajudar na gestão de recursos, grupos e tarefas.')}
-    ${p('Para aceitar, basta criar sua conta gratuita no Ekko — não é necessário nenhum plano pago:')}
+    ${p('Para aceitar, basta criar sua conta gratuita no Tovia — não é necessário nenhum plano pago:')}
     ${btn('Criar conta e entrar na equipe', loginUrl)}
     ${divider()}
     ${p('Já tem conta? Faça login com o e-mail em que recebeu este convite e o evento aparecerá automaticamente no seu painel.')}
@@ -186,6 +186,6 @@ export function emailConfirmacaoVinculo(nome: string, eventoNome: string) {
     ${h1('Você entrou na equipe! 🎯')}
     ${p(`Olá, <strong>${nome}</strong>! Seu vínculo com o evento <strong>${eventoNome}</strong> foi confirmado com sucesso.`)}
     ${p('O evento já aparece no seu painel com o indicativo de convidado. Você tem acesso às funcionalidades liberadas pelo organizador.')}
-    ${btn('Ver meu painel', 'https://ekko-gestao-de-eventos.vercel.app/dashboard')}
+    ${btn('Ver meu painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
   `, `Você agora faz parte da equipe de ${eventoNome}`);
 }

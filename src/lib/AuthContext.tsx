@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const demoProfile: UserProfile = {
         uid: firebaseUser.uid,
         nome: `Usuário Teste ${plano.toUpperCase()}`,
-        email: "teste@ekko.com",
+        email: "teste@tovia.com",
         plano,
         isDemo: true
       };
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(firebaseUser);
       setProfile(demoProfile);
       try {
-        localStorage.setItem('ekko_demo_plan', plano);
+        localStorage.setItem('tovia_demo_plan', plano);
       } catch (e) {
         console.warn('LocalStorage setItem denied:', e);
       }
@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setProfile(null);
     try {
-      localStorage.removeItem('ekko_demo_plan');
+      localStorage.removeItem('tovia_demo_plan');
     } catch (e) {
       console.warn('LocalStorage removeItem denied:', e);
     }
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           let userProfile = await getDocument<UserProfile>('users', firebaseUser.uid);
 
           if (!userProfile) {
-            const isAdmin = firebaseUser.email === 'admin@ekko.app';
+            const isAdmin = firebaseUser.email === 'admin@tovia.app';
             userProfile = {
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),

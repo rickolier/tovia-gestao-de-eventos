@@ -18,7 +18,7 @@ const ThemeProviderContext = createContext<ThemeProviderState | undefined>(undef
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
-  storageKey = 'ekko-ui-theme',
+  storageKey = 'tovia-ui-theme',
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {

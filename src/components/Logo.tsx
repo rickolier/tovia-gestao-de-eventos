@@ -19,7 +19,7 @@ export default function Logo({ className, variant = 'default', showTagline = tru
   return (
     <Link to="/#planos" className={cn("flex items-center gap-3 transition-opacity hover:opacity-80", className)}>
       <div className={cn("font-logo font-bold text-5xl tracking-tight leading-none", colorClass)}>
-        ekko
+        tovia
       </div>
       {showTagline && (
         <div className={cn("hidden sm:block text-xs font-bold tracking-widest uppercase opacity-80 border-l-2 pl-3 leading-tight", colorClass, variant === 'white' ? 'border-white/20' : 'border-primary/20')}>

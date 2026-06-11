@@ -64,7 +64,7 @@ export const createCheckout = functions.onCall(
         value: price,
         nextDueDate: new Date().toISOString().split("T")[0],
         cycle: "MONTHLY",
-        description: `Ekko - Plano ${planLevel.charAt(0).toUpperCase() + planLevel.slice(1)}`,
+        description: `Tovia - Plano ${planLevel.charAt(0).toUpperCase() + planLevel.slice(1)}`,
         externalReference: `${userId}:${planLevel}`,
       },
       { headers }

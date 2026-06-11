@@ -22,7 +22,7 @@ export default function SettingsTab() {
     >
       <div>
         <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">Configurações</h1>
-        <p className="text-muted-foreground">Gerencie sua experiência no Ekko</p>
+        <p className="text-muted-foreground">Gerencie sua experiência no Tovia</p>
       </div>
 
       <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
@@ -33,7 +33,7 @@ export default function SettingsTab() {
             </div>
             <div>
               <CardTitle>Tema do Sistema</CardTitle>
-              <CardDescription>Escolha como o Ekko deve aparecer para você</CardDescription>
+              <CardDescription>Escolha como o Tovia deve aparecer para você</CardDescription>
             </div>
           </div>
         </CardHeader>

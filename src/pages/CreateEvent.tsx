@@ -32,7 +32,7 @@ export default function CreateEvent() {
 
   const calcConfig = React.useMemo(() => {
     try {
-      const raw = sessionStorage.getItem('ekko_calc_config');
+      const raw = sessionStorage.getItem('tovia_calc_config');
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       // Validate expected shape — reject if tampered
@@ -230,7 +230,7 @@ export default function CreateEvent() {
       }
 
       if (calcConfig) {
-        sessionStorage.removeItem('ekko_calc_config');
+        sessionStorage.removeItem('tovia_calc_config');
         toast.success('Evento criado com as configurações da calculadora!');
       } else {
         toast.success('Evento criado com sucesso!');

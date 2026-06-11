@@ -24,7 +24,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const ADMIN_EMAIL = 'admin@ekko.app';
+  const ADMIN_EMAIL = 'admin@tovia.app';
 
   React.useEffect(() => {
     if (isAuthReady && user) {
@@ -65,7 +65,7 @@ export default function Login() {
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         toast.success('Bem-vindo de volta!');
-        navigate(cred.user.email === 'admin@ekko.app' ? '/admin' : '/dashboard');
+        navigate(cred.user.email === 'admin@tovia.app' ? '/admin' : '/dashboard');
       }
     } catch (error: any) {
       toast.error('Erro na autenticação: ' + error.message);
@@ -202,7 +202,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-white/20 text-xs mt-8">
-          Ekko Eventos © 2026
+          Tovia Eventos © 2026
         </p>
       </div>
     </div>

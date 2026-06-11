@@ -376,7 +376,7 @@ export default function CalculatorTab() {
       <div className="flex justify-center">
         <Button
           onClick={() => {
-            sessionStorage.setItem('ekko_calc_config', JSON.stringify({
+            sessionStorage.setItem('tovia_calc_config', JSON.stringify({
               pixFee,
               creditFee,
               debitFee,

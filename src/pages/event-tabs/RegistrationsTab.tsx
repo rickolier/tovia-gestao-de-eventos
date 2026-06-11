@@ -478,7 +478,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
     const ws = XLSX.utils.aoa_to_sheet(headers);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Template");
-    XLSX.writeFile(wb, "ekko_template_inscricoes.xlsx");
+    XLSX.writeFile(wb, "tovia_template_inscricoes.xlsx");
   };
 
   const filteredRegistrations = registrations.filter(r => {

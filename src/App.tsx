@@ -16,7 +16,7 @@ import PublicSalesPage from './pages/PublicSalesPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
-const ADMIN_EMAIL = 'admin@ekko.app';
+const ADMIN_EMAIL = 'admin@tovia.app';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, isAuthReady } = useAuth();
@@ -25,7 +25,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-white gap-4">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-primary font-medium animate-pulse">Iniciando Ekko...</p>
+        <p className="text-primary font-medium animate-pulse">Iniciando Tovia...</p>
       </div>
     );
   }
@@ -51,7 +51,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="ekko-theme">
+    <ThemeProvider defaultTheme="light" storageKey="tovia-theme">
       <AuthProvider>
         <Router>
           <Routes>

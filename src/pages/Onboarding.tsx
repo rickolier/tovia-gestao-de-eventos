@@ -32,7 +32,7 @@ export default function Onboarding() {
     setSaving(true);
     try {
       await updateDocument('users', user.uid, { plano: selected });
-      toast.success('Plano selecionado! Bem-vindo ao Ekko.');
+      toast.success('Plano selecionado! Bem-vindo ao Tovia.');
       navigate('/dashboard');
     } catch {
       toast.error('Erro ao salvar o plano. Tente novamente.');
