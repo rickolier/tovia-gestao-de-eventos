@@ -18,8 +18,8 @@ const FEATURES = [
   },
   {
     icon: Globe,
-    title: 'Páginas de Venda',
-    description: 'Crie páginas de venda profissionais para seus eventos em minutos, sem precisar de um desenvolvedor.',
+    title: 'Páginas de Inscrição',
+    description: 'Crie páginas de inscrição profissionais para seus eventos em minutos, sem precisar de um desenvolvedor.',
     color: 'bg-blue-50 text-blue-600',
   },
   {
@@ -54,7 +54,7 @@ const PLANS = [
     name: 'Start',
     subtitle: 'Inscrições',
     price: 'Grátis',
-    limits: '1 evento · 200 vagas · 1 tipo de ingresso · 1 página de venda',
+    limits: '1 evento · 200 vagas · 1 tipo de ingresso · 1 página de inscrição',
     description: 'Para eventos simples com foco em inscrições e participantes.',
     modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios'],
     highlight: false,
@@ -64,7 +64,7 @@ const PLANS = [
     name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
     price: 'R$ 39,90/mês',
-    limits: '3 eventos · 500 vagas/evento · 3 ingressos · 3 páginas de venda',
+    limits: '3 eventos · 500 vagas/evento · 3 tipos de inscrição · 3 páginas de inscrição',
     description: 'Para quem precisa organizar o financeiro do evento — registre pagamentos recebidos, doações e acompanhe tudo com clareza.',
     modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro de pagamentos e doações', 'Configuração de Taxas e Margens para gestão real'],
     highlight: true,
@@ -88,7 +88,7 @@ const STATS = [
 ];
 
 const DEMO_TABS = [
-  { id: 'vendas', label: 'Páginas de Venda', icon: Globe },
+  { id: 'vendas', label: 'Páginas de Inscrição', icon: Globe },
   { id: 'doacoes', label: 'Doações', icon: Heart },
   { id: 'tarefas', label: 'Tarefas', icon: CheckSquare },
 ];
@@ -604,7 +604,7 @@ export default function LandingPage() {
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-5">
                     <Globe className="w-6 h-6 text-emerald-600" />
                   </div>
-                  <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Venda profissionais</h3>
+                  <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Inscrição profissionais</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
                     Crie páginas de inscrição para cada evento sem precisar de um desenvolvedor. Compartilhe o link e veja as inscrições chegarem em tempo real.
                   </p>
