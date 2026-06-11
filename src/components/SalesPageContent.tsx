@@ -152,7 +152,28 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
 
       {/* ── Header ── */}
       <header className="bg-white border-b border-gray-100 px-6 py-3 sticky top-0 z-30 shadow-sm">
-        <Logo showTagline={false} />
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+          {/* Esquerda: logo + tagline */}
+          <div className="flex flex-col leading-tight">
+            <Logo showTagline={false} />
+            <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground -mt-0.5">Feito com Tovia</span>
+          </div>
+
+          {/* Centro: nome do organizador */}
+          {organizador && (
+            <span className="hidden sm:block text-xs font-semibold text-gray-500 truncate max-w-[200px] text-center">
+              {organizador.instituicao || organizador.nome}
+            </span>
+          )}
+
+          {/* Direita: CTA */}
+          <a
+            href="/"
+            className="text-xs font-black text-primary hover:underline whitespace-nowrap"
+          >
+            Crie o seu evento →
+          </a>
+        </div>
       </header>
 
       {/* ── Hero ── */}
