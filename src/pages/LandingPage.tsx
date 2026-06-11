@@ -372,7 +372,7 @@ export default function LandingPage() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--sidebar)] via-[#1e3d2a] to-[#1a7a45] pt-24 pb-32 px-6">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--sidebar)] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-32 px-6">
         {/* Decorative circles */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
         <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
