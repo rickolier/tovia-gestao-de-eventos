@@ -976,7 +976,7 @@ export default function LandingPage() {
       <footer className="bg-[var(--sidebar)] py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-2xl font-black text-white tracking-tight">tovia</span>
-          <p className="text-white/30 text-xs">© 2026 Tovia Gestão de Eventos. Todos os direitos reservados.</p>
+          <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
           <div className="flex items-center gap-6">
             {NAV_LINKS.map(link => (
               <a key={link.label} href={link.href} className="text-xs text-white/40 hover:text-white/70 transition-colors">
