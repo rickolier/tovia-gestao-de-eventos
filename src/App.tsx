@@ -9,11 +9,14 @@ import EditEvent from './pages/EditEvent';
 import Onboarding from './pages/Onboarding';
 import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
+
+const ADMIN_EMAIL = 'admin@ekko.app';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, isAuthReady } = useAuth();
@@ -32,6 +35,14 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   // Novo usuário sem plano → onboarding
   if (profile && !profile.plano) return <Navigate to="/onboarding" replace />;
 
+  return <>{children}</>;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isAuthReady } = useAuth();
+  if (!isAuthReady) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.email !== ADMIN_EMAIL) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -78,6 +89,7 @@ export default function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/inscricao/:id" element={<PublicRegistration />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
           </Routes>
