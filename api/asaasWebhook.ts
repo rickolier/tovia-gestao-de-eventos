@@ -2,15 +2,42 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase';
 
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const FROM = process.env.EMAIL_FROM || 'Ekko <noreply@ekko.app>';
+
+const PLAN_NAMES: Record<string, string> = {
+  essencial: 'Essencial',
+  pro: 'Pro',
+};
+const PLAN_VALUES: Record<string, string> = {
+  essencial: 'R$ 39,90',
+  pro: 'R$ 99,00',
+};
+
+async function sendEmail(to: string, subject: string, html: string) {
+  if (!RESEND_API_KEY) return;
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+    });
+  } catch (e) {
+    console.warn('Email send failed:', e);
+  }
+}
+
+function fmtDate(iso: string) {
+  if (!iso) return '';
+  return new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR');
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Validar token de segurança
   const token = req.headers['asaas-access-token'];
   const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
-  if (!expectedToken || token !== expectedToken) {
-    return res.status(401).send('Unauthorized');
-  }
+  if (!expectedToken || token !== expectedToken) return res.status(401).send('Unauthorized');
 
   const event = req.body;
   const eventType: string = event?.event;
@@ -32,16 +59,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).send('ok');
     }
 
+    // Buscar dados do usuário para o e-mail
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userData = userDoc.exists ? userDoc.data() : null;
+    const userEmail = userData?.email;
+    const userName = userData?.nome || 'organizador';
+
     if (paidEvents.includes(eventType)) {
       if (!planLevel) {
-        console.warn('Webhook pago sem planLevel no externalReference:', externalRef);
+        console.warn('Webhook pago sem planLevel:', externalRef);
         return res.status(200).send('ok');
       }
       await db.collection('users').doc(userId).set(
         { plano: planLevel, planoPendente: null },
         { merge: true }
       );
-      console.log(`Plano ${planLevel} ativado para usuário ${userId}`);
+      console.log(`Plano ${planLevel} ativado para ${userId}`);
+
+      // E-mail: confirmação de pagamento
+      if (userEmail) {
+        const { emailPagamentoConfirmado } = await import('../src/lib/email-templates.js');
+        const proxVencimento = fmtDate(payment.dueDate
+          ? new Date(new Date(payment.dueDate).setMonth(new Date(payment.dueDate).getMonth() + 1)).toISOString().split('T')[0]
+          : '');
+        await sendEmail(
+          userEmail,
+          'Pagamento confirmado — Ekko 💳',
+          emailPagamentoConfirmado(userName, PLAN_NAMES[planLevel] || planLevel, PLAN_VALUES[planLevel] || '', proxVencimento),
+        );
+      }
     }
 
     if (canceledEvents.includes(eventType)) {
@@ -49,7 +95,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { plano: null, asaasSubscriptionId: null, planoPendente: null },
         { merge: true }
       );
-      console.log(`Plano cancelado para usuário ${userId}`);
+      console.log(`Plano cancelado para ${userId}`);
+
+      // E-mail: pagamento não realizado
+      if (userEmail && planLevel) {
+        const { emailPagamentoNaoRealizado } = await import('../src/lib/email-templates.js');
+        await sendEmail(
+          userEmail,
+          'Atenção: pagamento pendente na sua conta Ekko ⚠️',
+          emailPagamentoNaoRealizado(userName, PLAN_NAMES[planLevel] || planLevel, fmtDate(payment.dueDate)),
+        );
+      }
     }
 
     return res.status(200).send('ok');

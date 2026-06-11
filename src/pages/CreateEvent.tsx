@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../lib/AuthContext';
 import { createDocument, listDocuments } from '../lib/firebase-utils';
+import { Email } from '../lib/email';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -221,6 +222,13 @@ export default function CreateEvent() {
       };
 
       await createDocument('eventos', id, dadosEvento);
+
+      // E-mail: primeiro evento
+      const eventosAnteriores = await listDocuments<Evento>('eventos', [where('criado_por', '==', usuario.uid)]);
+      if (eventosAnteriores.length <= 1 && usuario.email && profile?.nome) {
+        Email.primeiroEvento(usuario.email, profile.nome, formData.nome);
+      }
+
       if (calcConfig) {
         sessionStorage.removeItem('ekko_calc_config');
         toast.success('Evento criado com as configurações da calculadora!');

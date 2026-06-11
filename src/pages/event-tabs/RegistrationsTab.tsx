@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { differenceInMonths } from 'date-fns';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
+import { Email } from '../../lib/email';
 
 export default function RegistrationsTab({ eventoId, readOnly = false }: { eventoId: string; readOnly?: boolean }) {
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa, ticket?: Ticket })[]>([]);
@@ -262,6 +263,18 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           }
         }
 
+        // E-mail: confirmação de inscrição
+        const participanteEmail = email || formData.email;
+        const participanteNome = nome || formData.nome;
+        if (participanteEmail) {
+          Email.confirmacaoInscricao(
+            participanteEmail,
+            participanteNome,
+            evento?.nome || '',
+            evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '',
+            evento?.local || '',
+          );
+        }
         toast.success('Inscrição manual realizada!');
       }
 

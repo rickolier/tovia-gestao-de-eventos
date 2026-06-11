@@ -9,6 +9,7 @@ import { UserPlus, Trash2, Mail, Users, ShieldCheck, Clock, Copy } from 'lucide-
 import { cn } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../../lib/AuthContext';
+import { Email } from '../../lib/email';
 
 const PERMISSAO_LABELS: Record<EquipePermissao, string> = {
   registrations: 'Ver inscritos',
@@ -74,6 +75,8 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         await updateDocument('eventos', evento.id, {
           equipe: [...equipe, novoMembro],
         });
+        // E-mail: confirmação de vínculo (usuário já tem conta)
+        Email.confirmacaoVinculo(trimmed, usuario.nome || trimmed, evento.nome);
         toast.success(`${usuario.nome || trimmed} adicionado à equipe!`);
         onUpdate();
       } else {
@@ -90,7 +93,9 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         };
         await createDocument('convites', conviteId, convite);
         setPendingInvites(prev => [...prev, convite]);
-        toast.success(`Convite salvo! Compartilhe o link de cadastro com ${trimmed}.`);
+        // E-mail: convite para quem ainda não tem conta
+        Email.conviteEquipe(trimmed, evento.nome, profile?.nome || 'Administrador');
+        toast.success(`Convite enviado para ${trimmed}!`);
       }
 
       setEmail('');

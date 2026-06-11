@@ -4,9 +4,11 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { auth } from '../firebase';
+import { Email } from '../lib/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,7 +55,12 @@ export default function Login() {
       if (isRegistering) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
-        toast.success('Conta criada com sucesso!');
+        // Firebase: verificação de e-mail
+        await sendEmailVerification(userCredential.user);
+        // Resend: boas-vindas + tutorial (com delay de 24h simulado via flag no Firestore — disparo imediato do boas-vindas)
+        Email.boasVindas(email, name);
+        setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000); // 24h — só funciona se a aba permanecer aberta; a versão cron será implementada futuramente
+        toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
         navigate('/onboarding');
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);

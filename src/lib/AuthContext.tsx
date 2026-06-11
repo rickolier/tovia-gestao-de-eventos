@@ -124,6 +124,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                       await updateDocument('eventos', convite.eventoId, {
                         equipe: [...(evento.equipe || []), novoMembro],
                       });
+                      // E-mail: confirmação de vínculo
+                      try {
+                        await fetch('/api/sendEmail', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            to: firebaseUser.email,
+                            subject: `Você entrou na equipe de ${convite.eventoNome}! 🎯`,
+                            html: (await import('./email-templates')).emailConfirmacaoVinculo(
+                              firebaseUser.displayName || firebaseUser.email,
+                              convite.eventoNome
+                            ),
+                          }),
+                        });
+                      } catch (e) { console.warn('Email vínculo falhou:', e); }
                     }
                   }
                   await removeDocument('convites', convite.id);
