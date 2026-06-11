@@ -534,7 +534,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── Significado do nome ── */}
-      <section className="max-w-3xl mx-auto px-6 py-16 text-center">
+      <section className="bg-[#f0f7f3] w-full py-16 px-6">
+      <div className="max-w-3xl mx-auto text-center">
         <span className="text-xs font-semibold uppercase tracking-widest text-primary">O nome</span>
         <h2 className="text-3xl font-black text-foreground tracking-tight mt-3 mb-6">
           Tovia — טוֹבִיָּה
@@ -550,6 +551,7 @@ export default function LandingPage() {
         <p className="text-muted-foreground leading-relaxed">
           É isso que o Tovia quer ser: uma plataforma que cumpre o seu propósito para que o seu evento cumpra o dele.
         </p>
+      </div>
       </section>
 
       {/* ── Funcionalidades ── */}
