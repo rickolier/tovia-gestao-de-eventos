@@ -3,9 +3,9 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 // Inicializa o Firebase Admin SDK uma única vez
 if (!getApps().length) {
-  const serviceAccount = JSON.parse(
-    Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_B64 || '', 'base64').toString('utf8')
-  );
+  const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
+  if (!b64) throw new Error('FIREBASE_SERVICE_ACCOUNT_B64 não configurada.');
+  const serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
   initializeApp({ credential: cert(serviceAccount) });
 }
 
