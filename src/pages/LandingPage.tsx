@@ -54,7 +54,7 @@ const PLANS = [
     name: 'Start',
     subtitle: 'Inscrições',
     price: 'Grátis',
-    limits: '1 evento · 200 vagas · 1 tipo de ingresso · 1 página de inscrição',
+    limits: '1 evento · até 200 vagas · 1 tipo de ingresso',
     description: 'Para eventos simples com foco em inscrições e participantes.',
     modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios'],
     highlight: false,
@@ -64,7 +64,7 @@ const PLANS = [
     name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
     price: 'R$ 39,90/mês',
-    limits: '3 eventos · 500 vagas/evento · 3 tipos de inscrição · 3 páginas de inscrição',
+    limits: '3 eventos · até 500 vagas cada · 3 tipos de ingresso',
     description: 'Para quem precisa organizar o financeiro do evento — registre pagamentos recebidos, doações e acompanhe tudo com clareza.',
     modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro de pagamentos e doações', 'Configuração de Taxas e Margens para gestão real'],
     highlight: true,
@@ -74,7 +74,7 @@ const PLANS = [
     name: 'Pro',
     subtitle: 'Completo',
     price: 'R$ 99,00/mês',
-    limits: 'Eventos ilimitados · Inscrições ilimitadas · Páginas ilimitadas',
+    limits: '10 eventos · até 1000 vagas cada · 10 tipos de ingresso',
     description: 'O plano para quem não quer preocupações!',
     modules: ['Tudo do Essencial', 'Administre recursos, contratações e fornecedores', 'Gestão de Tarefas com equipe integrada', 'Distribua participantes em grupos, quartos, mesas'],
     highlight: false,
@@ -252,7 +252,7 @@ function MockupTarefas() {
 const FAQ_ITEMS = [
   {
     q: 'O Tovia é gratuito?',
-    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 página de inscrição. Para mais eventos e funcionalidades financeiras, temos os planos Essencial e Pro.',
+    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para mais eventos e funcionalidades financeiras, temos os planos Essencial e Pro.',
   },
   {
     q: 'O Tovia realiza cobranças de ingressos?',
@@ -260,7 +260,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Posso criar mais de um evento ao mesmo tempo?',
-    a: 'No plano Start você pode ter 1 evento ativo. No Essencial, até 3 eventos simultâneos. No Pro, eventos ilimitados.',
+    a: 'No plano Start você pode ter 1 evento ativo. No Essencial, até 3 eventos simultâneos. No Pro, até 10 eventos. Para necessidades maiores, entre em contato conosco.',
   },
   {
     q: 'Preciso saber programar para usar o Tovia?',
@@ -835,6 +835,14 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+          {/* Contato para planos maiores */}
+          <p className="text-center text-sm text-muted-foreground mt-10">
+            Precisa de mais eventos ou vagas?{' '}
+            <a href="mailto:contato@tovia.app" className="text-primary font-semibold hover:underline">
+              Entre em contato conosco
+            </a>{' '}
+            e montamos um plano sob medida.
+          </p>
         </div>
       </section>
 
@@ -873,10 +881,10 @@ export default function LandingPage() {
                   {
                     category: 'Eventos & Limites',
                     rows: [
-                      { label: 'Eventos ativos', start: '1', essencial: '3', pro: 'Ilimitado' },
-                      { label: 'Vagas por evento', start: '200', essencial: '500', pro: 'Ilimitado' },
-                      { label: 'Tipos de inscrição', start: '1', essencial: '3', pro: 'Ilimitado' },
-                      { label: 'Páginas de inscrição', start: '1', essencial: '3', pro: 'Ilimitado' },
+                      { label: 'Eventos ativos', start: '1', essencial: '3', pro: '10' },
+                      { label: 'Vagas por evento', start: '200', essencial: '500', pro: '1.000' },
+                      { label: 'Tipos de ingresso', start: '1', essencial: '3', pro: '10' },
+                      { label: 'Páginas de inscrição', start: '1', essencial: '3', pro: '10' },
                     ],
                   },
                   {
