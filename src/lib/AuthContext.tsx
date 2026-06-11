@@ -93,11 +93,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           let userProfile = await getDocument<UserProfile>('users', firebaseUser.uid);
 
           if (!userProfile) {
+            const isAdmin = firebaseUser.email === 'admin@ekko.app';
             userProfile = {
               uid: firebaseUser.uid,
-              nome: firebaseUser.displayName || '',
+              nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: 'start'
+              plano: isAdmin ? null : 'start',
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           }
