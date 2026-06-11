@@ -249,6 +249,68 @@ function MockupTarefas() {
   );
 }
 
+const FAQ_ITEMS = [
+  {
+    q: 'O Ekko é gratuito?',
+    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 página de inscrição. Para mais eventos e funcionalidades financeiras, temos os planos Essencial e Pro.',
+  },
+  {
+    q: 'O Ekko realiza cobranças de ingressos?',
+    a: 'Não. O Ekko é uma plataforma de organização — você registra manualmente os pagamentos recebidos e doações. Nós não intermediamos nem processamos cobranças.',
+  },
+  {
+    q: 'Posso criar mais de um evento ao mesmo tempo?',
+    a: 'No plano Start você pode ter 1 evento ativo. No Essencial, até 3 eventos simultâneos. No Pro, eventos ilimitados.',
+  },
+  {
+    q: 'Preciso saber programar para usar o Ekko?',
+    a: 'Não. O Ekko foi feito para qualquer pessoa conseguir usar. Crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
+  },
+  {
+    q: 'Posso cancelar meu plano a qualquer momento?',
+    a: 'Sim. Não há fidelidade ou multa. Você pode cancelar ou mudar de plano quando quiser, diretamente pelo painel.',
+  },
+  {
+    q: 'O Ekko funciona para qualquer tipo de evento?',
+    a: 'Sim! Foi criado pensando em igrejas que organizam acampamentos, conferências, retiros e encontros. Mas funciona para qualquer evento que precise de inscrições e organização.',
+  },
+];
+
+function FAQ() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <section className="py-20 px-6 bg-white">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">FAQ</span>
+          <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
+            Perguntas frequentes
+          </h2>
+          <p className="text-muted-foreground mt-3 text-sm">Ficou com dúvida? Veja as respostas mais comuns.</p>
+        </div>
+        <div className="space-y-3">
+          {FAQ_ITEMS.map((item, i) => (
+            <div key={i} className="border border-border rounded-2xl overflow-hidden">
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-base font-bold text-foreground pr-4">{item.q}</span>
+                <ChevronDown className={cn('w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-200', open === i && 'rotate-180')} />
+              </button>
+              {open === i && (
+                <div className="px-6 pb-5 pt-1">
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [demoTab, setDemoTab] = useState('vendas');
@@ -428,7 +490,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Sobre ── */}
-      <section id="sobre" className="max-w-6xl mx-auto px-6 py-24">
+      <section id="sobre" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Visual */}
           <div className="relative">
@@ -455,7 +517,7 @@ export default function LandingPage() {
           {/* Text */}
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Quem somos</span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3 mb-6 leading-tight">
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3 mb-6 leading-tight">
               Uma plataforma feita para quem organiza com propósito
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
@@ -472,11 +534,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── Funcionalidades ── */}
-      <section id="funcionalidades" className="bg-[#f4f7f5] py-24 px-6">
+      <section id="funcionalidades" className="bg-[#f4f7f5] pt-12 pb-10 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Funcionalidades</span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Tudo que seu evento precisa,<br />em um só lugar
             </h2>
           </div>
@@ -499,11 +561,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── Demo mockups ── */}
-      <section className="py-24 px-6 bg-[#f4f7f5]">
+      <section className="pt-12 pb-6 px-6 bg-[#f4f7f5]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Veja na prática</span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Funcionalidades que fazem<br />a diferença no dia a dia
             </h2>
             <p className="text-muted-foreground mt-3 text-sm max-w-lg mx-auto">
@@ -607,11 +669,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── Planos ── */}
-      <section id="planos" className="py-24 px-6">
+      <section id="planos" className="pt-12 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Planos</span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Escolha o plano ideal<br />para o seu evento
             </h2>
             <p className="text-muted-foreground mt-3 text-sm">Comece grátis e escale conforme sua necessidade.</p>
@@ -701,6 +763,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── FAQ ── */}
+      <FAQ />
 
       {/* ── CTA Final ── */}
       <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-24 px-6 relative overflow-hidden">
