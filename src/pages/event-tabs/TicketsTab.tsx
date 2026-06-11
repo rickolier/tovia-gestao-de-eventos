@@ -35,7 +35,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     limite_vagas: 0,
     data_limite: '',
     permite_parcelamento: false,
-    metodos_pagamento: ['pix', 'boleto', 'credito']
+    metodos_pagamento: ['pix', 'boleto', 'credito'],
+    exibir_preco: true,
   });
 
   const fetchTickets = async () => {
@@ -83,7 +84,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         limite_vagas: 0,
         data_limite: '',
         permite_parcelamento: false,
-        metodos_pagamento: ['pix', 'boleto', 'credito']
+        metodos_pagamento: ['pix', 'boleto', 'credito'],
+        exibir_preco: true,
       });
       fetchTickets();
     } catch (error) {
@@ -100,7 +102,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       limite_vagas: ticket.limite_vagas || 0,
       data_limite: ticket.data_limite || '',
       permite_parcelamento: ticket.permite_parcelamento || false,
-      metodos_pagamento: ticket.metodos_pagamento || ['pix', 'boleto', 'credito']
+      metodos_pagamento: ticket.metodos_pagamento || ['pix', 'boleto', 'credito'],
+      exibir_preco: ticket.exibir_preco !== false,
     });
     setIsDialogOpen(true);
   };
@@ -148,7 +151,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               limite_vagas: 0,
               data_limite: '',
               permite_parcelamento: false,
-              metodos_pagamento: ['pix', 'boleto', 'credito']
+              metodos_pagamento: ['pix', 'boleto', 'credito'],
+              exibir_preco: true,
             });
             setIsDialogOpen(true);
           }}
@@ -247,6 +251,22 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   />
                 </div>
               </div>
+                {/* Exibir valor — sempre visível */}
+                <label className="flex items-center gap-3 cursor-pointer select-none bg-muted/30 rounded-xl px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={formData.exibir_preco}
+                    onChange={e => setFormData({ ...formData, exibir_preco: e.target.checked })}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <p className="text-xs font-bold text-foreground">Exibir valor no ingresso</p>
+                    <p className="text-[11px] text-muted-foreground">Quando desmarcado, o valor/tipo não aparece para o participante.</p>
+                  </div>
+                </label>
+
+                {/* Formas de pagamento — apenas para planos com financeiro */}
+                {!onlyFreeTickets && formData.tipo === 'pago' && (
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento Aceitas</Label>
                   <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-xl">
@@ -259,7 +279,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       { id: 'dinheiro', label: 'Dinheiro' },
                     ].map(method => (
                       <label key={method.id} className="flex items-center gap-2 cursor-pointer group">
-                        <input 
+                        <input
                           type="checkbox"
                           checked={(formData.metodos_pagamento || []).includes(method.id)}
                           onChange={(e) => {
@@ -277,6 +297,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                     ))}
                   </div>
                 </div>
+                )}
 
                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4">
                 <TicketIcon className="w-5 h-5" />
@@ -362,7 +383,12 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               <CardContent className="px-8 pb-8 relative z-10">
                 <div className="space-y-6">
                   <p className="text-4xl font-black text-foreground tracking-tighter">
-                    {ticket.tipo === 'gratuito' ? 'Lote Livre' : ticket.tipo === 'doacao' ? 'Doação' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ticket.valor)}
+                    {ticket.exibir_preco === false
+                      ? <span className="text-lg text-muted-foreground font-medium">Valor oculto</span>
+                      : ticket.tipo === 'gratuito' ? 'Grátis'
+                      : ticket.tipo === 'doacao' ? 'Doação'
+                      : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ticket.valor)
+                    }
                   </p>
                   
                   <div className="grid grid-cols-2 gap-4">

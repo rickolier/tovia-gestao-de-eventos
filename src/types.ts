@@ -112,6 +112,7 @@ export interface Ticket {
   data_limite: string;
   permite_parcelamento: boolean;
   metodos_pagamento: string[];
+  exibir_preco?: boolean;
 }
 
 export interface Pessoa {
