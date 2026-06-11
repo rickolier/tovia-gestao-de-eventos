@@ -16,6 +16,7 @@ import {
   X,
   Calculator,
   Search,
+  CreditCard,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -31,6 +32,7 @@ import ReportsTab from './dashboard-tabs/ReportsTab';
 import ProfileTab from './dashboard-tabs/ProfileTab';
 import CalendarTab from './dashboard-tabs/CalendarTab';
 import CalculatorTab from './dashboard-tabs/CalculatorTab';
+import BillingTab from './dashboard-tabs/BillingTab';
 
 export default function Dashboard() {
   const { user, profile } = useAuth();
@@ -127,6 +129,7 @@ export default function Dashboard() {
     { id: 'agenda',      label: 'Agenda',       icon: CalendarIcon },
     { id: 'calculadora', label: 'Calculadora',  icon: Calculator },
     { id: 'relatorios',  label: 'Relatórios',   icon: BarChart3 },
+    { id: 'faturamento', label: 'Faturamento',  icon: CreditCard },
   ];
 
   if (loading) {
@@ -257,6 +260,7 @@ export default function Dashboard() {
             {activeTab === 'calculadora'  && <CalculatorTab />}
             {activeTab === 'relatorios'   && <ReportsTab eventos={eventos} />}
             {activeTab === 'perfil'       && <ProfileTab />}
+            {activeTab === 'faturamento'  && <BillingTab />}
           </div>
         </div>
       </main>
