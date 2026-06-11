@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TicketIcon, DollarSign, Wallet, CheckCircle, ArrowRight, Menu, X, Users, Calendar, Globe, BarChart3, ChevronDown } from 'lucide-react';
+import { TicketIcon, DollarSign, Wallet, CheckCircle, ArrowRight, Menu, X, Users, Calendar, Globe, BarChart3, ChevronDown, Plus, Heart, CheckSquare, Clock, MapPin, ExternalLink, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
@@ -81,8 +81,171 @@ const STATS = [
   { value: '1 min', label: 'Para criar um evento' },
 ];
 
+const DEMO_TABS = [
+  { id: 'vendas', label: 'Páginas de Venda', icon: Globe },
+  { id: 'doacoes', label: 'Doações', icon: Heart },
+  { id: 'tarefas', label: 'Tarefas', icon: CheckSquare },
+];
+
+function MockupVendas() {
+  const pages = [
+    { title: 'Acampamento Jovem 2026', tickets: 142, max: 200, color: 'bg-emerald-500' },
+    { title: 'Conferência de Mulheres', tickets: 89, max: 150, color: 'bg-violet-500' },
+    { title: 'Retiro de Casais', tickets: 34, max: 60, color: 'bg-blue-500' },
+  ];
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setActive(i => (i + 1) % pages.length), 2200);
+    return () => clearInterval(t);
+  }, []);
+  const page = pages[active];
+  const pct = Math.round((page.tickets / page.max) * 100);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-border w-full max-w-sm mx-auto">
+      {/* Browser chrome */}
+      <div className="bg-gray-100 border-b border-border px-4 py-2 flex items-center gap-2">
+        <div className="flex gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-red-400" />
+          <span className="w-3 h-3 rounded-full bg-yellow-400" />
+          <span className="w-3 h-3 rounded-full bg-green-400" />
+        </div>
+        <div className="flex-1 bg-white rounded-md px-3 py-1 text-[10px] text-gray-400 font-mono truncate ml-2">
+          ekko.app/e/acampamento-jovem
+        </div>
+      </div>
+      {/* Page content */}
+      <div className="p-5 transition-all duration-500">
+        <div className="flex gap-2 mb-4">
+          {pages.map((p, i) => (
+            <button key={i} onClick={() => setActive(i)}
+              className={cn('flex-1 text-[10px] font-semibold px-2 py-1.5 rounded-lg transition-all', active === i ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200')}>
+              {p.title.split(' ')[0]}
+            </button>
+          ))}
+        </div>
+        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 mb-4">
+          <h4 className="text-sm font-black text-foreground leading-tight mb-1">{page.title}</h4>
+          <p className="text-xs text-muted-foreground mb-3">Igreja Vida Nova · São Paulo</p>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10px] font-semibold text-gray-500">{page.tickets}/{page.max} inscritos</span>
+            <span className="text-[10px] font-bold text-primary">{pct}%</span>
+          </div>
+          <div className="h-2 bg-white/60 rounded-full overflow-hidden">
+            <div className={cn('h-full rounded-full transition-all duration-700', page.color)} style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+        <button className="w-full bg-primary text-white text-xs font-black py-2.5 rounded-xl">
+          Inscrever-se agora
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MockupDoacoes() {
+  const [total, setTotal] = useState(4320);
+  const [items, setItems] = useState([
+    { name: 'Carlos M.', value: 150, time: '2min' },
+    { name: 'Ana S.', value: 80, time: '5min' },
+    { name: 'Rafael T.', value: 200, time: '12min' },
+  ]);
+  useEffect(() => {
+    const names = ['Maria L.', 'João P.', 'Beatriz A.', 'Lucas F.', 'Sandra O.'];
+    let idx = 0;
+    const t = setInterval(() => {
+      const value = [50, 100, 120, 180, 250][Math.floor(Math.random() * 5)];
+      setTotal(p => p + value);
+      setItems(prev => [{ name: names[idx % names.length], value, time: 'agora' }, ...prev.slice(0, 2)]);
+      idx++;
+    }, 2500);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden w-full max-w-sm mx-auto">
+      <div className="bg-gradient-to-br from-[var(--sidebar)] to-primary p-5 text-white">
+        <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-1">Total de Doações</p>
+        <p className="text-3xl font-black transition-all duration-500">R$ {total.toLocaleString('pt-BR')}</p>
+        <p className="text-xs text-white/60 mt-1">Acampamento Jovem 2026</p>
+      </div>
+      <div className="p-4 space-y-2">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">Últimas doações</p>
+        {items.map((item, i) => (
+          <div key={i} className={cn('flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-500', i === 0 ? 'bg-emerald-50 border border-emerald-200' : 'bg-gray-50')}>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
+                {item.name.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <p className="text-xs font-bold text-foreground">{item.name}</p>
+                <p className="text-[10px] text-muted-foreground">{item.time}</p>
+              </div>
+            </div>
+            <span className="text-sm font-black text-emerald-600">+R${item.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MockupTarefas() {
+  const allTasks = [
+    { label: 'Confirmar local com equipe', done: true, assignee: 'Ana', tag: 'Logística' },
+    { label: 'Enviar convites por email', done: true, assignee: 'Carlos', tag: 'Comunicação' },
+    { label: 'Montar cronograma do evento', done: false, assignee: 'João', tag: 'Planejamento' },
+    { label: 'Definir escala de voluntários', done: false, assignee: 'Maria', tag: 'Equipe' },
+    { label: 'Revisar página de inscrições', done: false, assignee: 'Rafael', tag: 'Digital' },
+  ];
+  const [tasks, setTasks] = useState(allTasks);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setTasks(prev => {
+        const firstUndone = prev.findIndex(t => !t.done);
+        if (firstUndone === -1) return allTasks.map(t => ({ ...t, done: false }));
+        return prev.map((t, i) => i === firstUndone ? { ...t, done: true } : t);
+      });
+    }, 1800);
+    return () => clearInterval(t);
+  }, []);
+  const done = tasks.filter(t => t.done).length;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden w-full max-w-sm mx-auto">
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <div>
+          <p className="text-sm font-black text-foreground">Tarefas do Evento</p>
+          <p className="text-[10px] text-muted-foreground">Acampamento Jovem 2026</p>
+        </div>
+        <div className="text-right">
+          <p className="text-lg font-black text-primary">{done}/{tasks.length}</p>
+          <p className="text-[10px] text-muted-foreground">concluídas</p>
+        </div>
+      </div>
+      <div className="h-1.5 bg-gray-100">
+        <div className="h-full bg-primary transition-all duration-700 rounded-full" style={{ width: `${(done / tasks.length) * 100}%` }} />
+      </div>
+      <div className="p-3 space-y-1.5">
+        {tasks.map((task, i) => (
+          <div key={i} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-500', task.done ? 'bg-emerald-50' : 'bg-gray-50')}>
+            <div className={cn('w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300', task.done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300')}>
+              {task.done && <Check className="w-3 h-3 text-white" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={cn('text-xs font-semibold truncate transition-all', task.done ? 'line-through text-muted-foreground' : 'text-foreground')}>{task.label}</p>
+              <p className="text-[10px] text-muted-foreground">{task.assignee} · {task.tag}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [demoTab, setDemoTab] = useState('vendas');
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
@@ -263,6 +426,114 @@ export default function LandingPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Demo mockups ── */}
+      <section className="py-24 px-6 bg-[#f4f7f5]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Veja na prática</span>
+            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+              Funcionalidades que fazem<br />a diferença no dia a dia
+            </h2>
+            <p className="text-muted-foreground mt-3 text-sm max-w-lg mx-auto">
+              Veja como o Ekko simplifica as partes mais trabalhosas de organizar um evento.
+            </p>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex justify-center gap-3 mb-10 flex-wrap">
+            {DEMO_TABS.map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setDemoTab(tab.id)}
+                  className={cn(
+                    'flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all',
+                    demoTab === tab.id
+                      ? 'bg-primary text-white shadow-md shadow-primary/20'
+                      : 'bg-white border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mockup panel */}
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Description */}
+            <div className="flex-1 max-w-md">
+              {demoTab === 'vendas' && (
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-5">
+                    <Globe className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Venda profissionais</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Crie páginas de inscrição para cada evento sem precisar de um desenvolvedor. Compartilhe o link e veja as inscrições chegarem em tempo real.
+                  </p>
+                  <ul className="space-y-3">
+                    {['Link único por evento', 'Múltiplos tipos de ingresso', 'Contador de vagas ao vivo', 'Formulários personalizados'].map(item => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-foreground">
+                        <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {demoTab === 'doacoes' && (
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-pink-50 flex items-center justify-center mb-5">
+                    <Heart className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <h3 className="text-2xl font-black text-foreground mb-4">Controle de Doações</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Registre e acompanhe todas as doações recebidas no seu evento. Veja o total acumulado e o histórico de contribuições — sem intermediários, sem taxas.
+                  </p>
+                  <ul className="space-y-3">
+                    {['Registro manual de doações', 'Total acumulado em tempo real', 'Histórico de contribuições', 'Nenhuma cobrança realizada pela plataforma'].map(item => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-foreground">
+                        <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {demoTab === 'tarefas' && (
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center mb-5">
+                    <CheckSquare className="w-6 h-6 text-violet-600" />
+                  </div>
+                  <h3 className="text-2xl font-black text-foreground mb-4">Gestão de Tarefas da Equipe</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Distribua tarefas entre os membros da equipe, acompanhe o progresso e garanta que nada fique para trás no dia do evento.
+                  </p>
+                  <ul className="space-y-3">
+                    {['Tarefas com responsáveis', 'Progresso visual em tempo real', 'Categorias e etiquetas', 'Visão geral da equipe'].map(item => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-foreground">
+                        <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Animated mockup */}
+            <div className="flex-1 flex justify-center">
+              {demoTab === 'vendas' && <MockupVendas />}
+              {demoTab === 'doacoes' && <MockupDoacoes />}
+              {demoTab === 'tarefas' && <MockupTarefas />}
+            </div>
           </div>
         </div>
       </section>
