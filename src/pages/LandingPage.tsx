@@ -764,6 +764,109 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Tabela comparativa de planos ── */}
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Comparativo</span>
+            <h2 className="text-3xl md:text-4xl font-black text-foreground mt-2">
+              O que cada plano inclui?
+            </h2>
+            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+              Veja lado a lado as funcionalidades disponíveis em cada plano.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-6 py-5 text-foreground font-black text-base w-1/2">Funcionalidade</th>
+                  {[
+                    { name: 'Start', price: 'Grátis', highlight: false },
+                    { name: 'Essencial', price: 'R$ 39,90/mês', highlight: true },
+                    { name: 'Pro', price: 'R$ 99,00/mês', highlight: false },
+                  ].map(plan => (
+                    <th key={plan.name} className={`text-center px-4 py-5 w-[16%] ${plan.highlight ? 'bg-primary/5' : ''}`}>
+                      <p className={`font-black text-base ${plan.highlight ? 'text-primary' : 'text-foreground'}`}>{plan.name}</p>
+                      <p className="text-xs text-muted-foreground font-normal mt-0.5">{plan.price}</p>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    category: 'Eventos & Limites',
+                    rows: [
+                      { label: 'Eventos ativos', start: '1', essencial: '3', pro: 'Ilimitado' },
+                      { label: 'Vagas por evento', start: '200', essencial: '500', pro: 'Ilimitado' },
+                      { label: 'Tipos de inscrição', start: '1', essencial: '3', pro: 'Ilimitado' },
+                      { label: 'Páginas de inscrição', start: '1', essencial: '3', pro: 'Ilimitado' },
+                    ],
+                  },
+                  {
+                    category: 'Inscrições',
+                    rows: [
+                      { label: 'Inscrições gratuitas', start: true, essencial: true, pro: true },
+                      { label: 'Formulários personalizados', start: true, essencial: true, pro: true },
+                      { label: 'Gestão de participantes', start: true, essencial: true, pro: true },
+                      { label: 'Ingressos com valores', start: false, essencial: true, pro: true },
+                    ],
+                  },
+                  {
+                    category: 'Financeiro',
+                    rows: [
+                      { label: 'Registro de pagamentos', start: false, essencial: true, pro: true },
+                      { label: 'Registro de doações', start: false, essencial: true, pro: true },
+                      { label: 'Configuração de taxas e margens', start: false, essencial: true, pro: true },
+                      { label: 'Relatórios financeiros', start: false, essencial: true, pro: true },
+                    ],
+                  },
+                  {
+                    category: 'Gestão Avançada',
+                    rows: [
+                      { label: 'Gestão de recursos e fornecedores', start: false, essencial: false, pro: true },
+                      { label: 'Tarefas com equipe integrada', start: false, essencial: false, pro: true },
+                      { label: 'Distribuição em grupos e quartos', start: false, essencial: false, pro: true },
+                      { label: 'Relatórios completos', start: false, essencial: false, pro: true },
+                    ],
+                  },
+                ].map((section, si) => (
+                  <React.Fragment key={`section-${si}`}>
+                    <tr className="border-t border-border bg-muted/40">
+                      <td colSpan={4} className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                        {section.category}
+                      </td>
+                    </tr>
+                    {section.rows.map((row, ri) => (
+                      <tr key={`${si}-${ri}`} className="border-t border-border/50 hover:bg-muted/20 transition-colors">
+                        <td className="px-6 py-4 text-foreground font-medium">{row.label}</td>
+                        {(['start', 'essencial', 'pro'] as const).map((plan, pi) => {
+                          const val = row[plan];
+                          const isHighlight = plan === 'essencial';
+                          return (
+                            <td key={plan} className={`text-center px-4 py-4 ${isHighlight ? 'bg-primary/5' : ''}`}>
+                              {typeof val === 'boolean' ? (
+                                val
+                                  ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary mx-auto">✓</span>
+                                  : <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground/40 mx-auto">—</span>
+                              ) : (
+                                <span className={`font-semibold text-xs ${val === 'Ilimitado' ? 'text-primary' : 'text-foreground'}`}>{val}</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ── */}
       <FAQ />
 
