@@ -86,13 +86,27 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       const telefoneField = pagina.campos_formulario.find(c => c.tipo === 'telefone' || c.label.toLowerCase().includes('telefone'));
       const ticket = selectedTickets[0];
 
+      const nome = nomeField ? String(formValues[nomeField.id] || '') : '';
+      const email = emailField ? String(formValues[emailField.id] || '') : '';
+      const telefone = telefoneField ? String(formValues[telefoneField.id] || '') : '';
+
+      // Cria registro em pessoas para aparecer no painel do organizador
+      const pessoaId = uuidv4();
+      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, {
+        id: pessoaId,
+        nome,
+        email,
+        telefone,
+      });
+
       await createDocument(`eventos/${eventoId}/inscricoes`, id, {
         id, eventoId,
+        pessoaId,
         ticketId: ticket?.id || '',
         ticket_nome: ticket?.nome || '',
-        nome: nomeField ? String(formValues[nomeField.id] || '') : '',
-        email: emailField ? String(formValues[emailField.id] || '') : '',
-        telefone: telefoneField ? String(formValues[telefoneField.id] || '') : '',
+        nome,
+        email,
+        telefone,
         respostas_formulario: respostas,
         quantidades: quantities,
         valor_total: total,
