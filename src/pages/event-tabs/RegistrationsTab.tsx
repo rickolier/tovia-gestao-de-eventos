@@ -170,13 +170,25 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           }
         }
 
-        await updateDocument(`eventos/${eventoId}/inscricoes`, editingId, {
+        const editUpdate: Record<string, any> = {
           ticketId: formData.ticketId,
           status: newStatus,
           valor_total: selectedTicket.valor,
           forma_pagamento: formData.forma_pagamento,
-          precisa_ajuda: formData.precisa_ajuda
-        });
+          precisa_ajuda: formData.precisa_ajuda,
+        };
+        if (selectedPagina) {
+          const respostas: Record<string, string | boolean> = {};
+          selectedPagina.campos_formulario.forEach(c => { respostas[c.label] = dynamicValues[c.id] ?? ''; });
+          editUpdate.respostas_formulario = respostas;
+          const nome = getDynValue('nome') || getDynValue('name') || formData.nome;
+          const email = getDynValue('email') || formData.email;
+          const telefone = getDynValue('telefone') || formData.telefone;
+          editUpdate.nome = nome;
+          editUpdate.email = email;
+          editUpdate.telefone = telefone;
+        }
+        await updateDocument(`eventos/${eventoId}/inscricoes`, editingId, editUpdate);
 
         // Update method for all pending payments
         const pendingPayments = await listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`, [
@@ -291,11 +303,28 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   };
 
   const handleEdit = (reg: Inscricao & { pessoa?: Pessoa }) => {
+    // Se a inscrição veio de uma página pública, carrega o form dinâmico
+    const paginaId = reg.paginaVendaId || reg.pagina_venda_id;
+    const pagina = paginaId ? paginas.find(p => p.id === paginaId) : null;
+    if (pagina) {
+      setSelectedPagina(pagina);
+      // Pré-preenche os valores dinâmicos com as respostas salvas
+      const respostas = reg.respostas_formulario || {};
+      const vals: Record<string, string | boolean> = {};
+      pagina.campos_formulario.forEach(c => {
+        // tenta por label (chave salva no Firestore) ou por id
+        vals[c.id] = respostas[c.label] ?? respostas[c.id] ?? '';
+      });
+      setDynamicValues(vals);
+    } else {
+      setSelectedPagina(null);
+      setDynamicValues({});
+    }
     setFormData({
-      nome: reg.pessoa?.nome || '',
-      email: reg.pessoa?.email || '',
+      nome: reg.pessoa?.nome || reg.nome || '',
+      email: reg.pessoa?.email || reg.email || '',
       cpf: reg.pessoa?.cpf || '',
-      telefone: reg.pessoa?.telefone || '',
+      telefone: reg.pessoa?.telefone || reg.telefone || '',
       idade: reg.pessoa?.idade || 0,
       genero: reg.pessoa?.genero || 'masculino',
       celula: reg.pessoa?.celula || '',
@@ -1136,7 +1165,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 <FilterHeader label="Status" filterKey="status" columnKey="status" />
                 <FilterHeader label="Financeiro" filterKey="financeiro" columnKey="financeiro" />
                 <FilterHeader label="Método" filterKey="metodo" columnKey="metodo" />
-                <FilterHeader label="Célula" filterKey="celula" columnKey="celula" />
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14">Respostas</TableHead>
                 <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-6">Gerenciar</TableHead>
               </TableRow>
             </TableHeader>
@@ -1183,7 +1212,28 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest bg-muted/50 py-1 px-2 rounded-md">{reg.forma_pagamento || 'PIX'}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-xs font-bold text-foreground/80">{reg.pessoa?.celula || '-'}</span>
+                      {reg.respostas_formulario && Object.keys(reg.respostas_formulario).length > 0 ? (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 hover:bg-primary/10">
+                              Ver {Object.keys(reg.respostas_formulario).length} respostas
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-72 p-4 rounded-2xl border-none shadow-2xl bg-card" align="start">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">Respostas do formulário</p>
+                            <div className="space-y-2">
+                              {Object.entries(reg.respostas_formulario).map(([label, valor]) => (
+                                <div key={label}>
+                                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                                  <p className="text-sm font-bold text-foreground">{String(valor) || '-'}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-right px-6">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">

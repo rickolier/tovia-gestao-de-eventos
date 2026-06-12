@@ -130,7 +130,7 @@ export interface Pessoa {
 
 export interface Inscricao {
   id: string;
-  pessoaId?: string; // Optional for public registrations without pre-existing person
+  pessoaId?: string;
   nome?: string;
   email?: string;
   telefone?: string;
@@ -144,6 +144,9 @@ export interface Inscricao {
   precisa_ajuda: boolean;
   validada_manual: boolean;
   data_inscricao: string;
+  paginaVendaId?: string;
+  pagina_venda_id?: string;
+  respostas_formulario?: Record<string, string | boolean>;
 }
 
 export interface Pagamento {
