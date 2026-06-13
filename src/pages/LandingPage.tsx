@@ -387,7 +387,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
-              Do acampamento à conferência, o Tovia reúne inscrições, financeiro e gestão de equipe em uma plataforma simples e profissional.
+              Organize inscrições, pagamentos e equipes em um só lugar. Gestão de eventos para igrejas, conferências e ministérios que transformam vidas.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
