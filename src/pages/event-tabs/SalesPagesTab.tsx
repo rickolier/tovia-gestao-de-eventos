@@ -85,6 +85,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
   const [novoCampo, setNovoCampo] = useState<Omit<CampoFormulario, 'id'>>({
     tipo: 'texto', label: '', obrigatorio: false, placeholder: '',
   });
+  const [novaOpcao, setNovaOpcao] = useState('');
 
   // ── Data fetch ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -171,7 +172,8 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
   const addCampoCustom = () => {
     if (!novoCampo.label.trim()) { toast.error('Informe o nome do campo'); return; }
     setForm(prev => ({ ...prev, campos_formulario: [...prev.campos_formulario, { ...novoCampo, id: uuidv4() }] }));
-    setNovoCampo({ tipo: 'texto', label: '', obrigatorio: false, placeholder: '' });
+    setNovoCampo({ tipo: 'texto', label: '', obrigatorio: false, placeholder: '', opcoes: [] });
+    setNovaOpcao('');
   };
 
   const removeCampo = (id: string) => {
@@ -461,6 +463,23 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                       </label>
                     </div>
                   </div>
+                  {novoCampo.tipo === 'select' && (
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground">Opções do dropdown</Label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(novoCampo.opcoes || []).map((op, i) => (
+                          <span key={i} className="flex items-center gap-1 text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-lg font-medium">
+                            {op}
+                            <button type="button" onClick={() => setNovoCampo(p => ({ ...p, opcoes: (p.opcoes || []).filter((_, j) => j !== i) }))} className="hover:text-red-500 ml-0.5">×</button>
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input value={novaOpcao} onChange={e => setNovaOpcao(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (novaOpcao.trim()) { setNovoCampo(p => ({ ...p, opcoes: [...(p.opcoes || []), novaOpcao.trim()] })); setNovaOpcao(''); } } }} placeholder="Ex: Masculino" className="rounded-xl border-none bg-muted/50 h-9 text-sm shadow-sm" />
+                        <Button type="button" variant="outline" size="sm" className="rounded-xl h-9 px-3 border-primary text-primary hover:bg-primary/5" onClick={() => { if (novaOpcao.trim()) { setNovoCampo(p => ({ ...p, opcoes: [...(p.opcoes || []), novaOpcao.trim()] })); setNovaOpcao(''); } }}>+ Adicionar</Button>
+                      </div>
+                    </div>
+                  )}
                   <Button type="button" onClick={addCampoCustom} variant="outline" size="sm" className="rounded-xl border-primary text-primary hover:bg-primary/5 gap-2">
                     <Plus className="w-3.5 h-3.5" /> Adicionar campo
                   </Button>
