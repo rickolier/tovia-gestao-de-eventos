@@ -31,6 +31,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const [importPreview, setImportPreview] = useState<any[]>([]);
   const [importTicketId, setImportTicketId] = useState('');
   const [importStatus, setImportStatus] = useState<'confirmada' | 'pendente'>('confirmada');
+  const [exportFormat, setExportFormat] = useState<'xlsx' | 'csv' | 'pdf'>('xlsx');
+  const [exportFields, setExportFields] = useState<string[]>(['nome', 'email', 'telefone', 'ticket_nome', 'status', 'data_inscricao']);
   const [itemToDelete, setItemToDelete] = useState<{ regId: string, pessoaId?: string } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -502,6 +504,58 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
     }
   };
 
+  const EXPORT_FIELD_OPTIONS: { key: string; label: string }[] = [
+    { key: 'nome', label: 'Nome' },
+    { key: 'email', label: 'E-mail' },
+    { key: 'telefone', label: 'Telefone' },
+    { key: 'ticket_nome', label: 'Ingresso' },
+    { key: 'status', label: 'Status' },
+    { key: 'data_inscricao', label: 'Data de Inscrição' },
+    { key: 'forma_pagamento', label: 'Forma de Pagamento' },
+    { key: 'valor_total', label: 'Valor' },
+    { key: 'respostas_formulario', label: 'Respostas do Formulário' },
+  ];
+
+  const handleExport = () => {
+    const rows = filteredRegistrations.map(r => {
+      const row: Record<string, any> = {};
+      if (exportFields.includes('nome')) row['Nome'] = r.pessoa?.nome || r.nome || '';
+      if (exportFields.includes('email')) row['E-mail'] = r.pessoa?.email || r.email || '';
+      if (exportFields.includes('telefone')) row['Telefone'] = r.pessoa?.telefone || r.telefone || '';
+      if (exportFields.includes('ticket_nome')) row['Ingresso'] = r.ticket?.nome || r.ticket_nome || '';
+      if (exportFields.includes('status')) row['Status'] = r.status || '';
+      if (exportFields.includes('data_inscricao')) row['Data de Inscrição'] = r.data_inscricao ? new Date(r.data_inscricao).toLocaleDateString('pt-BR') : '';
+      if (exportFields.includes('forma_pagamento')) row['Forma de Pagamento'] = r.forma_pagamento || '';
+      if (exportFields.includes('valor_total')) row['Valor'] = r.valor_total != null ? `R$ ${r.valor_total.toFixed(2)}` : '';
+      if (exportFields.includes('respostas_formulario') && r.respostas_formulario) {
+        Object.entries(r.respostas_formulario).forEach(([k, v]) => { row[k] = String(v); });
+      }
+      return row;
+    });
+
+    if (exportFormat === 'csv') {
+      const csv = Papa.unparse(rows);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'tovia_inscricoes.csv'; a.click();
+      URL.revokeObjectURL(url);
+    } else if (exportFormat === 'xlsx') {
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Inscrições');
+      XLSX.writeFile(wb, 'tovia_inscricoes.xlsx');
+    } else if (exportFormat === 'pdf') {
+      const printWin = window.open('', '_blank');
+      if (!printWin) return;
+      const cols = rows.length > 0 ? Object.keys(rows[0]) : [];
+      const tableRows = rows.map(r => `<tr>${cols.map(c => `<td style="border:1px solid #ddd;padding:6px 10px;font-size:12px">${r[c] ?? ''}</td>`).join('')}</tr>`).join('');
+      printWin.document.write(`<html><head><title>Inscrições</title></head><body style="font-family:sans-serif;padding:20px"><h2 style="margin-bottom:16px">Inscrições</h2><table style="border-collapse:collapse;width:100%"><thead><tr>${cols.map(c => `<th style="border:1px solid #ddd;padding:6px 10px;background:#f0f7f3;text-align:left;font-size:12px">${c}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table></body></html>`);
+      printWin.document.close();
+      printWin.print();
+    }
+    toast.success(`${rows.length} inscrições exportadas!`);
+  };
+
   const downloadTemplate = () => {
     const headers = [["Nome", "Email", "Telefone", "CPF", "Idade", "Gênero", "Célula"]];
     const ws = XLSX.utils.aoa_to_sheet(headers);
@@ -671,7 +725,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               className="border-primary/20 text-primary hover:bg-primary/5 gap-2 rounded-2xl h-12 px-6 font-black transition-all active:scale-95 flex-1 md:flex-none"
             >
               <Upload className="w-5 h-5 shrink-0" />
-              Importar
+              Importar / Exportar
             </Button>
             <Button
               onClick={() => {
@@ -695,13 +749,16 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
         )}
 
         <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
-          <DialogContent className="sm:max-w-2xl rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors max-h-[90vh] overflow-y-auto scrollbar-hide">
+          <DialogContent className="sm:max-w-4xl rounded-[2.5rem] border-none shadow-2xl p-0 bg-card transition-colors max-h-[90vh] overflow-hidden">
+            <div className="flex h-full max-h-[90vh]">
+              {/* ── LEFT: Import ── */}
+              <div className="flex-1 p-8 overflow-y-auto scrollbar-hide border-r border-border/50">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                   <Upload className="w-6 h-6 shrink-0" />
                 </div>
-                Importar Inscrições
+                Importar
               </DialogTitle>
             </DialogHeader>
             
@@ -793,14 +850,14 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
             </div>
 
             <DialogFooter className="mt-8 gap-3 sm:gap-0">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={() => setIsImportDialogOpen(false)}
                 className="rounded-2xl h-12 px-8 font-black text-muted-foreground"
               >
                 Cancelar
               </Button>
-              <Button 
+              <Button
                 disabled={importLoading || importPreview.length === 0 || !importTicketId}
                 onClick={processImport}
                 className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 active:scale-95 transition-all disabled:opacity-50"
@@ -815,6 +872,68 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 )}
               </Button>
             </DialogFooter>
+              </div>{/* end left */}
+
+              {/* ── RIGHT: Export ── */}
+              <div className="flex-1 p-8 overflow-y-auto scrollbar-hide flex flex-col gap-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-primary">
+                    <FileDown className="w-6 h-6 shrink-0" />
+                  </div>
+                  <h2 className="text-2xl font-black text-foreground tracking-tight">Exportar</h2>
+                </div>
+
+                {/* Format */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Formato</p>
+                  <div className="flex gap-2">
+                    {(['xlsx', 'csv', 'pdf'] as const).map(f => (
+                      <button
+                        key={f}
+                        type="button"
+                        onClick={() => setExportFormat(f)}
+                        className={`flex-1 py-2.5 rounded-xl text-sm font-black uppercase tracking-wide transition-all border ${exportFormat === f ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/50 text-muted-foreground border-transparent hover:border-primary/30'}`}
+                      >
+                        .{f}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Fields */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Campos a exportar</p>
+                  <div className="space-y-2">
+                    {EXPORT_FIELD_OPTIONS.map(opt => (
+                      <label key={opt.key} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={exportFields.includes(opt.key)}
+                          onChange={e => setExportFields(prev => e.target.checked ? [...prev, opt.key] : prev.filter(f => f !== opt.key))}
+                          className="w-4 h-4 accent-primary rounded"
+                        />
+                        <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{opt.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-4 bg-muted/30 rounded-2xl text-xs text-muted-foreground font-medium">
+                  {filteredRegistrations.length} inscrição(ões) serão exportadas conforme o filtro atual da tabela.
+                </div>
+
+                <div className="mt-auto pt-4">
+                  <Button
+                    onClick={handleExport}
+                    disabled={exportFields.length === 0}
+                    className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 active:scale-95 transition-all disabled:opacity-50 gap-2"
+                  >
+                    <FileDown className="w-4 h-4" />
+                    Exportar {filteredRegistrations.length} inscrições
+                  </Button>
+                </div>
+              </div>{/* end right */}
+            </div>{/* end flex */}
           </DialogContent>
         </Dialog>
 
