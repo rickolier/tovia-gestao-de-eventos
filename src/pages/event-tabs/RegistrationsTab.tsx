@@ -1122,73 +1122,9 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       <Input id="celula" value={formData.celula} onChange={e => setFormData({...formData, celula: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Ingresso / Lote</Label>
-                    <Select value={formData.ticketId} onValueChange={v => setFormData({...formData, ticketId: v})}>
-                      <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
-                        <SelectValue placeholder="Selecione um lote">
-                          {formData.ticketId ? tickets.find(t => t.id === formData.ticketId)?.nome : "Selecione um lote"}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-none shadow-2xl text-foreground">
-                        {tickets.map(t => (
-                          <SelectItem key={t.id} value={t.id} className="font-medium">{t.nome} - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(t.valor)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
-                  <Select value={formData.forma_pagamento} onValueChange={v => {
-                    const isPixOrDinheiro = ['pix', 'dinheiro'].includes(v);
-                    setFormData({
-                      ...formData, 
-                      forma_pagamento: v,
-                      parcelas: isPixOrDinheiro ? 1 : formData.parcelas
-                    });
-                  }}>
-                    <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
-                      <SelectValue>
-                        {formData.forma_pagamento === 'pix' ? 'PIX' :
-                         formData.forma_pagamento === 'cartao' ? 'Crédito' :
-                         formData.forma_pagamento === 'credito_recorrencia' ? 'Crédito Recorrente' :
-                         formData.forma_pagamento === 'boleto' ? 'Boleto' :
-                         formData.forma_pagamento === 'dinheiro' ? 'Dinheiro' : 'PIX'}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-none shadow-2xl">
-                      <SelectItem value="pix" className="font-medium">PIX</SelectItem>
-                      <SelectItem value="cartao" className="font-medium">Crédito</SelectItem>
-                      <SelectItem value="credito_recorrencia" className="font-medium">Crédito Recorrente</SelectItem>
-                      <SelectItem value="boleto" className="font-medium">Boleto</SelectItem>
-                      <SelectItem value="dinheiro" className="font-medium">Dinheiro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {!editingId && !['pix', 'dinheiro'].includes(formData.forma_pagamento) && (
-                   <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Parcelas</Label>
-                    <Select value={formData.parcelas.toString()} onValueChange={v => setFormData({...formData, parcelas: Number(v)})}>
-                      <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
-                        <SelectValue>
-                          {formData.parcelas}x
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-none shadow-2xl">
-                        {Array.from({ length: getMaxParcelas() }).map((_, i) => (
-                          <SelectItem key={i + 1} value={(i + 1).toString()} className="font-medium">
-                            {i + 1}x
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
 
               <div className="p-4 bg-muted/30 rounded-2xl flex items-center justify-between">
                 <div>
