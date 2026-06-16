@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from '../../lib/AuthContext';
 import { updateDocument } from '../../lib/firebase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,15 +6,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
+import { storage } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function ProfileTab() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith('image/')) { toast.error('Selecione uma imagem válida.'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error('Imagem muito grande. Máximo 5MB.'); return; }
+    setUploadingPhoto(true);
+    try {
+      const storageRef = ref(storage, `profiles/${user.uid}/foto`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setFormData(prev => ({ ...prev, imagem_url: url }));
+      await updateDocument('users', user.uid, { imagem_url: url });
+      toast.success('Foto atualizada!');
+    } catch {
+      toast.error('Erro ao fazer upload da foto.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
   const [cancelLoading, setCancelLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: profile?.nome || '',
@@ -45,7 +69,6 @@ export default function ProfileTab() {
     if (!isValidUrl(formData.site)) { toast.error('URL do website inválida. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_1)) { toast.error('Link Importante 1 inválido. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_2)) { toast.error('Link Importante 2 inválido. Use http:// ou https://'); return; }
-    if (!isValidUrl(formData.imagem_url)) { toast.error('URL da imagem inválida. Use http:// ou https://'); return; }
 
     setLoading(true);
     try {
@@ -81,22 +104,31 @@ export default function ProfileTab() {
           <CardContent className="p-8 space-y-6">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="flex flex-col items-center gap-4">
-                <div className="w-32 h-32 bg-muted rounded-[2rem] flex items-center justify-center border-2 border-dashed border-border overflow-hidden relative group transition-all hover:border-primary/50">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoUpload}
+                />
+                <div
+                  className="w-32 h-32 bg-muted rounded-[2rem] flex items-center justify-center border-2 border-dashed border-border overflow-hidden relative group transition-all hover:border-primary/50 cursor-pointer"
+                  onClick={() => fileInputRef.current?.click()}
+                >
                   {formData.imagem_url ? (
                     <img src={formData.imagem_url} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
-                    <ImageIcon className="w-10 h-10 text-muted/30" />
+                    <ImageIcon className="w-10 h-10 text-muted-foreground/30" />
                   )}
-                  <div className="absolute inset-0 bg-primary/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center cursor-pointer backdrop-blur-[2px]">
-                    <span className="text-white text-[10px] font-black uppercase tracking-widest">Alterar</span>
+                  <div className="absolute inset-0 bg-primary/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center backdrop-blur-[2px]">
+                    {uploadingPhoto ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Camera className="w-6 h-6 text-white" />
+                    )}
                   </div>
                 </div>
-                <Input 
-                  placeholder="URL da Imagem" 
-                  value={formData.imagem_url}
-                  onChange={e => setFormData({...formData, imagem_url: e.target.value})}
-                  className="text-[10px] h-8 rounded-lg bg-muted/50 border-none focus-visible:ring-primary"
-                />
+                <span className="text-[10px] text-muted-foreground font-medium text-center">Clique para alterar a foto</span>
               </div>
 
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
