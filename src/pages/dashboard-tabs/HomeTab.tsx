@@ -137,51 +137,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-card rounded-xl border border-border p-5 card-flat"
         >
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">Visão geral</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">Seus eventos em números</p>
-            </div>
-            <TrendingUp className="w-4 h-4 text-primary" />
-          </div>
-          <div className="flex items-center justify-around gap-4 flex-wrap">
-            <ProgressRing
-              value={activeEvents.length}
-              max={eventos.length}
-              color="#1a7a45"
-              label="Eventos Ativos"
-              sublabel="do total"
-            />
-            <ProgressRing
-              value={Math.min(eventos.length, 3)}
-              max={3}
-              color="#8b5cf6"
-              label="Limite do Plano"
-              sublabel={`plano ${profile?.plano ?? 'start'}`}
-            />
-            <ProgressRing
-              value={eventos.filter(e => {
-                const d = new Date(e.data_inicio);
-                return d > new Date();
-              }).length}
-              max={eventos.length}
-              color="#f59e0b"
-              label="Futuros"
-              sublabel="aguardando"
-            />
-            <ProgressRing
-              value={eventos.filter(e => {
-                const d = new Date(e.data_fim || e.data_inicio);
-                return d < new Date();
-              }).length}
-              max={eventos.length}
-              color="#10b981"
-              label="Concluídos"
-              sublabel="realizados"
-            />
-          </div>
         </motion.div>
       )}
 
