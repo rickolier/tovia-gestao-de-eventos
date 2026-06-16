@@ -43,6 +43,7 @@ export default function ProfileTab() {
   const [formData, setFormData] = useState({
     nome: profile?.nome || '',
     instituicao: profile?.instituicao || '',
+    cnpj: profile?.cnpj || '',
     bio: profile?.bio || '',
     descricao: profile?.descricao || '',
     telefone: profile?.telefone || '',
@@ -143,10 +144,19 @@ export default function ProfileTab() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Nome da Instituição</Label>
-                  <Input 
+                  <Input
                     value={formData.instituicao}
                     onChange={e => setFormData({...formData, instituicao: e.target.value})}
                     placeholder="Ex: Comunidade da Graça"
+                    className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CNPJ da Instituição</Label>
+                  <Input
+                    value={formData.cnpj || ''}
+                    onChange={e => setFormData({...formData, cnpj: e.target.value})}
+                    placeholder="00.000.000/0001-00"
                     className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
                   />
                 </div>

@@ -7,6 +7,7 @@ export interface UserProfile {
   email: string;
   whatsapp?: string;
   instituicao?: string;
+  cnpj?: string;
   cargo?: string;
   bio?: string;
   descricao?: string;
