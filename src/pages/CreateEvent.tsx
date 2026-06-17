@@ -97,8 +97,8 @@ export default function CreateEvent() {
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      if (img.width < 1920 || img.height < 1080) {
-        setImagemErro(`Imagem muito pequena (${img.width}×${img.height}px). O mínimo é 1920×1080px.`);
+      if (img.width < 800 || img.height < 400) {
+        setImagemErro(`Imagem muito pequena (${img.width}×${img.height}px). O mínimo é 800×400px.`);
         return;
       }
       setImagemFile(file);
