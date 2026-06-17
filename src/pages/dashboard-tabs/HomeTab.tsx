@@ -59,20 +59,25 @@ function ProfileCompletion() {
 
   if (pct === 100) return null;
 
+  const isUrgent = pct < 20;
+  const styles = isUrgent
+    ? { wrap: 'bg-red-600 border-red-700',        text: 'text-white',        sub: 'text-red-100',  bar: 'bg-red-200',    fill: 'bg-white',       btn: 'bg-white hover:bg-red-50 text-red-700' }
+    : { wrap: 'bg-amber-400 border-amber-500',     text: 'text-amber-950',   sub: 'text-amber-800', bar: 'bg-amber-200',  fill: 'bg-amber-900',   btn: 'bg-amber-900 hover:bg-amber-800 text-white' };
+
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-      <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4 flex items-center gap-4">
+      <div className={`${styles.wrap} rounded-xl border p-4 flex items-center gap-4`}>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-foreground">Perfil {pct}% completo</span>
-            <span className="text-xs text-muted-foreground">{doneCount}/{total} campos</span>
+            <span className={`text-sm font-semibold ${styles.text}`}>Perfil {pct}% completo</span>
+            <span className={`text-xs ${styles.sub}`}>{doneCount}/{total} campos</span>
           </div>
-          <div className="w-full bg-muted rounded-full h-1.5">
-            <div className="bg-primary h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+          <div className={`w-full ${styles.bar} rounded-full h-1.5`}>
+            <div className={`${styles.fill} h-1.5 rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
           </div>
         </div>
         <Link to="/dashboard?tab=profile" className="shrink-0">
-          <Button size="sm" className="bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-bold px-4 gap-1.5 whitespace-nowrap">
+          <Button size="sm" className={`${styles.btn} rounded-xl text-xs font-bold px-4 gap-1.5 whitespace-nowrap`}>
             Finalizar cadastro <ArrowRight className="w-3 h-3" />
           </Button>
         </Link>
