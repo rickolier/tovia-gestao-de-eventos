@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../../lib/AuthContext';
 import { Evento } from '../../types';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Users, ArrowRight, TrendingUp, CheckCircle2, Clock, Star, UserCog } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight, TrendingUp, CheckCircle2, Clock, Star, UserCog, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 
@@ -41,6 +41,100 @@ function ProgressRing({ value, max, color, label, sublabel }: { value: number; m
         <p className="text-[10px] text-muted-foreground mt-0.5">{sublabel}</p>
       </div>
     </div>
+  );
+}
+
+function ProfileCompletion() {
+  const { profile } = useAuth();
+  const [open, setOpen] = React.useState(false);
+
+  const sections = [
+    {
+      title: 'Identidade',
+      items: [
+        { label: 'Nome', done: !!profile?.nome },
+        { label: 'Foto de perfil', done: !!profile?.imagem_url },
+        { label: 'Bio', done: !!profile?.bio },
+        { label: 'Instituição', done: !!profile?.instituicao },
+      ],
+    },
+    {
+      title: 'Contato',
+      items: [
+        { label: 'Telefone', done: !!profile?.telefone },
+        { label: 'E-mail de contato', done: !!profile?.contato_email },
+        { label: 'Site', done: !!profile?.site },
+        { label: 'Instagram', done: !!profile?.redes_social?.instagram },
+      ],
+    },
+    {
+      title: 'Faturamento',
+      items: [
+        { label: 'CPF / CNPJ', done: !!profile?.cnpj },
+        { label: 'Endereço', done: !!profile?.endereco },
+        { label: 'CEP', done: !!profile?.cep },
+      ],
+    },
+  ];
+
+  const allItems = sections.flatMap(s => s.items);
+  const doneCount = allItems.filter(i => i.done).length;
+  const total = allItems.length;
+  const pct = Math.round((doneCount / total) * 100);
+
+  if (pct === 100) return null;
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-left"
+        >
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-foreground">Perfil {pct}% completo</span>
+              <span className="text-xs text-muted-foreground">{doneCount}/{total} campos</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-1.5">
+              <div
+                className="bg-primary h-1.5 rounded-full transition-all duration-700"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+          <ChevronRight className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? 'rotate-90' : ''}`} />
+        </button>
+
+        {open && (
+          <div className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-border pt-4">
+            {sections.map(section => (
+              <div key={section.title}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{section.title}</p>
+                <div className="space-y-1.5">
+                  {section.items.map(item => (
+                    <div key={item.label} className="flex items-center gap-2">
+                      {item.done
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                        : <div className="w-3.5 h-3.5 rounded-full border-2 border-muted-foreground/30 shrink-0" />
+                      }
+                      <span className={`text-xs ${item.done ? 'text-foreground' : 'text-muted-foreground'}`}>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="sm:col-span-3 pt-2">
+              <Link to="/dashboard?tab=profile">
+                <Button size="sm" variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/5 text-xs font-semibold gap-1.5">
+                  Completar perfil <ArrowRight className="w-3 h-3" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
@@ -131,15 +225,8 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         </Link>
       </motion.div>
 
-      {/* ── Progress overview (shown when there are events) ── */}
-      {eventos.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-        </motion.div>
-      )}
+      {/* ── Profile Completion ── */}
+      <ProfileCompletion />
 
       {/* ── Events List ── */}
       <motion.div
