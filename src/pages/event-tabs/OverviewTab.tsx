@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Evento, Inscricao } from '../../types';
+import { Evento, Inscricao, Ticket } from '../../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin, Users, Building, Info, CheckCircle, Share2, Copy, Check, TrendingUp, DollarSign, Edit2 } from 'lucide-react';
 import { listDocuments } from '../../lib/firebase-utils';
@@ -15,11 +15,19 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const regs = await listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`);
-      const confirmed = regs.filter(r => r.status === 'pago' || r.validada_manual);
+      const [regs, tickets] = await Promise.all([
+        listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`),
+        listDocuments<Ticket>(`eventos/${evento.id}/tickets`),
+      ]);
+      const doacaoIds = new Set(tickets.filter(t => t.tipo === 'doacao').map(t => t.id));
+      const confirmed = regs.filter(r =>
+        (r.status === 'pago' || r.validada_manual) && !doacaoIds.has(r.ticketId)
+      );
       setOccupiedSlots(confirmed.length);
-      
-      const revenue = confirmed.reduce((sum, r) => sum + (r.valor_pago || 0), 0);
+
+      const revenue = regs
+        .filter(r => r.status === 'pago' || r.validada_manual)
+        .reduce((sum, r) => sum + (r.valor_pago || 0), 0);
       setTotalRevenue(revenue);
     };
     fetchData();

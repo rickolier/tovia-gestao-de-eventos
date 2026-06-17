@@ -60,7 +60,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         ...formData,
         eventoId,
         valor: (formData.tipo === 'gratuito' || formData.tipo === 'doacao') ? 0 : Number(formData.valor),
-        limite_vagas: Number(formData.limite_vagas)
+        limite_vagas: formData.tipo === 'doacao' ? 0 : Number(formData.limite_vagas)
       };
 
       if (editingTicketId) {
@@ -229,25 +229,35 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="limite" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Limite de Vagas</Label>
-                  <Input 
-                    id="limite" 
-                    type="number" 
-                    value={formData.limite_vagas || ''}
-                    onChange={e => setFormData({...formData, limite_vagas: Number(e.target.value)})}
-                    className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors"
-                    placeholder="0 = Ilimitado"
-                  />
-                </div>
+                {formData.tipo !== 'doacao' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="limite" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Limite de Vagas</Label>
+                    <Input
+                      id="limite"
+                      type="number"
+                      value={formData.limite_vagas || ''}
+                      onChange={e => setFormData({...formData, limite_vagas: Number(e.target.value)})}
+                      className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors"
+                      placeholder="0 = Ilimitado"
+                    />
+                  </div>
+                )}
+                {formData.tipo === 'doacao' && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Limite de Vagas</Label>
+                    <div className="rounded-xl bg-muted/30 h-12 flex items-center px-3 text-sm text-muted-foreground border border-dashed border-border">
+                      Ilimitado — doações não ocupam vagas
+                    </div>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="data_limite" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
-                  <Input 
-                    id="data_limite" 
-                    type="datetime-local" 
+                  <Input
+                    id="data_limite"
+                    type="datetime-local"
                     value={formData.data_limite}
                     onChange={e => setFormData({...formData, data_limite: e.target.value})}
-                    className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors font-sans" 
+                    className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors font-sans"
                   />
                 </div>
               </div>
