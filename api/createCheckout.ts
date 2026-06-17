@@ -42,25 +42,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const userDoc = await db.collection('users').doc(userId).get();
     const userData = userDoc.exists ? (userDoc.data() || {}) : {};
 
+    const customerPayload = {
+      name: userName || userEmail,
+      email: userEmail,
+      externalReference: userId,
+      ...(userCpfCnpj ? { cpfCnpj: userCpfCnpj.replace(/\D/g, '') } : {}),
+      ...(userPhone ? { mobilePhone: userPhone.replace(/\D/g, '') } : {}),
+      ...(userCep ? { postalCode: userCep.replace(/\D/g, '') } : {}),
+      ...(userEndereco ? { address: userEndereco } : {}),
+      ...(userNumero ? { addressNumber: userNumero } : {}),
+      ...(userComplemento ? { complement: userComplemento } : {}),
+      ...(userBairro ? { province: userBairro } : {}),
+    };
+
     if (userData.asaasCustomerId) {
       customerId = userData.asaasCustomerId;
+      // Atualiza o cliente existente com CPF/CNPJ caso esteja faltando
+      if (userCpfCnpj) {
+        await axios.post(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers }).catch(() => {});
+      }
     } else {
-      const customerRes = await axios.post(
-        `${ASAAS_BASE_URL}/customers`,
-        {
-          name: userName || userEmail,
-          email: userEmail,
-          externalReference: userId,
-          ...(userCpfCnpj ? { cpfCnpj: userCpfCnpj.replace(/\D/g, '') } : {}),
-          ...(userPhone ? { mobilePhone: userPhone.replace(/\D/g, '') } : {}),
-          ...(userCep ? { postalCode: userCep.replace(/\D/g, '') } : {}),
-          ...(userEndereco ? { address: userEndereco } : {}),
-          ...(userNumero ? { addressNumber: userNumero } : {}),
-          ...(userComplemento ? { complement: userComplemento } : {}),
-          ...(userBairro ? { province: userBairro } : {}),
-        },
-        { headers }
-      );
+      const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
       customerId = customerRes.data.id;
       await db.collection('users').doc(userId).set(
         { asaasCustomerId: customerId },
