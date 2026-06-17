@@ -8,6 +8,11 @@ export interface UserProfile {
   whatsapp?: string;
   instituicao?: string;
   cnpj?: string;
+  cep?: string;
+  endereco?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
   cargo?: string;
   bio?: string;
   descricao?: string;

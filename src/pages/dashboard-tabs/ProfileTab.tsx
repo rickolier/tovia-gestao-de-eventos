@@ -52,7 +52,12 @@ export default function ProfileTab() {
     instagram: profile?.redes_social?.instagram || '',
     link_importante_1: profile?.link_importante_1 || '',
     link_importante_2: profile?.link_importante_2 || '',
-    imagem_url: profile?.imagem_url || ''
+    imagem_url: profile?.imagem_url || '',
+    cep: profile?.cep || '',
+    endereco: profile?.endereco || '',
+    numero: profile?.numero || '',
+    complemento: profile?.complemento || '',
+    bairro: profile?.bairro || '',
   });
 
   const isValidUrl = (url: string) => {
@@ -81,7 +86,8 @@ export default function ProfileTab() {
       });
       toast.success('Perfil atualizado com sucesso!');
     } catch (error) {
-      toast.error('Erro ao atualizar perfil.');
+      console.error('Erro ao salvar perfil:', error);
+      toast.error('Erro ao atualizar perfil: ' + (error instanceof Error ? error.message : String(error)));
     } finally {
       setLoading(false);
     }
@@ -148,15 +154,6 @@ export default function ProfileTab() {
                     value={formData.instituicao}
                     onChange={e => setFormData({...formData, instituicao: e.target.value})}
                     placeholder="Ex: Comunidade da Graça"
-                    className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CPF / CNPJ</Label>
-                  <Input
-                    value={formData.cnpj || ''}
-                    onChange={e => setFormData({...formData, cnpj: e.target.value})}
-                    placeholder="CPF ou CNPJ da instituição"
                     className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
                   />
                 </div>
@@ -250,6 +247,45 @@ export default function ProfileTab() {
                     className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
                   />
                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Card de faturamento */}
+        <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+              <CreditCard className="w-5 h-5 text-primary" />
+              Informações para Faturamento
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-8 space-y-4">
+            <p className="text-xs text-muted-foreground">Esses dados são usados para emitir cobranças e notas fiscais. CPF/CNPJ é obrigatório para assinar um plano.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CPF / CNPJ *</Label>
+                <Input value={formData.cnpj} onChange={e => setFormData({...formData, cnpj: e.target.value})} placeholder="000.000.000-00 ou 00.000.000/0001-00" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CEP</Label>
+                <Input value={formData.cep} onChange={e => setFormData({...formData, cep: e.target.value})} placeholder="00000-000" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Endereço</Label>
+                <Input value={formData.endereco} onChange={e => setFormData({...formData, endereco: e.target.value})} placeholder="Rua, Avenida..." className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Número</Label>
+                <Input value={formData.numero} onChange={e => setFormData({...formData, numero: e.target.value})} placeholder="Ex: 123" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Complemento</Label>
+                <Input value={formData.complemento} onChange={e => setFormData({...formData, complemento: e.target.value})} placeholder="Apto, Sala..." className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Bairro</Label>
+                <Input value={formData.bairro} onChange={e => setFormData({...formData, bairro: e.target.value})} placeholder="Ex: Centro" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
               </div>
             </div>
           </CardContent>

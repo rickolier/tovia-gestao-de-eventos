@@ -52,6 +52,12 @@ export default function Plans() {
           userName: profile?.nome || user.displayName || '',
           userEmail: user.email || '',
           userCpfCnpj: profile?.cnpj || '',
+          userPhone: profile?.telefone || '',
+          userCep: profile?.cep || '',
+          userEndereco: profile?.endereco || '',
+          userNumero: profile?.numero || '',
+          userComplemento: profile?.complemento || '',
+          userBairro: profile?.bairro || '',
         }),
       });
 
