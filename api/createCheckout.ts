@@ -13,7 +13,7 @@ const PLAN_PRICES: Record<string, number> = {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { planLevel, userId, userName, userEmail } = req.body || {};
+  const { planLevel, userId, userName, userEmail, userCpfCnpj } = req.body || {};
 
   if (!planLevel || !userId || !userEmail) {
     return res.status(400).json({ error: 'Dados incompletos.' });
@@ -47,7 +47,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } else {
       const customerRes = await axios.post(
         `${ASAAS_BASE_URL}/customers`,
-        { name: userName || userEmail, email: userEmail, externalReference: userId },
+        { name: userName || userEmail, email: userEmail, externalReference: userId, ...(userCpfCnpj ? { cpfCnpj: userCpfCnpj.replace(/\D/g, '') } : {}) },
         { headers }
       );
       customerId = customerRes.data.id;

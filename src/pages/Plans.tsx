@@ -49,8 +49,9 @@ export default function Plans() {
         body: JSON.stringify({
           planLevel: selected,
           userId: user.uid,
-          userName: user.displayName || '',
+          userName: profile?.nome || user.displayName || '',
           userEmail: user.email || '',
+          userCpfCnpj: profile?.cnpj || '',
         }),
       });
 
