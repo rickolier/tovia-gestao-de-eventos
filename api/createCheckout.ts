@@ -59,7 +59,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customerId = userData.asaasCustomerId;
       // Atualiza o cliente existente com CPF/CNPJ caso esteja faltando
       if (userCpfCnpj) {
-        await axios.post(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers }).catch(() => {});
+        try {
+          await axios.put(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers });
+        } catch (updateErr: any) {
+          console.error('Erro ao atualizar cliente Asaas:', updateErr?.response?.data || updateErr.message);
+        }
       }
     } else {
       const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
