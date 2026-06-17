@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ImageCropper from '../components/ImageCropper';
 import { useAuth } from '../lib/AuthContext';
 import { createDocument, listDocuments } from '../lib/firebase-utils';
 import { Email } from '../lib/email';
@@ -27,6 +28,7 @@ export default function CreateEvent() {
   const [imagemPreview, setImagemPreview] = useState<string | null>(null);
   const [imagemErro, setImagemErro] = useState<string | null>(null);
   const [uploadProgresso, setUploadProgresso] = useState<number | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   const plano = getPlanConfig(perfil?.plano);
 
@@ -88,23 +90,21 @@ export default function CreateEvent() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      setImagemErro('Formato inválido. Use PNG ou JPEG.');
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      setImagemErro('Formato inválido. Use PNG, JPEG ou WebP.');
       return;
     }
 
-    const img = new Image();
+    // Abre o cropper em vez de validar dimensão
     const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      if (img.width < 800 || img.height < 400) {
-        setImagemErro(`Imagem muito pequena (${img.width}×${img.height}px). O mínimo é 800×400px.`);
-        return;
-      }
-      setImagemFile(file);
-      setImagemPreview(URL.createObjectURL(file));
-    };
-    img.src = url;
+    setCropSrc(url);
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    const preview = URL.createObjectURL(croppedFile);
+    setImagemFile(croppedFile);
+    setImagemPreview(preview);
+    setCropSrc(null);
   };
 
   const uploadImagem = async (eventoId: string): Promise<string> => {
@@ -257,6 +257,17 @@ export default function CreateEvent() {
 
   return (
     <div className="min-h-screen bg-background">
+      {cropSrc && (
+        <ImageCropper
+          imageSrc={cropSrc}
+          aspect={16 / 9}
+          outputWidth={1280}
+          outputHeight={720}
+          label="Recortar capa do evento (16:9)"
+          onComplete={handleCropComplete}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
       {/* Sticky top header */}
       <header className="sticky top-0 z-30 bg-[var(--sidebar)] h-14 flex items-center px-4 gap-3">
         <Link to="/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import ImageCropper from '../../components/ImageCropper';
 import { useAuth } from '../../lib/AuthContext';
 import { updateDocument } from '../../lib/firebase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,20 +19,27 @@ export default function ProfileTab() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
     if (!file.type.startsWith('image/')) { toast.error('Selecione uma imagem válida.'); return; }
-    if (file.size > 5 * 1024 * 1024) { toast.error('Imagem muito grande. Máximo 5MB.'); return; }
+    setCropSrc(URL.createObjectURL(file));
+  };
+
+  const handlePhotoCropComplete = async (croppedFile: File) => {
+    setCropSrc(null);
+    if (!user) return;
     setUploadingPhoto(true);
     try {
       const storageRef = ref(storage, `profiles/${user.uid}/foto`);
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, croppedFile);
       const url = await getDownloadURL(storageRef);
       setFormData(prev => ({ ...prev, imagem_url: url }));
       await updateDocument('users', user.uid, { imagem_url: url });
+      await refreshProfile();
       toast.success('Foto atualizada!');
     } catch {
       toast.error('Erro ao fazer upload da foto.');
@@ -96,6 +104,17 @@ export default function ProfileTab() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 text-foreground">
+      {cropSrc && (
+        <ImageCropper
+          imageSrc={cropSrc}
+          aspect={1}
+          outputWidth={400}
+          outputHeight={400}
+          label="Recortar foto de perfil (1:1)"
+          onComplete={handlePhotoCropComplete}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
       <div className="flex flex-col gap-1">
         <h2 className="text-2xl font-black tracking-tight text-foreground">Perfil</h2>
         <p className="text-sm text-muted-foreground">Configure as informações públicas da sua instituição e perfil de produtor.</p>
@@ -117,7 +136,7 @@ export default function ProfileTab() {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handlePhotoUpload}
+                  onChange={handlePhotoSelect}
                 />
                 <div
                   className="w-32 h-32 bg-muted rounded-[2rem] flex items-center justify-center border-2 border-dashed border-border overflow-hidden relative group transition-all hover:border-primary/50 cursor-pointer"
