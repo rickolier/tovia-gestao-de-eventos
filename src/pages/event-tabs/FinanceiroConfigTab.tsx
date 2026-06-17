@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, Coins, TrendingDown, Percent, FileText } from 'lucide-react';
+import { Calculator, Coins, TrendingDown, TrendingUp, Percent, FileText } from 'lucide-react';
 import { updateDocument } from '../../lib/firebase-utils';
 import { Evento } from '../../types';
 import { toast } from 'sonner';
@@ -117,6 +117,20 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                   placeholder="Ex: 250.00"
                   className="h-14 font-black rounded-2xl border-none bg-muted/40 focus:ring-primary/20"
                 />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3 text-emerald-500" /> Margem por Inscrito (R$)
+                </Label>
+                <Input
+                  type="number"
+                  value={(calcData.valorTicket - calcData.custoInscrito) || ''}
+                  onChange={e => setCalcData(p => ({ ...p, valorTicket: p.custoInscrito + Number(e.target.value) }))}
+                  placeholder="Ex: 150.00"
+                  className="h-14 font-black rounded-2xl border-none bg-emerald-50 focus:ring-emerald-500/20 text-emerald-700"
+                />
+                <p className="text-[10px] font-bold text-muted-foreground italic px-2">Alterar a margem recalcula automaticamente o Valor Base.</p>
               </div>
             </div>
 
