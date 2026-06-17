@@ -152,11 +152,11 @@ export default function ProfileTab() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CNPJ da Instituição</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CPF / CNPJ</Label>
                   <Input
                     value={formData.cnpj || ''}
                     onChange={e => setFormData({...formData, cnpj: e.target.value})}
-                    placeholder="00.000.000/0001-00"
+                    placeholder="CPF ou CNPJ da instituição"
                     className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
                   />
                 </div>
