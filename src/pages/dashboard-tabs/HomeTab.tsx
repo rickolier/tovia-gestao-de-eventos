@@ -46,93 +46,36 @@ function ProgressRing({ value, max, color, label, sublabel }: { value: number; m
 
 function ProfileCompletion() {
   const { profile } = useAuth();
-  const [open, setOpen] = React.useState(false);
 
-  const sections = [
-    {
-      title: 'Identidade',
-      items: [
-        { label: 'Nome', done: !!profile?.nome },
-        { label: 'Foto de perfil', done: !!profile?.imagem_url },
-        { label: 'Bio', done: !!profile?.bio },
-        { label: 'Instituição', done: !!profile?.instituicao },
-      ],
-    },
-    {
-      title: 'Contato',
-      items: [
-        { label: 'Telefone', done: !!profile?.telefone },
-        { label: 'E-mail de contato', done: !!profile?.contato_email },
-        { label: 'Site', done: !!profile?.site },
-        { label: 'Instagram', done: !!profile?.redes_social?.instagram },
-      ],
-    },
-    {
-      title: 'Faturamento',
-      items: [
-        { label: 'CPF / CNPJ', done: !!profile?.cnpj },
-        { label: 'Endereço', done: !!profile?.endereco },
-        { label: 'CEP', done: !!profile?.cep },
-      ],
-    },
+  const fields = [
+    !!profile?.nome, !!profile?.imagem_url, !!profile?.bio, !!profile?.instituicao,
+    !!profile?.telefone, !!profile?.contato_email, !!profile?.site, !!profile?.redes_social?.instagram,
+    !!profile?.cnpj, !!profile?.endereco, !!profile?.cep,
   ];
 
-  const allItems = sections.flatMap(s => s.items);
-  const doneCount = allItems.filter(i => i.done).length;
-  const total = allItems.length;
+  const doneCount = fields.filter(Boolean).length;
+  const total = fields.length;
   const pct = Math.round((doneCount / total) * 100);
 
   if (pct === 100) return null;
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
-        <button
-          onClick={() => setOpen(o => !o)}
-          className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-left"
-        >
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-foreground">Perfil {pct}% completo</span>
-              <span className="text-xs text-muted-foreground">{doneCount}/{total} campos</span>
-            </div>
-            <div className="w-full bg-muted rounded-full h-1.5">
-              <div
-                className="bg-primary h-1.5 rounded-full transition-all duration-700"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+      <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-foreground">Perfil {pct}% completo</span>
+            <span className="text-xs text-muted-foreground">{doneCount}/{total} campos</span>
           </div>
-          <ChevronRight className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? 'rotate-90' : ''}`} />
-        </button>
-
-        {open && (
-          <div className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-border pt-4">
-            {sections.map(section => (
-              <div key={section.title}>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{section.title}</p>
-                <div className="space-y-1.5">
-                  {section.items.map(item => (
-                    <div key={item.label} className="flex items-center gap-2">
-                      {item.done
-                        ? <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
-                        : <div className="w-3.5 h-3.5 rounded-full border-2 border-muted-foreground/30 shrink-0" />
-                      }
-                      <span className={`text-xs ${item.done ? 'text-foreground' : 'text-muted-foreground'}`}>{item.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-            <div className="sm:col-span-3 pt-2">
-              <Link to="/dashboard?tab=profile">
-                <Button size="sm" variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/5 text-xs font-semibold gap-1.5">
-                  Completar perfil <ArrowRight className="w-3 h-3" />
-                </Button>
-              </Link>
-            </div>
+          <div className="w-full bg-muted rounded-full h-1.5">
+            <div className="bg-primary h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
           </div>
-        )}
+        </div>
+        <Link to="/dashboard?tab=profile" className="shrink-0">
+          <Button size="sm" className="bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-bold px-4 gap-1.5 whitespace-nowrap">
+            Finalizar cadastro <ArrowRight className="w-3 h-3" />
+          </Button>
+        </Link>
       </div>
     </motion.div>
   );
