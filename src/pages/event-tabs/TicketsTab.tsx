@@ -37,6 +37,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     permite_parcelamento: false,
     metodos_pagamento: ['pix', 'boleto', 'credito'],
     exibir_preco: true,
+    valor_livre: false,
+    permite_patrocinio: false,
+    valor_patrocinio: 0,
   });
 
   const fetchTickets = async () => {
@@ -86,6 +89,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         permite_parcelamento: false,
         metodos_pagamento: ['pix', 'boleto', 'credito'],
         exibir_preco: true,
+        valor_livre: false,
+        permite_patrocinio: false,
+        valor_patrocinio: 0,
       });
       fetchTickets();
     } catch (error) {
@@ -104,6 +110,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       permite_parcelamento: ticket.permite_parcelamento || false,
       metodos_pagamento: ticket.metodos_pagamento || ['pix', 'boleto', 'credito'],
       exibir_preco: ticket.exibir_preco !== false,
+      valor_livre: ticket.valor_livre || false,
+      permite_patrocinio: ticket.permite_patrocinio || false,
+      valor_patrocinio: ticket.valor_patrocinio || 0,
     });
     setIsDialogOpen(true);
   };
@@ -274,6 +283,54 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                     <p className="text-[11px] text-muted-foreground">Quando desmarcado, o valor/tipo não aparece para o participante.</p>
                   </div>
                 </label>
+
+                {/* Opções exclusivas de doação */}
+                {formData.tipo === 'doacao' && (
+                  <div className="space-y-3 border border-pink-100 bg-pink-50/50 rounded-xl p-4">
+                    <p className="text-xs font-black uppercase tracking-widest text-pink-600">Opções de Doação</p>
+
+                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={formData.valor_livre}
+                        onChange={e => setFormData({ ...formData, valor_livre: e.target.checked })}
+                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                      />
+                      <div>
+                        <p className="text-xs font-bold text-foreground">Permitir valor livre</p>
+                        <p className="text-[11px] text-muted-foreground">O participante digita o valor que deseja doar.</p>
+                      </div>
+                    </label>
+
+                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={formData.permite_patrocinio}
+                        onChange={e => setFormData({ ...formData, permite_patrocinio: e.target.checked })}
+                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                      />
+                      <div>
+                        <p className="text-xs font-bold text-foreground">Patrocinar inscrições</p>
+                        <p className="text-[11px] text-muted-foreground">O participante escolhe quantas inscrições quer pagar.</p>
+                      </div>
+                    </label>
+
+                    {formData.permite_patrocinio && (
+                      <div className="space-y-1.5 pt-1">
+                        <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor por inscrição patrocinada (R$)</Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          value={formData.valor_patrocinio || ''}
+                          onChange={e => setFormData({ ...formData, valor_patrocinio: Number(e.target.value) })}
+                          className="rounded-xl border-none bg-white h-11 font-bold focus-visible:ring-primary"
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Formas de pagamento — apenas para planos com financeiro */}
                 {!onlyFreeTickets && formData.tipo === 'pago' && (

@@ -119,6 +119,10 @@ export interface Ticket {
   permite_parcelamento: boolean;
   metodos_pagamento: string[];
   exibir_preco?: boolean;
+  // opções exclusivas de doação
+  valor_livre?: boolean;        // participante digita o valor
+  permite_patrocinio?: boolean; // participante escolhe quantas inscrições patrocinar
+  valor_patrocinio?: number;    // valor por inscrição patrocinada
 }
 
 export interface Pessoa {

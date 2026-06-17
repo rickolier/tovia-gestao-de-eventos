@@ -46,6 +46,7 @@ interface Props {
 
 const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, onSuccess }) => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [doacaoValores, setDoacaoValores] = useState<Record<string, number>>({});
   const [step, setStep] = useState<Step>('ticket');
   const [submitting, setSubmitting] = useState(false);
   const [inscricaoId, setInscricaoId] = useState<string | null>(null);
@@ -60,9 +61,19 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     }
   }, [evento.criado_por]);
 
-  const selectedTickets = tickets.filter(t => (quantities[t.id] || 0) > 0);
-  const total = selectedTickets.reduce((s, t) => s + t.valor * (quantities[t.id] || 0), 0);
-  const totalQty: number = (Object.values(quantities) as number[]).reduce((a, b) => a + b, 0);
+  const selectedTickets = tickets.filter(t => (quantities[t.id] || 0) > 0 || (t.valor_livre && (doacaoValores[t.id] || 0) > 0));
+
+  const getTicketTotal = (t: Ticket) => {
+    if (t.tipo === 'doacao' && t.valor_livre) return doacaoValores[t.id] || 0;
+    if (t.tipo === 'doacao' && t.permite_patrocinio) return (t.valor_patrocinio || 0) * (quantities[t.id] || 0);
+    return t.valor * (quantities[t.id] || 0);
+  };
+
+  const total = selectedTickets.reduce((s, t) => s + getTicketTotal(t), 0);
+  const totalQty: number = selectedTickets.reduce((sum, t) => {
+    if (t.tipo === 'doacao' && t.valor_livre) return sum + ((doacaoValores[t.id] || 0) > 0 ? 1 : 0);
+    return sum + (quantities[t.id] || 0);
+  }, 0);
 
   const updateQty = (id: string, delta: number) =>
     setQuantities(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + delta) }));
@@ -99,6 +110,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         telefone,
       });
 
+      const valorFinal = ticket ? getTicketTotal(ticket) : total;
       await createDocument(`eventos/${eventoId}/inscricoes`, id, {
         id, eventoId,
         pessoaId,
@@ -109,14 +121,15 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         telefone,
         respostas_formulario: respostas,
         quantidades: quantities,
-        valor_total: total,
+        valor_total: valorFinal,
         valor_pago: 0,
-        status: total === 0 ? 'pago' : 'pendente',
+        status: valorFinal === 0 ? 'pago' : 'pendente',
         data_inscricao: new Date().toISOString(),
         precisa_ajuda: false,
         validada_manual: false,
         pagina_venda_id: pagina.id,
         pagina_venda_slug: pagina.slug,
+        ...(ticket?.tipo === 'doacao' && ticket.permite_patrocinio ? { patrocinio_qtd: quantities[ticket.id] || 0 } : {}),
       } as any);
 
       setInscricaoId(id);
@@ -298,38 +311,68 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     const qty = quantities[ticket.id] || 0;
                     const isGratuito = ticket.tipo === 'gratuito' || ticket.tipo === 'doacao' || ticket.valor === 0;
                     const expired = ticket.data_limite ? new Date(ticket.data_limite) < new Date() : false;
+                    const isValorLivre = ticket.tipo === 'doacao' && ticket.valor_livre;
+                    const isPatrocinio = ticket.tipo === 'doacao' && ticket.permite_patrocinio;
+                    const active = isValorLivre ? (doacaoValores[ticket.id] || 0) > 0 : qty > 0;
                     return (
-                      <div key={ticket.id} className={`px-5 py-4 flex items-center gap-4 transition-colors ${expired ? 'opacity-50' : qty > 0 ? 'bg-primary/5' : 'hover:bg-gray-50'}`}>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-gray-900">{ticket.nome}</p>
-                          <p className="text-base font-black mt-0.5" style={{ color: isGratuito ? '#16a34a' : 'inherit' }}>
-                            {isGratuito ? 'Gratuito' : formatPrice(ticket.valor)}
-                          </p>
-                          {ticket.data_limite && !expired && (
-                            <p className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-1">
-                              <Clock className="w-3 h-3" /> Inscrições até {formatDate(ticket.data_limite)}
-                            </p>
-                          )}
-                          {expired && <p className="text-[11px] text-red-400 mt-0.5 font-semibold">Encerrado</p>}
-                        </div>
-                        {!expired && (
-                          <div className="flex items-center gap-2 shrink-0">
-                            <button
-                              onClick={() => updateQty(ticket.id, -1)}
-                              disabled={qty === 0}
-                              className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-primary hover:text-primary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                            >
-                              <Minus className="w-3.5 h-3.5" />
-                            </button>
-                            <span className="w-5 text-center font-black text-gray-900 text-sm">{qty}</span>
-                            <button
-                              onClick={() => updateQty(ticket.id, 1)}
-                              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90 transition-all active:scale-95"
-                            >
-                              <Plus className="w-3.5 h-3.5" />
-                            </button>
+                      <div key={ticket.id} className={`px-5 py-4 transition-colors ${expired ? 'opacity-50' : active ? 'bg-primary/5' : 'hover:bg-gray-50'}`}>
+                        <div className="flex items-start gap-4">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-gray-900">{ticket.nome}</p>
+                            {isValorLivre ? (
+                              <p className="text-xs text-pink-600 font-semibold mt-0.5">Valor livre — você escolhe quanto doar</p>
+                            ) : isPatrocinio ? (
+                              <p className="text-xs text-pink-600 font-semibold mt-0.5">
+                                {ticket.valor_patrocinio ? `${formatPrice(ticket.valor_patrocinio)} por inscrição patrocinada` : 'Patrocinar inscrições'}
+                              </p>
+                            ) : (
+                              <p className="text-base font-black mt-0.5" style={{ color: isGratuito ? '#16a34a' : 'inherit' }}>
+                                {isGratuito ? 'Gratuito' : formatPrice(ticket.valor)}
+                              </p>
+                            )}
+                            {ticket.data_limite && !expired && (
+                              <p className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-1">
+                                <Clock className="w-3 h-3" /> Inscrições até {formatDate(ticket.data_limite)}
+                              </p>
+                            )}
+                            {expired && <p className="text-[11px] text-red-400 mt-0.5 font-semibold">Encerrado</p>}
                           </div>
-                        )}
+
+                          {/* Controle de quantidade / valor livre */}
+                          {!expired && (
+                            isValorLivre ? (
+                              <div className="flex items-center gap-1 shrink-0">
+                                <span className="text-sm text-gray-500 font-semibold">R$</span>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  step={1}
+                                  value={doacaoValores[ticket.id] || ''}
+                                  onChange={e => setDoacaoValores(prev => ({ ...prev, [ticket.id]: Number(e.target.value) }))}
+                                  className="w-24 h-9 px-2 text-sm font-bold border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-right"
+                                  placeholder="0,00"
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => updateQty(ticket.id, -1)}
+                                  disabled={qty === 0}
+                                  className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-primary hover:text-primary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                  <Minus className="w-3.5 h-3.5" />
+                                </button>
+                                <span className="w-5 text-center font-black text-gray-900 text-sm">{qty}</span>
+                                <button
+                                  onClick={() => updateQty(ticket.id, 1)}
+                                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90 transition-all active:scale-95"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            )
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -341,8 +384,17 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     <div className="space-y-1">
                       {selectedTickets.map(t => (
                         <div key={t.id} className="flex justify-between text-sm text-gray-600">
-                          <span>{quantities[t.id]}× {t.nome}</span>
-                          <span className="font-semibold">{formatPrice(t.valor * quantities[t.id])}</span>
+                          {t.tipo === 'doacao' && t.valor_livre ? (
+                            <>
+                              <span>Doação · {t.nome}</span>
+                              <span className="font-semibold">{formatPrice(doacaoValores[t.id] || 0)}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>{quantities[t.id]}× {t.nome}</span>
+                              <span className="font-semibold">{formatPrice(getTicketTotal(t))}</span>
+                            </>
+                          )}
                         </div>
                       ))}
                       <div className="flex justify-between font-black text-gray-900 pt-2 border-t border-gray-200 text-sm">
