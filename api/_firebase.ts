@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
-const admin = require('firebase-admin');
+import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
