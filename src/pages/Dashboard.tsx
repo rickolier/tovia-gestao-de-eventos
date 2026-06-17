@@ -16,6 +16,7 @@ import {
   X,
   Calculator,
   CreditCard,
+  Palette,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -32,6 +33,7 @@ import ProfileTab from './dashboard-tabs/ProfileTab';
 import CalendarTab from './dashboard-tabs/CalendarTab';
 import CalculatorTab from './dashboard-tabs/CalculatorTab';
 import BillingTab from './dashboard-tabs/BillingTab';
+import DesignSystemTab from './dashboard-tabs/DesignSystemTab';
 
 export default function Dashboard() {
   const { user, profile } = useAuth();
@@ -125,13 +127,16 @@ export default function Dashboard() {
     navigate('/login');
   };
 
+  const isAdmin = user?.email === 'admin@tovia.app';
+
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
-    { id: 'inicio',      label: 'Início',       icon: House },
-    { id: 'perfil',      label: 'Meu Perfil',  icon: User },
-    { id: 'agenda',      label: 'Agenda',       icon: CalendarIcon },
-    { id: 'calculadora', label: 'Calculadora',  icon: Calculator },
-    { id: 'relatorios',  label: 'Relatórios',   icon: BarChart3 },
-    { id: 'faturamento', label: 'Faturamento',  icon: CreditCard },
+    { id: 'inicio',      label: 'Início',        icon: House },
+    { id: 'perfil',      label: 'Meu Perfil',    icon: User },
+    { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
+    { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
+    { id: 'relatorios',  label: 'Relatórios',     icon: BarChart3 },
+    { id: 'faturamento', label: 'Faturamento',    icon: CreditCard },
+    ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
   ];
 
   if (loading) {
@@ -245,12 +250,13 @@ export default function Dashboard() {
         {/* Tab content */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
-            {activeTab === 'inicio'       && <HomeTab eventos={eventos} />}
-            {activeTab === 'agenda'       && <CalendarTab eventos={eventos} />}
-            {activeTab === 'calculadora'  && <CalculatorTab />}
-            {activeTab === 'relatorios'   && <ReportsTab eventos={eventos} />}
-            {activeTab === 'perfil'       && <ProfileTab />}
-            {activeTab === 'faturamento'  && <BillingTab />}
+            {activeTab === 'inicio'         && <HomeTab eventos={eventos} />}
+            {activeTab === 'agenda'         && <CalendarTab eventos={eventos} />}
+            {activeTab === 'calculadora'    && <CalculatorTab />}
+            {activeTab === 'relatorios'     && <ReportsTab eventos={eventos} />}
+            {activeTab === 'perfil'         && <ProfileTab />}
+            {activeTab === 'faturamento'    && <BillingTab />}
+            {activeTab === 'design-system'  && isAdmin && <DesignSystemTab />}
           </div>
         </div>
       </main>
