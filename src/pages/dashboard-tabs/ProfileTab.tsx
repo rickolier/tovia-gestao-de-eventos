@@ -14,7 +14,7 @@ import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function ProfileTab() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -84,6 +84,7 @@ export default function ProfileTab() {
         redes_social: { instagram },
         updatedAt: new Date().toISOString(),
       });
+      await refreshProfile();
       toast.success('Perfil atualizado com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar perfil:', error);
