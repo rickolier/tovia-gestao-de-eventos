@@ -61,7 +61,7 @@ function ProfileCompletion() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-      <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+      <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4 flex items-center gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold text-foreground">Perfil {pct}% completo</span>
