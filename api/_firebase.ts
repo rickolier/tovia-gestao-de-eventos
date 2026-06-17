@@ -1,8 +1,8 @@
 // @ts-nocheck
 /* eslint-disable */
-const admin = require('firebase-admin');
+const admin = require('firebase-admin').default || require('firebase-admin');
 
-if (!admin.apps.length) {
+if (!admin.apps || !admin.apps.length) {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
   if (!b64) throw new Error('FIREBASE_SERVICE_ACCOUNT_B64 não configurada.');
   const serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
