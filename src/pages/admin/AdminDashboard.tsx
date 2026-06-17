@@ -5,18 +5,20 @@ import Logo from '../../components/Logo';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, CreditCard, TrendingUp, LogOut,
-  ShieldCheck, Menu, X,
+  ShieldCheck, Menu, X, Palette,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminSubscriptionsTab from './AdminSubscriptionsTab';
 import AdminUsersTab from './AdminUsersTab';
 import AdminFinancialTab from './AdminFinancialTab';
+import DesignSystemTab from '../dashboard-tabs/DesignSystemTab';
 
 const TABS = [
-  { id: 'overview',      label: 'Visão Geral',   icon: LayoutDashboard },
-  { id: 'subscriptions', label: 'Assinaturas',    icon: CreditCard },
-  { id: 'financial',     label: 'Financeiro',     icon: TrendingUp },
-  { id: 'users',         label: 'Usuários',       icon: Users },
+  { id: 'overview',       label: 'Visão Geral',    icon: LayoutDashboard },
+  { id: 'subscriptions',  label: 'Assinaturas',    icon: CreditCard },
+  { id: 'financial',      label: 'Financeiro',      icon: TrendingUp },
+  { id: 'users',          label: 'Usuários',        icon: Users },
+  { id: 'design-system',  label: 'Design System',  icon: Palette },
 ];
 
 export default function AdminDashboard() {
@@ -121,6 +123,7 @@ export default function AdminDashboard() {
           {activeTab === 'subscriptions' && <AdminSubscriptionsTab />}
           {activeTab === 'financial'     && <AdminFinancialTab />}
           {activeTab === 'users'         && <AdminUsersTab />}
+          {activeTab === 'design-system' && <DesignSystemTab />}
         </main>
       </div>
     </div>
