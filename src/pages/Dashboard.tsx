@@ -15,7 +15,6 @@ import {
   Menu,
   X,
   Calculator,
-  Search,
   CreditCard,
 } from 'lucide-react';
 import { auth } from '../firebase';
@@ -41,7 +40,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('inicio');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -226,18 +224,6 @@ export default function Dashboard() {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Desktop Header */}
         <header className="hidden md:flex h-16 bg-card border-b border-border items-center px-6 gap-4 sticky top-0 z-30 shrink-0">
-          {/* Search bar */}
-          <div className="flex-1 max-w-sm relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full h-9 pl-9 pr-4 text-sm bg-muted/60 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
-            />
-          </div>
-
           <div className="ml-auto flex items-center gap-3">
             {/* User avatar + info */}
             <div className="flex items-center gap-3 pl-3 border-l border-border">
