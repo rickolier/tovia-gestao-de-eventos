@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import {
   LogOut,
   Plus,
-  LayoutDashboard,
+  House,
   BarChart3,
   User,
   Calendar as CalendarIcon,
@@ -126,7 +126,7 @@ export default function Dashboard() {
   };
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
-    { id: 'inicio',      label: 'Dashboard',   icon: LayoutDashboard },
+    { id: 'inicio',      label: 'Início',       icon: House },
     { id: 'perfil',      label: 'Meu Perfil',  icon: User },
     { id: 'agenda',      label: 'Agenda',       icon: CalendarIcon },
     { id: 'calculadora', label: 'Calculadora',  icon: Calculator },
