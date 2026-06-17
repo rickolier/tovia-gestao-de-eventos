@@ -52,7 +52,7 @@ export default function AdminDashboard() {
               <ShieldCheck className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <p className="text-xs font-black text-white uppercase tracking-widest">Admin</p>
+              <p className="text-xs font-black text-white uppercase tracking-widest">Central Tovia</p>
               <p className="text-[10px] text-white/40 truncate max-w-[140px]">{user?.email}</p>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
           <button onClick={() => setMobileOpen(true)} className="text-foreground">
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-black text-sm text-foreground">Painel Admin</span>
+          <span className="font-black text-sm text-foreground">Central Tovia</span>
         </header>
 
         <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
               {TABS.find(t => t.id === activeTab)?.label}
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Painel administrativo Tovia
+              Central Tovia
             </p>
           </div>
 
