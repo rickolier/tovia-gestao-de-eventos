@@ -68,7 +68,8 @@ service cloud.firestore {
         incoming().diff(existing()).affectedKeys().hasOnly([
           'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao',
           'redes_social', 'link_importante_1', 'link_importante_2',
-          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano'
+          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano',
+          'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro'
         ])
       );
       allow list: if isAdmin();
@@ -76,12 +77,7 @@ service cloud.firestore {
 
     match /notificacoes/{notifId} {
       allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      // list is always filtered by the client with where('userId','==',uid); the rule
-      // mirrors that constraint via request.query (resource.data is null in list calls).
-      allow list: if isSignedIn() && (
-        request.query.filters.size() > 0 ||
-        isAdmin()
-      );
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
       allow update: if isSignedIn() && existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['lida']);
       allow create: if isOwner(incoming().userId) || isAdmin();
       allow delete: if isSignedIn() && existing().userId == request.auth.uid;
