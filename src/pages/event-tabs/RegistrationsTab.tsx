@@ -77,11 +77,14 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
       listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`)
     ]);
 
-    const enriched = regData.map(reg => ({
-      ...reg,
-      pessoa: peopleData.find(p => p.id === reg.pessoaId),
-      ticket: ticketData.find(t => t.id === reg.ticketId)
-    }));
+    const doacaoIds = new Set(ticketData.filter(t => t.tipo === 'doacao').map(t => t.id));
+    const enriched = regData
+      .filter(reg => !doacaoIds.has(reg.ticketId))
+      .map(reg => ({
+        ...reg,
+        pessoa: peopleData.find(p => p.id === reg.pessoaId),
+        ticket: ticketData.find(t => t.id === reg.ticketId)
+      }));
 
     setRegistrations(enriched);
     setTickets(ticketData);
