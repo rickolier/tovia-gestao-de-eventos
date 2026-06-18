@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle, Camera, Share2, Copy, CheckCheck } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle, Camera, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
@@ -76,6 +76,7 @@ export default function ProfileTab() {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
   const [formData, setFormData] = useState({
     nome: profile?.nome || '',
     instituicao: profile?.instituicao || '',
@@ -340,65 +341,64 @@ export default function ProfileTab() {
         </Card>
 
         {/* Página Pública do Organizador */}
-        <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden">
-          <CardHeader className="bg-muted/30 border-b border-border">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
-              <Share2 className="w-5 h-5 text-primary" />
-              Página Pública do Organizador
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8 space-y-5">
-            <p className="text-sm text-muted-foreground">
-              Ative sua página pública para exibir seus eventos e informações de contato a qualquer visitante, mesmo sem conta no Tovia.
-            </p>
-            <div className="flex items-center justify-between gap-4 p-4 rounded-2xl border border-border bg-muted/30">
-              <div>
-                <p className="text-sm font-black text-foreground">
-                  {publicPageEnabled ? 'Página pública ativa' : 'Página pública inativa'}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {publicPageEnabled ? 'Seus eventos estão visíveis publicamente.' : 'Seus eventos não aparecem para visitantes.'}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleTogglePublicPage}
-                disabled={publicPageLoading}
-                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${publicPageEnabled ? 'bg-primary' : 'bg-muted-foreground/30'} ${publicPageLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${publicPageEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
-              </button>
-            </div>
+        <div>
+          <div className="flex flex-col gap-1 mb-4">
+            <h2 className="text-lg font-black tracking-tight text-foreground">Minha Página Pública</h2>
+            <p className="text-sm text-muted-foreground">Ative para exibir seus eventos e contato a qualquer visitante, sem precisar de conta no Tovia.</p>
+          </div>
 
-            {publicPageEnabled && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Link da sua página</p>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-muted/50 rounded-xl border border-border overflow-hidden">
-                    <Globe className="w-4 h-4 text-primary shrink-0" />
-                    <span className="text-sm font-medium text-foreground truncate">{publicPageUrl}</span>
+          <Card className="border border-border rounded-2xl bg-card shadow-sm hover:shadow-md transition-all max-w-md">
+            <div className={`h-1.5 rounded-t-2xl ${publicPageEnabled ? 'bg-primary' : 'bg-muted'}`} />
+            <CardHeader className="pb-2 pt-4 px-5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-base font-bold text-foreground">Página do Organizador</CardTitle>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${publicPageEnabled ? 'border-green-500/30 text-green-600 bg-green-50' : 'border-border text-muted-foreground bg-muted/40'}`}>
+                      {publicPageEnabled ? 'Ativa' : 'Inativa'}
+                    </span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">/o/{user?.uid?.slice(0, 12)}...</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleTogglePublicPage}
+                  disabled={publicPageLoading}
+                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${publicPageEnabled ? 'bg-primary' : 'bg-muted-foreground/30'} ${publicPageLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${publicPageEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent className="px-5 pb-4 space-y-3">
+              <p className="text-xs text-muted-foreground">
+                {publicPageEnabled
+                  ? 'Sua página está visível. O conteúdo vem das informações do seu perfil acima.'
+                  : 'Ative para gerar o link público da sua página de organizador.'}
+              </p>
+              {publicPageEnabled && (
+                <div className="flex gap-3 pt-1 border-t border-border/50">
                   <button
                     type="button"
                     onClick={handleCopyUrl}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-xs font-black transition-all shrink-0"
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
                   >
-                    {copied ? <CheckCheck className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    {copied ? 'Copiado!' : 'Copiar'}
+                    <Copy className="w-3.5 h-3.5" />
+                    {copied ? 'Copiado!' : 'Copiar link'}
                   </button>
+                  <a
+                    href={publicPageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" /> Visualizar
+                  </a>
                 </div>
-                <a
-                  href={publicPageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline mt-1"
-                >
-                  <Globe className="w-3 h-3" /> Visualizar página →
-                </a>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Card de assinatura */}
         <Card className="border border-destructive/20 shadow-sm bg-card rounded-3xl overflow-hidden">

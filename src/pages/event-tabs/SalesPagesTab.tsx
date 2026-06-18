@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +14,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Plus, Link2, Copy, Trash2, ExternalLink, Globe, GlobeLock,
-  Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft, User,
+  Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft,
 } from 'lucide-react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '../../lib/firebase-utils';
 import { PaginaVenda, CampoFormulario, Ticket, Evento } from '../../types';
@@ -61,7 +60,6 @@ const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
 // ═════════════════════════════════════════════════════════════════════════════
 export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
-  const navigate = useNavigate();
   const [paginas, setPaginas] = useState<PaginaVenda[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [evento, setEvento] = useState<Evento | null>(null);
@@ -199,18 +197,9 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
           <h2 className="text-2xl font-black tracking-tight text-foreground">Páginas e Formulários</h2>
           <p className="text-sm text-muted-foreground mt-0.5">Crie páginas públicas com ingressos e formulário de inscrição. Cada uma tem seu próprio link.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/dashboard?tab=perfil')}
-            className="gap-2 rounded-xl font-bold h-10 px-5 border-border hover:bg-accent shadow-sm transition-all active:scale-95"
-          >
-            <User className="w-4 h-4" /> Criar Página de Organizador
-          </Button>
-          <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95">
-            <Plus className="w-4 h-4" /> Nova Página
-          </Button>
-        </div>
+        <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95">
+          <Plus className="w-4 h-4" /> Nova Página
+        </Button>
       </div>
 
       {/* ── List ── */}
