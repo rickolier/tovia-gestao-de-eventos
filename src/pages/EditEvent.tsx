@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ImageCropper from '../components/ImageCropper';
 import { useAuth } from '../lib/AuthContext';
 import { getDocument, updateDocument, removeDocument } from '../lib/firebase-utils';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye, EyeOff, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Save, Eye, EyeOff, Trash2, AlertTriangle, ImagePlus, X } from 'lucide-react';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../firebase';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Evento } from '../types';
@@ -25,6 +28,11 @@ export default function EditEvent() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const plan = getPlanConfig(profile?.plano);
+
+  const [imagemFile, setImagemFile] = useState<File | null>(null);
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
+  const [uploadProgresso, setUploadProgresso] = useState<number | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -72,6 +80,7 @@ export default function EditEvent() {
             habilita_doacoes: data.habilita_doacoes || false,
             ativo: data.ativo !== false
           });
+          if (data.imagem_url) setImagemPreview(data.imagem_url);
         } catch (error) {
           console.error('Error fetching event:', error);
           toast.error('Erro ao carregar dados do evento');
@@ -112,6 +121,37 @@ export default function EditEvent() {
     }
   };
 
+  const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      toast.error('Formato inválido. Use PNG, JPEG ou WebP.');
+      return;
+    }
+    setCropSrc(URL.createObjectURL(file));
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    setImagemFile(croppedFile);
+    setImagemPreview(URL.createObjectURL(croppedFile));
+    setCropSrc(null);
+  };
+
+  const uploadImagem = async (eventoId: string): Promise<string> => {
+    if (!imagemFile) return formData.imagem_url;
+    const ext = imagemFile.type === 'image/png' ? 'png' : 'jpg';
+    const storageRef = ref(storage, `eventos/${eventoId}/capa.${ext}`);
+    const uploadPromise = new Promise<string>((resolve, reject) => {
+      const task = uploadBytesResumable(storageRef, imagemFile, { contentType: imagemFile.type });
+      task.on('state_changed',
+        snap => setUploadProgresso(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+        reject,
+        async () => { resolve(await getDownloadURL(task.snapshot.ref)); }
+      );
+    });
+    return Promise.race([uploadPromise, new Promise<string>((_, rej) => setTimeout(() => rej(new Error('Upload timeout')), 30000))]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !id) return;
@@ -133,6 +173,8 @@ export default function EditEvent() {
       const dataInicio = new Date(formData.data_inicio).toISOString();
       const dataFim = new Date(formData.data_fim).toISOString();
 
+      const imagemUrl = await uploadImagem(id);
+
       const eventData = {
         nome: formData.nome,
         data_inicio: dataInicio,
@@ -141,7 +183,7 @@ export default function EditEvent() {
         instituicao: formData.instituicao || '',
         descricao: formData.descricao || '',
         vagas_totais: Number(formData.vagas_totais),
-        imagem_url: formData.imagem_url,
+        imagem_url: imagemUrl,
         cor_tema: formData.cor_tema || '#064e3b',
         habilita_doacoes: Boolean(formData.habilita_doacoes),
       };
@@ -166,6 +208,18 @@ export default function EditEvent() {
   }
 
   return (
+    <>
+    {cropSrc && (
+      <ImageCropper
+        imageSrc={cropSrc}
+        aspect={16 / 9}
+        outputWidth={1280}
+        outputHeight={720}
+        label="Imagem de Capa"
+        onComplete={handleCropComplete}
+        onCancel={() => setCropSrc(null)}
+      />
+    )}
     <div className="min-h-screen bg-background">
       {/* Sticky top header */}
       <header className="sticky top-0 z-30 bg-[var(--sidebar)] h-14 flex items-center px-4 gap-3">
@@ -237,15 +291,64 @@ export default function EditEvent() {
                   />
                 </div>
 
+                {/* Imagem de capa */}
                 <div className="space-y-2">
-                  <Label htmlFor="imagem_url">URL da Imagem do Evento</Label>
-                  <Input 
-                    id="imagem_url" 
-                    value={formData.imagem_url}
-                    onChange={e => setFormData({...formData, imagem_url: e.target.value})}
-                    placeholder="https://exemplo.com/imagem.jpg"
-                    className="rounded-xl border-border"
-                  />
+                  <Label>Imagem de Capa do Evento</Label>
+                  {!imagemPreview ? (
+                    <label
+                      htmlFor="imagem_upload_edit"
+                      className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-border rounded-2xl p-8 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                        <ImagePlus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm font-semibold text-foreground">Clique para anexar a imagem</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">PNG, JPEG ou WebP · proporção 16:9</p>
+                      </div>
+                      <input
+                        id="imagem_upload_edit"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                        onChange={handleImagemChange}
+                      />
+                    </label>
+                  ) : (
+                    <div className="relative rounded-2xl overflow-hidden border border-border">
+                      <img
+                        src={imagemPreview}
+                        alt="Preview da capa"
+                        className="w-full object-cover"
+                        style={{ aspectRatio: '16/9', objectPosition: 'center' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => { setImagemFile(null); setImagemPreview(null); setUploadProgresso(null); setFormData(p => ({ ...p, imagem_url: '' })); }}
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <label
+                        htmlFor="imagem_upload_edit_change"
+                        className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-black/60 hover:bg-black/80 text-white text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
+                      >
+                        <ImagePlus className="w-3.5 h-3.5" /> Trocar imagem
+                        <input
+                          id="imagem_upload_edit_change"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          className="hidden"
+                          onChange={handleImagemChange}
+                        />
+                      </label>
+                      {uploadProgresso !== null && uploadProgresso < 100 && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30">
+                          <div className="h-full bg-primary transition-all" style={{ width: `${uploadProgresso}%` }} />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">
@@ -408,6 +511,7 @@ export default function EditEvent() {
         </Dialog>
       </div>
     </div>
+    </>
   );
 }
 
