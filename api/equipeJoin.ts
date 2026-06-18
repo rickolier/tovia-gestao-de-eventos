@@ -13,45 +13,55 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'idToken e eventoId são obrigatórios.' });
   }
 
-  let decodedToken;
+  let uid: string;
+  let email: string;
+  let name: string;
+
   try {
-    decodedToken = await getAuth(getApp()).verifyIdToken(idToken);
-  } catch {
-    return res.status(401).json({ error: 'Token inválido.' });
+    const decoded = await getAuth(getApp()).verifyIdToken(idToken);
+    uid = decoded.uid;
+    email = decoded.email || '';
+    name = decoded.name || decoded.email || '';
+  } catch (e: any) {
+    return res.status(401).json({ error: 'Token inválido.', detail: e?.message });
   }
 
-  const { uid, email, name } = decodedToken;
   if (!email || email === 'admin@tovia.app') {
     return res.status(403).json({ error: 'Operação não permitida.' });
   }
 
-  const db = getDb();
-  const eventoRef = db.collection('eventos').doc(eventoId);
-  const eventoSnap = await eventoRef.get();
+  try {
+    const db = getDb();
+    const eventoRef = db.collection('eventos').doc(eventoId);
+    const eventoSnap = await eventoRef.get();
 
-  if (!eventoSnap.exists) {
-    return res.status(404).json({ error: 'Evento não encontrado.' });
+    if (!eventoSnap.exists) {
+      return res.status(404).json({ error: 'Evento não encontrado.', eventoId });
+    }
+
+    const evento = eventoSnap.data() || {};
+    const equipeAtual: any[] = evento.equipe || [];
+
+    if (equipeAtual.some((m: any) => m.userId === uid)) {
+      return res.json({ ok: true, alreadyMember: true });
+    }
+
+    const membro = {
+      userId: uid,
+      email: email.toLowerCase(),
+      nome: name,
+      permissoes: ['registrations', 'management', 'rooms', 'tasks'],
+      adicionadoEm: new Date().toISOString(),
+    };
+
+    await eventoRef.update({
+      equipe: FieldValue.arrayUnion(membro),
+      equipeIds: FieldValue.arrayUnion(uid),
+    });
+
+    return res.json({ ok: true });
+  } catch (e: any) {
+    console.error('[equipeJoin] Firestore error:', e?.message, e?.code);
+    return res.status(500).json({ error: e?.message || 'Erro interno.', code: e?.code });
   }
-
-  const evento = eventoSnap.data();
-  const equipeAtual: any[] = evento.equipe || [];
-
-  if (equipeAtual.some((m: any) => m.userId === uid)) {
-    return res.json({ ok: true, alreadyMember: true });
-  }
-
-  const membro = {
-    userId: uid,
-    email: email.toLowerCase(),
-    nome: name || email.toLowerCase(),
-    permissoes: ['registrations', 'management', 'rooms', 'tasks'],
-    adicionadoEm: new Date().toISOString(),
-  };
-
-  await eventoRef.update({
-    equipe: FieldValue.arrayUnion(membro),
-    equipeIds: FieldValue.arrayUnion(uid),
-  });
-
-  return res.json({ ok: true });
 }
