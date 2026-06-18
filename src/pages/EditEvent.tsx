@@ -44,7 +44,6 @@ export default function EditEvent() {
     vagas_totais: 0,
     imagem_url: '',
     cor_tema: '#064e3b',
-    habilita_doacoes: false,
     ativo: true
   });
 
@@ -77,7 +76,6 @@ export default function EditEvent() {
             vagas_totais: data.vagas_totais,
             imagem_url: data.imagem_url || '',
             cor_tema: data.cor_tema || '#064e3b',
-            habilita_doacoes: data.habilita_doacoes || false,
             ativo: data.ativo !== false
           });
           if (data.imagem_url) setImagemPreview(data.imagem_url);
@@ -185,7 +183,6 @@ export default function EditEvent() {
         vagas_totais: Number(formData.vagas_totais),
         imagem_url: imagemUrl,
         cor_tema: formData.cor_tema || '#064e3b',
-        habilita_doacoes: Boolean(formData.habilita_doacoes),
       };
 
       await updateDocument('eventos', id, eventData);
@@ -430,18 +427,6 @@ export default function EditEvent() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 pt-2">
-                  <input 
-                    type="checkbox" 
-                    id="habilita_doacoes"
-                    checked={formData.habilita_doacoes}
-                    onChange={e => setFormData({...formData, habilita_doacoes: e.target.checked})}
-                    className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
-                  />
-                  <Label htmlFor="habilita_doacoes" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Habilitar Doações para este evento
-                  </Label>
-                </div>
               </div>
 
               <div className="pt-8 border-t space-y-4">

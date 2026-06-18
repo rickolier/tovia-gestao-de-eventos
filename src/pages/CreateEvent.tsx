@@ -62,7 +62,6 @@ export default function CreateEvent() {
     descricao: '',
     vagas_totais: calcConfig?.maxParticipants || 0,
     cor_tema: 'default',
-    habilita_doacoes: false
   });
 
   const CORES_EVENTO = [
@@ -187,7 +186,6 @@ export default function CreateEvent() {
         vagas_totais: Number(dadosFormulario.vagas_totais),
         imagem_url: imagemUrl,
         cor_tema: corFinal,
-        habilita_doacoes: Boolean(dadosFormulario.habilita_doacoes),
         criado_por: usuario.uid,
         ativo: true,
         config_pagamento: {
