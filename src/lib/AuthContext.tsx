@@ -92,7 +92,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Usa API route server-side (admin SDK) para contornar regras do Firestore
   const processEquipeJoin = async (eventoId: string): Promise<string | null> => {
     const firebaseUser = auth.currentUser;
-    console.log('[equipeJoin] currentUser:', firebaseUser?.email, 'eventoId:', eventoId);
     if (!firebaseUser?.email || firebaseUser.email === 'admin@tovia.app') return null;
     const idToken = await firebaseUser.getIdToken(true);
     const res = await fetch('/api/equipeJoin', {
