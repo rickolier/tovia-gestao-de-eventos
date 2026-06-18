@@ -26,6 +26,7 @@ export default function CalculatorTab() {
     totalVenueCost: 0,
     costPerPersonMin: 0,
     costPerPersonMax: 0,
+    suggestedPricePix: 0,
     suggestedPriceBoleto: 0,
     suggestedPriceDebit: 0,
     suggestedPriceCredit: 0,
@@ -72,6 +73,7 @@ export default function CalculatorTab() {
         totalVenueCost,
         costPerPersonMin: costPerPersonMinLimit,
         costPerPersonMax: costPerPersonMaxLimit,
+        suggestedPricePix: calcFinalPrice(basePrice, 0),
         suggestedPriceBoleto: calcFinalPrice(basePrice, boletoFee),
         suggestedPriceDebit: calcFinalPrice(basePrice, debitFee),
         suggestedPriceCredit: calcFinalPrice(basePrice, creditFee),
@@ -296,7 +298,8 @@ export default function CalculatorTab() {
 
                 <div className="space-y-2">
                   {[
-                    { label: 'Via Boleto', price: results.suggestedPriceBoleto, color: 'bg-emerald-500/10 text-emerald-600', highlight: false },
+                    { label: 'Via PIX', price: results.suggestedPricePix, color: 'bg-emerald-500/10 text-emerald-600', highlight: false },
+                    { label: 'Via Boleto', price: results.suggestedPriceBoleto, color: 'bg-amber-500/10 text-amber-600', highlight: false },
                     { label: 'Via Débito', price: results.suggestedPriceDebit, color: 'bg-blue-500/10 text-blue-600', highlight: false },
                     { label: 'Crédito', price: results.suggestedPriceCredit, color: 'bg-primary text-white', highlight: true },
                     { label: 'Recorrente', price: results.suggestedPriceRecurring, color: 'bg-purple-500/10 text-purple-600', highlight: false },
