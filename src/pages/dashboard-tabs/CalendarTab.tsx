@@ -125,15 +125,15 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
         <p className="text-sm text-muted-foreground">Visualize seus eventos programados no calendário e lista.</p>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-5">
         {/* Calendar Section */}
-        <Card className="xl:col-span-3 border-none shadow-sm bg-card rounded-3xl overflow-hidden transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between border-b border-border p-6 flex-wrap gap-3">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                <CalendarIcon className="w-5 h-5" />
+        <Card className="xl:col-span-3 border border-border shadow-sm bg-card rounded-2xl overflow-hidden transition-colors">
+          <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-3.5 flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
+                <CalendarIcon className="w-4 h-4" />
               </div>
-              <h3 className="text-xl font-black capitalize text-foreground">
+              <h3 className="text-sm font-black capitalize text-foreground">
                 {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
               </h3>
             </div>
@@ -161,7 +161,7 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
           <CardContent className="p-0">
             <div className="grid grid-cols-7 border-b border-border">
               {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
-                <div key={day} className="py-4 text-center text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
+                <div key={day} className="py-2.5 text-center text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
                   {day}
                 </div>
               ))}
@@ -177,7 +177,7 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
                 return (
                   <div
                     key={idx}
-                    className={`min-h-[120px] p-2 border-r border-b border-border/50 flex flex-col gap-1 transition-colors hover:bg-accent/30 ${
+                    className={`min-h-[84px] p-2 border-r border-b border-border/50 flex flex-col gap-1 transition-colors hover:bg-accent/30 ${
                       !isCurrentMonth ? 'bg-muted/30 opacity-30 shadow-inner' : ''
                     } ${hasHoliday && isCurrentMonth ? 'bg-amber-50/40' : ''}`}
                   >
@@ -227,8 +227,8 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
         </Card>
 
         {/* Upcoming Events Sidebar */}
-        <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden flex flex-col transition-colors">
-          <CardHeader className="bg-muted/30 border-b border-border p-5">
+        <Card className="border border-border shadow-sm bg-card rounded-2xl overflow-hidden flex flex-col transition-colors">
+          <CardHeader className="bg-muted/30 border-b border-border px-4 py-3.5">
             <CardTitle className="text-xs font-semibold flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
               <List className="w-4 h-4 text-primary" />
               Próximos Eventos
@@ -240,40 +240,40 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
                 <Link
                   key={evento.id}
                   to={`/eventos/${evento.id}`}
-                  className="flex items-center gap-4 p-5 hover:bg-accent transition-colors group"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors group"
                 >
-                  <div className="w-11 h-11 bg-primary/10 rounded-2xl flex flex-col items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                    <span className="text-sm font-black leading-none">{format(parseISO(evento.data_inicio), 'dd')}</span>
-                    <span className="text-[9px] uppercase font-black">{format(parseISO(evento.data_inicio), 'MMM', { locale: ptBR })}</span>
+                  <div className="w-9 h-9 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
+                    <span className="text-xs font-black leading-none">{format(parseISO(evento.data_inicio), 'dd')}</span>
+                    <span className="text-[8px] uppercase font-black">{format(parseISO(evento.data_inicio), 'MMM', { locale: ptBR })}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-black text-foreground truncate transition-colors leading-tight">{evento.nome}</h4>
-                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1 font-bold">
-                      <MapPin className="w-3 h-3 text-primary" /> {evento.local}
+                    <h4 className="text-xs font-black text-foreground truncate leading-tight">{evento.nome}</h4>
+                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5 font-medium">
+                      <MapPin className="w-3 h-3 text-primary shrink-0" /> {evento.local}
                     </p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-primary transition-colors" />
+                  <ChevronRight className="w-3.5 h-3.5 text-muted/30 group-hover:text-primary transition-colors shrink-0" />
                 </Link>
               ))}
               {upcomingEvents.length === 0 && (
-                <div className="p-8 text-center text-muted-foreground text-[10px] font-black uppercase tracking-widest">Nenhum evento programado.</div>
+                <div className="px-4 py-6 text-center text-muted-foreground text-[10px] font-black uppercase tracking-widest">Nenhum evento programado.</div>
               )}
             </div>
 
             {/* Próximos feriados */}
             {showHolidays && upcomingHolidays.length > 0 && (
               <div className="border-t border-border/50">
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 px-5 pt-4 pb-2 flex items-center gap-1.5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 px-4 pt-3 pb-2 flex items-center gap-1.5">
                   <PartyPopper className="w-3 h-3" /> Feriados próximos
                 </p>
                 <div className="divide-y divide-border/30">
                   {upcomingHolidays.map((h, i) => (
-                    <div key={i} className="flex items-center gap-3 px-5 py-3">
-                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex flex-col items-center justify-center shrink-0 border border-amber-100">
-                        <span className="text-sm font-black leading-none text-amber-700">{format(h.date, 'dd')}</span>
-                        <span className="text-[9px] uppercase font-black text-amber-500">{format(h.date, 'MMM', { locale: ptBR })}</span>
+                    <div key={i} className="flex items-center gap-3 px-4 py-2.5">
+                      <div className="w-8 h-8 bg-amber-50 rounded-lg flex flex-col items-center justify-center shrink-0 border border-amber-100">
+                        <span className="text-xs font-black leading-none text-amber-700">{format(h.date, 'dd')}</span>
+                        <span className="text-[8px] uppercase font-black text-amber-500">{format(h.date, 'MMM', { locale: ptBR })}</span>
                       </div>
-                      <p className="text-xs font-semibold text-foreground leading-tight">{h.name}</p>
+                      <p className="text-xs font-medium text-foreground leading-tight">{h.name}</p>
                     </div>
                   ))}
                 </div>
@@ -281,8 +281,8 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
             )}
           </CardContent>
           {eventos.length > 0 && (
-            <div className="p-5 bg-muted/30 border-t border-border mt-auto">
-              <p className="text-[10px] text-center text-muted-foreground font-black uppercase tracking-widest">Total de {eventos.length} eventos</p>
+            <div className="px-4 py-3 bg-muted/30 border-t border-border mt-auto">
+              <p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-widest">Total de {eventos.length} eventos</p>
             </div>
           )}
         </Card>
