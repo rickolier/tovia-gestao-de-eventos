@@ -122,7 +122,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Gestão do Evento</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Recursos</h2>
         </div>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95">
@@ -133,59 +133,56 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
       </div>
 
       <div className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2rem] group hover:shadow-2xl transition-all">
-              <CardContent className="p-8">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-4">Saldo de Doações</p>
-                <div className="flex items-center gap-3 text-emerald-600">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center">
-                    <Coins className="w-5 h-5" />
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-2xl group hover:shadow-2xl transition-all">
+              <CardContent className="p-4">
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-2">Saldo de Doações</p>
+                <div className="flex items-center gap-2 text-emerald-600">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center shrink-0">
+                    <Coins className="w-4 h-4" />
                   </div>
-                  <span className="text-3xl font-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSaldosDoacoes)}</span>
+                  <span className="text-lg font-black truncate">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSaldosDoacoes)}</span>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2rem] group hover:shadow-2xl transition-all">
-              <CardContent className="p-8">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-4">Outras Entradas</p>
-                <div className="flex items-center gap-3 text-primary">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <ArrowUpRight className="w-5 h-5" />
+            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-2xl group hover:shadow-2xl transition-all">
+              <CardContent className="p-4">
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-2">Outras Entradas</p>
+                <div className="flex items-center gap-2 text-primary">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <ArrowUpRight className="w-4 h-4" />
                   </div>
-                  <span className="text-3xl font-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalEntradasOutras)}</span>
+                  <span className="text-lg font-black truncate">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalEntradasOutras)}</span>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2rem] group hover:shadow-2xl transition-all">
-              <CardContent className="p-8">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-4">Saídas / Despesas</p>
-                <div className="flex items-center gap-3 text-red-600">
-                  <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 flex items-center justify-center">
-                    <ArrowDownRight className="w-5 h-5" />
+            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-2xl group hover:shadow-2xl transition-all">
+              <CardContent className="p-4">
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-2">Saídas / Despesas</p>
+                <div className="flex items-center gap-2 text-red-600">
+                  <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/30 flex items-center justify-center shrink-0">
+                    <ArrowDownRight className="w-4 h-4" />
                   </div>
-                  <span className="text-3xl font-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSaidas)}</span>
+                  <span className="text-lg font-black truncate">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSaidas)}</span>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-2xl shadow-primary/20 bg-primary text-white rounded-[2rem] overflow-hidden relative group">
-              <CardContent className="p-8 relative z-10 flex flex-col justify-between h-full">
-                <div>
-                    <p className="text-[10px] text-white/70 uppercase font-black tracking-[0.2em] mb-4">Saldo Livre (Projeção)</p>
-                    <span className="text-3xl font-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoLivre)}</span>
-                </div>
+            <Card className="border-none shadow-2xl shadow-primary/20 bg-primary text-white rounded-2xl overflow-hidden relative group">
+              <CardContent className="p-4 relative z-10">
+                <p className="text-[9px] text-white/70 uppercase font-black tracking-[0.2em] mb-2">Saldo Livre (Projeção)</p>
+                <span className="text-lg font-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoLivre)}</span>
               </CardContent>
-              <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-110 transition-transform" />
-              <DollarSign className="absolute -bottom-6 -right-6 w-32 h-32 text-white/5 rotate-12" />
+              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-20 h-20 bg-white/10 rounded-full blur-xl group-hover:scale-110 transition-transform" />
             </Card>
-            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2rem] group hover:shadow-2xl transition-all">
-              <CardContent className="p-8">
-                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-4">Inscritos Pagos</p>
-                <div className="flex items-center gap-3 text-foreground">
-                  <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                    <Users className="w-5 h-5 text-primary" />
+            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-2xl group hover:shadow-2xl transition-all">
+              <CardContent className="p-4">
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-2">Inscritos Pagos</p>
+                <div className="flex items-center gap-2 text-foreground">
+                  <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <Users className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black">{registrations.filter(r => r.valor_pago > 0).length}</span>
+                    <span className="text-lg font-black">{registrations.filter(r => r.valor_pago > 0).length}</span>
                     <span className="text-xs text-muted-foreground font-bold tracking-tight">ativos</span>
                   </div>
                 </div>

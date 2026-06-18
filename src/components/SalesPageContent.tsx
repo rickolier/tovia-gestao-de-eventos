@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile } from '../types';
+import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile, Donation } from '../types';
 import { createDocument, getDocument } from '../lib/firebase-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +52,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const [inscricaoId, setInscricaoId] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<Record<string, string | boolean>>({});
   const [organizador, setOrganizador] = useState<UserProfile | null>(null);
+  const [isDoacaoSubmission, setIsDoacaoSubmission] = useState(false);
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -62,6 +63,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   }, [evento.criado_por]);
 
   const selectedTickets = tickets.filter(t => (quantities[t.id] || 0) > 0 || (t.valor_livre && (doacaoValores[t.id] || 0) > 0));
+  const allDoacao = selectedTickets.length > 0 && selectedTickets.every(t => t.tipo === 'doacao');
 
   const getTicketTotal = (t: Ticket) => {
     if (t.tipo === 'doacao' && t.valor_livre) return doacaoValores[t.id] || 0;
@@ -88,55 +90,82 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     }
     setSubmitting(true);
     try {
-      const id = uuidv4();
       const respostas: Record<string, string | boolean> = {};
       pagina.campos_formulario.forEach(c => { respostas[c.label] = formValues[c.id] || ''; });
 
       const nomeField = pagina.campos_formulario.find(c => c.label.toLowerCase().includes('nome'));
       const emailField = pagina.campos_formulario.find(c => c.tipo === 'email' || c.label.toLowerCase().includes('e-mail'));
       const telefoneField = pagina.campos_formulario.find(c => c.tipo === 'telefone' || c.label.toLowerCase().includes('telefone'));
-      const ticket = selectedTickets[0];
 
       const nome = nomeField ? String(formValues[nomeField.id] || '') : '';
       const email = emailField ? String(formValues[emailField.id] || '') : '';
       const telefone = telefoneField ? String(formValues[telefoneField.id] || '') : '';
 
-      // Cria registro em pessoas para aparecer no painel do organizador
       const pessoaId = uuidv4();
-      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, {
-        id: pessoaId,
-        nome,
-        email,
-        telefone,
-      });
+      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, { id: pessoaId, nome, email, telefone });
 
-      const valorFinal = ticket ? getTicketTotal(ticket) : total;
-      await createDocument(`eventos/${eventoId}/inscricoes`, id, {
-        id, eventoId,
-        pessoaId,
-        ticketId: ticket?.id || '',
-        ticket_nome: ticket?.nome || '',
-        nome,
-        email,
-        telefone,
-        respostas_formulario: respostas,
-        quantidades: quantities,
-        valor_total: valorFinal,
-        valor_pago: 0,
-        status: valorFinal === 0 ? 'pago' : 'pendente',
-        data_inscricao: new Date().toISOString(),
-        precisa_ajuda: false,
-        validada_manual: false,
-        pagina_venda_id: pagina.id,
-        pagina_venda_slug: pagina.slug,
-        ...(ticket?.tipo === 'doacao' && ticket.permite_patrocinio ? { patrocinio_qtd: quantities[ticket.id] || 0 } : {}),
-      } as any);
-
-      setInscricaoId(id);
-      setStep('success');
-      onSuccess?.(id);
+      if (allDoacao) {
+        // Página de doação: cria documento Donation em vez de Inscricao
+        const doacaoId = uuidv4();
+        const ticket = selectedTickets[0];
+        let finalidade = ticket?.nome || '';
+        if (ticket?.permite_patrocinio) {
+          finalidade = `${ticket.nome} — ${quantities[ticket.id] || 0} inscrição(ões) patrocinadas`;
+        }
+        const doacaoData: Omit<Donation, 'id'> & { id: string; pessoaId: string; email?: string; telefone?: string; respostas_formulario?: Record<string, string | boolean> } = {
+          id: doacaoId,
+          eventoId,
+          valor: total,
+          valorLiquido: total,
+          taxaAdm: 0,
+          formaPagamento: '',
+          dataPagamento: new Date().toISOString(),
+          doadorNome: nome,
+          pessoaId,
+          email,
+          telefone,
+          destino: 'livre',
+          finalidade,
+          data: new Date().toISOString(),
+          status: 'pendente',
+          valorRestante: total,
+          respostas_formulario: respostas,
+        };
+        await createDocument(`eventos/${eventoId}/doacoes`, doacaoId, doacaoData as any);
+        setIsDoacaoSubmission(true);
+        setInscricaoId(doacaoId);
+        setStep('success');
+        onSuccess?.(doacaoId);
+      } else {
+        // Página de inscrição normal
+        const id = uuidv4();
+        const ticket = selectedTickets[0];
+        const valorFinal = ticket ? getTicketTotal(ticket) : total;
+        await createDocument(`eventos/${eventoId}/inscricoes`, id, {
+          id, eventoId,
+          pessoaId,
+          ticketId: ticket?.id || '',
+          ticket_nome: ticket?.nome || '',
+          nome,
+          email,
+          telefone,
+          respostas_formulario: respostas,
+          quantidades: quantities,
+          valor_total: valorFinal,
+          valor_pago: 0,
+          status: valorFinal === 0 ? 'pago' : 'pendente',
+          data_inscricao: new Date().toISOString(),
+          precisa_ajuda: false,
+          validada_manual: false,
+          pagina_venda_id: pagina.id,
+          pagina_venda_slug: pagina.slug,
+        } as any);
+        setInscricaoId(id);
+        setStep('success');
+        onSuccess?.(id);
+      }
     } catch {
-      toast.error('Erro ao enviar inscrição. Tente novamente.');
+      toast.error('Erro ao enviar. Tente novamente.');
     } finally {
       setSubmitting(false);
     }
@@ -154,9 +183,14 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             <CheckCircle2 className="w-10 h-10 text-green-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-gray-900">Inscrição realizada!</h1>
+            <h1 className="text-2xl font-black text-gray-900">
+              {isDoacaoSubmission ? 'Doação registrada!' : 'Inscrição realizada!'}
+            </h1>
             <p className="text-gray-500 mt-2 max-w-sm">
-              Sua inscrição em <strong>{evento.nome}</strong> foi recebida com sucesso.
+              {isDoacaoSubmission
+                ? <>Sua doação para <strong>{evento.nome}</strong> foi recebida com sucesso. O organizador irá confirmá-la em breve.</>
+                : <>Sua inscrição em <strong>{evento.nome}</strong> foi recebida com sucesso.</>
+              }
             </p>
           </div>
           {inscricaoId && (
@@ -430,8 +464,17 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                 <div className="px-5 py-3 bg-primary/5 border-b border-primary/10">
                   {selectedTickets.map(t => (
                     <div key={t.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600">{quantities[t.id]}× {t.nome}</span>
-                      <span className="font-bold text-gray-900">{formatPrice(t.valor * quantities[t.id])}</span>
+                      {t.tipo === 'doacao' && t.valor_livre ? (
+                        <>
+                          <span className="text-gray-600">Doação · {t.nome}</span>
+                          <span className="font-bold text-gray-900">{formatPrice(doacaoValores[t.id] || 0)}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-gray-600">{quantities[t.id]}× {t.nome}</span>
+                          <span className="font-bold text-gray-900">{formatPrice(getTicketTotal(t))}</span>
+                        </>
+                      )}
                     </div>
                   ))}
                   <div className="flex justify-between font-black text-sm pt-2 border-t border-primary/10 mt-2">
@@ -454,7 +497,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     disabled={submitting}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2"
                   >
-                    {submitting ? 'Enviando...' : 'Confirmar inscrição'}
+                    {submitting ? 'Enviando...' : allDoacao ? 'Confirmar doação' : 'Confirmar inscrição'}
                   </Button>
                   <p className="text-center text-xs text-gray-400">Ao confirmar, você concorda com os termos do evento.</p>
                 </form>

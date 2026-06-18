@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument } from '../../lib/firebase-utils';
-import { Pagamento, Inscricao, Pessoa } from '../../types';
+import { Pagamento, Inscricao, Pessoa, Ticket } from '../../types';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,17 +60,21 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const [payData, regData, peopleData, transData] = await Promise.all([
+    const [payData, regData, peopleData, transData, ticketData] = await Promise.all([
       listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`),
       listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
       listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
-      listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`)
+      listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`),
+      listDocuments<Ticket>(`eventos/${eventoId}/ingressos`),
     ]);
 
-    const enrichedRegs = regData.map(reg => ({
-      ...reg,
-      pessoa: peopleData.find(p => p.id === reg.pessoaId)
-    }));
+    const doacaoIds = new Set(ticketData.filter(t => t.tipo === 'doacao').map(t => t.id));
+    const enrichedRegs = regData
+      .filter(reg => !doacaoIds.has(reg.ticketId))
+      .map(reg => ({
+        ...reg,
+        pessoa: peopleData.find(p => p.id === reg.pessoaId)
+      }));
 
     setPayments(payData);
     setRegistrations(enrichedRegs);
