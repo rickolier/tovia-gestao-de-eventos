@@ -177,7 +177,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
           setIsDialogOpen(open);
           if (!open) setEditingTicketId(null);
         }}>
-          <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
+          <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors max-h-[90vh] overflow-y-auto">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
