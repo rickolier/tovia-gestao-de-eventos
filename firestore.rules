@@ -85,11 +85,20 @@ service cloud.firestore {
 
     match /eventos/{eventoId} {
       allow get: if isValidId(eventoId); // Open get for public event page, but ID must be valid
-      allow list: if isSignedIn() && (resource.data.criado_por == request.auth.uid || isAdmin());
-      allow create: if isSignedIn() && isValidEvento(incoming());
-      allow update: if isEventOwner(eventoId) && isValidEvento(incoming()) && (
-        incoming().criado_por == existing().criado_por
+      allow list: if isSignedIn() && (
+        resource.data.criado_por == request.auth.uid ||
+        isAdmin() ||
+        resource.data.get('equipeIds', []).hasAll([request.auth.uid])
       );
+      allow create: if isSignedIn() && isValidEvento(incoming());
+      // Owner/admin: full update; Team member self-join: only equipe+equipeIds, adding themselves
+      allow update: if (isEventOwner(eventoId) && isValidEvento(incoming()) && incoming().criado_por == existing().criado_por) ||
+        (isSignedIn() &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['equipe', 'equipeIds']) &&
+         incoming().get('equipeIds', []).hasAll(existing().get('equipeIds', [])) &&
+         incoming().get('equipeIds', []).size() == existing().get('equipeIds', []).size() + 1 &&
+         incoming().get('equipeIds', []).hasAll([request.auth.uid]) &&
+         !existing().get('equipeIds', []).hasAll([request.auth.uid]));
       allow delete: if isEventOwner(eventoId);
 
       match /tickets/{ticketId} {
