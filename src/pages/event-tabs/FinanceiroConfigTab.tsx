@@ -114,12 +114,12 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
         </Button>
       </div>
 
-      <Card className="border-none shadow-xl bg-card rounded-[2rem] p-8 md:p-12">
-        <div className="space-y-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <Card className="border-none shadow-xl bg-card rounded-[2rem] p-5 md:p-8">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left: inputs */}
-            <div className="space-y-8">
-              <div className="space-y-3">
+            <div className="space-y-4">
+              <div className="space-y-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                   <Coins className="w-3 h-3 text-primary" /> Valor Base do Ingresso — Custo + Margem (R$)
                 </Label>
@@ -128,12 +128,12 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                   value={calcData.valorTicket || ''}
                   onChange={e => setCalcData(p => ({ ...p, valorTicket: Number(e.target.value) }))}
                   placeholder="Ex: 500.00"
-                  className="h-16 text-3xl font-black rounded-2xl border-none bg-muted/40 focus:ring-primary/20 placeholder:text-muted-foreground/30"
+                  className="h-12 text-2xl font-black rounded-2xl border-none bg-muted/40 focus:ring-primary/20 placeholder:text-muted-foreground/30"
                 />
-                <p className="text-[10px] font-bold text-muted-foreground italic px-2">Valor bruto pago pelo participante em cada inscrição.</p>
+                <p className="text-[10px] font-bold text-muted-foreground italic px-1">Valor bruto pago pelo participante em cada inscrição.</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                   <TrendingDown className="w-3 h-3 text-red-500" /> Custo Fixo estimado por Inscrito (R$)
                 </Label>
@@ -142,11 +142,11 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                   value={calcData.custoInscrito || ''}
                   onChange={e => setCalcData(p => ({ ...p, custoInscrito: Number(e.target.value) }))}
                   placeholder="Ex: 250.00"
-                  className="h-14 font-black rounded-2xl border-none bg-muted/40 focus:ring-primary/20"
+                  className="h-10 font-black rounded-2xl border-none bg-muted/40 focus:ring-primary/20"
                 />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                   <TrendingUp className="w-3 h-3 text-emerald-500" /> Margem por Inscrito (R$)
                 </Label>
@@ -155,17 +155,17 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                   value={(calcData.valorTicket - calcData.custoInscrito) || ''}
                   onChange={e => setCalcData(p => ({ ...p, valorTicket: p.custoInscrito + Number(e.target.value) }))}
                   placeholder="Ex: 150.00"
-                  className="h-14 font-black rounded-2xl border-none bg-emerald-50 focus:ring-emerald-500/20 text-emerald-700"
+                  className="h-10 font-black rounded-2xl border-none bg-emerald-50 focus:ring-emerald-500/20 text-emerald-700"
                 />
-                <p className="text-[10px] font-bold text-muted-foreground italic px-2">Alterar a margem recalcula automaticamente o Valor Base.</p>
+                <p className="text-[10px] font-bold text-muted-foreground italic px-1">Alterar a margem recalcula automaticamente o Valor Base.</p>
               </div>
 
               {/* Quem absorve as taxas */}
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                   <Percent className="w-3 h-3 text-primary" /> Quem absorve as taxas do gateway?
                 </Label>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-1.5">
                   {taxaOpts.map(opt => {
                     const active = calcData.taxaAbsorbida === opt.value;
                     const isAmber = opt.color === 'amber';
@@ -173,7 +173,7 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                       <div
                         key={opt.value}
                         onClick={() => setCalcData(p => ({ ...p, taxaAbsorbida: opt.value }))}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all select-none ${
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all select-none ${
                           active
                             ? isAmber
                               ? 'border-amber-400 bg-amber-50'
@@ -181,8 +181,8 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                             : 'border-transparent bg-muted/40 hover:bg-muted/60'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                             active
                               ? isAmber ? 'bg-amber-400 text-white' : 'bg-emerald-500 text-white'
                               : 'bg-muted text-muted-foreground'
@@ -193,7 +193,7 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                             <p className={`text-xs font-black uppercase tracking-widest ${active ? (isAmber ? 'text-amber-700' : 'text-emerald-700') : 'text-foreground'}`}>
                               {opt.title}
                             </p>
-                            <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{opt.desc}</p>
+                            <p className="text-[11px] text-muted-foreground font-medium">{opt.desc}</p>
                           </div>
                           <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
                             active
@@ -211,10 +211,10 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
             </div>
 
             {/* Right: gateway config */}
-            <div className="space-y-6 bg-muted/30 p-8 rounded-[2rem] border border-border/50">
-              <h4 className="text-xs font-semibold text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-card flex items-center justify-center shadow-sm">
-                  <Percent className="w-4 h-4 text-primary" />
+            <div className="space-y-3 bg-muted/30 p-5 rounded-2xl border border-border/50">
+              <h4 className="text-xs font-semibold text-foreground uppercase tracking-widest flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-card flex items-center justify-center shadow-sm">
+                  <Percent className="w-3.5 h-3.5 text-primary" />
                 </div>
                 Configuração de Gateways
               </h4>
@@ -226,24 +226,24 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                 { label: 'Taxa Corrente (%)',         key: 'taxaCorrente' },
                 { label: 'Taxa Boleto (%)',           key: 'taxaBoleto'   },
               ].map(({ label, key }) => (
-                <div key={key} className="space-y-2">
+                <div key={key} className="space-y-1">
                   <Label className="text-xs font-semibold uppercase tracking-widest px-1">{label}</Label>
                   <Input
                     type="number"
                     step="0.01"
                     value={(calcData as any)[key]}
                     onChange={e => setCalcData(p => ({ ...p, [key]: Number(e.target.value) }))}
-                    className="h-12 font-bold rounded-xl border-none bg-card shadow-sm"
+                    className="h-9 font-bold rounded-xl border-none bg-card shadow-sm"
                   />
                 </div>
               ))}
 
               {/* Lógica de Parcelamento */}
-              <div className="space-y-3 pt-4 border-t border-border/20">
+              <div className="space-y-2 pt-3 border-t border-border/20">
                 <Label className="text-xs font-semibold uppercase tracking-widest px-1 flex items-center gap-2">
                   <Calculator className="w-3 h-3 text-primary" /> Lógica de Parcelamento
                 </Label>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-1.5">
                   {[
                     { value: 'free',    title: 'Parcelamento Livre',    desc: 'Disponível em 12x independente da data da compra.' },
                     { value: 'limited', title: 'Parcelamento Limitado', desc: 'Calculado pela data atual vs data limite do ingresso.' },
@@ -251,9 +251,9 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                     <div
                       key={opt.value}
                       onClick={() => setCalcData(p => ({ ...p, installmentLogic: opt.value }))}
-                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${calcData.installmentLogic === opt.value ? 'border-primary bg-primary/5' : 'border-transparent bg-card'}`}
+                      className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${calcData.installmentLogic === opt.value ? 'border-primary bg-primary/5' : 'border-transparent bg-card'}`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${calcData.installmentLogic === opt.value ? 'border-primary' : 'border-muted-foreground'}`}>
                           {calcData.installmentLogic === opt.value && <div className="w-2 h-2 rounded-full bg-primary" />}
                         </div>
@@ -270,14 +270,14 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
           </div>
 
           {/* Results */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 pt-6 border-t border-border/30">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 pt-4 border-t border-border/30">
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Simulação por forma de pagamento</p>
               <Badge variant="outline" className={`text-[10px] font-black px-3 rounded-full ${calcData.taxaAbsorbida === 'pagador' ? 'border-amber-400 text-amber-600 bg-amber-50' : 'border-emerald-500 text-emerald-700 bg-emerald-50'}`}>
                 {calcData.taxaAbsorbida === 'pagador' ? 'Taxas pelo Pagador' : 'Taxas pela Margem'}
               </Badge>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[
                 { label: 'PIX',     result: resultsPix      },
                 { label: 'DÉBITO',  result: resultsDebito   },
@@ -285,19 +285,19 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                 { label: 'CORRENTE',result: resultsCorrente },
                 { label: 'BOLETO',  result: resultsBoleto   },
               ].map(({ label, result }) => (
-                <Card key={label} className="rounded-[2rem] border bg-primary/5 border-primary/10 overflow-hidden group hover:shadow-xl transition-all">
-                  <div className="p-6 text-center space-y-3">
-                    <Badge className="font-black px-3 py-1 rounded-full bg-primary text-white text-[10px]">{label}</Badge>
+                <Card key={label} className="rounded-2xl border bg-primary/5 border-primary/10 overflow-hidden group hover:shadow-xl transition-all">
+                  <div className="p-4 text-center space-y-2">
+                    <Badge className="font-black px-3 py-0.5 rounded-full bg-primary text-white text-[10px]">{label}</Badge>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-muted-foreground">
+                      <p className="text-[10px] font-black uppercase tracking-widest mb-0.5 text-muted-foreground">
                         {calcData.taxaAbsorbida === 'pagador' ? 'Cobrar do participante' : 'Participante paga'}
                       </p>
-                      <p className="text-xl font-black text-foreground">{fmt(result.suggestedPrice)}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">taxa: {fmt(result.valorTaxa)}</p>
+                      <p className="text-lg font-black text-foreground">{fmt(result.suggestedPrice)}</p>
+                      <p className="text-[10px] text-muted-foreground">taxa: {fmt(result.valorTaxa)}</p>
                     </div>
-                    <div className="p-3 rounded-2xl border bg-white border-primary/10 group-hover:bg-primary transition-all">
+                    <div className="p-2 rounded-xl border bg-white border-primary/10 group-hover:bg-primary transition-all">
                       <p className="text-[10px] uppercase font-black tracking-widest mb-0.5 text-muted-foreground group-hover:text-white/70">Sua margem</p>
-                      <p className={`text-lg font-black transition-colors group-hover:text-white ${result.margem >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                      <p className={`text-base font-black transition-colors group-hover:text-white ${result.margem >= 0 ? 'text-primary' : 'text-red-500'}`}>
                         {fmt(result.margem)}
                       </p>
                     </div>
