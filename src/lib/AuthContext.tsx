@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '../firebase';
-import { getDocument, createDocument, listDocuments, updateDocument, removeDocument } from './firebase-utils';
-import { UserProfile, PlanLevel, ConvitePendente, EquipeMembro, Evento } from '../types';
-import { where, arrayUnion } from 'firebase/firestore';
+import { getDocument, createDocument, listDocuments, removeDocument } from './firebase-utils';
+import { UserProfile, PlanLevel, ConvitePendente } from '../types';
+import { where } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -89,24 +89,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Adiciona o usuário logado a um evento via eventoId (chamado pelo link de equipe)
+  // Usa API route server-side (admin SDK) para contornar regras do Firestore
   const processEquipeJoin = async (eventoId: string) => {
     const firebaseUser = auth.currentUser;
     if (!firebaseUser?.email || firebaseUser.email === 'admin@tovia.app') return;
-    const email = firebaseUser.email.toLowerCase();
     try {
-      const evento = await getDocument<Evento>('eventos', eventoId);
-      if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
-        const membro: EquipeMembro = {
-          userId: firebaseUser.uid,
-          email,
-          nome: firebaseUser.displayName || email,
-          permissoes: ['registrations', 'management', 'rooms', 'tasks'],
-          adicionadoEm: new Date().toISOString(),
-        };
-        await updateDocument('eventos', eventoId, {
-          equipe: [...(evento.equipe || []), membro],
-          equipeIds: arrayUnion(firebaseUser.uid),
-        } as any);
+      const idToken = await firebaseUser.getIdToken();
+      const res = await fetch('/api/equipeJoin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken, eventoId }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.warn('Erro ao entrar na equipe:', err);
       }
     } catch (e) { console.warn('Erro ao processar link de equipe:', e); }
   };
@@ -123,19 +119,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         where('email', '==', email),
       ]);
       for (const convite of convites) {
-        const evento = await getDocument<Evento>('eventos', convite.eventoId);
-        if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
-          const membro: EquipeMembro = {
-            userId: firebaseUser.uid,
-            email,
-            nome: firebaseUser.displayName || email,
-            permissoes: convite.permissoes,
-            adicionadoEm: new Date().toISOString(),
-          };
-          await updateDocument('eventos', convite.eventoId, {
-            equipe: [...(evento.equipe || []), membro],
-            equipeIds: arrayUnion(firebaseUser.uid),
-          } as any);
+        const idToken = await firebaseUser.getIdToken();
+        const joinRes = await fetch('/api/equipeJoin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken, eventoId: convite.eventoId }),
+        });
+        if (joinRes.ok) {
           try {
             await fetch('/api/sendEmail', {
               method: 'POST',
