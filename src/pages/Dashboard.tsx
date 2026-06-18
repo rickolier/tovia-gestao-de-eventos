@@ -17,6 +17,7 @@ import {
   Calculator,
   CreditCard,
   Palette,
+  GraduationCap,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -25,6 +26,7 @@ import Logo from '../components/Logo';
 import { cn } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
+import OnboardingTour, { hasTourBeenSeen } from '../components/OnboardingTour';
 
 // Tabs
 import HomeTab from './dashboard-tabs/HomeTab';
@@ -43,6 +45,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'inicio');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,7 +88,9 @@ export default function Dashboard() {
           setLoading(false);
         }
       };
-      fetchData();
+      fetchData().then(() => {
+        if (user && !hasTourBeenSeen(user.uid)) setTourOpen(true);
+      });
     } else {
       setLoading(false);
     }
@@ -189,6 +194,7 @@ export default function Dashboard() {
           {menuItems.map(item => (
             <button
               key={item.id}
+              data-tour={`nav-${item.id}`}
               onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}
               className={cn(
                 'sidebar-nav-item',
@@ -211,7 +217,7 @@ export default function Dashboard() {
               Ações
             </p>
             <Link to="/eventos/novo">
-              <button className="sidebar-nav-item w-full bg-primary/90 hover:bg-primary text-white font-semibold">
+              <button data-tour="criar-evento" className="sidebar-nav-item w-full bg-primary/90 hover:bg-primary text-white font-semibold">
                 <Plus className="w-[18px] h-[18px]" />
                 Criar Evento
               </button>
@@ -219,8 +225,15 @@ export default function Dashboard() {
           </div>
         </nav>
 
-        {/* Logout */}
-        <div className="px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0">
+        {/* Tutorial + Logout */}
+        <div className="px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0 space-y-0.5">
+          <button
+            onClick={() => setTourOpen(true)}
+            className="sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10"
+          >
+            <GraduationCap className="w-[18px] h-[18px]" />
+            Tutorial
+          </button>
           <button
             onClick={handleLogout}
             className="sidebar-nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10"
@@ -272,6 +285,15 @@ export default function Dashboard() {
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm"
           onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Onboarding tour */}
+      {tourOpen && user && (
+        <OnboardingTour
+          userId={user.uid}
+          plan={profile?.plano || 'start'}
+          onClose={() => setTourOpen(false)}
         />
       )}
     </div>
