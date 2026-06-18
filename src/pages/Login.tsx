@@ -20,24 +20,31 @@ import { useAuth } from '../lib/AuthContext';
 import { cn } from '@/lib/utils';
 
 export default function Login() {
-  const { user, isAuthReady, loginAsDemo } = useAuth();
+  const { user, isAuthReady, loginAsDemo, processEquipeJoin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const ADMIN_EMAIL = 'admin@tovia.app';
 
+  const eventoIdParam = searchParams.get('eventoId');
+
+  // Usuário já logado acessando o link de equipe: processa o join diretamente
   React.useEffect(() => {
-    if (isAuthReady && user) {
+    if (!isAuthReady || !user) return;
+    if (eventoIdParam && user.email !== ADMIN_EMAIL) {
+      processEquipeJoin(eventoIdParam).finally(() => {
+        navigate('/dashboard');
+      });
+    } else {
       navigate(user.email === ADMIN_EMAIL ? '/admin' : '/dashboard');
     }
-  }, [user, isAuthReady, navigate]);
+  }, [user, isAuthReady]);
 
   const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
 
-  // Persiste o eventoId do link de equipe para ser lido pelo AuthContext após o login/cadastro
+  // Novo cadastro via link de equipe: guarda eventoId para o AuthContext processar após signup
   React.useEffect(() => {
-    const eventoId = searchParams.get('eventoId');
-    if (eventoId) sessionStorage.setItem('pendingEquipeEventoId', eventoId);
+    if (eventoIdParam) sessionStorage.setItem('pendingEquipeEventoId', eventoIdParam);
   }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
