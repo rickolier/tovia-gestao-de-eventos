@@ -13,269 +13,136 @@ const PRIMARY = '#7C3AED';
 const GRAY_DARK = '#1a1a1a';
 const GRAY_MID = '#555555';
 const GRAY_LIGHT = '#888888';
-const BORDER = '#cccccc';
+const BORDER = '#bbbbbb';
 
 const styles = StyleSheet.create({
   page: {
     fontFamily: 'Helvetica',
     fontSize: 9,
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingHorizontal: 44,
+    paddingTop: 34,
+    paddingBottom: 34,
+    paddingHorizontal: 40,
     backgroundColor: '#FFFFFF',
     color: GRAY_DARK,
   },
 
   // ── Header ──────────────────────────────────────────────
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 14,
-    marginBottom: 12,
-  },
+  header: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 10 },
   logoWrapper: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    backgroundColor: '#f3f0ff',
-    overflow: 'hidden',
-    flexShrink: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 56, height: 56, borderRadius: 6,
+    backgroundColor: '#f3f0ff', overflow: 'hidden',
+    flexShrink: 0, alignItems: 'center', justifyContent: 'center',
   },
-  logo: {
-    width: 64,
-    height: 64,
-    objectFit: 'cover',
-  },
-  headerRight: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 3,
-  },
+  logo: { width: 56, height: 56, objectFit: 'cover' },
+  headerRight: { flex: 1, justifyContent: 'center', gap: 2 },
   instituicaoLabel: {
-    fontSize: 7.5,
-    fontFamily: 'Helvetica-Bold',
-    color: GRAY_LIGHT,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
+    fontSize: 7, fontFamily: 'Helvetica-Bold', color: GRAY_LIGHT,
+    textTransform: 'uppercase', letterSpacing: 1.2,
   },
-  eventoNome: {
-    fontSize: 17,
-    fontFamily: 'Helvetica-Bold',
-    color: GRAY_DARK,
-    lineHeight: 1.2,
-  },
-  paginaNome: {
-    fontSize: 8.5,
-    color: PRIMARY,
-    fontFamily: 'Helvetica-Bold',
-    marginTop: 1,
-  },
+  eventoNome: { fontSize: 16, fontFamily: 'Helvetica-Bold', color: GRAY_DARK, lineHeight: 1.2 },
+  paginaNome: { fontSize: 8, color: PRIMARY, fontFamily: 'Helvetica-Bold', marginTop: 1 },
 
   // ── Divider ──────────────────────────────────────────────
-  dividerPrimary: {
-    borderBottomWidth: 2,
-    borderBottomColor: PRIMARY,
-    marginBottom: 10,
-  },
-  dividerThin: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#e5e7eb',
-    marginVertical: 10,
-  },
+  dividerPrimary: { borderBottomWidth: 2, borderBottomColor: PRIMARY, marginBottom: 8 },
 
-  // ── Info strip ───────────────────────────────────────────
-  infoStrip: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 14,
-  },
+  // ── Info chips ───────────────────────────────────────────
+  infoStrip: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 },
   infoChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 4,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: '#f3f4f6', borderRadius: 4, paddingHorizontal: 7, paddingVertical: 3,
   },
   infoChipLabel: {
-    fontSize: 7,
-    color: GRAY_LIGHT,
-    fontFamily: 'Helvetica-Bold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
+    fontSize: 7, color: GRAY_LIGHT, fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase', letterSpacing: 0.6,
   },
-  infoChipValue: {
-    fontSize: 8,
-    color: GRAY_MID,
-    fontFamily: 'Helvetica-Bold',
-  },
+  infoChipValue: { fontSize: 8, color: GRAY_MID, fontFamily: 'Helvetica-Bold' },
+
+  // ── Description block ────────────────────────────────────
+  descBlock: { marginBottom: 10 },
+  descText: { fontSize: 7.5, color: GRAY_MID, lineHeight: 1.5 },
 
   // ── Section title ────────────────────────────────────────
   fichaTitle: {
-    fontSize: 11,
-    fontFamily: 'Helvetica-Bold',
-    color: PRIMARY,
-    textAlign: 'center',
-    marginBottom: 16,
-    textTransform: 'uppercase',
-    letterSpacing: 2.5,
+    fontSize: 10, fontFamily: 'Helvetica-Bold', color: PRIMARY,
+    textAlign: 'center', marginBottom: 8,
+    textTransform: 'uppercase', letterSpacing: 2,
   },
 
-  // ── Form fields ──────────────────────────────────────────
-  fieldWrapper: {
-    marginBottom: 13,
-  },
-  fieldLabel: {
-    fontSize: 7.5,
-    fontFamily: 'Helvetica-Bold',
-    color: GRAY_MID,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 5,
-  },
-  requiredDot: {
-    color: PRIMARY,
-  },
-  fieldLine: {
-    borderBottomWidth: 0.8,
-    borderBottomColor: BORDER,
-    height: 18,
-  },
-  fieldBox: {
-    borderWidth: 0.7,
-    borderColor: BORDER,
-    height: 52,
-    borderRadius: 2,
-    marginTop: 2,
+  // ── Table cells ──────────────────────────────────────────
+  tableRow: { flexDirection: 'row' },
+  // non-last cell in a row: borderRight will double up with next cell's left, accepted at 0.7px
+  cell: { flex: 1, borderWidth: 0.7, borderColor: BORDER, padding: 5, minHeight: 30, marginRight: -0.35 },
+  cellLast: { flex: 1, borderWidth: 0.7, borderColor: BORDER, padding: 5, minHeight: 30, marginLeft: -0.35 },
+  cellFull: { borderWidth: 0.7, borderColor: BORDER, padding: 5, minHeight: 30 },
+  cellTextarea: { borderWidth: 0.7, borderColor: BORDER, padding: 5, minHeight: 48 },
+  cellLabel: {
+    fontSize: 6.5, fontFamily: 'Helvetica-Bold', color: GRAY_LIGHT,
+    textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2,
   },
 
-  // ── Select ───────────────────────────────────────────────
-  optionsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 14,
-    marginTop: 3,
-  },
-  optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  optionCircle: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 0.9,
-    borderColor: '#999',
-  },
-  optionText: {
-    fontSize: 8,
-    color: GRAY_MID,
-  },
+  // ── Options (select) ─────────────────────────────────────
+  optionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 3 },
+  optionItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  optionCircle: { width: 9, height: 9, borderRadius: 4.5, borderWidth: 0.8, borderColor: '#999' },
+  optionText: { fontSize: 7.5, color: GRAY_MID },
 
-  // ── Checkbox ─────────────────────────────────────────────
-  checkboxItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    marginTop: 3,
-  },
-  checkboxSquare: {
-    width: 10,
-    height: 10,
-    borderWidth: 0.9,
-    borderColor: '#999',
-    borderRadius: 1,
-  },
-  checkboxText: {
-    fontSize: 8,
-    color: GRAY_MID,
-  },
+  // ── Checkbox in cell ─────────────────────────────────────
+  checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 5 },
+  checkboxSquare: { width: 9, height: 9, borderWidth: 0.8, borderColor: '#999', borderRadius: 1 },
+  checkboxText: { fontSize: 7.5, color: GRAY_MID },
 
-  // ── Two-column layout ─────────────────────────────────────
-  twoCol: {
-    flexDirection: 'row',
-    gap: 16,
+  // ── Tickets (multiple) ───────────────────────────────────
+  ticketOptionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 3 },
+  ticketItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  ticketCircle: { width: 9, height: 9, borderRadius: 4.5, borderWidth: 0.8, borderColor: '#999' },
+  ticketText: { fontSize: 7.5, color: GRAY_MID },
+
+  // ── Payment methods ──────────────────────────────────────
+  paymentSectionLabel: { fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: GRAY_DARK, marginBottom: 5 },
+  paymentGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 0 },
+  paymentOption: { flexDirection: 'row', alignItems: 'center', gap: 4, width: '50%', marginBottom: 5 },
+  paymentCircle: { width: 9, height: 9, borderRadius: 4.5, borderWidth: 0.8, borderColor: '#999' },
+  paymentText: { fontSize: 7.5, color: GRAY_MID },
+  paymentLine: { borderBottomWidth: 0.7, borderBottomColor: BORDER, width: 44, marginLeft: 3 },
+
+  // ── Terms ( ) Sim ( ) Não ────────────────────────────────
+  termsCell: {
+    borderWidth: 0.7, borderColor: BORDER, padding: 6, minHeight: 24,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  colHalf: {
-    flex: 1,
+  termsText: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: GRAY_MID },
+  termsOption: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  termsCircle: { width: 9, height: 9, borderRadius: 4.5, borderWidth: 0.8, borderColor: '#888' },
+  termsOptionText: { fontSize: 8, color: GRAY_MID },
+
+  // ── LGPD consent ─────────────────────────────────────────
+  lgpdRow: {
+    flexDirection: 'row', alignItems: 'flex-start',
+    gap: 7, marginTop: 10, paddingHorizontal: 2,
   },
+  lgpdSquare: {
+    width: 10, height: 10, borderWidth: 0.8, borderColor: '#999',
+    borderRadius: 1, flexShrink: 0, marginTop: 1,
+  },
+  lgpdText: { flex: 1, fontSize: 7, color: GRAY_LIGHT, lineHeight: 1.4 },
 
   // ── Signature area ────────────────────────────────────────
   signatureArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 28,
-    gap: 24,
+    flexDirection: 'row', justifyContent: 'space-between',
+    alignItems: 'flex-end', marginTop: 18, gap: 24,
   },
-  signatureBlock: {
-    flex: 1,
-  },
-  signatureLine: {
-    borderBottomWidth: 0.8,
-    borderBottomColor: '#666',
-    marginBottom: 4,
-    height: 18,
-  },
-  signatureLabel: {
-    fontSize: 7,
-    color: GRAY_LIGHT,
-    fontFamily: 'Helvetica',
-  },
-  dateBlock: {
-    width: 110,
-  },
-
-  // ── LGPD consent ──────────────────────────────────────────
-  lgpdRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 7,
-    marginTop: 20,
-    marginBottom: 2,
-    paddingHorizontal: 2,
-  },
-  lgpdSquare: {
-    width: 11,
-    height: 11,
-    borderWidth: 0.9,
-    borderColor: '#999',
-    borderRadius: 1,
-    flexShrink: 0,
-    marginTop: 1,
-  },
-  lgpdText: {
-    flex: 1,
-    fontSize: 7.5,
-    color: GRAY_MID,
-    lineHeight: 1.5,
-  },
+  signatureBlock: { flex: 1 },
+  signatureLine: { borderBottomWidth: 0.8, borderBottomColor: '#666', marginBottom: 4, height: 18 },
+  signatureLabel: { fontSize: 7, color: GRAY_LIGHT },
+  dateBlock: { width: 120 },
 
   // ── Footer ────────────────────────────────────────────────
   footer: {
-    marginTop: 14,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
+    marginTop: 10, flexDirection: 'row',
+    justifyContent: 'center', alignItems: 'center', gap: 6,
   },
-  footerText: {
-    fontSize: 6.5,
-    color: '#c4b5fd',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  footerDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: '#c4b5fd',
-  },
+  footerText: { fontSize: 6, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: 1 },
+  footerDot: { width: 2.5, height: 2.5, borderRadius: 1.25, backgroundColor: '#c4b5fd' },
 });
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -298,60 +165,87 @@ function ticketLabel(ticket: Ticket): string {
   return `${ticket.nome} — ${formatCurrency(ticket.valor)}`;
 }
 
-// ─── Field renderer ────────────────────────────────────────────────────────
+// ─── Field grouping ────────────────────────────────────────────────────────
 
-function renderField(campo: CampoFormulario) {
-  const asterisk = campo.obrigatorio ? ' *' : '';
+const SHORT_TYPES: CampoFormulario['tipo'][] = ['texto', 'email', 'telefone', 'numero', 'data'];
 
-  if (campo.tipo === 'select' && campo.opcoes && campo.opcoes.length > 0) {
-    return (
-      <View key={campo.id} style={styles.fieldWrapper}>
-        <Text style={styles.fieldLabel}>
-          {campo.label}{asterisk}
-        </Text>
-        <View style={styles.optionsRow}>
-          {campo.opcoes.map((op, i) => (
-            <View key={i} style={styles.optionItem}>
-              <View style={styles.optionCircle} />
-              <Text style={styles.optionText}>{op}</Text>
-            </View>
-          ))}
+function isShort(c: CampoFormulario) {
+  return SHORT_TYPES.includes(c.tipo);
+}
+
+function renderFormFields(campos: CampoFormulario[]) {
+  const rows: React.ReactNode[] = [];
+  let i = 0;
+  while (i < campos.length) {
+    const c = campos[i];
+    const asterisk = c.obrigatorio ? ' *' : '';
+
+    if (isShort(c) && i + 1 < campos.length && isShort(campos[i + 1])) {
+      const c2 = campos[i + 1];
+      rows.push(
+        <View key={c.id} style={styles.tableRow}>
+          <View style={styles.cell}>
+            <Text style={styles.cellLabel}>{c.label}{asterisk}</Text>
+          </View>
+          <View style={styles.cellLast}>
+            <Text style={styles.cellLabel}>{c2.label}{c2.obrigatorio ? ' *' : ''}</Text>
+          </View>
         </View>
-      </View>
-    );
-  }
-
-  if (campo.tipo === 'checkbox') {
-    return (
-      <View key={campo.id} style={styles.fieldWrapper}>
-        <View style={styles.checkboxItem}>
-          <View style={styles.checkboxSquare} />
-          <Text style={styles.checkboxText}>
-            {campo.label}{asterisk}
-          </Text>
+      );
+      i += 2;
+    } else if (c.tipo === 'textarea') {
+      rows.push(
+        <View key={c.id} style={styles.cellTextarea}>
+          <Text style={styles.cellLabel}>{c.label}{asterisk}</Text>
         </View>
-      </View>
-    );
+      );
+      i++;
+    } else if (c.tipo === 'select' && c.opcoes && c.opcoes.length > 0) {
+      rows.push(
+        <View key={c.id} style={[styles.cellFull, { minHeight: 36 }]}>
+          <Text style={styles.cellLabel}>{c.label}{asterisk}</Text>
+          <View style={styles.optionsRow}>
+            {c.opcoes.map((op, idx) => (
+              <View key={idx} style={styles.optionItem}>
+                <View style={styles.optionCircle} />
+                <Text style={styles.optionText}>{op}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+      i++;
+    } else if (c.tipo === 'checkbox') {
+      rows.push(
+        <View key={c.id} style={styles.cellFull}>
+          <View style={styles.checkboxRow}>
+            <View style={styles.checkboxSquare} />
+            <Text style={styles.checkboxText}>{c.label}{asterisk}</Text>
+          </View>
+        </View>
+      );
+      i++;
+    } else {
+      // single short field, full width
+      rows.push(
+        <View key={c.id} style={styles.cellFull}>
+          <Text style={styles.cellLabel}>{c.label}{asterisk}</Text>
+        </View>
+      );
+      i++;
+    }
   }
-
-  if (campo.tipo === 'textarea') {
-    return (
-      <View key={campo.id} style={styles.fieldWrapper}>
-        <Text style={styles.fieldLabel}>{campo.label}{asterisk}</Text>
-        <View style={styles.fieldBox} />
-      </View>
-    );
-  }
-
-  return (
-    <View key={campo.id} style={styles.fieldWrapper}>
-      <Text style={styles.fieldLabel}>{campo.label}{asterisk}</Text>
-      <View style={styles.fieldLine} />
-    </View>
-  );
+  return rows;
 }
 
 // ─── Main document ─────────────────────────────────────────────────────────
+
+const PAYMENT_METHODS = [
+  { label: 'Boleto (todo dia 10)', hasInstallments: false },
+  { label: 'Cartão de Débito', hasInstallments: false },
+  { label: 'Cartão de Crédito | Em quantas vezes?', hasInstallments: true },
+  { label: 'Dinheiro', hasInstallments: false },
+];
 
 export default function FichaInscricaoPDF({ evento, pagina, tickets, organizerProfile }: Props) {
   const logoUrl = organizerProfile?.imagem_url || null;
@@ -403,17 +297,68 @@ export default function FichaInscricaoPDF({ evento, pagina, tickets, organizerPr
           ) : null}
           {tickets.map(t => (
             <View key={t.id} style={styles.infoChip}>
-              <Text style={styles.infoChipLabel}>Ingresso</Text>
+              <Text style={styles.infoChipLabel}>Investimento</Text>
               <Text style={styles.infoChipValue}>{ticketLabel(t)}</Text>
             </View>
           ))}
         </View>
 
+        {/* ── Description ─────────────────────────────────── */}
+        {pagina.descricao ? (
+          <View style={styles.descBlock}>
+            <Text style={styles.descText}>{pagina.descricao}</Text>
+          </View>
+        ) : null}
+
         {/* ── Section title ────────────────────────────────── */}
         <Text style={styles.fichaTitle}>Ficha de Inscrição</Text>
 
-        {/* ── Form fields ─────────────────────────────────── */}
-        {pagina.campos_formulario.map(campo => renderField(campo))}
+        {/* ── Form fields in bordered cells ───────────────── */}
+        {renderFormFields(pagina.campos_formulario)}
+
+        {/* ── Ticket selection (only if multiple options) ─── */}
+        {tickets.length > 1 && (
+          <View style={[styles.cellFull, { minHeight: 38 }]}>
+            <Text style={styles.cellLabel}>Ingresso / Categoria *</Text>
+            <View style={styles.ticketOptionsRow}>
+              {tickets.map(t => (
+                <View key={t.id} style={styles.ticketItem}>
+                  <View style={styles.ticketCircle} />
+                  <Text style={styles.ticketText}>{ticketLabel(t)}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* ── Payment methods ─────────────────────────────── */}
+        <View style={[styles.cellFull, { minHeight: 52 }]}>
+          <Text style={styles.paymentSectionLabel}>
+            Qual a forma de pagamento? Escolha apenas UMA opção.
+          </Text>
+          <View style={styles.paymentGrid}>
+            {PAYMENT_METHODS.map(({ label, hasInstallments }) => (
+              <View key={label} style={styles.paymentOption}>
+                <View style={styles.paymentCircle} />
+                <Text style={styles.paymentText}>{label}</Text>
+                {hasInstallments && <View style={styles.paymentLine} />}
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* ── Terms agreement ─────────────────────────────── */}
+        <View style={styles.termsCell}>
+          <Text style={styles.termsText}>Concorda com os termos da inscrição?</Text>
+          <View style={styles.termsOption}>
+            <View style={styles.termsCircle} />
+            <Text style={styles.termsOptionText}>Sim</Text>
+          </View>
+          <View style={styles.termsOption}>
+            <View style={styles.termsCircle} />
+            <Text style={styles.termsOptionText}>Não</Text>
+          </View>
+        </View>
 
         {/* ── LGPD consent ─────────────────────────────────── */}
         <View style={styles.lgpdRow}>
@@ -431,7 +376,7 @@ export default function FichaInscricaoPDF({ evento, pagina, tickets, organizerPr
           </View>
           <View style={styles.dateBlock}>
             <View style={styles.signatureLine} />
-            <Text style={styles.signatureLabel}>Data: ____/____/________</Text>
+            <Text style={styles.signatureLabel}>Data da inscrição: ____/____/________</Text>
           </View>
         </View>
 
