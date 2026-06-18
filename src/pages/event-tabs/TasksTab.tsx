@@ -317,11 +317,11 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
                           ref={provided.innerRef}
                           className={`flex-1 space-y-3.5 transition-all p-1.5 rounded-[1.5rem] ${snapshot.isDraggingOver ? 'bg-primary/5 ring-2 ring-primary/20 ring-inset' : ''}`}
                         >
-                          {statusTasks.map((task, index) => (
-                            // @ts-ignore
+                          {statusTasks.map((task: Task, index: number) => (
+                            // @ts-expect-error — DraggableChildrenFn return type conflicts with Card's ref in @hello-pangea/dnd v18 + React 19
                             <Draggable key={task.id} draggableId={task.id} index={index}>
                               {(draggableProvided, draggableSnapshot) => (
-                                <Card 
+                                <Card
                                   ref={draggableProvided.innerRef}
                                   {...draggableProvided.draggableProps}
                                   {...draggableProvided.dragHandleProps}

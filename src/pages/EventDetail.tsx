@@ -36,10 +36,9 @@ import OverviewTab from './event-tabs/OverviewTab';
 import TicketsTab from './event-tabs/TicketsTab';
 import RegistrationsTab from './event-tabs/RegistrationsTab';
 import FinancialTab from './event-tabs/FinancialTab';
-import InternalManagementTab from './event-tabs/InternalManagementTab';
 import DonationsTab from './event-tabs/DonationsTab';
 import ReportsTab from './event-tabs/ReportsTab';
-import CheckInAndRoomsTab from './event-tabs/CheckInAndRoomsTab';
+import RoomsTab from './event-tabs/RoomsTab';
 import ManagementTab from './event-tabs/ManagementTab';
 import TasksTab from './event-tabs/TasksTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
@@ -132,7 +131,7 @@ export default function EventDetail() {
     { value: 'financial',      label: 'Pagamentos',   shortLabel: 'Pagam.',    icon: DollarSign,      show: !isGuest && plan.modules.manualPayments },
     { value: 'donations',      label: 'Doações',      shortLabel: 'Doações',   icon: Heart,           show: !isGuest && plan.modules.donations },
     { value: 'management',     label: 'Recursos',     shortLabel: 'Recursos',  icon: Wallet,          show: showTab('management', plan.modules.eventManagement) },
-    { value: 'checkin',        label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.checkIn) },
+    { value: 'grupos',         label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.eventManagement) },
     { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: showTab('tasks', plan.modules.tasksAndTeam) },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
     { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: !isGuest && plan.modules.financeiroConfig },
@@ -170,7 +169,7 @@ export default function EventDetail() {
       category: 'Gestão do Evento',
       items: [
         { value: 'management', label: 'Recursos', icon: Wallet,      show: showTab('management', plan.modules.eventManagement) },
-        { value: 'checkin',    label: 'Grupos',   icon: Bed,         show: showTab('rooms', plan.modules.checkIn) },
+        { value: 'grupos',     label: 'Grupos',   icon: Bed,         show: showTab('rooms', plan.modules.eventManagement) },
         { value: 'tasks',      label: 'Tarefas',  icon: CheckSquare, show: showTab('tasks', plan.modules.tasksAndTeam) },
         { value: 'equipe',     label: 'Equipe',   icon: UserCog,     show: isOwner && plan.modules.tasksAndTeam },
       ],
@@ -386,11 +385,14 @@ export default function EventDetail() {
             <TabsContent value="donations" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <DonationsTab eventoId={evento.id} />
             </TabsContent>
-            <TabsContent value="rooms" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <CheckInAndRoomsTab eventoId={evento.id} />
-            </TabsContent>
-            <TabsContent value="checkin" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <CheckInAndRoomsTab eventoId={evento.id} />
+            <TabsContent value="grupos" className="mt-0 border-none p-0 shadow-none bg-transparent">
+              <div className="space-y-6 text-foreground">
+                <div>
+                  <h2 className="text-2xl font-black tracking-tight text-foreground">Grupos</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">Organize os participantes em grupos, mesas, quartos ou qualquer divisão que o evento precisar.</p>
+                </div>
+                <RoomsTab eventoId={evento.id} />
+              </div>
             </TabsContent>
             <TabsContent value="sales-pages" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <SalesPagesTab eventoId={evento.id} />
@@ -401,9 +403,7 @@ export default function EventDetail() {
             <TabsContent value="reports" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <ReportsTab evento={evento} />
             </TabsContent>
-            <TabsContent value="internal" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <InternalManagementTab evento={evento} />
-            </TabsContent>
+
             <TabsContent value="equipe" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <EquipeTab evento={evento} onUpdate={fetchEventoData} />
             </TabsContent>

@@ -1,4 +1,3 @@
-export type UserRole = 'admin' | 'user';
 export type PlanLevel = 'start' | 'essencial' | 'pro';
 
 export interface UserProfile {
@@ -41,7 +40,7 @@ export interface FormField {
   opcoes?: string[]; // For select type
 }
 
-export interface PaymentMethodConfig {
+interface PaymentMethodConfig {
   ativo: boolean;
   taxa: number;
   tipo_taxa: 'fixo' | 'porcentagem';
@@ -206,15 +205,6 @@ export interface Donation {
   data: string;
   status: 'pendente' | 'aprovada' | 'cancelada';
   valorRestante: number;
-}
-
-export interface AlocacaoDoacao {
-  id: string;
-  doacaoId: string;
-  inscritoId: string;
-  valor: number;
-  data: string;
-  eventoId: string;
 }
 
 export interface Quarto {

@@ -17,7 +17,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '../components/Logo';
 import { useAuth } from '../lib/AuthContext';
-import { cn } from '@/lib/utils';
 
 export default function Login() {
   const { user, isAuthReady, loginAsDemo, processEquipeJoin } = useAuth();

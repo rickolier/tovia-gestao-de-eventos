@@ -35,7 +35,7 @@ interface RegistrationFlowProps {
   isSimulation?: boolean;
 }
 
-export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: RegistrationFlowProps) {
+function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: RegistrationFlowProps) {
   const [evento, setEvento] = useState<Evento | null>(initialEvento || null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(!initialEvento);

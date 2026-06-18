@@ -223,8 +223,8 @@ export default function CreateEvent() {
 
       // E-mail: primeiro evento
       const eventosAnteriores = await listDocuments<Evento>('eventos', [where('criado_por', '==', usuario.uid)]);
-      if (eventosAnteriores.length <= 1 && usuario.email && profile?.nome) {
-        Email.primeiroEvento(usuario.email, profile.nome, formData.nome);
+      if (eventosAnteriores.length <= 1 && usuario.email && perfil?.nome) {
+        Email.primeiroEvento(usuario.email, perfil.nome, dadosFormulario.nome);
       }
 
       if (calcConfig) {

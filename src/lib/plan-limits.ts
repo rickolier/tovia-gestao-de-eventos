@@ -1,6 +1,6 @@
 import { PlanLevel } from '../types';
 
-export interface PlanConfig {
+interface PlanConfig {
   name: string;
   label: string;
   description: string;
@@ -17,7 +17,6 @@ export interface PlanConfig {
     // Módulo 3 — Gestão do Evento (Plano C)
     eventManagement: boolean;
     tasksAndTeam: boolean;
-    checkIn: boolean;
     // Sempre disponível
     reports: boolean;
   };
@@ -38,7 +37,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       financeiroConfig: false,
       eventManagement: false,
       tasksAndTeam: false,
-      checkIn: false,
       reports: true,
     },
   },
@@ -56,7 +54,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       financeiroConfig: true,
       eventManagement: false,
       tasksAndTeam: false,
-      checkIn: false,
       reports: true,
     },
   },
@@ -74,7 +71,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       financeiroConfig: true,
       eventManagement: true,
       tasksAndTeam: true,
-      checkIn: false,
       reports: true,
     },
   },

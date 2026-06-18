@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Heart, Eye, ChevronRight, Wallet, Share2, TrendingUp, Edit2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X } from 'lucide-react';
+import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
@@ -19,7 +19,6 @@ import { storage } from '../../firebase';
 import { useAuth } from '../../lib/AuthContext';
 import { getPlanConfig } from '../../lib/plan-limits';
 import { FinancialTransaction } from '../../types';
-import { ArrowUpRight, ArrowDownRight, Target } from 'lucide-react';
 
 import { Progress } from '@/components/ui/progress';
 

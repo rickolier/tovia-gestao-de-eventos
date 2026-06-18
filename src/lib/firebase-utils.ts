@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
-export enum OperationType {
+enum OperationType {
   CREATE = 'create',
   UPDATE = 'update',
   DELETE = 'delete',
