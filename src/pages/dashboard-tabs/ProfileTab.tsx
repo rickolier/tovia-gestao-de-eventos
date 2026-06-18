@@ -63,8 +63,10 @@ export default function ProfileTab() {
       setPublicPageEnabled(next);
       await refreshProfile();
       toast.success(next ? 'Página pública ativada!' : 'Página pública desativada.');
-    } catch {
-      toast.error('Erro ao atualizar configuração.');
+    } catch (err: any) {
+      const msg = err?.message ? String(err.message).slice(0, 120) : String(err).slice(0, 120);
+      toast.error('Erro: ' + msg);
+      console.error('[toggle-pagina-publica]', err);
     } finally {
       setPublicPageLoading(false);
     }
