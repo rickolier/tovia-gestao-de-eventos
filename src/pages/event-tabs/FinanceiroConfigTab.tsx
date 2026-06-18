@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, Coins, TrendingDown, TrendingUp, Percent, FileText } from 'lucide-react';
+import { Calculator, Coins, TrendingDown, TrendingUp, Percent, FileText, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { updateDocument } from '../../lib/firebase-utils';
 import { Evento } from '../../types';
 import { toast } from 'sonner';
@@ -20,6 +20,7 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
     taxaBoleto:   ev.config_pagamento?.boleto?.taxa ?? 3.50,
     custoInscrito: ev.custo_estimado_por_pessoa || 0,
     installmentLogic: evento?.config_pagamento?.installmentLogic || 'free',
+    taxaAbsorbida: (ev.taxa_absorbida as 'margem' | 'pagador') || 'pagador',
   });
 
   useEffect(() => {
@@ -33,16 +34,24 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
       taxaBoleto:   ev2.config_pagamento?.boleto?.taxa ?? 3.50,
       custoInscrito: ev2.custo_estimado_por_pessoa || 0,
       installmentLogic: evento?.config_pagamento?.installmentLogic || 'free',
+      taxaAbsorbida: (ev2.taxa_absorbida as 'margem' | 'pagador') || 'pagador',
     });
   }, [evento.id, JSON.stringify(evento.config_pagamento)]);
 
-  // valorTicket = base price (cost + margin, before fee)
-  // suggestedPrice = what participant pays = base / (1 - fee%)
   const calc = (taxa: number) => {
-    const suggestedPrice = taxa >= 100 ? 0 : calcData.valorTicket / (1 - taxa / 100);
-    const valorTaxa = suggestedPrice - calcData.valorTicket;
-    const margem = calcData.valorTicket - calcData.custoInscrito;
-    return { suggestedPrice, valorTaxa, margem };
+    if (calcData.taxaAbsorbida === 'pagador') {
+      // Participant pays extra to cover the fee — organizer receives valorTicket intact
+      const suggestedPrice = taxa >= 100 ? 0 : calcData.valorTicket / (1 - taxa / 100);
+      const valorTaxa = suggestedPrice - calcData.valorTicket;
+      const margem = calcData.valorTicket - calcData.custoInscrito;
+      return { suggestedPrice, valorTaxa, margem };
+    } else {
+      // Organizer absorbs fee — participant pays valorTicket, fee is deducted from margin
+      const suggestedPrice = calcData.valorTicket;
+      const valorTaxa = calcData.valorTicket * (taxa / 100);
+      const margem = calcData.valorTicket - valorTaxa - calcData.custoInscrito;
+      return { suggestedPrice, valorTaxa, margem };
+    }
   };
 
   const resultsPix      = calc(calcData.taxaPix);
@@ -67,6 +76,7 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
         },
         valor_ticket_projeccao: calcData.valorTicket,
         custo_estimado_por_pessoa: calcData.custoInscrito,
+        taxa_absorbida: calcData.taxaAbsorbida,
       } as any);
       toast.success('Configurações salvas!');
       if (onUpdate) onUpdate();
@@ -74,6 +84,23 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
       toast.error('Erro ao salvar configurações.');
     }
   };
+
+  const taxaOpts: { value: 'pagador' | 'margem'; title: string; desc: string; icon: React.ReactNode; color: string }[] = [
+    {
+      value: 'pagador',
+      title: 'Taxas pelo Pagador',
+      desc: 'A taxa é somada ao valor base. O participante paga a mais.',
+      icon: <ArrowUpFromLine className="w-4 h-4" />,
+      color: 'amber',
+    },
+    {
+      value: 'margem',
+      title: 'Taxas pela Margem',
+      desc: 'A taxa é descontada da margem. O participante paga o valor base.',
+      icon: <ArrowDownToLine className="w-4 h-4" />,
+      color: 'emerald',
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -131,6 +158,55 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
                   className="h-14 font-black rounded-2xl border-none bg-emerald-50 focus:ring-emerald-500/20 text-emerald-700"
                 />
                 <p className="text-[10px] font-bold text-muted-foreground italic px-2">Alterar a margem recalcula automaticamente o Valor Base.</p>
+              </div>
+
+              {/* Quem absorve as taxas */}
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <Percent className="w-3 h-3 text-primary" /> Quem absorve as taxas do gateway?
+                </Label>
+                <div className="grid grid-cols-1 gap-2">
+                  {taxaOpts.map(opt => {
+                    const active = calcData.taxaAbsorbida === opt.value;
+                    const isAmber = opt.color === 'amber';
+                    return (
+                      <div
+                        key={opt.value}
+                        onClick={() => setCalcData(p => ({ ...p, taxaAbsorbida: opt.value }))}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all select-none ${
+                          active
+                            ? isAmber
+                              ? 'border-amber-400 bg-amber-50'
+                              : 'border-emerald-500 bg-emerald-50'
+                            : 'border-transparent bg-muted/40 hover:bg-muted/60'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                            active
+                              ? isAmber ? 'bg-amber-400 text-white' : 'bg-emerald-500 text-white'
+                              : 'bg-muted text-muted-foreground'
+                          }`}>
+                            {opt.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-black uppercase tracking-widest ${active ? (isAmber ? 'text-amber-700' : 'text-emerald-700') : 'text-foreground'}`}>
+                              {opt.title}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{opt.desc}</p>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                            active
+                              ? isAmber ? 'border-amber-400' : 'border-emerald-500'
+                              : 'border-muted-foreground'
+                          }`}>
+                            {active && <div className={`w-2 h-2 rounded-full ${isAmber ? 'bg-amber-400' : 'bg-emerald-500'}`} />}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -194,31 +270,41 @@ export default function FinanceiroConfigTab({ evento, onUpdate }: { evento: Even
           </div>
 
           {/* Results */}
-          <div className="pt-6 border-t border-border/30 grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { label: 'PIX',     result: resultsPix      },
-              { label: 'DÉBITO',  result: resultsDebito   },
-              { label: 'CRÉDITO', result: resultsCartao   },
-              { label: 'CORRENTE',result: resultsCorrente },
-              { label: 'BOLETO',  result: resultsBoleto   },
-            ].map(({ label, result }) => (
-              <Card key={label} className="rounded-[2rem] border bg-primary/5 border-primary/10 overflow-hidden group hover:shadow-xl transition-all">
-                <div className="p-6 text-center space-y-3">
-                  <Badge className="font-black px-3 py-1 rounded-full bg-primary text-white text-[10px]">{label}</Badge>
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-muted-foreground">Cobrar do participante</p>
-                    <p className="text-xl font-black text-foreground">{fmt(result.suggestedPrice)}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">taxa: {fmt(result.valorTaxa)}</p>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 pt-6 border-t border-border/30">
+              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Simulação por forma de pagamento</p>
+              <Badge variant="outline" className={`text-[10px] font-black px-3 rounded-full ${calcData.taxaAbsorbida === 'pagador' ? 'border-amber-400 text-amber-600 bg-amber-50' : 'border-emerald-500 text-emerald-700 bg-emerald-50'}`}>
+                {calcData.taxaAbsorbida === 'pagador' ? 'Taxas pelo Pagador' : 'Taxas pela Margem'}
+              </Badge>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[
+                { label: 'PIX',     result: resultsPix      },
+                { label: 'DÉBITO',  result: resultsDebito   },
+                { label: 'CRÉDITO', result: resultsCartao   },
+                { label: 'CORRENTE',result: resultsCorrente },
+                { label: 'BOLETO',  result: resultsBoleto   },
+              ].map(({ label, result }) => (
+                <Card key={label} className="rounded-[2rem] border bg-primary/5 border-primary/10 overflow-hidden group hover:shadow-xl transition-all">
+                  <div className="p-6 text-center space-y-3">
+                    <Badge className="font-black px-3 py-1 rounded-full bg-primary text-white text-[10px]">{label}</Badge>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-muted-foreground">
+                        {calcData.taxaAbsorbida === 'pagador' ? 'Cobrar do participante' : 'Participante paga'}
+                      </p>
+                      <p className="text-xl font-black text-foreground">{fmt(result.suggestedPrice)}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">taxa: {fmt(result.valorTaxa)}</p>
+                    </div>
+                    <div className="p-3 rounded-2xl border bg-white border-primary/10 group-hover:bg-primary transition-all">
+                      <p className="text-[10px] uppercase font-black tracking-widest mb-0.5 text-muted-foreground group-hover:text-white/70">Sua margem</p>
+                      <p className={`text-lg font-black transition-colors group-hover:text-white ${result.margem >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                        {fmt(result.margem)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-3 rounded-2xl border bg-white border-primary/10 group-hover:bg-primary transition-all">
-                    <p className="text-[10px] uppercase font-black tracking-widest mb-0.5 text-muted-foreground group-hover:text-white/70">Sua margem</p>
-                    <p className={`text-lg font-black transition-colors group-hover:text-white ${result.margem >= 0 ? 'text-primary' : 'text-red-500'}`}>
-                      {fmt(result.margem)}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </Card>
