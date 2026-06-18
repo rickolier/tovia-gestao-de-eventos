@@ -72,6 +72,8 @@ service cloud.firestore {
           'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'pagina_publica'
         ])
       );
+      // Toggle pagina_publica isolado — sem exigir isValidUser (não toca nome/email)
+      allow update: if isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['pagina_publica']);
       allow list: if isAdmin();
     }
 
