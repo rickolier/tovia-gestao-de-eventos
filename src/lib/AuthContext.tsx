@@ -162,13 +162,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               plano: isAdmin ? null : 'start',
             };
             await createDocument('users', firebaseUser.uid, userProfile);
-
-            // Novo cadastro via link de equipe
-            const pendingEventoId = sessionStorage.getItem('pendingEquipeEventoId');
-            if (pendingEventoId) {
-              sessionStorage.removeItem('pendingEquipeEventoId');
-              await processEquipeJoin(pendingEventoId);
-            }
           }
 
           await processarConvites(firebaseUser);

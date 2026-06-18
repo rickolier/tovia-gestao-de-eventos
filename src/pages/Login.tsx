@@ -42,10 +42,6 @@ export default function Login() {
 
   const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
 
-  // Novo cadastro via link de equipe: guarda eventoId para o AuthContext processar após signup
-  React.useEffect(() => {
-    if (eventoIdParam) sessionStorage.setItem('pendingEquipeEventoId', eventoIdParam);
-  }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -54,7 +50,10 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      if (eventoIdParam && result.user.email !== ADMIN_EMAIL) {
+        await processEquipeJoin(eventoIdParam);
+      }
       navigate('/dashboard');
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
@@ -68,15 +67,17 @@ export default function Login() {
       if (isRegistering) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
-        // Firebase: verificação de e-mail
+        if (eventoIdParam) await processEquipeJoin(eventoIdParam);
         await sendEmailVerification(userCredential.user);
-        // Resend: boas-vindas + tutorial (com delay de 24h simulado via flag no Firestore — disparo imediato do boas-vindas)
         Email.boasVindas(email, name);
-        setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000); // 24h — só funciona se a aba permanecer aberta; a versão cron será implementada futuramente
+        setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
-        navigate('/onboarding');
+        navigate(eventoIdParam ? '/dashboard' : '/onboarding');
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
+        if (eventoIdParam && cred.user.email !== ADMIN_EMAIL) {
+          await processEquipeJoin(eventoIdParam);
+        }
         toast.success('Bem-vindo de volta!');
         navigate(cred.user.email === 'admin@tovia.app' ? '/admin' : '/dashboard');
       }
