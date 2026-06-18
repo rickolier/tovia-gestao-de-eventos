@@ -229,7 +229,7 @@ export default function CalculatorTab() {
                     { label: 'PIX', value: pixFee, onChange: setPixFee },
                     { label: 'DÉBITO', value: debitFee, onChange: setDebitFee },
                     { label: 'CRÉDITO', value: creditFee, onChange: setCreditFee },
-                    { label: 'CORRENTE', value: recurringFee, onChange: setRecurringFee },
+                    { label: 'RECORRENTE', value: recurringFee, onChange: setRecurringFee },
                   ].map(({ label, value, onChange }) => (
                     <div key={label} className="space-y-1.5">
                       <Label className="text-[10px] font-bold text-muted-foreground">{label}</Label>
