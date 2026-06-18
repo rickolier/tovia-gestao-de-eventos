@@ -522,13 +522,16 @@ const FormField: React.FC<{
           onChange={e => onChange(e.target.value)}
           className="rounded-lg border border-gray-200 bg-white resize-none text-sm text-gray-900" rows={3} />
       )}
-      {campo.tipo === 'select' && campo.opcoes && (
+      {campo.tipo === 'select' && (
         <Select value={String(value || '')} onValueChange={onChange}>
           <SelectTrigger className={inputClass}>
             <SelectValue placeholder={campo.placeholder || 'Selecione...'} />
           </SelectTrigger>
-          <SelectContent className="rounded-xl border-gray-200 shadow-xl">
-            {campo.opcoes.map(op => <SelectItem key={op} value={op}>{op}</SelectItem>)}
+          <SelectContent className="rounded-xl border-gray-200 shadow-xl z-[9999]">
+            {(campo.opcoes || []).length > 0
+              ? campo.opcoes!.map(op => <SelectItem key={op} value={op}>{op}</SelectItem>)
+              : <SelectItem value="__empty__" disabled>Nenhuma opção disponível</SelectItem>
+            }
           </SelectContent>
         </Select>
       )}
