@@ -17,7 +17,7 @@ export default function CalculatorTab() {
   const [marginType, setMarginType] = useState<'percentage' | 'fixed'>('percentage');
   const [marginValue, setMarginValue] = useState<number>(10);
 
-  const [pixFee, setPixFee] = useState<number>(0.99);
+  const [boletoFee, setBoletoFee] = useState<number>(2.99);
   const [debitFee, setDebitFee] = useState<number>(1.99);
   const [creditFee, setCreditFee] = useState<number>(3.99);
   const [recurringFee, setRecurringFee] = useState<number>(4.99);
@@ -26,7 +26,7 @@ export default function CalculatorTab() {
     totalVenueCost: 0,
     costPerPersonMin: 0,
     costPerPersonMax: 0,
-    suggestedPricePix: 0,
+    suggestedPriceBoleto: 0,
     suggestedPriceDebit: 0,
     suggestedPriceCredit: 0,
     suggestedPriceRecurring: 0,
@@ -72,7 +72,7 @@ export default function CalculatorTab() {
         totalVenueCost,
         costPerPersonMin: costPerPersonMinLimit,
         costPerPersonMax: costPerPersonMaxLimit,
-        suggestedPricePix: calcFinalPrice(basePrice, pixFee),
+        suggestedPriceBoleto: calcFinalPrice(basePrice, boletoFee),
         suggestedPriceDebit: calcFinalPrice(basePrice, debitFee),
         suggestedPriceCredit: calcFinalPrice(basePrice, creditFee),
         suggestedPriceRecurring: calcFinalPrice(basePrice, recurringFee),
@@ -81,7 +81,7 @@ export default function CalculatorTab() {
     };
 
     calculate();
-  }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue, pixFee, debitFee, creditFee, recurringFee]);
+  }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue, boletoFee, debitFee, creditFee, recurringFee]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -226,7 +226,7 @@ export default function CalculatorTab() {
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Taxas por forma de pagamento (%)</Label>
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { label: 'PIX', value: pixFee, onChange: setPixFee },
+                    { label: 'BOLETO', value: boletoFee, onChange: setBoletoFee },
                     { label: 'DÉBITO', value: debitFee, onChange: setDebitFee },
                     { label: 'CRÉDITO', value: creditFee, onChange: setCreditFee },
                     { label: 'RECORRENTE', value: recurringFee, onChange: setRecurringFee },
@@ -296,7 +296,7 @@ export default function CalculatorTab() {
 
                 <div className="space-y-2">
                   {[
-                    { label: 'Via PIX', price: results.suggestedPricePix, color: 'bg-emerald-500/10 text-emerald-600', highlight: false },
+                    { label: 'Via Boleto', price: results.suggestedPriceBoleto, color: 'bg-emerald-500/10 text-emerald-600', highlight: false },
                     { label: 'Via Débito', price: results.suggestedPriceDebit, color: 'bg-blue-500/10 text-blue-600', highlight: false },
                     { label: 'Crédito', price: results.suggestedPriceCredit, color: 'bg-primary text-white', highlight: true },
                     { label: 'Recorrente', price: results.suggestedPriceRecurring, color: 'bg-purple-500/10 text-purple-600', highlight: false },
@@ -329,7 +329,7 @@ export default function CalculatorTab() {
         <Button
           onClick={() => {
             sessionStorage.setItem('tovia_calc_config', JSON.stringify({
-              pixFee, creditFee, debitFee, recurringFee,
+              boletoFee, creditFee, debitFee, recurringFee,
               maxParticipants, minParticipants, results,
             }));
             navigate('/eventos/novo');
