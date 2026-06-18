@@ -14,6 +14,7 @@ import LandingPage from './pages/LandingPage';
 import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
 import PublicOrganizerProfile from './pages/PublicOrganizerProfile';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
@@ -97,6 +98,7 @@ export default function App() {
             <Route path="/inscricao/:id" element={<PublicRegistration />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
+            <Route path="/privacidade" element={<PrivacyPolicy />} />
           </Routes>
           <Toaster />
         </Router>

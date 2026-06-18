@@ -423,14 +423,20 @@ export default function PublicOrganizerProfile() {
 
       {/* ── Footer ── */}
       <footer className="border-t border-gray-100 bg-white mt-8">
-        <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-xs font-light text-gray-400 tracking-tight">feito com</span>
             <span className="font-logo font-bold text-lg tracking-tight text-primary leading-none">tovia</span>
           </a>
-          <a href="/" className="text-xs font-black text-primary hover:underline">
-            Organize seus eventos →
-          </a>
+          <div className="flex items-center gap-4 text-xs text-gray-400">
+            <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-600 transition-colors">
+              Política de Privacidade
+            </a>
+            <span>·</span>
+            <a href="/" className="font-black text-primary hover:underline">
+              Organize seus eventos →
+            </a>
+          </div>
         </div>
       </footer>
     </div>

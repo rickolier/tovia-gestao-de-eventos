@@ -46,6 +46,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [lgpdConsent, setLgpdConsent] = useState(false);
 
   const handleGoogleLogin = async () => {
     try {
@@ -178,9 +179,27 @@ export default function Login() {
               </div>
             </div>
 
+            {isRegistering && (
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={lgpdConsent}
+                  onChange={e => setLgpdConsent(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-primary shrink-0"
+                />
+                <span className="text-[11px] text-white/60 leading-relaxed">
+                  Li e aceito a{' '}
+                  <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-white/80">
+                    Política de Privacidade
+                  </a>{' '}
+                  e os Termos de Uso da Tovia.
+                </span>
+              </label>
+            )}
+
             <Button
               type="submit"
-              disabled={loading}
+              disabled={loading || (isRegistering && !lgpdConsent)}
               className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all mt-2"
             >
               {loading ? (

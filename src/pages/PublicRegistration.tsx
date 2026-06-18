@@ -41,6 +41,7 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
   const [loading, setLoading] = useState(!initialEvento);
   const [step, setStep] = useState<'landing' | 'info' | 'payment' | 'success'>('landing');
   const [ticketQuantities, setTicketQuantities] = useState<Record<string, number>>({});
+  const [lgpdConsent, setLgpdConsent] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -576,12 +577,29 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
                         </div>
                       ))}
 
-                      <div className="pt-8 border-t flex justify-between items-center">
-                        <Button variant="ghost" onClick={() => setStep('landing')} className="text-muted-foreground">Voltar</Button>
-                        <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8 h-12 rounded-xl font-bold">
-                          Continuar
-                          <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
+                      <div className="pt-6 border-t space-y-4">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={lgpdConsent}
+                            onChange={e => setLgpdConsent(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 accent-primary shrink-0"
+                          />
+                          <span className="text-xs text-muted-foreground leading-relaxed">
+                            Li e aceito a{' '}
+                            <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 font-semibold hover:text-primary/80">
+                              Política de Privacidade
+                            </a>{' '}
+                            e autorizo o uso dos meus dados para participação neste evento, conforme a LGPD (Lei 13.709/18).
+                          </span>
+                        </label>
+                        <div className="flex justify-between items-center">
+                          <Button variant="ghost" onClick={() => setStep('landing')} className="text-muted-foreground">Voltar</Button>
+                          <Button type="submit" disabled={!lgpdConsent} className="bg-primary hover:bg-primary/90 text-white px-8 h-12 rounded-xl font-bold disabled:opacity-40">
+                            Continuar
+                            <ChevronRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </div>
                       </div>
                     </form>
                   </CardContent>
@@ -778,7 +796,7 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
         <div className="max-w-6xl mx-auto px-4 text-center space-y-4">
           <Logo showTagline={false} className="scale-50 opacity-30 grayscale mx-auto" />
           <div className="flex justify-center gap-6 text-xs text-muted-foreground/70">
-            <button className="hover:underline">Termos e políticas</button>
+            <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="hover:underline">Política de Privacidade e Termos</a>
             <button className="hover:underline">Denunciar este evento</button>
           </div>
           <p className="text-[10px] text-muted-foreground/50">© 2026 Plataforma de Eventos. Todos os direitos reservados.</p>
