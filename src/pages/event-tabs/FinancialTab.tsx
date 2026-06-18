@@ -576,7 +576,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                 <SelectContent className="rounded-xl border-none shadow-2xl">
                   {registrations.map(r => (
                     <SelectItem key={r.id} value={r.id} className="font-medium">
-                      {r.pessoa?.nome} (Faltam {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(r.valor_total - r.valor_pago)})
+                      {r.pessoa?.nome || r.nome || r.email || r.id} (Faltam {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(r.valor_total - r.valor_pago)})
                     </SelectItem>
                   ))}
                 </SelectContent>
