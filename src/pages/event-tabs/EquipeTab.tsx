@@ -34,7 +34,7 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
 
   const equipe: EquipeMembro[] = evento.equipe || [];
 
-  const signupUrl = `${window.location.origin}/login?cadastro=true`;
+  const signupUrl = `${window.location.origin}/login?cadastro=true&eventoId=${evento.id}`;
 
   // Carrega convites pendentes uma vez ao montar
   React.useEffect(() => {

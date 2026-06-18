@@ -86,6 +86,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Processa convites pendentes e link-based join para qualquer login/cadastro.
+  // Usa sessionStorage para rodar apenas uma vez por sessão de navegador.
+  const processarEquipeJoin = async (firebaseUser: User) => {
+    if (!firebaseUser.email || firebaseUser.email === 'admin@tovia.app') return;
+    if (sessionStorage.getItem('equipeJoinProcessed')) return;
+    sessionStorage.setItem('equipeJoinProcessed', '1');
+
+    const email = firebaseUser.email.toLowerCase();
+    const novoMembroBase = (permissoes: EquipeMembro['permissoes']) => ({
+      userId: firebaseUser.uid,
+      email,
+      nome: firebaseUser.displayName || firebaseUser.email || email,
+      permissoes,
+      adicionadoEm: new Date().toISOString(),
+    } as EquipeMembro);
+
+    // 1. Link direto de equipe (via ?eventoId=... na URL de cadastro)
+    const pendingEventoId = sessionStorage.getItem('pendingEquipeEventoId');
+    if (pendingEventoId) {
+      sessionStorage.removeItem('pendingEquipeEventoId');
+      try {
+        const evento = await getDocument<Evento>('eventos', pendingEventoId);
+        if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
+          await updateDocument('eventos', pendingEventoId, {
+            equipe: [...(evento.equipe || []), novoMembroBase(['registrations', 'management', 'rooms', 'tasks'])],
+          });
+        }
+      } catch (e) { console.warn('Erro ao processar link de equipe:', e); }
+    }
+
+    // 2. Convites pendentes por e-mail (admin convidou antes do cadastro)
+    try {
+      const convites = await listDocuments<ConvitePendente>('convites', [
+        where('email', '==', email),
+      ]);
+      for (const convite of convites) {
+        const evento = await getDocument<Evento>('eventos', convite.eventoId);
+        if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
+          await updateDocument('eventos', convite.eventoId, {
+            equipe: [...(evento.equipe || []), novoMembroBase(convite.permissoes)],
+          });
+          try {
+            await fetch('/api/sendEmail', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: firebaseUser.email,
+                subject: `Você entrou na equipe de ${convite.eventoNome}! 🎯`,
+                html: (await import('./email-templates')).emailConfirmacaoVinculo(
+                  firebaseUser.displayName || firebaseUser.email,
+                  convite.eventoNome
+                ),
+              }),
+            });
+          } catch (e) { console.warn('Email vínculo falhou:', e); }
+        }
+        await removeDocument('convites', convite.id);
+      }
+    } catch (e) { console.warn('Erro ao processar convites pendentes:', e); }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
@@ -102,52 +163,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               plano: isAdmin ? null : 'start',
             };
             await createDocument('users', firebaseUser.uid, userProfile);
-
-            // Processar convites pendentes para este e-mail
-            if (firebaseUser.email && !isAdmin) {
-              try {
-                const convites = await listDocuments<ConvitePendente>('convites', [
-                  where('email', '==', firebaseUser.email.toLowerCase()),
-                ]);
-                for (const convite of convites) {
-                  const evento = await getDocument<Evento>('eventos', convite.eventoId);
-                  if (evento) {
-                    const jaEMembro = (evento.equipe || []).some(m => m.userId === firebaseUser.uid);
-                    if (!jaEMembro) {
-                      const novoMembro: EquipeMembro = {
-                        userId: firebaseUser.uid,
-                        email: firebaseUser.email.toLowerCase(),
-                        nome: firebaseUser.displayName || firebaseUser.email,
-                        permissoes: convite.permissoes,
-                        adicionadoEm: new Date().toISOString(),
-                      };
-                      await updateDocument('eventos', convite.eventoId, {
-                        equipe: [...(evento.equipe || []), novoMembro],
-                      });
-                      // E-mail: confirmação de vínculo
-                      try {
-                        await fetch('/api/sendEmail', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            to: firebaseUser.email,
-                            subject: `Você entrou na equipe de ${convite.eventoNome}! 🎯`,
-                            html: (await import('./email-templates')).emailConfirmacaoVinculo(
-                              firebaseUser.displayName || firebaseUser.email,
-                              convite.eventoNome
-                            ),
-                          }),
-                        });
-                      } catch (e) { console.warn('Email vínculo falhou:', e); }
-                    }
-                  }
-                  await removeDocument('convites', convite.id);
-                }
-              } catch (e) {
-                console.warn('Erro ao processar convites pendentes:', e);
-              }
-            }
           }
+
+          // Processa equipe join para todos os usuários (nova conta ou login existente),
+          // uma vez por sessão de navegador
+          await processarEquipeJoin(firebaseUser);
+
           setProfile(userProfile);
         } else {
           setUser(null);

@@ -33,6 +33,12 @@ export default function Login() {
   }, [user, isAuthReady, navigate]);
 
   const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
+
+  // Persiste o eventoId do link de equipe para ser lido pelo AuthContext após o login/cadastro
+  React.useEffect(() => {
+    const eventoId = searchParams.get('eventoId');
+    if (eventoId) sessionStorage.setItem('pendingEquipeEventoId', eventoId);
+  }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
