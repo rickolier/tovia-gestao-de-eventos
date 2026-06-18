@@ -3,7 +3,7 @@ import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '../firebase';
 import { getDocument, createDocument, listDocuments, updateDocument, removeDocument } from './firebase-utils';
 import { UserProfile, PlanLevel, ConvitePendente, EquipeMembro, Evento } from '../types';
-import { where } from 'firebase/firestore';
+import { where, arrayUnion } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -111,7 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
           await updateDocument('eventos', pendingEventoId, {
             equipe: [...(evento.equipe || []), novoMembroBase(['registrations', 'management', 'rooms', 'tasks'])],
-          });
+            equipeIds: arrayUnion(firebaseUser.uid),
+          } as any);
         }
       } catch (e) { console.warn('Erro ao processar link de equipe:', e); }
     }
@@ -126,7 +127,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (evento && !(evento.equipe || []).some(m => m.userId === firebaseUser.uid)) {
           await updateDocument('eventos', convite.eventoId, {
             equipe: [...(evento.equipe || []), novoMembroBase(convite.permissoes)],
-          });
+            equipeIds: arrayUnion(firebaseUser.uid),
+          } as any);
           try {
             await fetch('/api/sendEmail', {
               method: 'POST',

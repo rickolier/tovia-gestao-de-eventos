@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { updateDocument, listDocuments, createDocument } from '../../lib/firebase-utils';
 import { Evento, EquipeMembro, EquipePermissao, UserProfile, ConvitePendente } from '../../types';
-import { where } from 'firebase/firestore';
+import { where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -74,7 +74,8 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         };
         await updateDocument('eventos', evento.id, {
           equipe: [...equipe, novoMembro],
-        });
+          equipeIds: arrayUnion(usuario.uid),
+        } as any);
         // E-mail: confirmação de vínculo (usuário já tem conta)
         Email.confirmacaoVinculo(trimmed, usuario.nome || trimmed, evento.nome);
         toast.success(`${usuario.nome || trimmed} adicionado à equipe!`);
@@ -108,7 +109,7 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
 
   const handleRemover = async (userId: string) => {
     const nova = equipe.filter(m => m.userId !== userId);
-    await updateDocument('eventos', evento.id, { equipe: nova });
+    await updateDocument('eventos', evento.id, { equipe: nova, equipeIds: arrayRemove(userId) } as any);
     toast.success('Membro removido da equipe.');
     onUpdate();
   };

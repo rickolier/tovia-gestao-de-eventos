@@ -78,6 +78,7 @@ export interface Evento {
   imagem_url?: string;
   criado_por: string;
   equipe?: EquipeMembro[];
+  equipeIds?: string[];
   habilita_doacoes: boolean;
   ativo: boolean;
   cor_tema?: string;

@@ -50,7 +50,7 @@ export default function Dashboard() {
         try {
           const [eventosData, eventosConvidado, notifications] = await Promise.all([
             listDocuments<Evento>('eventos', [where('criado_por', '==', user.uid)]),
-            listDocuments<Evento>('eventos', [where('equipe', 'array-contains-any', [{ userId: user.uid }])]).catch(() => [] as Evento[]),
+            listDocuments<Evento>('eventos', [where('equipeIds', 'array-contains', user.uid)]).catch(() => [] as Evento[]),
             listDocuments<AppNotification>('notificacoes', [
               where('userId', '==', user.uid),
               where('lida', '==', false),
