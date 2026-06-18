@@ -32,9 +32,9 @@ export default function Login() {
   React.useEffect(() => {
     if (!isAuthReady || !user) return;
     if (eventoIdParam && user.email !== ADMIN_EMAIL) {
-      processEquipeJoin(eventoIdParam).finally(() => {
-        navigate('/dashboard');
-      });
+      processEquipeJoin(eventoIdParam)
+        .catch((err: any) => toast.error('Erro ao entrar na equipe: ' + err.message))
+        .finally(() => navigate('/dashboard'));
     } else {
       navigate(user.email === ADMIN_EMAIL ? '/admin' : '/dashboard');
     }
@@ -52,7 +52,11 @@ export default function Login() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       if (eventoIdParam && result.user.email !== ADMIN_EMAIL) {
-        await processEquipeJoin(eventoIdParam);
+        try {
+          await processEquipeJoin(eventoIdParam);
+        } catch (joinErr: any) {
+          toast.error('Erro ao entrar na equipe: ' + joinErr.message);
+        }
       }
       navigate('/dashboard');
     } catch (error: any) {
@@ -67,7 +71,13 @@ export default function Login() {
       if (isRegistering) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
-        if (eventoIdParam) await processEquipeJoin(eventoIdParam);
+        if (eventoIdParam) {
+          try {
+            await processEquipeJoin(eventoIdParam);
+          } catch (joinErr: any) {
+            toast.error('Erro ao entrar na equipe: ' + joinErr.message);
+          }
+        }
         await sendEmailVerification(userCredential.user);
         Email.boasVindas(email, name);
         setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
@@ -76,7 +86,11 @@ export default function Login() {
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (eventoIdParam && cred.user.email !== ADMIN_EMAIL) {
-          await processEquipeJoin(eventoIdParam);
+          try {
+            await processEquipeJoin(eventoIdParam);
+          } catch (joinErr: any) {
+            toast.error('Erro ao entrar na equipe: ' + joinErr.message);
+          }
         }
         toast.success('Bem-vindo de volta!');
         navigate(cred.user.email === 'admin@tovia.app' ? '/admin' : '/dashboard');

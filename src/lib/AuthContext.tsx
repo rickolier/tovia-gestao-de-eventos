@@ -13,7 +13,7 @@ interface AuthContextType {
   loginAsDemo: () => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
-  processEquipeJoin: (eventoId: string) => Promise<void>;
+  processEquipeJoin: (eventoId: string) => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -24,7 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   loginAsDemo: async () => {},
   logout: () => {},
   refreshProfile: async () => {},
-  processEquipeJoin: async () => {},
+  processEquipeJoin: async () => null,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -90,21 +90,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Adiciona o usuário logado a um evento via eventoId (chamado pelo link de equipe)
   // Usa API route server-side (admin SDK) para contornar regras do Firestore
-  const processEquipeJoin = async (eventoId: string) => {
+  const processEquipeJoin = async (eventoId: string): Promise<string | null> => {
     const firebaseUser = auth.currentUser;
-    if (!firebaseUser?.email || firebaseUser.email === 'admin@tovia.app') return;
-    try {
-      const idToken = await firebaseUser.getIdToken();
-      const res = await fetch('/api/equipeJoin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, eventoId }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.warn('Erro ao entrar na equipe:', err);
-      }
-    } catch (e) { console.warn('Erro ao processar link de equipe:', e); }
+    console.log('[equipeJoin] currentUser:', firebaseUser?.email, 'eventoId:', eventoId);
+    if (!firebaseUser?.email || firebaseUser.email === 'admin@tovia.app') return null;
+    const idToken = await firebaseUser.getIdToken(true);
+    const res = await fetch('/api/equipeJoin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken, eventoId }),
+    });
+    const body = await res.json().catch(() => ({}));
+    console.log('[equipeJoin] response:', res.status, body);
+    if (!res.ok) throw new Error(body?.error || `HTTP ${res.status}`);
+    return body;
   };
 
   // Processa convites pendentes por e-mail — roda uma vez por sessão após login/cadastro
