@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '../firebase';
 import { getDocument, createDocument, listDocuments, removeDocument } from './firebase-utils';
+import { notifIfReadOrMissing } from './notifications';
 import { UserProfile, PlanLevel, ConvitePendente } from '../types';
 import { where } from 'firebase/firestore';
 
@@ -163,6 +164,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
 
           await processarConvites(firebaseUser);
+
+          if (!userProfile.isDemo) {
+            const isComplete = !!(userProfile.nome?.trim() && userProfile.whatsapp?.trim() && userProfile.instituicao?.trim());
+            if (!isComplete) {
+              notifIfReadOrMissing(`perf_${firebaseUser.uid}`, {
+                userId: firebaseUser.uid,
+                tipo: 'perfil_incompleto',
+                titulo: 'Complete seu perfil',
+                mensagem: 'Adicione WhatsApp e instituição ao seu perfil para uma melhor experiência.',
+                data: new Date().toISOString(),
+                lida: false,
+                acao_requirida: false,
+              }).catch(() => {});
+            }
+          }
 
           setProfile(userProfile);
         } else {

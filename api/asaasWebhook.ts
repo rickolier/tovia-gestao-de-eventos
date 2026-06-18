@@ -76,6 +76,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       console.log(`Plano ${planLevel} ativado para ${userId}`);
 
+      const planNotifId = `plan_${userId}`;
+      await db.collection('notificacoes').doc(planNotifId).set({
+        id: planNotifId,
+        userId,
+        tipo: 'plano_atualizado',
+        titulo: 'Plano atualizado com sucesso!',
+        mensagem: `Seu plano foi atualizado para ${PLAN_NAMES[planLevel] || planLevel}. Boas-vindas ao novo plano!`,
+        data: new Date().toISOString(),
+        lida: false,
+        acao_requirida: false,
+      });
+
       // E-mail: confirmação de pagamento
       if (userEmail) {
         const { emailPagamentoConfirmado } = await import('../src/lib/email-templates.js');

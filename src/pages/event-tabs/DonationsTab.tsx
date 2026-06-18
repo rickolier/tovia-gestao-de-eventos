@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '../../lib/firebase-utils';
-import { Donation, Inscricao, Pessoa, FinancialTransaction, Pagamento, Ticket } from '../../types';
+import { Donation, Inscricao, Pessoa, FinancialTransaction, Pagamento, Ticket, Evento } from '../../types';
+import { notifOnce } from '../../lib/notifications';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,6 +26,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
   const { user } = useAuth();
   const [donations, setDonations] = useState<Donation[]>([]);
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa })[]>([]);
+  const [evento, setEvento] = useState<Evento | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDonationDialogOpen, setIsDonationDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -50,12 +52,13 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
   const [allocations, setAllocations] = useState<any[]>([]);
 
   const fetchData = async () => {
-    const [donData, regData, peopleData, allocData, ticketsData] = await Promise.all([
+    const [donData, regData, peopleData, allocData, ticketsData, eventData] = await Promise.all([
       listDocuments<Donation>(`eventos/${eventoId}/doacoes`),
       listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
       listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
       listDocuments<any>(`eventos/${eventoId}/alocacoes_doacoes`),
-      listDocuments<Ticket>(`eventos/${eventoId}/tickets`)
+      listDocuments<Ticket>(`eventos/${eventoId}/tickets`),
+      getDocument<Evento>('eventos', eventoId),
     ]);
 
     const enrichedRegs = regData.map(reg => ({
@@ -66,7 +69,27 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     setDonations(donData);
     setRegistrations(enrichedRegs);
     setAllocations(allocData);
+    setEvento(eventData);
     setLoading(false);
+
+    if (eventData?.criado_por) {
+      const adminId = eventData.criado_por;
+      donData
+        .filter(d => d.status === 'pendente')
+        .forEach(d =>
+          notifOnce(`dp_${d.id}`, {
+            userId: adminId,
+            eventoId,
+            tipo: 'doacao_pendente',
+            titulo: 'Doação pendente de vinculação',
+            mensagem: `Doação de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valor)} de ${d.doadorNome || 'Anônimo'} aguarda vinculação.`,
+            data: d.data || new Date().toISOString(),
+            lida: false,
+            acao_requirida: false,
+            dados_acao: { donationId: d.id },
+          }).catch(() => {})
+        );
+    }
   };
 
   useEffect(() => {
@@ -164,6 +187,19 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             } as FinancialTransaction);
           }
   
+          if (evento?.criado_por) {
+            notifOnce(`dp_${donationData.id}`, {
+              userId: evento.criado_por,
+              eventoId,
+              tipo: 'doacao_pendente',
+              titulo: 'Doação pendente de vinculação',
+              mensagem: `Doação de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorLiquido)} de ${formData.doadorNome || 'Anônimo'} aguarda vinculação.`,
+              data: new Date().toISOString(),
+              lida: false,
+              acao_requirida: false,
+              dados_acao: { donationId: donationData.id },
+            }).catch(() => {});
+          }
           toast.success('Doação registrada!');
         }
 

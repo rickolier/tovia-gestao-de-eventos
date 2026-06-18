@@ -5,7 +5,7 @@ import { AppNotification, Donation, Inscricao } from '../../types';
 import { where } from 'firebase/firestore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, X, Bell, Clock } from 'lucide-react';
+import { Check, X, Bell, Clock, Heart, Users, Trophy, Gift, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -174,8 +174,12 @@ export default function NotificationsTab({ eventoId }: NotificationsTabProps) {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      {notif.tipo === 'doacao_direcionada' && <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">Aprovação Pendente</span>}
+                      {notif.tipo === 'doacao_direcionada' && <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1"><Heart className="w-3 h-3" />Aprovação Pendente</span>}
+                      {notif.tipo === 'doacao_pendente' && <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1"><Gift className="w-3 h-3" />Doação</span>}
                       {notif.tipo === 'resumo_diario' && <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">Resumo Diário</span>}
+                      {notif.tipo === 'primeira_inscricao' && <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1"><Star className="w-3 h-3" />Primeira Inscrição</span>}
+                      {notif.tipo === 'meta_inscricoes' && <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1"><Trophy className="w-3 h-3" />Meta Atingida</span>}
+                      {notif.tipo === 'equipe_novo_membro' && <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1"><Users className="w-3 h-3" />Novo Membro</span>}
                       <span className="text-[10px] text-muted-foreground font-bold flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {new Date(notif.data).toLocaleString('pt-BR')}

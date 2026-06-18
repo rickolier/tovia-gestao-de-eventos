@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '../../lib/firebase-utils';
 import { Inscricao, Pessoa, Ticket, Pagamento, Evento, PaginaVenda, CampoFormulario } from '../../types';
+import { notifOnce } from '../../lib/notifications';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -91,6 +92,57 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
     setEvento(eventData);
     setPaginas(paginasData);
     setLoading(false);
+
+    if (eventData?.criado_por) {
+      const adminId = eventData.criado_por;
+      const total = enriched.length;
+      const vagas = eventData.vagas_totais || 0;
+      const now = new Date().toISOString();
+
+      if (total >= 1) {
+        notifOnce(`pi_${eventoId}`, {
+          userId: adminId, eventoId,
+          tipo: 'primeira_inscricao',
+          titulo: 'Parabéns! Primeira inscrição realizada!',
+          mensagem: `Seu evento "${eventData.nome}" acaba de receber sua primeira inscrição.`,
+          data: now, lida: false, acao_requirida: false,
+        }).catch(() => {});
+      }
+
+      if (vagas > 0) {
+        const pct = total / vagas;
+        if (pct >= 0.5) {
+          notifOnce(`meta_50_${eventoId}`, {
+            userId: adminId, eventoId,
+            tipo: 'meta_inscricoes',
+            titulo: '50% das vagas preenchidas!',
+            mensagem: `"${eventData.nome}" atingiu 50% de ocupação (${total}/${vagas} vagas).`,
+            data: now, lida: false, acao_requirida: false,
+            dados_acao: { percentual: 50, total, vagas },
+          }).catch(() => {});
+        }
+        if (pct >= 0.75) {
+          notifOnce(`meta_75_${eventoId}`, {
+            userId: adminId, eventoId,
+            tipo: 'meta_inscricoes',
+            titulo: '75% das vagas preenchidas!',
+            mensagem: `"${eventData.nome}" atingiu 75% de ocupação (${total}/${vagas} vagas).`,
+            data: now, lida: false, acao_requirida: false,
+            dados_acao: { percentual: 75, total, vagas },
+          }).catch(() => {});
+        }
+        if (pct >= 1.0) {
+          notifOnce(`meta_100_${eventoId}`, {
+            userId: adminId, eventoId,
+            tipo: 'meta_inscricoes',
+            titulo: 'Evento lotado! 100% das vagas preenchidas!',
+            mensagem: `"${eventData.nome}" está com todas as ${vagas} vagas preenchidas.`,
+            data: now, lida: false, acao_requirida: false,
+            dados_acao: { percentual: 100, total, vagas },
+          }).catch(() => {});
+        }
+      }
+    }
   };
 
   const getMaxParcelas = () => {

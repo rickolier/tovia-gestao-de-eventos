@@ -76,7 +76,8 @@ service cloud.firestore {
     }
 
     match /notificacoes/{notifId} {
-      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      // resource == null when doc doesn't exist — allow signed-in users to confirm non-existence (no data leakage)
+      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || isAdmin());
       allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
       allow update: if isSignedIn() && existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['lida']);
       allow create: if isOwner(incoming().userId) || isAdmin();

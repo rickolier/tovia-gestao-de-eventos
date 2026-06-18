@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../../lib/AuthContext';
 import { Email } from '../../lib/email';
+import { notifOnce } from '../../lib/notifications';
 
 const PERMISSAO_LABELS: Record<EquipePermissao, string> = {
   registrations: 'Ver inscritos',
@@ -76,6 +77,17 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
           equipe: [...equipe, novoMembro],
           equipeIds: arrayUnion(usuario.uid),
         } as any);
+        notifOnce(`eq_${evento.id}_${usuario.uid}`, {
+          userId: evento.criado_por,
+          eventoId: evento.id,
+          tipo: 'equipe_novo_membro',
+          titulo: 'Novo membro adicionado à equipe',
+          mensagem: `${usuario.nome || trimmed} foi adicionado à equipe do evento "${evento.nome}".`,
+          data: new Date().toISOString(),
+          lida: false,
+          acao_requirida: false,
+          dados_acao: { membroEmail: trimmed, membroNome: usuario.nome, membroId: usuario.uid },
+        }).catch(() => {});
         // E-mail: confirmação de vínculo (usuário já tem conta)
         Email.confirmacaoVinculo(trimmed, usuario.nome || trimmed, evento.nome);
         toast.success(`${usuario.nome || trimmed} adicionado à equipe!`);

@@ -76,7 +76,7 @@ function ProfileCompletion() {
             <div className={`${styles.fill} h-1.5 rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
           </div>
         </div>
-        <Link to="/dashboard?tab=profile" className="shrink-0">
+        <Link to="/dashboard?tab=perfil" className="shrink-0">
           <Button size="sm" className={`${styles.btn} rounded-xl text-xs font-bold px-4 gap-1.5 whitespace-nowrap`}>
             Finalizar cadastro <ArrowRight className="w-3 h-3" />
           </Button>

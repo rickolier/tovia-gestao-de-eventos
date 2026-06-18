@@ -68,6 +68,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       equipeIds: FieldValue.arrayUnion(uid),
     });
 
+    // Notificar o dono do evento sobre o novo membro
+    if (evento.criado_por) {
+      const notifId = `eq_${eventoId}_${uid}`;
+      const notifRef = db.collection('notificacoes').doc(notifId);
+      const notifSnap = await notifRef.get();
+      if (!notifSnap.exists) {
+        await notifRef.set({
+          id: notifId,
+          userId: evento.criado_por,
+          eventoId,
+          tipo: 'equipe_novo_membro',
+          titulo: 'Novo membro entrou na equipe',
+          mensagem: `${name} entrou na equipe do evento "${evento.nome || eventoId}" via link de convite.`,
+          data: new Date().toISOString(),
+          lida: false,
+          acao_requirida: false,
+          dados_acao: { membroEmail: email, membroNome: name, membroId: uid },
+        });
+      }
+    }
+
     console.log('[equipeJoin] sucesso uid:', uid, 'eventoId:', eventoId);
     return res.json({ ok: true });
 
