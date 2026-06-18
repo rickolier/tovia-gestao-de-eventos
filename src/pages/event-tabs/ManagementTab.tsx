@@ -10,7 +10,6 @@ import {
   Plus,
   Trash2,
   PieChart,
-  Target,
   Coins,
   Activity,
   ChevronRight,
@@ -115,8 +114,6 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   const saldoLivre = totalBruto - totalSaidas;
 
   const totalInscritos = registrations.length;
-  const custoPorInscrito = totalInscritos > 0 ? totalSaidas / totalInscritos : 0;
-  const margemPorInscrito = totalInscritos > 0 ? (totalArrecadadoInscricoes - totalSaidas) / totalInscritos : 0;
 
   return (
     <div className="space-y-8">
@@ -190,42 +187,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2.5rem] overflow-hidden">
-              <CardHeader className="p-8 pb-4">
-                <CardTitle className="text-base font-bold flex items-center gap-3 text-foreground">
-                  <Target className="w-5 h-5" />
-                  Performance por Participante
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8 pt-0 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2 p-6 bg-muted/40 rounded-[1.5rem] border border-border/10">
-                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Custo de Aquisição</span>
-                        <span className="text-2xl font-black text-red-600">
-                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(custoPorInscrito)}
-                        </span>
-                    </div>
-                    <div className="flex flex-col gap-2 p-6 bg-primary/5 rounded-[1.5rem] border border-primary/10">
-                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">Margem Líquida</span>
-                        <span className={`text-2xl font-black ${margemPorInscrito >= 0 ? 'text-primary' : 'text-red-500'}`}>
-                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(margemPorInscrito)}
-                        </span>
-                    </div>
-                </div>
-                
-                <div className="p-6 bg-muted/20 rounded-[1.5rem] border border-border/50">
-                    <div className="flex justify-between items-center mb-4">
-                        <span className="text-sm font-bold text-foreground">Eficiência de Conversão</span>
-                        <span className="text-sm font-black text-primary">72%</span>
-                    </div>
-                    <div className="h-3 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: '72%' }} />
-                    </div>
-                </div>
-              </CardContent>
-            </Card>
-
+          <div>
             <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-[2.5rem] overflow-hidden">
               <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between">
                 <CardTitle className="text-base font-bold flex items-center gap-3 text-foreground">
