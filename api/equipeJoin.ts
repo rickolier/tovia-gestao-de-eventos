@@ -1,6 +1,9 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+// Firebase client API key (public — already exposed in frontend bundle)
+const FIREBASE_API_KEY = require('../firebase-applet-config.json').apiKey;
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -9,34 +12,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'idToken e eventoId são obrigatórios.' });
   }
 
-  // Diagnóstico: verifica se o env var está presente
-  const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
-  if (!b64) {
-    console.error('[equipeJoin] FIREBASE_SERVICE_ACCOUNT_B64 não configurada');
-    return res.status(500).json({ error: 'FIREBASE_SERVICE_ACCOUNT_B64 não configurada no servidor.' });
-  }
-
   try {
-    // Importação dinâmica para capturar erros de inicialização no try-catch
-    const { getApp } = require('firebase-admin/app');
-    const { getAuth } = require('firebase-admin/auth');
-    const { getDb } = require('./_firebase');
-    const { FieldValue } = require('firebase-admin/firestore');
-
-    // Verifica o token do usuário
-    let uid: string, email: string, name: string;
-    try {
-      const decoded = await getAuth(getApp()).verifyIdToken(idToken);
-      uid = decoded.uid;
-      email = decoded.email || '';
-      name = decoded.name || decoded.email || '';
-    } catch (e: any) {
-      return res.status(401).json({ error: 'Token inválido.', detail: e?.message });
+    // Verificação via Firebase Auth REST API — sem dependência de jose/jwks-rsa
+    const verifyResp = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      }
+    );
+    const verifyData = await verifyResp.json();
+    if (!verifyResp.ok || !verifyData.users?.length) {
+      return res.status(401).json({ error: 'Token inválido.', detail: verifyData });
     }
+
+    const firebaseUser = verifyData.users[0];
+    const uid: string = firebaseUser.localId;
+    const email: string = firebaseUser.email || '';
+    const name: string = firebaseUser.displayName || email;
 
     if (!email || email === 'admin@tovia.app') {
       return res.status(403).json({ error: 'Operação não permitida.' });
     }
+
+    // Escrita no Firestore via Admin SDK (não usa jose)
+    const { getDb } = require('./_firebase');
+    const { FieldValue } = require('firebase-admin/firestore');
 
     const db = getDb();
     const eventoRef = db.collection('eventos').doc(eventoId);
@@ -70,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.json({ ok: true });
 
   } catch (e: any) {
-    console.error('[equipeJoin] erro:', e?.message, e?.code, e?.stack?.split('\n')[0]);
+    console.error('[equipeJoin] erro:', e?.message, e?.code);
     return res.status(500).json({ error: e?.message || 'Erro interno.', code: e?.code });
   }
 }
