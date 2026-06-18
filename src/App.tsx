@@ -13,6 +13,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
+import PublicOrganizerProfile from './pages/PublicOrganizerProfile';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
@@ -95,6 +96,7 @@ export default function App() {
             <Route path="/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/inscricao/:id" element={<PublicRegistration />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
+            <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
           </Routes>
           <Toaster />
         </Router>

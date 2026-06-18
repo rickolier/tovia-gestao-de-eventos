@@ -74,7 +74,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       financeiroConfig: true,
       eventManagement: true,
       tasksAndTeam: true,
-      checkIn: true,
+      checkIn: false,
       reports: true,
     },
   },

@@ -30,6 +30,7 @@ export interface UserProfile {
   asaasCustomerId?: string | null;
   asaasSubscriptionId?: string | null;
   isDemo?: boolean;
+  pagina_publica?: boolean;
 }
 
 export interface FormField {

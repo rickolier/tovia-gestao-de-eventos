@@ -69,7 +69,7 @@ service cloud.firestore {
           'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao',
           'redes_social', 'link_importante_1', 'link_importante_2',
           'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano',
-          'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro'
+          'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'pagina_publica'
         ])
       );
       allow list: if isAdmin();
@@ -86,10 +86,14 @@ service cloud.firestore {
 
     match /eventos/{eventoId} {
       allow get: if isValidId(eventoId); // Open get for public event page, but ID must be valid
-      allow list: if isSignedIn() && (
+      allow list: if (isSignedIn() && (
         resource.data.criado_por == request.auth.uid ||
         isAdmin() ||
         resource.data.get('equipeIds', []).hasAll([request.auth.uid])
+      )) || (
+        // Página pública do organizador: listagem sem auth quando organizador tem pagina_publica ativa
+        resource.data.ativo == true &&
+        get(/databases/$(database)/documents/users/$(resource.data.criado_por)).data.get('pagina_publica', false) == true
       );
       allow create: if isSignedIn() && isValidEvento(incoming());
       // Owner/admin: full update; Team member self-join: only equipe+equipeIds, adding themselves

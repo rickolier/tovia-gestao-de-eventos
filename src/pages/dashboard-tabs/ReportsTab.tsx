@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Evento } from '../../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, TrendingUp, Calendar, Users, Settings2, PieChart } from 'lucide-react';
+import { BarChart3, TrendingUp, Calendar, Users, Settings2, PieChart, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -36,7 +36,17 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
           <p className="text-sm text-muted-foreground mt-0.5">Visão consolidada de performance e escala.</p>
         </div>
 
-        <Dialog>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="rounded-xl gap-2 border-border hover:bg-accent h-9 px-4 font-bold text-sm shadow-sm"
+            onClick={() => window.print()}
+          >
+            <Download className="w-4 h-4" />
+            Exportar PDF
+          </Button>
+
+          <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="rounded-xl gap-2 border-border hover:bg-accent h-9 px-4 font-bold text-sm shadow-sm">
               <Settings2 className="w-4 h-4" />
@@ -70,6 +80,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Stat cards */}

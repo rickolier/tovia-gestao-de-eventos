@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle, Camera } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, AlertTriangle, Camera, Share2, Copy, CheckCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
@@ -48,6 +48,34 @@ export default function ProfileTab() {
     }
   };
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [publicPageEnabled, setPublicPageEnabled] = useState(!!profile?.pagina_publica);
+  const [publicPageLoading, setPublicPageLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const publicPageUrl = user ? `${window.location.origin}/o/${user.uid}` : '';
+
+  const handleTogglePublicPage = async () => {
+    if (!user) return;
+    const next = !publicPageEnabled;
+    setPublicPageLoading(true);
+    try {
+      await updateDocument('users', user.uid, { pagina_publica: next });
+      setPublicPageEnabled(next);
+      await refreshProfile();
+      toast.success(next ? 'Página pública ativada!' : 'Página pública desativada.');
+    } catch {
+      toast.error('Erro ao atualizar configuração.');
+    } finally {
+      setPublicPageLoading(false);
+    }
+  };
+
+  const handleCopyUrl = () => {
+    navigator.clipboard.writeText(publicPageUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
   const [formData, setFormData] = useState({
     nome: profile?.nome || '',
     instituicao: profile?.instituicao || '',
@@ -308,6 +336,67 @@ export default function ProfileTab() {
                 <Input value={formData.bairro} onChange={e => setFormData({...formData, bairro: e.target.value})} placeholder="Ex: Centro" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Página Pública do Organizador */}
+        <Card className="border-none shadow-sm bg-card rounded-3xl overflow-hidden">
+          <CardHeader className="bg-muted/30 border-b border-border">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+              <Share2 className="w-5 h-5 text-primary" />
+              Página Pública do Organizador
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-8 space-y-5">
+            <p className="text-sm text-muted-foreground">
+              Ative sua página pública para exibir seus eventos e informações de contato a qualquer visitante, mesmo sem conta no Tovia.
+            </p>
+            <div className="flex items-center justify-between gap-4 p-4 rounded-2xl border border-border bg-muted/30">
+              <div>
+                <p className="text-sm font-black text-foreground">
+                  {publicPageEnabled ? 'Página pública ativa' : 'Página pública inativa'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {publicPageEnabled ? 'Seus eventos estão visíveis publicamente.' : 'Seus eventos não aparecem para visitantes.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleTogglePublicPage}
+                disabled={publicPageLoading}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${publicPageEnabled ? 'bg-primary' : 'bg-muted-foreground/30'} ${publicPageLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${publicPageEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+              </button>
+            </div>
+
+            {publicPageEnabled && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Link da sua página</p>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-muted/50 rounded-xl border border-border overflow-hidden">
+                    <Globe className="w-4 h-4 text-primary shrink-0" />
+                    <span className="text-sm font-medium text-foreground truncate">{publicPageUrl}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyUrl}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-xs font-black transition-all shrink-0"
+                  >
+                    {copied ? <CheckCheck className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? 'Copiado!' : 'Copiar'}
+                  </button>
+                </div>
+                <a
+                  href={publicPageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline mt-1"
+                >
+                  <Globe className="w-3 h-3" /> Visualizar página →
+                </a>
+              </div>
+            )}
           </CardContent>
         </Card>
 
