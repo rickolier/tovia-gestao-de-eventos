@@ -5,7 +5,7 @@ import { notifOnce } from '../../lib/notifications';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check } from 'lucide-react';
+import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, ShieldOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAnonimizarDialogOpen, setIsAnonimizarDialogOpen] = useState(false);
+  const [itemToAnonimizar, setItemToAnonimizar] = useState<{ regId: string; pessoaId?: string } | null>(null);
   const [importLoading, setImportLoading] = useState(false);
   const [importPreview, setImportPreview] = useState<any[]>([]);
   const [importTicketId, setImportTicketId] = useState('');
@@ -425,6 +427,39 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
       fetchData();
     } catch (error) {
       toast.error('Erro ao excluir inscrição.');
+    }
+  };
+
+  const handleAnonimizar = (regId: string, pessoaId?: string) => {
+    setItemToAnonimizar({ regId, pessoaId });
+    setIsAnonimizarDialogOpen(true);
+  };
+
+  const confirmAnonimizar = async () => {
+    if (!itemToAnonimizar) return;
+    try {
+      const { regId, pessoaId } = itemToAnonimizar;
+      await updateDocument(`eventos/${eventoId}/inscricoes`, regId, {
+        nome: '[removido]',
+        sobrenome: '[removido]',
+        email: '[removido]',
+        telefone: '[removido]',
+        data_nascimento: '[removido]',
+        genero: '[removido]',
+        estadoCivil: '[removido]',
+        nome_responsavel: '[removido]',
+        telefone_responsavel: '[removido]',
+        respostas_formulario: {},
+      });
+      if (pessoaId) {
+        await removeDocument(`eventos/${eventoId}/pessoas`, pessoaId);
+      }
+      toast.success('Dados pessoais anonimizados conforme solicitação LGPD.');
+      setIsAnonimizarDialogOpen(false);
+      setItemToAnonimizar(null);
+      fetchData();
+    } catch (error) {
+      toast.error('Erro ao anonimizar dados.');
     }
   };
 
@@ -1222,6 +1257,40 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog open={isAnonimizarDialogOpen} onOpenChange={setIsAnonimizarDialogOpen}>
+          <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
+            <DialogHeader className="mb-4">
+              <DialogTitle className="text-xl font-black text-amber-600 tracking-tight flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
+                  <ShieldOff className="w-5 h-5 shrink-0" />
+                </div>
+                Anonimizar dados (LGPD)
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-2 space-y-3">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Esta ação atende à solicitação de exclusão de dados do participante conforme o <strong className="text-foreground">Art. 18 da LGPD</strong>.
+              </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
+                <p className="text-xs font-black text-amber-800 uppercase tracking-wide mb-2">O que será removido</p>
+                <p className="text-xs text-amber-700">Nome, e-mail, telefone, data de nascimento, gênero, estado civil, dados do responsável e respostas do formulário.</p>
+              </div>
+              <div className="bg-muted/50 rounded-xl p-4 space-y-1">
+                <p className="text-xs font-black text-muted-foreground uppercase tracking-wide mb-2">O que será mantido</p>
+                <p className="text-xs text-muted-foreground">Registro da inscrição, status, valores e pagamentos (obrigação fiscal de retenção por 5 anos).</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Esta ação <span className="font-bold text-foreground">não pode ser desfeita</span>.</p>
+            </div>
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-4">
+              <Button variant="ghost" onClick={() => setIsAnonimizarDialogOpen(false)} className="rounded-2xl h-12 px-8 font-black text-muted-foreground hover:bg-muted">Cancelar</Button>
+              <Button onClick={confirmAnonimizar} className="bg-amber-500 hover:bg-amber-600 text-white rounded-2xl h-12 px-8 font-black shadow-lg active:scale-95 transition-all">
+                <ShieldOff className="w-4 h-4 mr-2" />
+                Anonimizar dados
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden bg-card transition-colors border border-border/50">
@@ -1349,10 +1418,13 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
                         {!readOnly && (
                           <>
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all">
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all" title="Editar inscrição">
                               <Edit2 className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all">
+                            <Button variant="ghost" size="icon" onClick={() => handleAnonimizar(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all" title="Anonimizar dados (LGPD)">
+                              <ShieldOff className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all" title="Excluir inscrição">
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </>
