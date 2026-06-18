@@ -25,7 +25,6 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
   const { user } = useAuth();
   const [donations, setDonations] = useState<Donation[]>([]);
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa })[]>([]);
-  const [donationTicketInscricoes, setDonationTicketInscricoes] = useState<(Inscricao & { ticketNome?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDonationDialogOpen, setIsDonationDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -64,17 +63,8 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
       pessoa: peopleData.find(p => p.id === reg.pessoaId)
     }));
 
-    const doacaoTicketIds = new Set(ticketsData.filter(t => t.tipo === 'doacao').map(t => t.id));
-    const doacaoInscricoes = regData
-      .filter(r => doacaoTicketIds.has(r.ticketId))
-      .map(r => ({
-        ...r,
-        ticketNome: ticketsData.find(t => t.id === r.ticketId)?.nome
-      }));
-
     setDonations(donData);
     setRegistrations(enrichedRegs);
-    setDonationTicketInscricoes(doacaoInscricoes);
     setAllocations(allocData);
     setLoading(false);
   };
@@ -613,57 +603,6 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
         </DialogContent>
       </Dialog>
 
-      {/* Inscrições via Ingresso Doação */}
-      {donationTicketInscricoes.length > 0 && (
-        <Card className="border-none shadow-sm rounded-[2rem] bg-card overflow-hidden transition-colors">
-          <CardHeader className="bg-pink-50 dark:bg-pink-950/20 border-b border-border p-6">
-            <CardTitle className="text-xs font-semibold text-pink-600 flex items-center gap-2 uppercase tracking-widest">
-              <Heart className="w-5 h-5" />
-              Inscrições por Ingresso Doação
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-muted/10">
-                  <TableRow className="hover:bg-transparent border-border/50">
-                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground px-6">Data</TableHead>
-                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Participante</TableHead>
-                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">E-mail</TableHead>
-                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Ingresso</TableHead>
-                    <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {donationTicketInscricoes.map(insc => (
-                    <TableRow key={insc.id} className="hover:bg-muted/30 border-border/50 transition-colors">
-                      <TableCell className="text-xs font-bold px-6">
-                        {new Date(insc.data_inscricao).toLocaleDateString('pt-BR')}
-                      </TableCell>
-                      <TableCell className="font-bold text-foreground">
-                        {insc.nome || '—'}
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground font-medium">
-                        {insc.email || '—'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className="bg-pink-500/10 text-pink-600 font-black text-[9px] uppercase tracking-widest border-none">
-                          {insc.ticketNome || 'Doação'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={insc.status === 'pago' ? 'default' : 'secondary'} className="capitalize font-black text-[9px] tracking-wider h-5 border-none">
-                          {insc.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       <Card className="border-none shadow-sm rounded-[2rem] bg-card overflow-hidden transition-colors">
         <CardHeader className="bg-muted/30 border-b border-border p-6">
