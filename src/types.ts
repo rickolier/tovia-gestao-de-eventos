@@ -146,6 +146,9 @@ export interface Inscricao {
   nome?: string;
   email?: string;
   telefone?: string;
+  data_nascimento?: string;
+  nome_responsavel?: string;
+  telefone_responsavel?: string;
   eventoId: string;
   ticketId: string;
   ticket_nome?: string;

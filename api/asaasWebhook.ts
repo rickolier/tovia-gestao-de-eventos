@@ -74,7 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { plano: planLevel, planoPendente: null },
         { merge: true }
       );
-      console.log(`Plano ${planLevel} ativado para ${userId}`);
+      console.log('Plano ativado com sucesso.');
 
       const planNotifId = `plan_${userId}`;
       await db.collection('notificacoes').doc(planNotifId).set({
@@ -107,7 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { plano: null, asaasSubscriptionId: null, planoPendente: null },
         { merge: true }
       );
-      console.log(`Plano cancelado para ${userId}`);
+      console.log('Plano cancelado.');
 
       // E-mail: pagamento não realizado
       if (userEmail && planLevel) {

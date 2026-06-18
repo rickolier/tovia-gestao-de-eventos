@@ -117,8 +117,8 @@ service cloud.firestore {
       }
 
       match /inscricoes/{inscricaoId} {
-        // get: público para permitir participante consultar própria inscrição por ID
-        allow get: if isValidId(inscricaoId);
+        // get: requer autenticação mínima — participantes convidados precisam criar conta para consultar inscrição
+        allow get: if isEventOwner(eventoId) || isSignedIn();
         allow list: if isEventOwner(eventoId);
         // create: público para páginas de venda, mas eventoId deve corresponder ao path
         allow create: if isValidInscricao(incoming()) && incoming().eventoId == eventoId;

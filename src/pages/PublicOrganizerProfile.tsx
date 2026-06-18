@@ -388,12 +388,12 @@ export default function PublicOrganizerProfile() {
             <div className="flex flex-wrap gap-3 pt-2 border-t border-gray-100">
               {organizador.contato_email && (
                 <a href={`mailto:${organizador.contato_email}`} className="flex items-center gap-1.5 text-sm text-primary hover:underline font-semibold">
-                  <Mail className="w-3.5 h-3.5" /> {organizador.contato_email}
+                  <Mail className="w-3.5 h-3.5" /> Enviar e-mail
                 </a>
               )}
               {organizador.telefone && (
                 <a href={getWhatsappLink(organizador.telefone)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-primary hover:underline font-semibold">
-                  <Phone className="w-3.5 h-3.5" /> {organizador.telefone}
+                  <Phone className="w-3.5 h-3.5" /> WhatsApp
                 </a>
               )}
               {safeUrl(organizador.site) && (

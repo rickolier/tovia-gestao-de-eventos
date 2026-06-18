@@ -62,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
           await axios.put(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers });
         } catch (updateErr: any) {
-          console.error('Erro ao atualizar cliente, criando novo:', updateErr?.response?.data || updateErr.message);
+          console.error('Erro ao atualizar cliente no Asaas, criando novo.', updateErr?.response?.status);
           // Se falhar, cria novo cliente e sobrescreve o ID
           const newCustomerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
           customerId = newCustomerRes.data.id;
@@ -96,7 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       subscriptionId = subscriptionRes.data.id;
     } catch (subErr: any) {
-      console.error('Erro ao criar assinatura:', subErr?.response?.data || subErr.message);
+      console.error('Erro ao criar assinatura no Asaas.', subErr?.response?.status);
       return res.status(500).json({ error: 'Erro ao criar assinatura no Asaas.' });
     }
 
@@ -110,7 +110,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const firstPayment = paymentsRes.data.data?.[0];
       paymentUrl = firstPayment?.invoiceUrl || firstPayment?.bankSlipUrl || null;
     } catch (payErr: any) {
-      console.error('Erro ao buscar pagamento:', payErr?.response?.data || payErr.message);
+      console.error('Erro ao buscar pagamento no Asaas.', payErr?.response?.status);
       // Assinatura criada mas link indisponível — salva mesmo assim para não perder o subscriptionId
     }
 
@@ -126,7 +126,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.json({ paymentUrl, subscriptionId });
   } catch (err: any) {
-    console.error('Asaas error:', err?.response?.data || err.message);
+    console.error('Asaas error.', err?.response?.status);
     return res.status(500).json({ error: 'Erro ao processar assinatura. Tente novamente.' });
   }
 }

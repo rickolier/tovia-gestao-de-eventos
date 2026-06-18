@@ -89,7 +89,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    console.log('[equipeJoin] sucesso uid:', uid, 'eventoId:', eventoId);
+    console.log('[equipeJoin] sucesso');
     return res.json({ ok: true });
 
   } catch (e: any) {

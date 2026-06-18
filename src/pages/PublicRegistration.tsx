@@ -49,7 +49,20 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
     genero: '',
     estadoCivil: '',
     dataNascimento: '',
+    nomeResponsavel: '',
+    telefoneResponsavel: '',
   });
+
+  const isMinor = (dob: string): boolean => {
+    if (!dob) return false;
+    const birth = new Date(dob);
+    const today = new Date();
+    const age = today.getFullYear() - birth.getFullYear() -
+      (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0);
+    return age < 18;
+  };
+
+  const participanteEhMenor = isMinor(formData.dataNascimento);
 
   useEffect(() => {
     const targetId = eventoId || initialEvento?.id;
@@ -162,8 +175,14 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
       const total = totalAmount + totalTax;
 
       // Create Registration
-      await createDocument(`eventos/${evento.id}/inscricoes`, registrationId, {
-        ...formData,
+      const inscricaoData: Record<string, unknown> = {
+        nome: formData.nome,
+        sobrenome: formData.sobrenome,
+        email: formData.email,
+        telefone: formData.telefone,
+        genero: formData.genero,
+        estadoCivil: formData.estadoCivil,
+        data_nascimento: formData.dataNascimento,
         id: registrationId,
         eventoId: evento.id,
         ticketId: selectedTickets[0].id,
@@ -175,8 +194,13 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
         quantidades: ticketQuantities,
         precisa_ajuda: false,
         validada_manual: false,
-        userId: '' // Guest registration
-      } as any);
+        userId: '',
+      };
+      if (participanteEhMenor) {
+        inscricaoData.nome_responsavel = formData.nomeResponsavel;
+        inscricaoData.telefone_responsavel = formData.telefoneResponsavel;
+      }
+      await createDocument(`eventos/${evento.id}/inscricoes`, registrationId, inscricaoData as any);
 
       // Create Payment Record (Simulating automatic payment)
       await createDocument(`eventos/${evento.id}/pagamentos`, paymentId, {
@@ -506,14 +530,49 @@ export function RegistrationFlow({ eventoId, initialEvento, isSimulation = false
 
                           <div className="space-y-2">
                             <Label className="font-bold">Data de Nascimento *</Label>
-                            <Input 
+                            <Input
                               type="date"
-                              required 
+                              required
                               className="rounded-lg h-12 border-gray-300 focus:border-primary max-w-xs"
                               value={formData.dataNascimento}
                               onChange={e => setFormData({...formData, dataNascimento: e.target.value})}
                             />
                           </div>
+
+                          {participanteEhMenor && (
+                            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 space-y-5">
+                              <div className="flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="text-sm font-bold text-amber-800">Participante menor de 18 anos</p>
+                                  <p className="text-xs text-amber-700 mt-0.5">Por exigência da LGPD (Lei 13.709/18, Art. 14), é obrigatório informar um responsável legal para participantes menores de idade.</p>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div className="space-y-2">
+                                  <Label className="font-bold text-amber-900">Nome do Responsável *</Label>
+                                  <Input
+                                    required
+                                    placeholder="Nome completo do responsável"
+                                    className="rounded-lg h-12 border-amber-300 focus:border-amber-500 bg-white"
+                                    value={formData.nomeResponsavel}
+                                    onChange={e => setFormData({...formData, nomeResponsavel: e.target.value})}
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label className="font-bold text-amber-900">Telefone do Responsável *</Label>
+                                  <Input
+                                    required
+                                    type="tel"
+                                    placeholder="(00) 00000-0000"
+                                    className="rounded-lg h-12 border-amber-300 focus:border-amber-500 bg-white"
+                                    value={formData.telefoneResponsavel}
+                                    onChange={e => setFormData({...formData, telefoneResponsavel: e.target.value})}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
 
