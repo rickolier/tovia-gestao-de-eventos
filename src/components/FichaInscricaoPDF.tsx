@@ -14,8 +14,6 @@ const GRAY_DARK = '#1a1a1a';
 const GRAY_MID = '#555555';
 const GRAY_LIGHT = '#888888';
 const BORDER = '#cccccc';
-const BG_ADMIN = '#f8f5ff';
-const BORDER_ADMIN = '#ddd6fe';
 
 const styles = StyleSheet.create({
   page: {
@@ -233,43 +231,29 @@ const styles = StyleSheet.create({
     width: 110,
   },
 
-  // ── Admin area ────────────────────────────────────────────
-  adminArea: {
-    marginTop: 18,
-    padding: 8,
-    backgroundColor: BG_ADMIN,
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: BORDER_ADMIN,
-  },
-  adminTitle: {
-    fontSize: 6.5,
-    color: '#a78bfa',
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-    textAlign: 'center',
-    marginBottom: 7,
-    fontFamily: 'Helvetica-Bold',
-  },
-  adminRow: {
+  // ── LGPD consent ──────────────────────────────────────────
+  lgpdRow: {
     flexDirection: 'row',
-    gap: 16,
+    alignItems: 'flex-start',
+    gap: 7,
+    marginTop: 20,
+    marginBottom: 2,
+    paddingHorizontal: 2,
   },
-  adminField: {
+  lgpdSquare: {
+    width: 11,
+    height: 11,
+    borderWidth: 0.9,
+    borderColor: '#999',
+    borderRadius: 1,
+    flexShrink: 0,
+    marginTop: 1,
+  },
+  lgpdText: {
     flex: 1,
-  },
-  adminFieldLabel: {
-    fontSize: 6.5,
-    color: GRAY_LIGHT,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-    fontFamily: 'Helvetica-Bold',
-    marginBottom: 4,
-  },
-  adminLine: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#c4b5fd',
-    height: 14,
+    fontSize: 7.5,
+    color: GRAY_MID,
+    lineHeight: 1.5,
   },
 
   // ── Footer ────────────────────────────────────────────────
@@ -431,6 +415,14 @@ export default function FichaInscricaoPDF({ evento, pagina, tickets, organizerPr
         {/* ── Form fields ─────────────────────────────────── */}
         {pagina.campos_formulario.map(campo => renderField(campo))}
 
+        {/* ── LGPD consent ─────────────────────────────────── */}
+        <View style={styles.lgpdRow}>
+          <View style={styles.lgpdSquare} />
+          <Text style={styles.lgpdText}>
+            Declaro que li e concordo com o registro e uso dos dados fornecidos nesta ficha de inscrição, conforme a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018), para fins exclusivos de gestão e organização deste evento.
+          </Text>
+        </View>
+
         {/* ── Signature ────────────────────────────────────── */}
         <View style={styles.signatureArea}>
           <View style={styles.signatureBlock}>
@@ -440,29 +432,6 @@ export default function FichaInscricaoPDF({ evento, pagina, tickets, organizerPr
           <View style={styles.dateBlock}>
             <View style={styles.signatureLine} />
             <Text style={styles.signatureLabel}>Data: ____/____/________</Text>
-          </View>
-        </View>
-
-        {/* ── Admin area ───────────────────────────────────── */}
-        <View style={styles.adminArea}>
-          <Text style={styles.adminTitle}>Para uso exclusivo da organização</Text>
-          <View style={styles.adminRow}>
-            <View style={styles.adminField}>
-              <Text style={styles.adminFieldLabel}>Nº de Inscrição</Text>
-              <View style={styles.adminLine} />
-            </View>
-            <View style={styles.adminField}>
-              <Text style={styles.adminFieldLabel}>Validado por</Text>
-              <View style={styles.adminLine} />
-            </View>
-            <View style={styles.adminField}>
-              <Text style={styles.adminFieldLabel}>Forma de Pagamento</Text>
-              <View style={styles.adminLine} />
-            </View>
-            <View style={styles.adminField}>
-              <Text style={styles.adminFieldLabel}>Valor Pago</Text>
-              <View style={styles.adminLine} />
-            </View>
           </View>
         </View>
 
