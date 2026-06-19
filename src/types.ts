@@ -1,5 +1,20 @@
 export type PlanLevel = 'start' | 'essencial' | 'pro';
 
+export interface ArtigoBC {
+  id: string;
+  titulo: string;
+  resumo: string;
+  conteudo: string;
+  banner_url?: string;
+  video_url?: string;
+  tags: string[];
+  ordem: number;
+  slug: string;
+  autor: string;
+  criado_em: string;
+  atualizado_em: string;
+}
+
 export interface UserProfile {
   uid: string;
   nome: string;

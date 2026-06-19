@@ -9,6 +9,10 @@ const NAV_LINKS = [
   { label: 'Sobre', href: '#sobre' },
 ];
 
+const NAV_ROUTE_LINKS = [
+  { label: 'Base de Conhecimento', to: '/base-de-conhecimento' },
+];
+
 const FEATURES = [
   {
     icon: TicketIcon,
@@ -337,6 +341,11 @@ export default function LandingPage() {
                 {link.label}
               </a>
             ))}
+            {NAV_ROUTE_LINKS.map(link => (
+              <Link key={link.label} to={link.to} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           {/* CTAs */}
@@ -362,6 +371,11 @@ export default function LandingPage() {
               <a key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
                 {link.label}
               </a>
+            ))}
+            {NAV_ROUTE_LINKS.map(link => (
+              <Link key={link.label} to={link.to} onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
+                {link.label}
+              </Link>
             ))}
             <div className="pt-2 flex flex-col gap-3">
               <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
@@ -982,6 +996,11 @@ export default function LandingPage() {
               <a key={link.label} href={link.href} className="text-xs text-white/40 hover:text-white/70 transition-colors">
                 {link.label}
               </a>
+            ))}
+            {NAV_ROUTE_LINKS.map(link => (
+              <Link key={link.label} to={link.to} className="text-xs text-white/40 hover:text-white/70 transition-colors">
+                {link.label}
+              </Link>
             ))}
           </div>
         </div>

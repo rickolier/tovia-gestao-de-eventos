@@ -87,7 +87,7 @@ function buildSteps(plan: PlanLevel): TourStep[] {
     {
       target: 'criar-evento',
       title: 'Crie seu primeiro evento!',
-      description: 'Clique aqui para criar um evento. Você define nome, data, local e já terá uma página de inscrição pronta para compartilhar.',
+      description: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
       icon: <Plus className="w-4 h-4" />,
       position: 'right',
     },
@@ -118,7 +118,7 @@ function buildSteps(plan: PlanLevel): TourStep[] {
     steps.push(
       {
         title: 'Configure os pagamentos do seu evento!',
-        description: 'Na aba Configurações Financeiras do evento, defina metas de arrecadação, custos e conecte sua conta para receber pagamentos online automaticamente.',
+        description: 'Na aba Configurações Financeiras do evento, você pode definir as taxas, os valores reais do seu evento.',
         icon: <Settings2 className="w-4 h-4" />,
       },
       {
@@ -128,7 +128,7 @@ function buildSteps(plan: PlanLevel): TourStep[] {
       },
       {
         title: 'Aqui ficam todas as doações!',
-        description: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você.',
+        description: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você. Você pode também alocar uma doação para um participante!',
         icon: <Heart className="w-4 h-4" />,
       },
     );

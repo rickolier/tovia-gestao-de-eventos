@@ -169,5 +169,13 @@ service cloud.firestore {
         allow create, update, delete: if isEventOwner(eventoId);
       }
     }
+
+    // ===============================================================
+    // Base de Conhecimento — leitura pública, escrita apenas admin
+    // ===============================================================
+    match /base_conhecimento/{artigoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
