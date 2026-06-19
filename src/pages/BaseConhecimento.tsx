@@ -45,18 +45,18 @@ export default function BaseConhecimento() {
     <div className="min-h-screen bg-white font-sans">
 
       {/* ── Header ── */}
-      <header className="h-14 bg-white border-b border-border flex items-center px-6 sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
-          <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
-            Feito com <span className="text-primary font-black">tovia</span>
-          </Link>
-          <span className="text-sm font-black text-foreground">Base de Conhecimento</span>
-          <Link
-            to="/login?cadastro=true"
-            className="text-xs font-black bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors"
-          >
-            Crie seu evento!
-          </Link>
+      <header className="bg-white border-b border-gray-100 px-6 py-3 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+          <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
+            <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
+            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+          </a>
+          <span className="hidden sm:block text-xs font-semibold text-gray-500 truncate max-w-[200px] text-center">
+            Base de Conhecimento
+          </span>
+          <a href="/login?cadastro=true" className="text-xs font-black text-primary hover:underline whitespace-nowrap">
+            Crie o seu evento →
+          </a>
         </div>
       </header>
 
