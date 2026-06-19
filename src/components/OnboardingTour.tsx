@@ -1,6 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronRight, ChevronLeft, Sparkles, CheckCircle2, Ticket, DollarSign, Users, LayoutGrid } from 'lucide-react';
+import {
+  X, ChevronRight, ChevronLeft, Sparkles, CheckCircle2,
+  Ticket, DollarSign, Users, House, User, CalendarDays,
+  Calculator, BarChart3, CreditCard, Plus, Globe,
+  BookOpen, Package, Bed, ListChecks, UserPlus,
+  Settings2, Heart,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PlanLevel } from '../types';
 
@@ -29,62 +35,135 @@ interface Props {
 // ─── Steps per plan ──────────────────────────────────────────────────────────
 
 function buildSteps(plan: PlanLevel): TourStep[] {
+  // ── Start (todos os planos) ────────────────────────────────────────────────
   const steps: TourStep[] = [
     {
       title: 'Bem-vindo ao Tovia!',
-      description: 'Sua plataforma de gestão de eventos está pronta. Vamos mostrar os pontos principais em menos de 2 minutos.',
+      description: 'Sua plataforma de gestão de eventos está pronta. Vamos fazer um tour rápido pelos recursos do seu plano — leva menos de 2 minutos!',
       icon: <Sparkles className="w-4 h-4" />,
     },
     {
-      target: 'nav-inicio',
-      title: 'Seus Eventos',
-      description: 'Na página Início você vê todos os seus eventos, inscrições recentes e o resumo da atividade.',
-      icon: <LayoutGrid className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'criar-evento',
-      title: 'Crie Seu Primeiro Evento',
-      description: 'Clique aqui para criar um evento. Em menos de 1 minuto você terá uma página de inscrição pronta para compartilhar.',
-      icon: <Ticket className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
       target: 'nav-perfil',
-      title: 'Configure Sua Organização',
-      description: 'Adicione logo, nome da organização e dados de contato. Essas informações aparecem nas suas páginas de inscrição e e-mails automáticos.',
-      icon: <Users className="w-4 h-4" />,
+      title: 'Complete o seu perfil!',
+      description: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
+      icon: <User className="w-4 h-4" />,
       position: 'right',
     },
     {
       target: 'nav-agenda',
-      title: 'Agenda de Eventos',
-      description: 'Visualize todos os seus eventos em um calendário mensal para nunca perder uma data.',
+      title: 'Agenda de Eventos!',
+      description: 'Visualize todos os seus eventos num calendário mensal. Ideal para nunca perder uma data importante.',
+      icon: <CalendarDays className="w-4 h-4" />,
       position: 'right',
+    },
+    {
+      target: 'nav-calculadora',
+      title: 'Calcule seu próximo evento!',
+      description: 'Use a calculadora para estimar o investimento do seu evento antes de criá-lo — defina vagas, custos fixos e variáveis e veja a viabilidade financeira.',
+      icon: <Calculator className="w-4 h-4" />,
+      position: 'right',
+    },
+    {
+      target: 'nav-relatorios',
+      title: 'Relatórios!',
+      description: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',
+      icon: <BarChart3 className="w-4 h-4" />,
+      position: 'right',
+    },
+    {
+      target: 'nav-faturamento',
+      title: 'Faturamento!',
+      description: 'Veja o plano que você contratou, seus limites de eventos e participantes, e o histórico de pagamentos da plataforma.',
+      icon: <CreditCard className="w-4 h-4" />,
+      position: 'right',
+    },
+    {
+      target: 'nav-inicio',
+      title: 'Seus eventos!',
+      description: 'Na página Início você encontra todos os seus eventos e acessa qualquer um deles com um clique.',
+      icon: <House className="w-4 h-4" />,
+      position: 'right',
+    },
+    {
+      target: 'criar-evento',
+      title: 'Crie seu primeiro evento!',
+      description: 'Clique aqui para criar um evento. Você define nome, data, local e já terá uma página de inscrição pronta para compartilhar.',
+      icon: <Plus className="w-4 h-4" />,
+      position: 'right',
+    },
+    {
+      title: 'Cada evento precisa dos seus ingressos!',
+      description: 'Dentro de cada evento, configure os ingressos: gratuitos, pagos ou por doação. Você define vagas, prazo e as formas de pagamento aceitas.',
+      icon: <Ticket className="w-4 h-4" />,
+    },
+    {
+      title: 'Páginas de inscrição!',
+      description: 'As páginas de inscrição são links públicos que você compartilha com os participantes. Cada página tem ingressos vinculados, formulário personalizado e confirmação automática por e-mail.',
+      icon: <Globe className="w-4 h-4" />,
+    },
+    {
+      title: 'Participantes!',
+      description: 'Aqui você vê todas as inscrições realizadas: nome, contato, ingresso escolhido, status do pagamento e muito mais. Também é possível exportar a lista.',
+      icon: <Users className="w-4 h-4" />,
+    },
+    {
+      title: 'Base de Conhecimento!',
+      description: 'Ficou com dúvida? Em breve você terá acesso à nossa Base de Conhecimento com tutoriais, vídeos e respostas para as perguntas mais frequentes.',
+      icon: <BookOpen className="w-4 h-4" />,
     },
   ];
 
+  // ── Essencial ──────────────────────────────────────────────────────────────
   if (plan === 'essencial' || plan === 'pro') {
-    steps.push({
-      title: 'Módulo Financeiro',
-      description: 'Dentro de cada evento, acesse a aba Financeiro para registrar pagamentos recebidos, doações e acompanhar o fluxo de caixa.',
-      icon: <DollarSign className="w-4 h-4" />,
-    });
+    steps.push(
+      {
+        title: 'Configure os pagamentos do seu evento!',
+        description: 'Na aba Configurações Financeiras do evento, defina metas de arrecadação, custos e conecte sua conta para receber pagamentos online automaticamente.',
+        icon: <Settings2 className="w-4 h-4" />,
+      },
+      {
+        title: 'Confira ou adicione os pagamentos!',
+        description: 'Na aba Financeiro você registra e acompanha todos os pagamentos recebidos — parcelas, confirmações manuais e o fluxo de caixa do evento.',
+        icon: <DollarSign className="w-4 h-4" />,
+      },
+      {
+        title: 'Aqui ficam todas as doações!',
+        description: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você.',
+        icon: <Heart className="w-4 h-4" />,
+      },
+    );
   }
 
+  // ── Pro ────────────────────────────────────────────────────────────────────
   if (plan === 'pro') {
-    steps.push({
-      title: 'Gestão Completa',
-      description: 'Com o plano Pro você também gerencia Grupos (quartos, mesas, equipes), Tarefas e membros da sua equipe dentro de cada evento.',
-      icon: <Users className="w-4 h-4" />,
-    });
+    steps.push(
+      {
+        title: 'Recursos!',
+        description: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
+        icon: <Package className="w-4 h-4" />,
+      },
+      {
+        title: 'Grupos!',
+        description: 'Divida os participantes em grupos, quartos, mesas ou qualquer outra estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
+        icon: <Bed className="w-4 h-4" />,
+      },
+      {
+        title: 'Tarefas!',
+        description: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
+        icon: <ListChecks className="w-4 h-4" />,
+      },
+      {
+        title: 'Equipe!',
+        description: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Trabalhe junto com quem te ajuda.',
+        icon: <UserPlus className="w-4 h-4" />,
+      },
+      {
+        title: 'Tudo pronto!',
+        description: 'Você conhece tudo que o Tovia tem a oferecer! Para rever este tour a qualquer momento, clique em Tutorial na barra lateral. Bora organizar eventos incríveis!',
+        icon: <CheckCircle2 className="w-4 h-4" />,
+      },
+    );
   }
-
-  steps.push({
-    title: 'Tudo Pronto!',
-    description: 'Você pode acessar este tour novamente clicando em "Tutorial" na barra lateral. Bora criar seu primeiro evento!',
-    icon: <CheckCircle2 className="w-4 h-4" />,
-  });
 
   return steps;
 }
