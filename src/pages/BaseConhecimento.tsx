@@ -6,15 +6,37 @@ import { ArtigoBC } from '../types';
 import { orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 
-const PLAN_LABELS: Record<string, { label: string; color: string }> = {
-  pro: { label: 'Pro', color: 'bg-violet-100 text-violet-700' },
-  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700' },
+// ── Badge config ────────────────────────────────────────────────────────────
+
+const BADGES = {
+  start:     { label: 'Start',     color: 'bg-emerald-100 text-emerald-700' },
+  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'       },
+  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700'   },
 };
 
-function planFromTags(tags: string[]): string | null {
-  if (tags.includes('pro')) return 'pro';
-  if (tags.includes('essencial')) return 'essencial';
-  return null;
+// Accent stripe color when card has no banner
+const ACCENT: Record<string, string> = {
+  start:     'bg-primary',
+  essencial: 'bg-blue-400',
+  pro:       'bg-violet-500',
+};
+
+type PlanKey = 'start' | 'essencial' | 'pro';
+
+function badgesFromTags(tags: string[]): PlanKey[] {
+  const hasPro      = tags.includes('pro');
+  const hasEssencial = tags.includes('essencial');
+
+  if (hasPro && !hasEssencial) return ['pro'];                       // Pro only
+  if (hasEssencial)            return ['essencial', 'pro'];          // Essencial + Pro
+  return ['start', 'essencial', 'pro'];                              // Start = todos
+}
+
+// Highest plan determines accent color
+function accentFromBadges(badges: PlanKey[]): string {
+  if (badges.length === 1 && badges[0] === 'pro')      return ACCENT.pro;
+  if (badges[0] === 'essencial')                        return ACCENT.essencial;
+  return ACCENT.start;
 }
 
 export default function BaseConhecimento() {
@@ -24,7 +46,7 @@ export default function BaseConhecimento() {
 
   useEffect(() => {
     listDocuments<ArtigoBC>('base_conhecimento', [orderBy('ordem')])
-      .then(data => { setArtigos(data); })
+      .then(data => setArtigos(data))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -63,12 +85,8 @@ export default function BaseConhecimento() {
       {/* ── Banner ── */}
       <div
         className="relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 50%, #1a7a45 100%)',
-          minHeight: '280px',
-        }}
+        style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 50%, #1a7a45 100%)', minHeight: '280px' }}
       >
-        {/* Decorative circles */}
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
         <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/20" />
 
@@ -117,50 +135,77 @@ export default function BaseConhecimento() {
                 {filtered.length} {filtered.length === 1 ? 'artigo encontrado' : 'artigos encontrados'} para "{busca}"
               </p>
             )}
-            <div className="grid gap-4 md:grid-cols-2">
+
+            <div className="grid gap-5 md:grid-cols-2">
               {filtered.map(artigo => {
-                const plan = planFromTags(artigo.tags);
+                const badges  = badgesFromTags(artigo.tags);
+                const accent  = accentFromBadges(badges);
+                const hasBanner = !!artigo.banner_url;
+                const contentTags = artigo.tags.filter(t => t !== 'pro' && t !== 'essencial');
+
                 return (
                   <Link
                     key={artigo.id}
                     to={`/base-de-conhecimento/${artigo.slug}`}
-                    className="group flex flex-col gap-3 bg-white border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all"
+                    className="group flex flex-col bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-200"
                   >
-                    {/* Order + plan badge */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest">
-                        #{artigo.ordem}
-                      </span>
-                      {plan && (
-                        <span className={cn('text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full', PLAN_LABELS[plan].color)}>
-                          {PLAN_LABELS[plan].label}
+                    {/* ── Top visual: banner photo or colored stripe ── */}
+                    {hasBanner ? (
+                      <div className="h-36 overflow-hidden shrink-0">
+                        <img
+                          src={artigo.banner_url}
+                          alt={artigo.titulo}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className={cn('h-1.5 shrink-0', accent)} />
+                    )}
+
+                    {/* ── Content ── */}
+                    <div className="flex flex-col gap-3 p-5 flex-1">
+                      {/* Order + plan badges */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">
+                          #{artigo.ordem}
                         </span>
-                      )}
-                    </div>
-
-                    <div className="flex-1">
-                      <h2 className="text-[15px] font-black text-foreground leading-tight mb-1.5 group-hover:text-primary transition-colors">
-                        {artigo.titulo}
-                      </h2>
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                        {artigo.resumo}
-                      </p>
-                    </div>
-
-                    {/* Tags */}
-                    {artigo.tags.filter(t => t !== 'pro' && t !== 'essencial').length > 0 && (
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <Tag className="w-3 h-3 text-muted-foreground/40 shrink-0" />
-                        {artigo.tags.filter(t => t !== 'pro' && t !== 'essencial').slice(0, 3).map(tag => (
-                          <span key={tag} className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                            {tag}
+                        {badges.map(b => (
+                          <span
+                            key={b}
+                            className={cn(
+                              'text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full',
+                              BADGES[b].color,
+                            )}
+                          >
+                            {BADGES[b].label}
                           </span>
                         ))}
                       </div>
-                    )}
 
-                    <div className="flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                      Ler artigo <ArrowRight className="w-3 h-3" />
+                      <div className="flex-1">
+                        <h2 className="text-[15px] font-black text-foreground leading-tight mb-1.5 group-hover:text-primary transition-colors">
+                          {artigo.titulo}
+                        </h2>
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {artigo.resumo}
+                        </p>
+                      </div>
+
+                      {/* Tags */}
+                      {contentTags.length > 0 && (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <Tag className="w-3 h-3 text-muted-foreground/30 shrink-0" />
+                          {contentTags.slice(0, 3).map(tag => (
+                            <span key={tag} className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                        Ler artigo <ArrowRight className="w-3 h-3" />
+                      </div>
                     </div>
                   </Link>
                 );
