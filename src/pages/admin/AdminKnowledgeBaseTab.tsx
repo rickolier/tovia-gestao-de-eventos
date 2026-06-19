@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,9 @@ import { ArtigoBC } from '../../types';
 import { orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { SEED_ARTIGOS } from '../../data/knowledgeBaseSeeds';
-import { cn } from '@/lib/utils';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../firebase';
+import ImageCropper from '../../components/ImageCropper';
 
 function slugify(text: string): string {
   return text
@@ -39,11 +41,18 @@ export default function AdminKnowledgeBaseTab() {
   const [seeding, setSeeding] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [editId, setEditId] = useState<string | null>(null); // null = create, string = edit
+  const [editId, setEditId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [tagsInput, setTagsInput] = useState('');
   const [confirmSeed, setConfirmSeed] = useState(false);
+
+  // Banner upload states
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string>('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     setLoading(true);
@@ -59,10 +68,18 @@ export default function AdminKnowledgeBaseTab() {
 
   useEffect(() => { load(); }, []);
 
+  const resetBannerState = () => {
+    setBannerFile(null);
+    setBannerPreview('');
+    setCropSrc(null);
+    setUploadProgress(0);
+  };
+
   const openCreate = () => {
     setEditId(null);
     setForm(EMPTY_FORM);
     setTagsInput('');
+    resetBannerState();
     setShowForm(true);
   };
 
@@ -80,10 +97,16 @@ export default function AdminKnowledgeBaseTab() {
       autor: artigo.autor,
     });
     setTagsInput(artigo.tags.join(', '));
+    resetBannerState();
+    setBannerPreview(artigo.banner_url ?? '');
     setShowForm(true);
   };
 
-  const closeForm = () => { setShowForm(false); setEditId(null); };
+  const closeForm = () => {
+    setShowForm(false);
+    setEditId(null);
+    resetBannerState();
+  };
 
   const handleTituloChange = (titulo: string) => {
     setForm(f => ({
@@ -92,6 +115,43 @@ export default function AdminKnowledgeBaseTab() {
       slug: editId ? f.slug : slugify(titulo),
     }));
   };
+
+  // ── Banner upload handlers ─────────────────────────────────────────────────
+
+  const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      toast.error('Formato inválido. Use PNG, JPEG ou WebP.');
+      return;
+    }
+    setCropSrc(URL.createObjectURL(file));
+    // reset input so the same file can be re-selected
+    e.target.value = '';
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    setBannerFile(croppedFile);
+    setBannerPreview(URL.createObjectURL(croppedFile));
+    setCropSrc(null);
+  };
+
+  const uploadBanner = async (articleSlug: string): Promise<string> => {
+    if (!bannerFile) return form.banner_url;
+    const ext = bannerFile.type === 'image/png' ? 'png' : 'jpg';
+    const storageRef = ref(storage, `base_conhecimento/${articleSlug}/banner.${ext}`);
+    return new Promise<string>((resolve, reject) => {
+      const task = uploadBytesResumable(storageRef, bannerFile, { contentType: bannerFile.type });
+      task.on(
+        'state_changed',
+        snap => setUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+        reject,
+        async () => { resolve(await getDownloadURL(task.snapshot.ref)); },
+      );
+    });
+  };
+
+  // ── Save ──────────────────────────────────────────────────────────────────
 
   const handleSave = async () => {
     if (!form.titulo.trim() || !form.resumo.trim() || !form.conteudo.trim()) {
@@ -104,11 +164,14 @@ export default function AdminKnowledgeBaseTab() {
 
     setSaving(true);
     try {
+      const bannerUrl = await uploadBanner(slug);
+
       if (editId) {
         await updateDocument<ArtigoBC>('base_conhecimento', editId, {
           ...form,
           tags,
           slug,
+          banner_url: bannerUrl,
           atualizado_em: now,
         });
         toast.success('Artigo atualizado!');
@@ -119,6 +182,7 @@ export default function AdminKnowledgeBaseTab() {
           ...form,
           tags,
           slug,
+          banner_url: bannerUrl,
           autor: 'Equipe Tovia',
           criado_em: now,
           atualizado_em: now,
@@ -131,6 +195,7 @@ export default function AdminKnowledgeBaseTab() {
       toast.error('Erro ao salvar artigo');
     } finally {
       setSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -232,9 +297,21 @@ export default function AdminKnowledgeBaseTab() {
               key={artigo.id}
               className="flex items-center gap-4 bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/30 transition-colors"
             >
-              <span className="text-xs font-black text-muted-foreground/50 w-6 shrink-0 text-center">
+              {/* Banner thumbnail */}
+              <div className="w-12 h-8 rounded-lg overflow-hidden bg-muted shrink-0">
+                {artigo.banner_url ? (
+                  <img src={artigo.banner_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImageIcon className="w-3.5 h-3.5 text-muted-foreground/30" />
+                  </div>
+                )}
+              </div>
+
+              <span className="text-xs font-black text-muted-foreground/50 w-5 shrink-0 text-center">
                 {artigo.ordem}
               </span>
+
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-foreground truncate">{artigo.titulo}</p>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
@@ -245,6 +322,7 @@ export default function AdminKnowledgeBaseTab() {
                   ))}
                 </div>
               </div>
+
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => openEdit(artigo)}
@@ -267,10 +345,11 @@ export default function AdminKnowledgeBaseTab() {
         </div>
       )}
 
-      {/* Create / Edit form overlay */}
+      {/* ── Create / Edit form overlay ── */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-background w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col">
+
             {/* Form header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
               <h2 className="font-black text-foreground">
@@ -284,6 +363,7 @@ export default function AdminKnowledgeBaseTab() {
             {/* Form body */}
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
+
                 <div className="col-span-2">
                   <Label className="text-xs font-semibold mb-1.5 block">Título *</Label>
                   <Input
@@ -330,18 +410,61 @@ export default function AdminKnowledgeBaseTab() {
                   <Textarea
                     value={form.conteudo}
                     onChange={e => setForm(f => ({ ...f, conteudo: e.target.value }))}
-                    placeholder="Escreva o conteúdo completo do artigo aqui...&#10;&#10;Cada parágrafo separado por uma linha em branco."
+                    placeholder={"Escreva o conteúdo completo do artigo aqui...\n\nCada parágrafo separado por uma linha em branco."}
                     rows={10}
                     className="resize-y text-sm font-mono"
                   />
                 </div>
 
+                {/* ── Banner upload ── */}
                 <div className="col-span-2">
-                  <Label className="text-xs font-semibold mb-1.5 block">URL do Banner <span className="text-muted-foreground font-normal">(imagem de capa, opcional)</span></Label>
-                  <Input
-                    value={form.banner_url}
-                    onChange={e => setForm(f => ({ ...f, banner_url: e.target.value }))}
-                    placeholder="https://..."
+                  <Label className="text-xs font-semibold mb-1.5 block">
+                    Banner <span className="text-muted-foreground font-normal">(3:1 · 1200×400px, opcional)</span>
+                  </Label>
+
+                  {bannerPreview ? (
+                    <div className="relative rounded-xl overflow-hidden border border-border" style={{ aspectRatio: '3/1' }}>
+                      <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover" />
+                      {/* Upload progress overlay */}
+                      {saving && bannerFile && (
+                        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
+                          <div className="w-32 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary rounded-full transition-all duration-300"
+                              style={{ width: `${uploadProgress}%` }}
+                            />
+                          </div>
+                          <span className="text-white text-xs font-semibold">{uploadProgress}%</span>
+                        </div>
+                      )}
+                      {/* Replace button */}
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute bottom-2 right-2 bg-black/60 hover:bg-black/80 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                      >
+                        <ImageIcon className="w-3 h-3" />
+                        Trocar imagem
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full border-2 border-dashed border-border hover:border-primary/40 rounded-xl transition-colors flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-foreground py-8"
+                    >
+                      <ImageIcon className="w-6 h-6" />
+                      <span className="text-xs font-semibold">Clique para enviar uma imagem</span>
+                      <span className="text-[10px]">PNG, JPEG ou WebP</span>
+                    </button>
+                  )}
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={handleBannerFileChange}
                   />
                 </div>
 
@@ -364,6 +487,7 @@ export default function AdminKnowledgeBaseTab() {
                     placeholder="ingressos, pagamento, essencial"
                   />
                 </div>
+
               </div>
             </div>
 
@@ -373,11 +497,27 @@ export default function AdminKnowledgeBaseTab() {
                 Cancelar
               </Button>
               <Button onClick={handleSave} disabled={saving} className="h-9 text-sm font-bold">
-                {saving ? 'Salvando...' : editId ? 'Salvar alterações' : 'Criar artigo'}
+                {saving
+                  ? <><div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />{bannerFile ? `Enviando... ${uploadProgress}%` : 'Salvando...'}</>
+                  : editId ? 'Salvar alterações' : 'Criar artigo'
+                }
               </Button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Image Cropper ── */}
+      {cropSrc && (
+        <ImageCropper
+          imageSrc={cropSrc}
+          aspect={3}
+          outputWidth={1200}
+          outputHeight={400}
+          label="Ajuste o banner do artigo"
+          onComplete={handleCropComplete}
+          onCancel={() => setCropSrc(null)}
+        />
       )}
     </div>
   );
