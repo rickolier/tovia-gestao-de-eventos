@@ -35,7 +35,7 @@ const PLAN_FILTERS: { key: PlanKey; label: string }[] = [
   { key: 'pro',       label: 'Pro'       },
 ];
 
-const TOP_TAGS_COUNT = 5;
+const PINNED_TAGS = ['início', 'configuração', 'eventos', 'financeiro', 'suporte'];
 
 function badgesFromTags(tags: string[]): PlanKey[] {
   const hasPro       = tags.includes('pro');
@@ -70,19 +70,7 @@ export default function BaseConhecimento() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Top 5 content tags by frequency across all articles
-  const topTags = useMemo(() => {
-    const freq: Record<string, number> = {};
-    for (const a of artigos) {
-      for (const t of a.tags) {
-        if (t !== 'pro' && t !== 'essencial') freq[t] = (freq[t] ?? 0) + 1;
-      }
-    }
-    return Object.entries(freq)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, TOP_TAGS_COUNT)
-      .map(([tag]) => tag);
-  }, [artigos]);
+  const topTags = PINNED_TAGS;
 
   const filtered = useMemo(() => {
     let result = artigos;
