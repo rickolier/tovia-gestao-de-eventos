@@ -1,14 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Tag, User2, BookOpen } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Tag, User2, BookOpen } from 'lucide-react';
 import { listDocuments } from '../lib/firebase-utils';
 import { ArtigoBC } from '../types';
-import { where } from 'firebase/firestore';
+import { where, orderBy } from 'firebase/firestore';
+import { cn } from '@/lib/utils';
 
 const PLAN_LABELS: Record<string, { label: string; color: string }> = {
-  pro: { label: 'Pro', color: 'bg-violet-100 text-violet-700' },
-  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700' },
+  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700' },
+  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'    },
 };
+
+const BADGES = {
+  start:     { label: 'Start',     color: 'bg-emerald-100 text-emerald-700' },
+  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'       },
+  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700'   },
+};
+
+const ACCENT: Record<string, string> = {
+  start:     'bg-primary',
+  essencial: 'bg-blue-400',
+  pro:       'bg-violet-500',
+};
+
+type PlanKey = 'start' | 'essencial' | 'pro';
+
+function badgesFromTags(tags: string[]): PlanKey[] {
+  const hasPro       = tags.includes('pro');
+  const hasEssencial = tags.includes('essencial');
+  if (hasPro && !hasEssencial) return ['pro'];
+  if (hasEssencial)            return ['essencial', 'pro'];
+  return ['start', 'essencial', 'pro'];
+}
+
+function accentFromBadges(badges: PlanKey[]): string {
+  if (badges.length === 1 && badges[0] === 'pro') return ACCENT.pro;
+  if (badges[0] === 'essencial')                  return ACCENT.essencial;
+  return ACCENT.start;
+}
 
 function planFromTags(tags: string[]): string | null {
   if (tags.includes('pro')) return 'pro';
@@ -34,18 +63,54 @@ function getYoutubeEmbedUrl(url: string): string | null {
   return null;
 }
 
+function getRelated(current: ArtigoBC, all: ArtigoBC[]): ArtigoBC[] {
+  const others = all.filter(a => a.id !== current.id);
+  const contentTags = current.tags.filter(t => t !== 'pro' && t !== 'essencial');
+
+  // Score by shared content tags
+  const scored = others.map(a => {
+    const shared = a.tags.filter(t => t !== 'pro' && t !== 'essencial' && contentTags.includes(t));
+    return { artigo: a, score: shared.length };
+  });
+
+  const withTags = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score);
+
+  if (withTags.length >= 2) return withTags.slice(0, 2).map(s => s.artigo);
+
+  // Fallback: fill with adjacent articles by ordem
+  const result = withTags.map(s => s.artigo);
+  const usedIds = new Set([current.id, ...result.map(a => a.id)]);
+
+  const adjacent = others
+    .filter(a => !usedIds.has(a.id))
+    .sort((a, b) => Math.abs(a.ordem - current.ordem) - Math.abs(b.ordem - current.ordem));
+
+  for (const a of adjacent) {
+    if (result.length >= 2) break;
+    result.push(a);
+  }
+
+  return result;
+}
+
 export default function ArtigoBaseConhecimento() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [artigo, setArtigo] = useState<ArtigoBC | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [artigo, setArtigo]     = useState<ArtigoBC | null>(null);
+  const [related, setRelated]   = useState<ArtigoBC[]>([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
     if (!slug) { setLoading(false); return; }
-    listDocuments<ArtigoBC>('base_conhecimento', [where('slug', '==', slug)])
-      .then(data => {
-        if (data.length > 0) setArtigo(data[0]);
-        else setArtigo(null);
+
+    Promise.all([
+      listDocuments<ArtigoBC>('base_conhecimento', [where('slug', '==', slug)]),
+      listDocuments<ArtigoBC>('base_conhecimento', [orderBy('ordem')]),
+    ])
+      .then(([current, all]) => {
+        const found = current[0] ?? null;
+        setArtigo(found);
+        if (found) setRelated(getRelated(found, all));
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -72,10 +137,10 @@ export default function ArtigoBaseConhecimento() {
     );
   }
 
-  const plan = planFromTags(artigo.tags);
+  const plan        = planFromTags(artigo.tags);
   const contentTags = artigo.tags.filter(t => t !== 'pro' && t !== 'essencial');
-  const embedUrl = artigo.video_url ? getYoutubeEmbedUrl(artigo.video_url) : null;
-  const paragraphs = artigo.conteudo.split(/\n\n+/).filter(Boolean);
+  const embedUrl    = artigo.video_url ? getYoutubeEmbedUrl(artigo.video_url) : null;
+  const paragraphs  = artigo.conteudo.split(/\n\n+/).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -191,8 +256,69 @@ export default function ArtigoBaseConhecimento() {
           </div>
         )}
 
+        {/* ── Related articles ── */}
+        {related.length > 0 && (
+          <div className="mt-12 pt-8 border-t border-border">
+            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground/60 mb-4">
+              Artigos relacionados
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {related.map(rel => {
+                const relBadges = badgesFromTags(rel.tags);
+                const relAccent = accentFromBadges(relBadges);
+                return (
+                  <Link
+                    key={rel.id}
+                    to={`/base-de-conhecimento/${rel.slug}`}
+                    className="group flex flex-col bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-primary/30 transition-all duration-200"
+                  >
+                    {rel.banner_url ? (
+                      <div className="h-24 overflow-hidden shrink-0">
+                        <img
+                          src={rel.banner_url}
+                          alt={rel.titulo}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className={cn('h-1 shrink-0', relAccent)} />
+                    )}
+                    <div className="p-4 flex flex-col gap-2 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">
+                          #{rel.ordem}
+                        </span>
+                        {relBadges.map(b => (
+                          <span
+                            key={b}
+                            className={cn(
+                              'text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full',
+                              BADGES[b].color,
+                            )}
+                          >
+                            {BADGES[b].label}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-sm font-black text-foreground leading-tight group-hover:text-primary transition-colors">
+                        {rel.titulo}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                        {rel.resumo}
+                      </p>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-primary mt-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                        Ler artigo <ArrowRight className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Back navigation */}
-        <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
+        <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
