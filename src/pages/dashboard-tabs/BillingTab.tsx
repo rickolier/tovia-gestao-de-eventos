@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../lib/AuthContext';
+import { updateDocument } from '../../lib/firebase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, Calendar, CheckCircle2, Clock, AlertCircle,
-  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt,
+  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt, AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
 import { PlanLevel } from '../../types';
+import { toast } from 'sonner';
 
 const BILLING_TYPE_LABELS: Record<string, string> = {
   CREDIT_CARD: 'Cartão de crédito',
@@ -62,6 +64,7 @@ export default function BillingTab() {
   const [data, setData] = useState<BillingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const load = async () => {
     if (!user) return;
@@ -198,6 +201,29 @@ export default function BillingTab() {
                 className="border-primary text-primary hover:bg-primary/5 rounded-xl font-semibold text-sm"
               >
                 Trocar de plano
+              </Button>
+              <Button
+                variant="ghost"
+                disabled={cancelLoading}
+                className="text-destructive hover:bg-destructive/5 hover:text-destructive rounded-xl font-semibold text-sm flex items-center gap-2"
+                onClick={async () => {
+                  if (!user) return;
+                  const confirmed = window.confirm('Tem certeza que deseja cancelar seu plano? Você voltará para a tela de seleção de planos.');
+                  if (!confirmed) return;
+                  setCancelLoading(true);
+                  try {
+                    await updateDocument('users', user.uid, { plano: null });
+                    toast.success('Plano cancelado. Escolha um novo plano para continuar.');
+                    navigate('/onboarding');
+                  } catch {
+                    toast.error('Erro ao cancelar plano. Tente novamente.');
+                  } finally {
+                    setCancelLoading(false);
+                  }
+                }}
+              >
+                <AlertTriangle className="w-4 h-4" />
+                {cancelLoading ? 'Cancelando...' : 'Cancelar plano'}
               </Button>
             </div>
           </div>

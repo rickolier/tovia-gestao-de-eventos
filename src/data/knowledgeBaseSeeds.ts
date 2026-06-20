@@ -295,17 +295,17 @@ Sugestões de novos artigos são bem-vindas — se você sentiu falta de alguma 
     resumo: 'Na aba Configurações Financeiras do evento, você pode definir as taxas, os valores reais do seu evento.',
     tags: ['pagamentos', 'financeiro', 'configuração', 'essencial'],
     autor: 'Equipe Tovia',
-    conteudo: `A aba Configurações Financeiras (disponível nos planos Essencial e Pro) é onde você define as regras financeiras do evento: metas de arrecadação, custos previstos e a conta para receber pagamentos online.
+    conteudo: `A aba Configurações Financeiras (disponível nos planos Essencial e Pro) é onde você define as regras financeiras do evento: custo total previsto, meta de arrecadação, taxas e margens. O Tovia é um organizador financeiro — não processamos cobranças. Toda a gestão de recebimentos é feita por você.
 
-Nessa aba você preenche: o custo total previsto do evento (para acompanhar se as arrecadações cobrem os custos), a meta de arrecadação, e conecta sua conta Asaas para receber pagamentos online diretamente dos participantes.
+Nessa aba você preenche: o custo total previsto do evento (soma de todos os gastos esperados, como local, alimentação, material), a meta de arrecadação com inscrições e doações, e as taxas ou margens que deseja considerar no planejamento.
 
-A integração com o Asaas permite que participantes paguem ingressos por Pix, boleto ou cartão de crédito diretamente pela página de inscrição. Os pagamentos são depositados na sua conta Asaas e você saca quando quiser.
+Com esses dados preenchidos, o Tovia calcula automaticamente o ponto de equilíbrio: quantas inscrições você precisa confirmar para cobrir os custos. Isso é visível no painel financeiro do evento.
 
-Para conectar o Asaas, você precisa criar uma conta gratuita em asaas.com, gerar sua chave de API nas configurações da conta e colar essa chave no campo correspondente na aba Configurações Financeiras do evento.
+Você também pode definir taxas administrativas ou de processamento externo para que os valores reais apareçam corretamente nos relatórios. Por exemplo, se você recebe pagamentos via Pix e cobra uma taxa de organização, pode configurar isso aqui.
 
-As taxas do Asaas são debitadas diretamente nas transações (não há cobrança adicional pelo Tovia). Consulte a tabela de taxas do Asaas antes de definir o valor do ingresso para não ter surpresas.
+A comparação entre o custo previsto e o total arrecadado (registrado manualmente na aba Financeiro) aparece em tempo real, permitindo acompanhar se o evento está dentro do orçamento.
 
-Importante: cada evento tem suas próprias configurações financeiras. Se você organiza eventos frequentes, configure as credenciais em cada evento individualmente.`,
+Importante: cada evento tem suas próprias configurações financeiras. Configure os dados de cada evento separadamente — os números de um evento não interferem nos outros.`,
     banner_url: '',
     video_url: '',
     criado_em: NOW,
@@ -319,17 +319,17 @@ Importante: cada evento tem suas próprias configurações financeiras. Se você
     resumo: 'Na aba Financeiro você registra e acompanha todos os pagamentos recebidos — parcelas, confirmações manuais e o fluxo de caixa do evento.',
     tags: ['financeiro', 'pagamentos', 'fluxo de caixa', 'essencial'],
     autor: 'Equipe Tovia',
-    conteudo: `A aba Financeiro (disponível nos planos Essencial e Pro) centraliza o acompanhamento de todos os recebimentos do evento: pagamentos online automáticos e registros manuais.
+    conteudo: `A aba Financeiro (disponível nos planos Essencial e Pro) centraliza o registro e acompanhamento de todos os recebimentos do evento. O Tovia não processa cobranças — você recebe os pagamentos pelos seus próprios meios (Pix, dinheiro, transferência, etc.) e registra aqui o que foi recebido.
 
-Nessa aba você vê uma lista de todas as transações: quem pagou, quando pagou, qual valor, qual forma de pagamento (Pix, boleto, cartão, dinheiro) e o status de cada transação.
+Para registrar um pagamento, clique em "Adicionar Pagamento", selecione o participante, informe o valor recebido, a forma de pagamento (Pix, dinheiro, cartão, transferência...) e a data. O status da inscrição correspondente é atualizado automaticamente para "Pago".
 
-Os pagamentos realizados online via Asaas são importados automaticamente. Para pagamentos recebidos em dinheiro ou por outras formas externas, você pode registrar manualmente: clique em "Adicionar Pagamento", informe o participante, o valor e o método de pagamento.
+A aba mostra: o total arrecadado até o momento, o saldo pendente (participantes que ainda não tiveram o pagamento confirmado) e a comparação com a meta definida nas Configurações Financeiras.
 
-A aba mostra o total arrecadado, o saldo previsto (inscrições pendentes de pagamento) e a comparação com o custo do evento definido nas Configurações Financeiras.
+Para pagamentos em parcelas, registre cada parcela separadamente informando o valor parcial. O sistema acumula as parcelas e você acompanha o total pago por participante com clareza.
 
-Para pagamentos em parcelas, você pode registrar cada parcela separadamente e acompanhar o pagamento completo com clareza.
+Todos os registros são manuais e ficam visíveis apenas para você e sua equipe — os participantes não têm acesso ao painel financeiro.
 
-Dica: mantenha o registro financeiro atualizado durante todo o ciclo do evento. Isso facilita a prestação de contas para parceiros, patrocinadores ou lideranças da organização após o evento.`,
+Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso facilita a prestação de contas para parceiros, patrocinadores ou lideranças após o evento, e evita cobranças duplicadas na entrada.`,
     banner_url: '',
     video_url: '',
     criado_em: NOW,
@@ -343,17 +343,17 @@ Dica: mantenha o registro financeiro atualizado durante todo o ciclo do evento. 
     resumo: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você. Você pode também alocar uma doação para um participante!',
     tags: ['doações', 'contribuições', 'essencial'],
     autor: 'Equipe Tovia',
-    conteudo: `A aba Doações (disponível nos planos Essencial e Pro) registra e exibe todas as contribuições realizadas no seu evento, seja por participantes inscritos ou por apoiadores externos.
+    conteudo: `A aba Doações (disponível nos planos Essencial e Pro) registra e exibe todas as contribuições recebidas no evento. O Tovia não processa cobranças — você recebe as doações pelos seus próprios meios e registra aqui o que chegou.
 
-Uma doação no Tovia pode ser de valor livre (o doador decide quanto quer contribuir) ou com valor sugerido (você define um valor de referência, mas o doador pode aumentar ou diminuir). Essa flexibilidade é ideal para retiros, conferências e eventos com cultura de oferta.
+Para registrar uma doação, clique em "Alocar Doação", selecione o participante (ou informe um doador externo), defina o valor, a forma de pagamento e a data. O registro fica salvo no histórico e entra na soma total do evento.
 
-Para receber doações online, a integração com Asaas precisa estar configurada (veja o artigo sobre Configurações Financeiras). As doações online passam pelo mesmo fluxo que os pagamentos de ingressos.
+Uma doação pode ser de valor livre (o doador decide quanto contribuir) ou com valor sugerido (você define um valor de referência visível na página de inscrição). Essa flexibilidade é ideal para retiros, conferências e eventos com cultura de oferta.
 
-Você também pode adicionar uma doação manualmente para um participante — isso é útil quando a doação foi feita presencialmente, por Pix externo ou por qualquer outro meio não integrado. Clique em "Alocar Doação" na aba, selecione o participante e informe o valor e a forma de pagamento.
+A aba exibe: o total de doações registradas, a média de contribuição por doador e o histórico completo com nome, valor, data e forma de pagamento.
 
-A aba exibe o total de doações recebidas, a média de contribuição por doador e o histórico completo de contribuições com nome, valor, data e status.
+As doações também entram no cálculo financeiro geral do evento, somando com os pagamentos de ingressos para compor o total arrecadado versus o custo previsto.
 
-Dica: use o campo de observações ao registrar uma doação manual para anotar qualquer informação relevante, como o número de comprovante ou a designação da oferta.`,
+Dica: use o campo de observações ao registrar uma doação para anotar informações relevantes, como o número do comprovante Pix ou a designação específica da oferta (ex: "para o fundo de bolsas").`,
     banner_url: '',
     video_url: '',
     criado_em: NOW,

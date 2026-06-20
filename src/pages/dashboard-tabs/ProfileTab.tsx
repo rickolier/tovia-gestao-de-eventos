@@ -49,7 +49,6 @@ export default function ProfileTab() {
       setUploadingPhoto(false);
     }
   };
-  const [cancelLoading, setCancelLoading] = useState(false);
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
@@ -406,63 +405,6 @@ export default function ProfileTab() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Card de assinatura */}
-        <Card className="border border-destructive/20 shadow-sm bg-card rounded-3xl overflow-hidden">
-          <CardHeader className="bg-red-50/50 border-b border-red-100">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
-              <CreditCard className="w-5 h-5 text-primary" />
-              Minha Assinatura
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Plano atual</p>
-                <p className="text-xl font-black text-foreground">
-                  {profile?.plano ? PLAN_CONFIGS[profile.plano as keyof typeof PLAN_CONFIGS]?.name ?? profile.plano : '—'}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {profile?.plano ? PLAN_CONFIGS[profile.plano as keyof typeof PLAN_CONFIGS]?.label : ''}
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 items-start sm:items-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/5 rounded-xl font-semibold text-sm"
-                  onClick={() => navigate('/planos')}
-                >
-                  Trocar de plano
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={cancelLoading}
-                  className="text-destructive hover:bg-destructive/5 hover:text-destructive rounded-xl font-semibold text-sm flex items-center gap-2"
-                  onClick={async () => {
-                    if (!user) return;
-                    const confirmed = window.confirm('Tem certeza que deseja cancelar seu plano? Você voltará para a tela de seleção de planos.');
-                    if (!confirmed) return;
-                    setCancelLoading(true);
-                    try {
-                      await updateDocument('users', user.uid, { plano: null });
-                      toast.success('Plano cancelado. Escolha um novo plano para continuar.');
-                      navigate('/onboarding');
-                    } catch {
-                      toast.error('Erro ao cancelar plano. Tente novamente.');
-                    } finally {
-                      setCancelLoading(false);
-                    }
-                  }}
-                >
-                  <AlertTriangle className="w-4 h-4" />
-                  {cancelLoading ? 'Cancelando...' : 'Cancelar plano'}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <div className="flex justify-end pb-8">
           <Button
