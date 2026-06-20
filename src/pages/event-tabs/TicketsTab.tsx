@@ -139,7 +139,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-8 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Categorias de Ingressos</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Ingressos</h2>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">Plano {plan.name}</span>
             <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{tickets.length}/{plan.maxTicketsPerEvent} ingressos</span>
