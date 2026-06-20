@@ -11,7 +11,6 @@ import {
   BarChart3,
   User,
   Calendar as CalendarIcon,
-  Bell,
   Menu,
   X,
   Calculator,
@@ -142,7 +141,7 @@ export default function Dashboard() {
   const isAdmin = user?.email === 'admin@tovia.app';
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
-    { id: 'inicio',      label: 'Início',        icon: House },
+    { id: 'inicio',      label: 'Início',        icon: House, badge: unreadCount },
     { id: 'perfil',      label: 'Meu Perfil',    icon: User },
     { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
     { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
@@ -257,18 +256,6 @@ export default function Dashboard() {
         <header className="hidden md:flex h-16 bg-card border-b border-border items-center px-6 gap-4 sticky top-0 z-30 shrink-0">
           <h1 className="text-lg font-bold text-foreground">{currentLabel}</h1>
           <div className="ml-auto flex items-center gap-3">
-            {/* Notification bell */}
-            <button
-              className="relative p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              onClick={() => setActiveTab('inicio')}
-            >
-              <Bell className="w-5 h-5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </button>
             {/* User avatar + info */}
             <div className="flex items-center gap-3 pl-3 border-l border-border">
               <div className="text-right hidden sm:block">
