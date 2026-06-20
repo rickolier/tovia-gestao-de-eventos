@@ -108,7 +108,7 @@ function buildSteps(plan: PlanLevel): TourStep[] {
     },
     {
       title: 'Base de Conhecimento!',
-      description: 'Ficou com dúvida? Em breve você terá acesso à nossa Base de Conhecimento com tutoriais, vídeos e respostas para as perguntas mais frequentes.',
+      description: 'Ficou com dúvida? Acesse a Base de Conhecimento com tutoriais e respostas detalhadas sobre cada funcionalidade da plataforma.',
       icon: <BookOpen className="w-4 h-4" />,
     },
   ];
