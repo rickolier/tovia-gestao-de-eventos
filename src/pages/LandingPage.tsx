@@ -713,7 +713,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Significado do nome ── */}
-      <section className="bg-[#f0f7f3] w-full py-16 px-6">
+      <section className="bg-[#f0f7f3] w-full py-10 px-6">
       <div className="max-w-3xl mx-auto text-center">
         <span className="text-xs font-semibold uppercase tracking-widest text-primary">O nome</span>
         <h2 className="text-3xl font-black text-foreground tracking-tight mt-3 mb-6">
@@ -734,7 +734,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Como funciona ── */}
-      <section className="py-24 px-6 bg-[#f0f5f2]">
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-black uppercase tracking-widest text-primary">Como funciona</span>
