@@ -179,5 +179,13 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // ===============================================================
+    // Collection Group — admin pode listar inscricoes de todos os eventos
+    // Necessário para queries collectionGroup('inscricoes') no painel admin
+    // ===============================================================
+    match /{path=**}/inscricoes/{inscricaoId} {
+      allow list: if isAdmin();
+    }
   }
 }
