@@ -35,7 +35,8 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <aside className={cn(
-        'fixed inset-y-0 left-0 z-40 w-64 bg-[var(--sidebar)] flex flex-col transition-transform duration-200',
+        'fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-200',
+        'bg-gradient-to-b from-green-950 to-zinc-950',
         'md:translate-x-0',
         mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       )}>
