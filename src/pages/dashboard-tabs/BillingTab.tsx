@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../lib/AuthContext';
-import { updateDocument } from '../../lib/firebase-utils';
+import { updateDocument, removeDocument } from '../../lib/firebase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, Calendar, CheckCircle2, Clock, AlertCircle,
-  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt, AlertTriangle,
+  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt, AlertTriangle, Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
 import { PlanLevel } from '../../types';
 import { toast } from 'sonner';
+import { auth } from '../../firebase';
+import { deleteUser } from 'firebase/auth';
 
 const BILLING_TYPE_LABELS: Record<string, string> = {
   CREDIT_CARD: 'Cartão de crédito',
@@ -65,6 +70,110 @@ export default function BillingTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
+
+  const zonaDePerigo = (
+    <>
+      <Card className="border border-destructive/30 rounded-3xl shadow-sm bg-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-black text-destructive flex items-center gap-2 uppercase tracking-widest">
+            <AlertTriangle className="w-4 h-4" />
+            Zona de Perigo
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Excluir minha conta</p>
+              <p className="text-xs text-muted-foreground mt-0.5 max-w-sm">
+                Remove permanentemente seu perfil e acesso à plataforma. Seus eventos e inscrições de participantes são preservados.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="border-destructive/50 text-destructive hover:bg-destructive hover:text-white rounded-xl font-bold text-sm shrink-0 transition-all"
+              onClick={() => { setDeleteConfirmText(''); setDeleteAccountDialogOpen(true); }}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Excluir conta
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={deleteAccountDialogOpen} onOpenChange={setDeleteAccountDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card">
+          <DialogHeader className="mb-2">
+            <DialogTitle className="text-xl font-black text-destructive flex items-center gap-3">
+              <div className="w-10 h-10 bg-destructive/10 rounded-2xl flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-destructive" />
+              </div>
+              Excluir conta
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Esta ação é <span className="font-black text-foreground">irreversível</span>. Será removido:
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-1 pl-4 list-disc">
+              <li>Seu perfil e dados pessoais (LGPD Art. 18)</li>
+              <li>Seu acesso à plataforma</li>
+            </ul>
+            <p className="text-xs text-muted-foreground">
+              Eventos criados e inscrições de participantes são mantidos por obrigação fiscal.
+            </p>
+            <div className="pt-2 space-y-2">
+              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                Digite <span className="text-destructive">EXCLUIR</span> para confirmar
+              </Label>
+              <Input
+                value={deleteConfirmText}
+                onChange={e => setDeleteConfirmText(e.target.value)}
+                placeholder="EXCLUIR"
+                className="rounded-xl border-destructive/30 focus:border-destructive font-mono tracking-widest"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+            <Button
+              variant="ghost"
+              onClick={() => setDeleteAccountDialogOpen(false)}
+              className="rounded-2xl h-12 px-6 font-black text-muted-foreground hover:bg-muted"
+            >
+              Cancelar
+            </Button>
+            <Button
+              disabled={deleteConfirmText !== 'EXCLUIR' || deleteAccountLoading}
+              onClick={async () => {
+                if (!user) return;
+                setDeleteAccountLoading(true);
+                try {
+                  await removeDocument('users', user.uid);
+                  await deleteUser(auth.currentUser!);
+                  toast.success('Conta excluída. Até logo!');
+                  navigate('/');
+                } catch (err: any) {
+                  if (err?.code === 'auth/requires-recent-login') {
+                    toast.error('Por segurança, faça login novamente antes de excluir a conta.');
+                  } else {
+                    toast.error('Erro ao excluir conta. Tente novamente.');
+                  }
+                } finally {
+                  setDeleteAccountLoading(false);
+                }
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-white rounded-2xl h-12 px-8 font-black shadow-xl shadow-destructive/20 disabled:opacity-40 active:scale-95 transition-all"
+            >
+              {deleteAccountLoading ? 'Excluindo...' : 'Excluir minha conta'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 
   const load = async () => {
     if (!user) return;
@@ -138,6 +247,7 @@ export default function BillingTab() {
           </Button>
         </CardContent>
       </Card>
+      {zonaDePerigo}
     </div>
   );
 
@@ -343,6 +453,8 @@ export default function BillingTab() {
           )}
         </CardContent>
       </Card>
+
+      {zonaDePerigo}
     </div>
   );
 }
