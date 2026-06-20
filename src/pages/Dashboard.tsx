@@ -211,28 +211,28 @@ export default function Dashboard() {
             </button>
           ))}
 
-          {/* Divider */}
-          <div className="pt-6 pb-2">
-            <p className="px-3 text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-3">
-              Ações
-            </p>
+          {/* Criar Evento — destaque */}
+          <div className="pt-6 pb-2 px-3">
             <Link to="/eventos/novo">
-              <button data-tour="criar-evento" className="sidebar-nav-item w-full bg-primary/90 hover:bg-primary text-white font-semibold">
-                <Plus className="w-[18px] h-[18px]" />
+              <button
+                data-tour="criar-evento"
+                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white font-black text-sm rounded-2xl py-3 shadow-lg shadow-primary/30 transition-all"
+              >
+                <Plus className="w-4 h-4" />
                 Criar Evento
-              </button>
-            </Link>
-            <Link to="/base-de-conhecimento">
-              <button className="sidebar-nav-item w-full text-white/60 hover:text-white hover:bg-white/10 mt-0.5">
-                <BookOpen className="w-[18px] h-[18px]" />
-                Base de Conhecimento
               </button>
             </Link>
           </div>
         </nav>
 
-        {/* Tutorial + Logout */}
+        {/* Base de Conhecimento + Tutorial + Logout */}
         <div className="px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0 space-y-0.5">
+          <Link to="/base-de-conhecimento">
+            <button className="sidebar-nav-item w-full text-white/60 hover:text-white hover:bg-white/10">
+              <BookOpen className="w-[18px] h-[18px]" />
+              Base de Conhecimento
+            </button>
+          </Link>
           <button
             onClick={() => setTourOpen(true)}
             className="sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10"
