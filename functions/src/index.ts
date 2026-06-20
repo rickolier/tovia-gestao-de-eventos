@@ -94,6 +94,44 @@ export const createCheckout = functions.onCall(
   }
 );
 
+// ─── Suspender usuário (admin) ────────────────────────────────────────────────
+export const suspendUser = functions.onCall(
+  { region: "us-central1" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+
+    const ADMIN_EMAIL = "olierprado@gmail.com";
+    const callerEmail = request.auth.token.email;
+    if (callerEmail !== ADMIN_EMAIL) {
+      const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
+      if (!adminDoc.exists) {
+        throw new functions.HttpsError("permission-denied", "Acesso negado.");
+      }
+    }
+
+    const { userId } = request.data as { userId: string };
+    if (!userId) {
+      throw new functions.HttpsError("invalid-argument", "userId é obrigatório.");
+    }
+
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      throw new functions.HttpsError("not-found", "Usuário não encontrado.");
+    }
+
+    // Bloqueia acesso e remove plano no Firestore
+    await db.collection("users").doc(userId).update({
+      desativado: true,
+      plano: null,
+      planoPendente: null,
+    });
+
+    return { success: true };
+  }
+);
+
 // ─── Webhook do Asaas ──────────────────────────────────────────────────────────
 export const asaasWebhook = functions.onRequest(
   { region: "us-central1", secrets: ["ASAAS_WEBHOOK_TOKEN"] },

@@ -45,6 +45,7 @@ export interface UserProfile {
   asaasSubscriptionId?: string | null;
   isDemo?: boolean;
   pagina_publica?: boolean;
+  desativado?: boolean;
 }
 
 export interface FormField {

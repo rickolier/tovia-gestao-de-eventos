@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, updateDocument } from '../../lib/firebase-utils';
 import { UserProfile } from '../../types';
-import { Search, RefreshCw, ShieldOff, ArrowUpCircle } from 'lucide-react';
+import { Search, RefreshCw, ShieldOff, ArrowUpCircle, UserX, UserCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
 import { PlanLevel } from '../../types';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../../firebase';
 
 const PLAN_OPTIONS: PlanLevel[] = ['start', 'essencial', 'pro'];
 
@@ -16,6 +18,7 @@ export default function AdminUsersTab() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [saving, setSaving] = useState<string | null>(null);
+  const [suspending, setSuspending] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -25,6 +28,38 @@ export default function AdminUsersTab() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const handleDeactivate = async (u: UserProfile) => {
+    if (!u.uid) return;
+    if (!window.confirm(`Desativar conta de ${u.nome || u.email}? O acesso será bloqueado e a assinatura cancelada.`)) return;
+    setSuspending(u.uid);
+    try {
+      const fns = getFunctions(app, 'us-central1');
+      const suspendUser = httpsCallable(fns, 'suspendUser');
+      await suspendUser({ userId: u.uid });
+      setUsers(prev => prev.map(x => x.uid === u.uid ? { ...x, desativado: true, plano: null, asaasSubscriptionId: null, planoPendente: null } : x));
+      toast.success(`Conta de ${u.nome || u.email} desativada.`);
+    } catch (e: any) {
+      toast.error(e?.message || 'Erro ao desativar usuário.');
+    } finally {
+      setSuspending(null);
+    }
+  };
+
+  const handleReactivate = async (u: UserProfile) => {
+    if (!u.uid) return;
+    if (!window.confirm(`Reativar conta de ${u.nome || u.email}?`)) return;
+    setSuspending(u.uid);
+    try {
+      await updateDocument('users', u.uid, { desativado: false });
+      setUsers(prev => prev.map(x => x.uid === u.uid ? { ...x, desativado: false } : x));
+      toast.success(`Conta de ${u.nome || u.email} reativada. Atribua um plano para liberar o acesso.`);
+    } catch {
+      toast.error('Erro ao reativar usuário.');
+    } finally {
+      setSuspending(null);
+    }
+  };
 
   const handleChangePlan = async (uid: string, plano: PlanLevel | null) => {
     setSaving(uid);
@@ -94,9 +129,14 @@ export default function AdminUsersTab() {
                 </tr>
               ) : (
                 filtered.map(u => (
-                  <tr key={u.uid} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                  <tr key={u.uid} className={cn('border-b border-border/50 hover:bg-muted/20 transition-colors', u.desativado && 'bg-red-50/40')}>
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-foreground">{u.nome || '—'}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-foreground">{u.nome || '—'}</p>
+                        {u.desativado && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-600">Desativado</span>
+                        )}
+                      </div>
                       <p className="text-xs text-muted-foreground">{u.email}</p>
                       {u.planoPendente && (
                         <span className="text-[10px] text-yellow-600 font-semibold">
@@ -135,8 +175,8 @@ export default function AdminUsersTab() {
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex gap-2">
-                        {u.plano && (
+                      <div className="flex gap-2 flex-wrap">
+                        {u.plano && !u.desativado && (
                           <Button
                             size="sm"
                             variant="ghost"
@@ -152,7 +192,7 @@ export default function AdminUsersTab() {
                             Cancelar
                           </Button>
                         )}
-                        {!u.plano && (
+                        {!u.plano && !u.desativado && (
                           <Button
                             size="sm"
                             variant="ghost"
@@ -162,6 +202,29 @@ export default function AdminUsersTab() {
                           >
                             <ArrowUpCircle className="w-3 h-3" />
                             Ativar Start
+                          </Button>
+                        )}
+                        {!u.desativado ? (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={suspending === u.uid}
+                            onClick={() => handleDeactivate(u)}
+                            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl h-8 text-xs gap-1"
+                          >
+                            <UserX className="w-3 h-3" />
+                            {suspending === u.uid ? '...' : 'Desativar'}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={suspending === u.uid}
+                            onClick={() => handleReactivate(u)}
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl h-8 text-xs gap-1"
+                          >
+                            <UserCheck className="w-3 h-3" />
+                            {suspending === u.uid ? '...' : 'Reativar'}
                           </Button>
                         )}
                       </div>

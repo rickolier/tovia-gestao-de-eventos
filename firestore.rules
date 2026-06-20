@@ -74,8 +74,8 @@ service cloud.firestore {
       );
       // Toggle pagina_publica isolado — sem exigir isValidUser (não toca nome/email)
       allow update: if isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['pagina_publica']);
-      // Admin pode alterar plano e planoPendente de qualquer usuário
-      allow update: if isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['plano', 'planoPendente']);
+      // Admin pode alterar plano, planoPendente e desativado de qualquer usuário
+      allow update: if isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['plano', 'planoPendente', 'desativado']);
       allow list: if isAdmin();
     }
 
