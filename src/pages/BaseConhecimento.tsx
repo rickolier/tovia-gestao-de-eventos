@@ -135,7 +135,7 @@ export default function BaseConhecimento() {
             <BookOpen className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
-            Base de Conhecimento <span className="text-emerald-400">Tovia</span>
+            Base de Conhecimento <span className="text-emerald-400">tovia</span>
           </h1>
           <p className="text-white/60 text-sm max-w-lg mb-7">
             Tutoriais, guias e explicações sobre cada funcionalidade da plataforma — para você organizar eventos incríveis.
