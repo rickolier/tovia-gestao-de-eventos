@@ -482,26 +482,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Highlights ── */}
-      <section className="max-w-6xl mx-auto px-6 -mt-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border bg-white rounded-3xl border border-border shadow-xl overflow-hidden">
-          {[
-            { icon: Calendar, text: 'Eventos organizados do início ao fim' },
-            { icon: BarChart3, text: 'Acompanhe cada inscrição, cada pagamento e cada tarefa' },
-            { icon: Zap, text: 'Fácil e intuitivo' },
-          ].map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <div key={i} className="flex flex-col items-center text-center gap-3 px-8 py-6">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-sm font-bold text-foreground leading-snug">{item.text}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       {/* ── Sobre ── */}
       <section id="sobre" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
