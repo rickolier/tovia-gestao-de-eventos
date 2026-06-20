@@ -141,7 +141,7 @@ export default function Dashboard() {
   const isAdmin = user?.email === 'admin@tovia.app';
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
-    { id: 'inicio',      label: 'Início',        icon: House, badge: unreadCount },
+    { id: 'inicio',      label: 'Início',        icon: House },
     { id: 'perfil',      label: 'Meu Perfil',    icon: User },
     { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
     { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
