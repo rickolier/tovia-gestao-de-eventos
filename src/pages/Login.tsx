@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from '../firebase';
 import { Email } from '../lib/email';
@@ -13,13 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '../components/Logo';
 import { useAuth } from '../lib/AuthContext';
 
 export default function Login() {
-  const { user, isAuthReady, loginAsDemo, processEquipeJoin } = useAuth();
+  const { user, isAuthReady, processEquipeJoin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -46,6 +48,17 @@ export default function Login() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [lgpdConsent, setLgpdConsent] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<'fraca' | 'média' | 'forte' | null>(null);
+
+  function calcStrength(pwd: string): 'fraca' | 'média' | 'forte' | null {
+    if (!pwd) return null;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasNum = /[0-9]/.test(pwd);
+    const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
+    if (pwd.length < 8) return 'fraca';
+    if (hasSpecial || (hasUpper && hasNum)) return 'forte';
+    return 'média';
+  }
 
   const handleGoogleLogin = async () => {
     try {
@@ -64,11 +77,29 @@ export default function Login() {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast.error('Digite seu e-mail para recuperar a senha.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+    } catch (error: any) {
+      toast.error('Erro ao enviar e-mail: ' + error.message);
+    }
+  };
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (isRegistering) {
+        if (password.length < 8) {
+          toast.error('A senha deve ter no mínimo 8 caracteres.');
+          setLoading(false);
+          return;
+        }
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
         if (eventoIdParam) {
@@ -102,17 +133,13 @@ export default function Login() {
     }
   };
 
-  const handleDemoLogin = async () => {
-    try {
-      await loginAsDemo();
-      navigate('/onboarding');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao acessar demonstração');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-center p-6">
+      <div className="fixed top-0 left-0 p-4">
+        <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors text-sm font-semibold">
+          <ArrowRight className="w-4 h-4 rotate-180" /> Voltar
+        </Link>
+      </div>
       <div className="w-full max-w-sm">
         {/* Logo + headline */}
         <div className="flex flex-col items-center gap-3 mb-10">
@@ -171,11 +198,42 @@ export default function Login() {
                   type="password"
                   required
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={e => { setPassword(e.target.value); if (isRegistering) setPasswordStrength(calcStrength(e.target.value)); }}
                   placeholder="••••••••"
                   className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl h-12 focus-visible:ring-white/40"
                 />
               </div>
+              {isRegistering && password && (
+                <div className="space-y-1.5 pt-0.5">
+                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className={cn(
+                      'h-full rounded-full transition-all duration-300',
+                      passwordStrength === 'forte' ? 'w-full bg-emerald-400' :
+                      passwordStrength === 'média' ? 'w-2/3 bg-yellow-400' :
+                      'w-1/3 bg-red-400'
+                    )} />
+                  </div>
+                  <p className="text-[10px] text-white/50">
+                    Força: <span className={cn(
+                      'font-semibold',
+                      passwordStrength === 'forte' ? 'text-emerald-400' :
+                      passwordStrength === 'média' ? 'text-yellow-400' :
+                      'text-red-400'
+                    )}>{passwordStrength}</span> · mínimo 8 caracteres, use letras maiúsculas, números e símbolos
+                  </p>
+                </div>
+              )}
+              {!isRegistering && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handlePasswordReset}
+                    className="text-[11px] text-white/60 hover:text-white transition-colors underline underline-offset-2"
+                  >
+                    Esqueceu sua senha?
+                  </button>
+                </div>
+              )}
             </div>
 
             {isRegistering && (
@@ -191,7 +249,11 @@ export default function Login() {
                   <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-white/80">
                     Política de Privacidade
                   </a>{' '}
-                  e os Termos de Uso da Tovia.
+                  e os{' '}
+                  <a href="/termos-de-uso" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-white/80">
+                    Termos de Uso
+                  </a>
+                  {' '}da Tovia.
                 </span>
               </label>
             )}

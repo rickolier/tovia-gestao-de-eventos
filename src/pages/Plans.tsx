@@ -6,7 +6,8 @@ import { PlanLevel } from '../types';
 import { PLAN_CONFIGS } from '../lib/plan-limits';
 import Logo from '../components/Logo';
 import { Button } from '@/components/ui/button';
-import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2, ExternalLink, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +21,8 @@ const MODULE_DESCRIPTIONS = [
 
 const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro'];
 const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3 };
+const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 39,90/mês', pro: 'R$ 99,00/mês' };
+const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2 };
 
 export default function Plans() {
   const { user, profile } = useAuth();
@@ -29,20 +32,19 @@ export default function Plans() {
 
   const currentPlan = profile?.plano;
   const activeSelection = selected ?? currentPlan ?? null;
+  const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
 
-  const handleConfirm = async () => {
-    if (!selected || !user || selected === currentPlan) return;
+  const executePlanChange = async () => {
+    if (!selected || !user) return;
+    setShowDowngradeWarning(false);
     setSaving(true);
     try {
-      // Plano gratuito: ativa direto sem pagamento
       if (selected === 'start') {
         await updateDocument('users', user.uid, { plano: 'start', asaasSubscriptionId: null, planoPendente: null });
         toast.success('Plano Start ativado!');
         navigate('/dashboard');
         return;
       }
-
-      // Planos pagos: chama a API Vercel para gerar o link de pagamento
       const response = await fetch('/api/createCheckout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,11 +62,8 @@ export default function Plans() {
           userBairro: profile?.bairro || '',
         }),
       });
-
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-
       if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
@@ -76,6 +75,15 @@ export default function Plans() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleConfirm = async () => {
+    if (!selected || !user || selected === currentPlan) return;
+    if (currentPlan && PLAN_RANK[selected] < PLAN_RANK[currentPlan]) {
+      setShowDowngradeWarning(true);
+      return;
+    }
+    await executePlanChange();
   };
 
   return (
@@ -144,7 +152,7 @@ export default function Plans() {
                         Atual
                       </span>
                     )}
-                    {isSelected && (
+                    {selected === level && (
                       <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                         <Check className="w-4 h-4 text-white" strokeWidth={3} />
                       </div>
@@ -166,6 +174,16 @@ export default function Plans() {
                   )}>
                     {config.description}
                   </p>
+                </div>
+
+                {/* Price */}
+                <div>
+                  <span className={cn(
+                    'text-2xl font-black',
+                    isSelected ? 'text-primary' : 'text-white'
+                  )}>
+                    {PLAN_PRICES[level]}
+                  </span>
                 </div>
 
                 {/* Modules */}
@@ -204,6 +222,42 @@ export default function Plans() {
             );
           })}
         </div>
+
+        {/* Dialog de aviso de downgrade */}
+        <Dialog open={showDowngradeWarning} onOpenChange={setShowDowngradeWarning}>
+          <DialogContent className="max-w-sm rounded-3xl">
+            <DialogHeader>
+              <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mb-2">
+                <AlertTriangle className="w-6 h-6 text-orange-500" />
+              </div>
+              <DialogTitle className="text-lg font-black text-foreground">Atenção: mudança de plano</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-1">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Ao mudar para o plano <strong className="text-foreground">{selected ? PLAN_PRICES[selected].split('/')[0] : ''} ({selected && selected.charAt(0).toUpperCase() + selected.slice(1)})</strong>, você perderá acesso aos módulos que não fazem parte do novo plano.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Seus dados e eventos já criados permanecem salvos.
+              </p>
+              <div className="flex gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-xl"
+                  onClick={() => setShowDowngradeWarning(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl bg-primary text-white font-bold"
+                  onClick={executePlanChange}
+                  disabled={saving}
+                >
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Confirmar mudança'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pb-10">

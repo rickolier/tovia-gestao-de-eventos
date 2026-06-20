@@ -18,6 +18,7 @@ import {
   CreditCard,
   Palette,
   GraduationCap,
+  BookOpen,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -222,6 +223,12 @@ export default function Dashboard() {
                 Criar Evento
               </button>
             </Link>
+            <Link to="/base-de-conhecimento">
+              <button className="sidebar-nav-item w-full text-white/60 hover:text-white hover:bg-white/10 mt-0.5">
+                <BookOpen className="w-[18px] h-[18px]" />
+                Base de Conhecimento
+              </button>
+            </Link>
           </div>
         </nav>
 
@@ -248,12 +255,25 @@ export default function Dashboard() {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Desktop Header */}
         <header className="hidden md:flex h-16 bg-card border-b border-border items-center px-6 gap-4 sticky top-0 z-30 shrink-0">
+          <h1 className="text-lg font-bold text-foreground">{currentLabel}</h1>
           <div className="ml-auto flex items-center gap-3">
+            {/* Notification bell */}
+            <button
+              className="relative p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              onClick={() => setActiveTab('inicio')}
+            >
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[9px] font-black rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
             {/* User avatar + info */}
             <div className="flex items-center gap-3 pl-3 border-l border-border">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-foreground leading-tight">{profile?.nome}</p>
-                <p className="text-[11px] text-muted-foreground">{currentLabel}</p>
+                <p className="text-[11px] text-muted-foreground">{user?.email}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden ring-2 ring-primary/20">
                 {profile?.imagem_url ? (

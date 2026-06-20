@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TicketIcon, DollarSign, Wallet, CheckCircle, ArrowRight, Menu, X, Users, Calendar, Globe, BarChart3, ChevronDown, Plus, Heart, CheckSquare, Clock, MapPin, ExternalLink, Check } from 'lucide-react';
+import { TicketIcon, DollarSign, Wallet, CheckCircle, ArrowRight, Menu, X, Users, Calendar, Globe, BarChart3, ChevronDown, Plus, Heart, CheckSquare, Clock, MapPin, ExternalLink, Check, Zap, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
@@ -85,11 +85,6 @@ const PLANS = [
   },
 ];
 
-const STATS = [
-  { value: '3', label: 'Módulos integrados' },
-  { value: '100%', label: 'Feito para igrejas' },
-  { value: '1 min', label: 'Para criar um evento' },
-];
 
 const DEMO_TABS = [
   { id: 'vendas', label: 'Páginas de Inscrição', icon: Globe },
@@ -487,15 +482,24 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Stats ── */}
+      {/* ── Highlights ── */}
       <section className="max-w-6xl mx-auto px-6 -mt-2">
-        <div className="grid grid-cols-3 gap-6 bg-white rounded-3xl border border-border shadow-xl p-8">
-          {STATS.map((stat, i) => (
-            <div key={i} className={cn('text-center', i < STATS.length - 1 && 'border-r border-border')}>
-              <p className="text-3xl font-black text-primary">{stat.value}</p>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border bg-white rounded-3xl border border-border shadow-xl overflow-hidden">
+          {[
+            { icon: Calendar, text: 'Eventos organizados do início ao fim' },
+            { icon: BarChart3, text: 'Acompanhe cada inscrição, cada pagamento e cada tarefa' },
+            { icon: Zap, text: 'Fácil e intuitivo' },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="flex items-center gap-4 px-8 py-6">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-sm font-bold text-foreground leading-snug">{item.text}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -515,11 +519,11 @@ export default function LandingPage() {
             </div>
             <div className="absolute -bottom-6 -right-6 bg-white border border-border rounded-2xl shadow-xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
+                <Users className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-sm font-bold text-foreground">Evento criado!</p>
-                <p className="text-xs text-muted-foreground">Em menos de 1 minuto</p>
+                <p className="text-sm font-bold text-foreground">127 inscrições</p>
+                <p className="text-xs text-muted-foreground">confirmadas</p>
               </div>
             </div>
           </div>
@@ -562,6 +566,34 @@ export default function LandingPage() {
           É isso que o Tovia quer ser: uma plataforma que cumpre o seu propósito para que o seu evento cumpra o dele.
         </p>
       </div>
+      </section>
+
+      {/* ── Como funciona ── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Como funciona</span>
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
+              Do cadastro ao evento,<br />em minutos
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {[
+              { step: '01', title: 'Crie sua conta', desc: 'Cadastre-se gratuitamente em menos de 1 minuto, sem cartão de crédito necessário.' },
+              { step: '02', title: 'Configure o evento', desc: 'Defina inscrições, ingressos, formulários personalizados e o número de vagas.' },
+              { step: '03', title: 'Compartilhe o link', desc: 'Seus participantes se inscrevem diretamente pela página do evento criada pelo Tovia.' },
+              { step: '04', title: 'Acompanhe tudo', desc: 'Inscrições, financeiro e equipe em tempo real, centralizados em um só lugar.' },
+            ].map((item) => (
+              <div key={item.step} className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-lg font-black text-primary">{item.step}</span>
+                </div>
+                <h3 className="text-base font-bold text-foreground">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── Funcionalidades ── */}
@@ -966,6 +998,61 @@ export default function LandingPage() {
       {/* ── FAQ ── */}
       <FAQ />
 
+      {/* ── Depoimentos ── */}
+      <section className="py-20 px-6 bg-[#f0f7f3]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Depoimentos</span>
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
+              Quem organiza com o Tovia
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'João Silva',
+                role: 'Pastor e organizador de eventos',
+                church: 'Igreja Vida Nova · São Paulo',
+                text: 'Organizamos nosso retiro com mais de 300 pessoas usando o Tovia. Nunca foi tão simples acompanhar as inscrições e o financeiro ao mesmo tempo.',
+                avatar: 'JS',
+              },
+              {
+                name: 'Ana Paula Mendes',
+                role: 'Coordenadora de eventos',
+                church: 'Ministério Nova Esperança · Curitiba',
+                text: 'A página de inscrição foi criada em minutos. Compartilhamos o link com o grupo e as inscrições chegaram automaticamente, sem precisar de planilha.',
+                avatar: 'AM',
+              },
+              {
+                name: 'Carlos Eduardo',
+                role: 'Líder de jovens',
+                church: 'Igreja Ressurreição · Belo Horizonte',
+                text: 'Sempre controlamos os inscritos em planilhas e era um caos. O Tovia mudou completamente como trabalhamos. Hoje tudo está organizado em um só lugar.',
+                avatar: 'CE',
+              },
+            ].map((t) => (
+              <div key={t.name} className="bg-white rounded-3xl p-7 border border-border flex flex-col gap-5 hover:shadow-md transition-all">
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground leading-relaxed flex-1">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-border">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-black text-primary shrink-0">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{t.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{t.role} · {t.church}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA Final ── */}
       <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-24 px-6 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5" />
@@ -988,10 +1075,15 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <footer className="bg-[var(--sidebar)] py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-2xl font-black text-white tracking-tight">tovia</span>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <span className="text-2xl font-black text-white tracking-tight">tovia</span>
+            <a href="mailto:suporte@toviapp.com.br" className="text-xs text-white/40 hover:text-white/70 transition-colors">
+              suporte@toviapp.com.br
+            </a>
+          </div>
           <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             {NAV_LINKS.map(link => (
               <a key={link.label} href={link.href} className="text-xs text-white/40 hover:text-white/70 transition-colors">
                 {link.label}
@@ -1002,6 +1094,12 @@ export default function LandingPage() {
                 {link.label}
               </Link>
             ))}
+            <Link to="/privacidade" className="text-xs text-white/40 hover:text-white/70 transition-colors">
+              Privacidade
+            </Link>
+            <Link to="/termos-de-uso" className="text-xs text-white/40 hover:text-white/70 transition-colors">
+              Termos de Uso
+            </Link>
           </div>
         </div>
       </footer>

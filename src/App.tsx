@@ -15,6 +15,7 @@ import PublicRegistration from './pages/PublicRegistration';
 import PublicSalesPage from './pages/PublicSalesPage';
 import PublicOrganizerProfile from './pages/PublicOrganizerProfile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermosDeUso from './pages/TermosDeUso';
 import BaseConhecimento from './pages/BaseConhecimento';
 import ArtigoBaseConhecimento from './pages/ArtigoBaseConhecimento';
 import { Toaster } from '@/components/ui/sonner';
@@ -126,6 +127,7 @@ export default function App() {
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
+            <Route path="/termos-de-uso" element={<TermosDeUso />} />
             <Route path="/base-de-conhecimento" element={<BaseConhecimento />} />
             <Route path="/base-de-conhecimento/:slug" element={<ArtigoBaseConhecimento />} />
           </Routes>

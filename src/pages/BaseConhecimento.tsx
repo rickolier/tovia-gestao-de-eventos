@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, BookOpen, ArrowRight, Tag, X } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../lib/AuthContext';
 import { listDocuments } from '../lib/firebase-utils';
 import { ArtigoBC } from '../types';
 import { orderBy } from 'firebase/firestore';
@@ -57,6 +58,7 @@ function articleMatchesPlan(tags: string[], plan: PlanKey): boolean {
 }
 
 export default function BaseConhecimento() {
+  const { user } = useAuth();
   const [artigos, setArtigos]     = useState<ArtigoBC[]>([]);
   const [loading, setLoading]     = useState(true);
   const [busca, setBusca]         = useState('');
@@ -116,9 +118,15 @@ export default function BaseConhecimento() {
           <span className="hidden sm:block text-xs font-semibold text-gray-500 truncate max-w-[200px] text-center">
             Base de Conhecimento
           </span>
-          <a href="/login?cadastro=true" className="text-xs font-black text-primary hover:underline whitespace-nowrap">
-            Crie o seu evento →
-          </a>
+          {user ? (
+            <Link to="/dashboard" className="flex items-center gap-1 text-xs font-black text-primary hover:underline whitespace-nowrap">
+              <ArrowLeft className="w-3.5 h-3.5" /> Voltar ao painel
+            </Link>
+          ) : (
+            <a href="/login?cadastro=true" className="text-xs font-black text-primary hover:underline whitespace-nowrap">
+              Crie o seu evento →
+            </a>
+          )}
         </div>
       </header>
 

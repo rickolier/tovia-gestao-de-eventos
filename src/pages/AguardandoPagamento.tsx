@@ -10,6 +10,7 @@ export default function AguardandoPagamento() {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const pollingDone = attempts >= 12;
 
   // Verifica automaticamente a cada 5s (até 12 tentativas = 1 min)
   useEffect(() => {
@@ -52,12 +53,21 @@ export default function AguardandoPagamento() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-3">
-            <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0" />
-            <p className="text-white/70 text-xs font-medium">
-              Verificando pagamento automaticamente...
-            </p>
-          </div>
+          {!pollingDone ? (
+            <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-3">
+              <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0" />
+              <p className="text-white/70 text-xs font-medium">
+                Verificando pagamento automaticamente...
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-3">
+              <div className="w-2 h-2 rounded-full bg-white/30 shrink-0" />
+              <p className="text-white/60 text-xs font-medium">
+                O pagamento pode levar alguns minutos. Fique nesta tela ou volte mais tarde.
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3">
             <Button
@@ -75,10 +85,13 @@ export default function AguardandoPagamento() {
             <Button
               variant="ghost"
               onClick={() => navigate('/planos')}
-              className="text-white/50 hover:text-white hover:bg-white/10 rounded-2xl text-sm"
+              className="text-white/70 hover:text-white hover:bg-white/10 rounded-2xl text-sm"
             >
               Voltar e trocar de plano
             </Button>
+            <p className="text-white/40 text-xs text-center">
+              Você também receberá um e-mail assim que o pagamento for confirmado.
+            </p>
           </div>
         </div>
 

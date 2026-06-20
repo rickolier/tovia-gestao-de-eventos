@@ -20,11 +20,12 @@ const MODULE_DESCRIPTIONS = [
 
 const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro'];
 const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3 };
+const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 39,90/mês', pro: 'R$ 99,00/mês' };
 
 export default function Onboarding() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<PlanLevel | null>(null);
+  const [selected, setSelected] = useState<PlanLevel>('start');
   const [saving, setSaving] = useState(false);
 
   const handleConfirm = async () => {
@@ -106,6 +107,16 @@ export default function Onboarding() {
                   </p>
                 </div>
 
+                {/* Price */}
+                <div>
+                  <span className={cn(
+                    'text-2xl font-black',
+                    isSelected ? 'text-primary' : 'text-white'
+                  )}>
+                    {PLAN_PRICES[level]}
+                  </span>
+                </div>
+
                 {/* Modules list */}
                 <div className="flex flex-col gap-3">
                   {MODULE_LABELS.slice(0, moduleCount).map((mod, i) => {
@@ -157,7 +168,7 @@ export default function Onboarding() {
               <>Confirmar e entrar <ArrowRight className="w-5 h-5 ml-2" /></>
             )}
           </Button>
-          <p className="text-white/40 text-xs">Você poderá alterar o plano depois nas configurações.</p>
+          <p className="text-white/40 text-xs">Você poderá alterar o plano depois, a qualquer momento!</p>
         </div>
       </div>
     </div>
