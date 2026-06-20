@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { listDocuments, createDocument, updateDocument, removeDocument } from '../../lib/firebase-utils';
 import { ArtigoBC } from '../../types';
-import { orderBy } from 'firebase/firestore';
+import { orderBy, setDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { toast } from 'sonner';
 import { SEED_ARTIGOS } from '../../data/knowledgeBaseSeeds';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -216,9 +217,11 @@ export default function AdminKnowledgeBaseTab() {
     setSeeding(true);
     try {
       await Promise.all(
-        SEED_ARTIGOS.map(a => createDocument<ArtigoBC>('base_conhecimento', a.id, a))
+        SEED_ARTIGOS.map(({ banner_url, video_url, ...textFields }) =>
+          setDoc(doc(db, 'base_conhecimento', textFields.id), textFields, { merge: true })
+        )
       );
-      toast.success(`${SEED_ARTIGOS.length} artigos importados com sucesso!`);
+      toast.success(`${SEED_ARTIGOS.length} artigos atualizados com sucesso!`);
       setConfirmSeed(false);
       load();
     } catch {
