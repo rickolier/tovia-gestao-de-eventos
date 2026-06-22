@@ -9,9 +9,7 @@ const NAV_LINKS = [
   { label: 'Sobre', href: '#sobre' },
 ];
 
-const NAV_ROUTE_LINKS = [
-  { label: 'Base de Conhecimento', to: '/base-de-conhecimento' },
-];
+const NAV_ROUTE_LINKS: { label: string; to: string }[] = [];
 
 const FEATURES = [
   {

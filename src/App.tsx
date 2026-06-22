@@ -128,8 +128,8 @@ export default function App() {
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos-de-uso" element={<TermosDeUso />} />
-            <Route path="/base-de-conhecimento" element={<BaseConhecimento />} />
-            <Route path="/base-de-conhecimento/:slug" element={<ArtigoBaseConhecimento />} />
+            <Route path="/base-de-conhecimento" element={<PrivateRoute><BaseConhecimento /></PrivateRoute>} />
+            <Route path="/base-de-conhecimento/:slug" element={<PrivateRoute><ArtigoBaseConhecimento /></PrivateRoute>} />
           </Routes>
           <Toaster />
         </Router>
