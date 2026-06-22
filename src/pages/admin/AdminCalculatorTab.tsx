@@ -25,14 +25,16 @@ function SliderRow({ label, min, max, step, value, onChange, display }: {
   value: number; onChange: (v: number) => void; display: string;
 }) {
   return (
-    <div className="flex items-center gap-3 mb-3">
-      <label className="text-xs text-muted-foreground w-52 shrink-0">{label}</label>
+    <div className="mb-4">
+      <div className="flex justify-between items-baseline mb-1">
+        <label className="text-xs text-muted-foreground">{label}</label>
+        <span className="text-xs font-semibold text-foreground ml-2 shrink-0">{display}</span>
+      </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className="flex-1 accent-black h-1"
+        className="w-full accent-black h-1"
       />
-      <span className="text-xs font-semibold text-foreground w-24 text-right shrink-0">{display}</span>
     </div>
   );
 }
