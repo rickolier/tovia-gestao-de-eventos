@@ -42,6 +42,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
   const [step, setStep] = useState<'landing' | 'info' | 'payment' | 'success'>('landing');
   const [ticketQuantities, setTicketQuantities] = useState<Record<string, number>>({});
   const [lgpdConsent, setLgpdConsent] = useState(false);
+  const [numeroPedido, setNumeroPedido] = useState('');
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -172,7 +173,6 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
     setLoading(true);
     try {
       const registrationId = uuidv4();
-      const paymentId = uuidv4();
       const total = totalAmount + totalTax;
 
       // Create Registration
@@ -189,8 +189,8 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
         ticketId: selectedTickets[0].id,
         ticket_nome: selectedTickets[0].nome,
         valor_total: total,
-        valor_pago: total,
-        status: 'pago',
+        valor_pago: 0,
+        status: 'pendente',
         data_inscricao: new Date().toISOString(),
         quantidades: ticketQuantities,
         precisa_ajuda: false,
@@ -203,19 +203,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
       }
       await createDocument(`eventos/${evento.id}/inscricoes`, registrationId, inscricaoData as any);
 
-      // Create Payment Record (Simulating automatic payment)
-      await createDocument(`eventos/${evento.id}/pagamentos`, paymentId, {
-        id: paymentId,
-        inscricaoId: registrationId,
-        eventoId: evento.id,
-        valor: total,
-        metodo: allowedMethods[0] || 'pix',
-        status: 'pago',
-        data_pagamento: new Date().toISOString(),
-        data_vencimento: new Date().toISOString(),
-        origem: 'automatico'
-      } as any);
-      
+      setNumeroPedido(registrationId.slice(0, 8).toUpperCase());
       setStep('success');
       toast.success('Inscrição realizada com sucesso!');
     } catch (error) {
@@ -771,7 +759,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                   </div>
                   <div className="bg-background p-6 rounded-3xl text-left text-sm space-y-3 border border-border">
                     <p className="flex justify-between"><strong>E-mail:</strong> <span className="text-muted-foreground">{formData.email}</span></p>
-                    <p className="flex justify-between"><strong>Pedido:</strong> <span className="text-muted-foreground">#{Math.floor(Math.random() * 1000000)}</span></p>
+                    <p className="flex justify-between"><strong>Pedido:</strong> <span className="text-muted-foreground">#{numeroPedido}</span></p>
                     <p className="text-[10px] text-muted-foreground/70 mt-4 text-center">Um comprovante foi enviado para o seu e-mail (simulado).</p>
                   </div>
                   <Button 

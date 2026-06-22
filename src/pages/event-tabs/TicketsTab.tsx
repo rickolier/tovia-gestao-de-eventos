@@ -58,6 +58,24 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       toast.error(`Seu plano (${plan.name}) permite no máximo ${plan.maxTicketsPerEvent} ingressos por evento.`);
       return;
     }
+    if (formData.tipo === 'pago') {
+      if (!formData.valor || formData.valor <= 0) {
+        toast.error('O valor do ingresso pago deve ser maior que zero.');
+        return;
+      }
+      if (formData.valor > 99999.99) {
+        toast.error('O valor do ingresso não pode exceder R$ 99.999,99.');
+        return;
+      }
+      if ((formData.metodos_pagamento || []).length === 0) {
+        toast.error('Selecione ao menos uma forma de pagamento.');
+        return;
+      }
+    }
+    if (formData.data_limite && new Date(formData.data_limite) <= new Date()) {
+      toast.error('A data limite deve ser uma data futura.');
+      return;
+    }
     try {
       const ticketData = {
         ...formData,
@@ -226,9 +244,12 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="valor" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
-                  <Input 
-                    id="valor" 
-                    type="number" 
+                  <Input
+                    id="valor"
+                    type="number"
+                    min={0}
+                    max={99999.99}
+                    step={0.01}
                     disabled={formData.tipo === 'gratuito' || formData.tipo === 'doacao' || onlyFreeTickets}
                     value={formData.valor || ''}
                     onChange={e => setFormData({...formData, valor: Number(e.target.value)})}
@@ -244,6 +265,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                     <Input
                       id="limite"
                       type="number"
+                      min={0}
+                      max={100000}
                       value={formData.limite_vagas || ''}
                       onChange={e => setFormData({...formData, limite_vagas: Number(e.target.value)})}
                       className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors"
@@ -321,6 +344,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                         <Input
                           type="number"
                           min={0}
+                          max={99999.99}
                           step={0.01}
                           value={formData.valor_patrocinio || ''}
                           onChange={e => setFormData({ ...formData, valor_patrocinio: Number(e.target.value) })}

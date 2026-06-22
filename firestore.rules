@@ -19,6 +19,7 @@ service cloud.firestore {
 
     function isAdmin() {
       return isSignedIn() &&
+             request.auth.token.email_verified == true &&
              (request.auth.token.email == "olierprado@gmail.com" ||
               exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
@@ -62,7 +63,7 @@ service cloud.firestore {
     // ===============================================================
 
     match /users/{userId} {
-      allow get: if true; // perfis públicos — exibidos em páginas de venda
+      allow get: if isOwner(userId) || isAdmin() || resource.data.get('pagina_publica', false) == true;
       allow create: if isOwner(userId) && isValidUser(incoming());
       allow update: if isOwner(userId) && isValidUser(incoming()) && (
         incoming().diff(existing()).affectedKeys().hasOnly([

@@ -162,7 +162,15 @@ export default function PublicOrganizerProfile() {
       try {
         const user = await getDocument<UserProfile>('users', userId);
         if (!user || !user.pagina_publica) { setLoading(false); return; }
-        setOrganizador(user);
+        const {
+          cnpj: _cnpj, cep: _cep, endereco: _end, numero: _num,
+          complemento: _comp, bairro: _bairro, email: _email,
+          plano: _plano, planoPendente: _pp,
+          asaasCustomerId: _ac, asaasSubscriptionId: _as,
+          isDemo: _demo, desativado: _desativado,
+          ...publicProfile
+        } = user;
+        setOrganizador(publicProfile as UserProfile);
 
         const eventosData = await listDocuments<Evento>('eventos', [
           where('criado_por', '==', userId),

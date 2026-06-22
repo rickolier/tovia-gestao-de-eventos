@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
@@ -47,6 +47,21 @@ export default function ProfileTab() {
       setUploadingPhoto(false);
     }
   };
+  const handleRemovePhoto = async () => {
+    if (!user) return;
+    setUploadingPhoto(true);
+    try {
+      await updateDocument('users', user.uid, { imagem_url: '' });
+      setFormData(prev => ({ ...prev, imagem_url: '' }));
+      await refreshProfile();
+      toast.success('Foto removida!');
+    } catch {
+      toast.error('Erro ao remover foto.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const [publicPageEnabled, setPublicPageEnabled] = useState(!!profile?.pagina_publica);
   const [publicPageLoading, setPublicPageLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -113,6 +128,11 @@ export default function ProfileTab() {
     if (!isValidUrl(formData.site)) { toast.error('URL do website inválida. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_1)) { toast.error('Link Importante 1 inválido. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_2)) { toast.error('Link Importante 2 inválido. Use http:// ou https://'); return; }
+    const docDigits = (formData.cnpj || '').replace(/\D/g, '');
+    if (docDigits && docDigits.length !== 11 && docDigits.length !== 14) {
+      toast.error('CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos.');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -186,6 +206,17 @@ export default function ProfileTab() {
                   </div>
                 </div>
                 <span className="text-[10px] text-muted-foreground font-medium text-center">Clique para alterar a foto</span>
+                {formData.imagem_url && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    disabled={uploadingPhoto}
+                    className="flex items-center gap-1 text-[10px] text-destructive/70 hover:text-destructive font-medium transition-colors disabled:opacity-40"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Remover foto
+                  </button>
+                )}
               </div>
 
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
