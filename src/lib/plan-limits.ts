@@ -10,11 +10,13 @@ interface PlanConfig {
   modules: {
     // Módulo 1 — Inscrições (todos os planos)
     registrations: boolean;
-    // Módulo 2 — Financeiro (Plano B e C)
+    // Módulo 2 — Financeiro Manual (Essencial+)
     manualPayments: boolean;
     donations: boolean;
     financeiroConfig: boolean;
-    // Módulo 3 — Gestão do Evento (Plano C)
+    // Módulo 3 — Pagamentos Automáticos via gateway (Pro)
+    autoPayments: boolean;
+    // Módulo 4 — Gestão do Evento: recursos, tarefas, equipe (Pro)
     eventManagement: boolean;
     tasksAndTeam: boolean;
     // Sempre disponível
@@ -26,7 +28,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
   start: {
     name: 'Start',
     label: 'Inscrições',
-    description: 'Crie eventos e gerencie inscrições e participantes.',
+    description: 'Crie eventos e gerencie inscrições e participantes gratuitamente.',
     maxActiveEvents: 1,
     maxAttendeesPerEvent: 200,
     maxTicketsPerEvent: 1,
@@ -35,6 +37,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       manualPayments: false,
       donations: false,
       financeiroConfig: false,
+      autoPayments: false,
       eventManagement: false,
       tasksAndTeam: false,
       reports: true,
@@ -42,8 +45,8 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
   },
   essencial: {
     name: 'Essencial',
-    label: 'Inscrições + Financeiro',
-    description: 'Tudo do Start mais organização financeira: registre pagamentos recebidos, doações e acompanhe o fluxo do evento.',
+    label: 'Inscrições + Financeiro Manual',
+    description: 'Gerencie inscrições e controle financeiro manualmente: registre pagamentos, doações e acompanhe o saldo de cada participante.',
     maxActiveEvents: 3,
     maxAttendeesPerEvent: 500,
     maxTicketsPerEvent: 3,
@@ -52,6 +55,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       manualPayments: true,
       donations: true,
       financeiroConfig: true,
+      autoPayments: false,
       eventManagement: false,
       tasksAndTeam: false,
       reports: true,
@@ -59,8 +63,8 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
   },
   pro: {
     name: 'Pro',
-    label: 'Inscrições + Financeiro + Gestão',
-    description: 'Acesso completo: inscrições, financeiro, recursos, grupos e tarefas.',
+    label: 'Pagamentos Automáticos + Gestão Completa',
+    description: 'Checkout online, pagamentos automáticos via PIX, boleto e cartão, gestão de recursos, tarefas e equipe.',
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
@@ -69,6 +73,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       manualPayments: true,
       donations: true,
       financeiroConfig: true,
+      autoPayments: true,
       eventManagement: true,
       tasksAndTeam: true,
       reports: true,
