@@ -59,26 +59,32 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const [payData, regData, peopleData, transData, ticketData] = await Promise.all([
-      listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`),
-      listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
-      listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
-      listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`),
-      listDocuments<Ticket>(`eventos/${eventoId}/ingressos`),
-    ]);
+    try {
+      const [payData, regData, peopleData, transData, ticketData] = await Promise.all([
+        listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`),
+        listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
+        listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
+        listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`),
+        listDocuments<Ticket>(`eventos/${eventoId}/tickets`),
+      ]);
 
-    const doacaoIds = new Set(ticketData.filter(t => t.tipo === 'doacao').map(t => t.id));
-    const enrichedRegs = regData
-      .filter(reg => !doacaoIds.has(reg.ticketId))
-      .map(reg => ({
-        ...reg,
-        pessoa: peopleData.find(p => p.id === reg.pessoaId)
-      }));
+      const doacaoIds = new Set(ticketData.filter(t => t.tipo === 'doacao').map(t => t.id));
+      const enrichedRegs = regData
+        .filter(reg => !doacaoIds.has(reg.ticketId))
+        .map(reg => ({
+          ...reg,
+          pessoa: peopleData.find(p => p.id === reg.pessoaId)
+        }));
 
-    setPayments(payData);
-    setRegistrations(enrichedRegs);
-    setTransactions(transData);
-    setLoading(false);
+      setPayments(payData);
+      setRegistrations(enrichedRegs);
+      setTransactions(transData);
+    } catch (error) {
+      console.error('Erro ao carregar dados financeiros:', error);
+      toast.error('Erro ao carregar dados. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
