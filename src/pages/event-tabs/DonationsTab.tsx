@@ -432,7 +432,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-8 text-foreground pb-20 pt-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Doações</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Doações</h2>
           <p className="text-sm text-muted-foreground font-medium">Gestão de ofertas e destinação de recursos.</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
