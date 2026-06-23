@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Plus, Trash2, UserCheck, Edit2, Settings, Wand2, LayoutGrid, Filter } from 'lucide-react';
+import { Users, Plus, Trash2, UserCheck, Edit2, Settings, Wand2, LayoutGrid, List, Filter, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -85,6 +85,19 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     plural:   tipoGrupoKey === 'custom' ? (customTipoPlural   || 'Grupos') : tipoAtual.plural,
     membros:  tipoGrupoKey === 'custom' ? (customTipoMembros  || 'Membros'): tipoAtual.membros,
   };
+
+  // ── View mode & filter ─────────────────────────────────────────────────
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filterText, setFilterText] = useState('');
+
+  const filteredRooms = useMemo(() => {
+    if (!filterText.trim()) return rooms;
+    const q = filterText.toLowerCase();
+    return rooms.filter(r =>
+      r.nome.toLowerCase().includes(q) ||
+      (r.numero || '').toLowerCase().includes(q)
+    );
+  }, [rooms, filterText]);
 
   // ── Dialog state ───────────────────────────────────────────────────────
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -263,7 +276,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
       {/* ── Top bar ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 bg-muted/60 border border-border rounded-xl px-3 h-10">
             <LayoutGrid className="w-4 h-4 text-muted-foreground shrink-0" />
             <Select value={tipoGrupoKey} onValueChange={v => { setTipoGrupoKey(v); if (v === 'custom') setIsTipoDialogOpen(true); }}>
@@ -281,6 +294,21 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
           <span className="text-xs text-muted-foreground hidden sm:inline">
             {unallocatedRegs.length} sem alocação · {rooms.length} {label.plural.toLowerCase()}
           </span>
+          {/* View toggle */}
+          <div className="flex items-center border border-border rounded-xl overflow-hidden h-10">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-3 h-full flex items-center transition-colors ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-muted-foreground hover:bg-muted/60'}`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-3 h-full flex items-center transition-colors border-l border-border ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground hover:bg-muted/60'}`}
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" onClick={() => setIsAutoConfigOpen(true)}
@@ -289,72 +317,191 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
           </Button>
           <Button onClick={openCreate}
             className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95 flex-1 sm:flex-none">
-            <Plus className="w-4 h-4" /> Novo Grupo
+            <Plus className="w-4 h-4" /> Novo {label.singular}
           </Button>
         </div>
       </div>
 
-      {/* ── Cards grid ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {rooms.length === 0 && (
-          <div className="col-span-full py-20 text-center bg-muted/20 rounded-2xl border-2 border-dashed border-border/50">
-            <Users className="w-14 h-14 text-muted-foreground/20 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-muted-foreground">Nenhum {label.singular.toLowerCase()} cadastrado ainda.</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">Crie {label.plural.toLowerCase()} e aloque os participantes.</p>
-          </div>
-        )}
-        {rooms.map(room => (
-          <Card key={room.id} className="border border-border shadow-sm rounded-2xl bg-card overflow-hidden group hover:shadow-md transition-all hover:-translate-y-0.5 card-flat">
-            <div className="h-1.5 bg-primary/40 group-hover:bg-primary transition-colors" />
-            <CardHeader className="pb-3 pt-5 px-5">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-base font-bold text-foreground">{room.nome}</CardTitle>
-                  <div className="flex gap-3 mt-1 flex-wrap">
-                    {room.numero && <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">#{room.numero}</span>}
-                    <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">
-                      {room.hospedes?.length || 0}/{room.vagas || 0} vagas
-                    </span>
+      {/* ── Search bar ── */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        <Input
+          placeholder={`Buscar ${label.plural.toLowerCase()}...`}
+          value={filterText}
+          onChange={e => setFilterText(e.target.value)}
+          className="pl-9 h-10 rounded-xl border-border bg-muted/30 text-sm"
+        />
+      </div>
+
+      {/* ── Grid view ── */}
+      {viewMode === 'grid' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredRooms.length === 0 && (
+            <div className="col-span-full py-20 text-center bg-muted/20 rounded-2xl border-2 border-dashed border-border/50">
+              <Users className="w-14 h-14 text-muted-foreground/20 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-muted-foreground">
+                {rooms.length === 0 ? `Nenhum ${label.singular.toLowerCase()} cadastrado ainda.` : 'Nenhum resultado encontrado.'}
+              </p>
+              {rooms.length === 0 && <p className="text-xs text-muted-foreground/60 mt-1">Crie {label.plural.toLowerCase()} e aloque os participantes.</p>}
+            </div>
+          )}
+          {filteredRooms.map(room => (
+            <Card key={room.id} className="border border-border shadow-sm rounded-2xl bg-card overflow-hidden group hover:shadow-md transition-all hover:-translate-y-0.5 card-flat">
+              <div className="h-1.5 bg-primary/40 group-hover:bg-primary transition-colors" />
+              <CardHeader className="pb-3 pt-5 px-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-base font-bold text-foreground">{room.nome}</CardTitle>
+                    <div className="flex gap-3 mt-1 flex-wrap">
+                      {room.numero && <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">#{room.numero}</span>}
+                      <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">
+                        {room.hospedes?.length || 0}/{room.vagas || 0} vagas
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-muted-foreground/40 group-hover:text-primary group-hover:bg-primary/10 transition-colors shrink-0">
+                    <Users className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-muted-foreground/40 group-hover:text-primary group-hover:bg-primary/10 transition-colors shrink-0">
-                  <Users className="w-4 h-4" />
+              </CardHeader>
+              <CardContent className="px-5 pb-5 space-y-4">
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{label.membros}</p>
+                  {(room.hospedes?.length || 0) === 0
+                    ? <p className="text-xs text-muted-foreground/50 italic">Nenhum membro alocado</p>
+                    : (
+                      <div className="flex flex-wrap gap-1.5">
+                        {room.hospedes?.map(hId => {
+                          const reg = registrations.find(r => r.id === hId);
+                          const isResp = room.responsaveis?.includes(hId);
+                          return (
+                            <div key={hId} className={`text-[10px] px-2.5 py-1 rounded-lg border flex items-center gap-1.5 ${isResp ? 'bg-primary/10 border-primary/20 text-primary font-bold' : 'bg-muted/50 border-border/30 text-foreground font-medium'}`}>
+                              {isResp && <UserCheck className="w-3 h-3" />}
+                              {reg ? (reg.pessoa?.nome || reg.nome || 'Sem nome') : 'Desconhecido'}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                </div>
+                <div className="flex gap-2 pt-3 border-t border-border/50">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10" onClick={() => openEdit(room)}>
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 ml-auto"
+                    onClick={() => { setRoomToDelete(room.id); setIsDeleteRoomDialogOpen(true); }}>
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* ── List view ── */}
+      {viewMode === 'list' && (
+        <div className="rounded-2xl border border-border overflow-hidden bg-card">
+          {/* Table header */}
+          <div className="grid grid-cols-[2fr_1fr_1fr_3fr_2fr_auto] gap-4 px-5 py-3 bg-muted/40 border-b border-border">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">ID</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vagas</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{label.membros}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Líder(es)</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground sr-only">Ações</span>
+          </div>
+
+          {filteredRooms.length === 0 && (
+            <div className="py-16 text-center">
+              <Users className="w-10 h-10 text-muted-foreground/20 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-muted-foreground">
+                {rooms.length === 0 ? `Nenhum ${label.singular.toLowerCase()} cadastrado ainda.` : 'Nenhum resultado encontrado.'}
+              </p>
+            </div>
+          )}
+
+          {filteredRooms.map((room, idx) => {
+            const membros = room.hospedes?.map(hId => registrations.find(r => r.id === hId)) ?? [];
+            const lideres = membros.filter(r => r && room.responsaveis?.includes(r.id));
+            const ocupacao = room.hospedes?.length || 0;
+            const total = room.vagas || 0;
+            const pct = total > 0 ? ocupacao / total : 0;
+
+            return (
+              <div
+                key={room.id}
+                className={`grid grid-cols-[2fr_1fr_1fr_3fr_2fr_auto] gap-4 px-5 py-4 items-center transition-colors hover:bg-muted/20 ${idx !== filteredRooms.length - 1 ? 'border-b border-border/50' : ''}`}
+              >
+                {/* Nome */}
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <Users className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <span className="text-sm font-bold text-foreground truncate">{room.nome}</span>
+                </div>
+
+                {/* ID */}
+                <span className="text-xs text-muted-foreground font-mono">
+                  {room.numero ? `#${room.numero}` : <span className="text-muted-foreground/30">—</span>}
+                </span>
+
+                {/* Vagas */}
+                <div className="flex flex-col gap-1">
+                  <span className={`text-xs font-bold ${pct >= 1 ? 'text-destructive' : pct >= 0.8 ? 'text-amber-500' : 'text-primary'}`}>
+                    {ocupacao}/{total}
+                  </span>
+                  <div className="h-1 rounded-full bg-muted overflow-hidden w-12">
+                    <div
+                      className={`h-full rounded-full transition-all ${pct >= 1 ? 'bg-destructive' : pct >= 0.8 ? 'bg-amber-400' : 'bg-primary'}`}
+                      style={{ width: `${Math.min(pct * 100, 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Membros */}
+                <div className="flex flex-wrap gap-1 min-w-0">
+                  {membros.length === 0
+                    ? <span className="text-xs text-muted-foreground/40 italic">Nenhum</span>
+                    : membros.slice(0, 5).map(reg => reg && (
+                      <span key={reg.id} className="text-[10px] bg-muted/60 border border-border/40 rounded-md px-1.5 py-0.5 text-foreground font-medium truncate max-w-[100px]">
+                        {reg.pessoa?.nome || reg.nome || 'Sem nome'}
+                      </span>
+                    ))}
+                  {membros.length > 5 && (
+                    <span className="text-[10px] bg-muted/60 border border-border/40 rounded-md px-1.5 py-0.5 text-muted-foreground font-medium">
+                      +{membros.length - 5}
+                    </span>
+                  )}
+                </div>
+
+                {/* Líder(es) */}
+                <div className="flex flex-wrap gap-1 min-w-0">
+                  {lideres.length === 0
+                    ? <span className="text-xs text-muted-foreground/40 italic">—</span>
+                    : lideres.map(reg => reg && (
+                      <span key={reg.id} className="text-[10px] bg-primary/10 border border-primary/20 rounded-md px-1.5 py-0.5 text-primary font-bold flex items-center gap-1">
+                        <UserCheck className="w-2.5 h-2.5" />
+                        {reg.pessoa?.nome?.split(' ')[0] || reg.nome?.split(' ')[0] || 'Líder'}
+                      </span>
+                    ))}
+                </div>
+
+                {/* Ações */}
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10" onClick={() => openEdit(room)}>
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => { setRoomToDelete(room.id); setIsDeleteRoomDialogOpen(true); }}>
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 space-y-4">
-              <div>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{label.membros}</p>
-                {(room.hospedes?.length || 0) === 0
-                  ? <p className="text-xs text-muted-foreground/50 italic">Nenhum membro alocado</p>
-                  : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {room.hospedes?.map(hId => {
-                        const reg = registrations.find(r => r.id === hId);
-                        const isResp = room.responsaveis?.includes(hId);
-                        return (
-                          <div key={hId} className={`text-[10px] px-2.5 py-1 rounded-lg border flex items-center gap-1.5 ${isResp ? 'bg-primary/10 border-primary/20 text-primary font-bold' : 'bg-muted/50 border-border/30 text-foreground font-medium'}`}>
-                            {isResp && <UserCheck className="w-3 h-3" />}
-                            {reg ? (reg.pessoa?.nome || reg.nome || 'Sem nome') : 'Desconhecido'}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-              </div>
-              <div className="flex gap-2 pt-3 border-t border-border/50">
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10" onClick={() => openEdit(room)}>
-                  <Edit2 className="w-3.5 h-3.5" />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 ml-auto"
-                  onClick={() => { setRoomToDelete(room.id); setIsDeleteRoomDialogOpen(true); }}>
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* ════════════════════════════════════════════════
           DIALOG — Personalizar tipo de grupo
