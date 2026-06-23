@@ -108,8 +108,18 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   const totalEntradasOutras = transactions.filter(t => t.tipo === 'entrada' && t.categoria !== 'Doação').reduce((acc, t) => acc + t.valor, 0);
   const totalSaldosDoacoes = donations.filter(d => d.status === 'aprovada' && d.destino === 'livre').reduce((acc, d) => acc + (d.valorRestante ?? d.valorLiquido ?? d.valor), 0);
   const totalSaidas = transactions.filter(t => t.tipo === 'saida').reduce((acc, t) => acc + t.valor, 0);
-  const totalArrecadadoInscricoes = registrations.reduce((acc, r) => acc + (r.valor_pago || 0), 0);
-  
+
+  // Doações direcionadas a inscritos somam no valor_pago das inscrições mas
+  // não representam caixa livre do organizador — devem ser excluídas do saldo.
+  const totalDoacoesDirecionadas = donations
+    .filter(d => d.status === 'aprovada' && d.destino === 'inscrito')
+    .reduce((acc, d) => acc + d.valor, 0);
+
+  const totalArrecadadoInscricoes = Math.max(
+    0,
+    registrations.reduce((acc, r) => acc + (r.valor_pago || 0), 0) - totalDoacoesDirecionadas
+  );
+
   const totalBruto = totalEntradasOutras + totalSaldosDoacoes + totalArrecadadoInscricoes;
   const saldoLivre = totalBruto - totalSaidas;
 
