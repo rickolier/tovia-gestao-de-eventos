@@ -390,7 +390,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-6 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Financeiro</h2>
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Financeiro</h2>
           <p className="text-sm text-muted-foreground font-medium">Controle de pagamentos e destinação de doações.</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
