@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Calculator, Users, CreditCard, DollarSign, Percent, TrendingUp, Info, Plus, ArrowUpFromLine, ArrowDownToLine } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Users, CreditCard, DollarSign, Percent, TrendingUp, Info, ArrowUpFromLine, ArrowDownToLine } from 'lucide-react';
 
 export default function CalculatorTab() {
-  const navigate = useNavigate();
-
   const [venueCostType, setVenueCostType] = useState<'total' | 'per_person'>('total');
   const [venueValue, setVenueValue] = useState<number>(0);
   const [minParticipants, setMinParticipants] = useState<number>(0);
@@ -399,23 +395,6 @@ export default function CalculatorTab() {
             </CardContent>
           </Card>
         </div>
-      </div>
-
-      {/* CTA */}
-      <div className="flex justify-center">
-        <Button
-          onClick={() => {
-            sessionStorage.setItem('tovia_calc_config', JSON.stringify({
-              pixFee, boletoFee, creditFee, recurringFee,
-              maxParticipants, minParticipants, results,
-            }));
-            navigate('/eventos/novo');
-          }}
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl h-11 px-8 font-black text-sm shadow-sm gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Criar evento com essas configurações
-        </Button>
       </div>
 
       <div className="bg-muted/30 px-5 py-4 rounded-xl border border-border/50 text-center">
