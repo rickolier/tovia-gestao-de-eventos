@@ -5,7 +5,7 @@ import Logo from '../../components/Logo';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, CreditCard, TrendingUp, LogOut,
-  ShieldCheck, Menu, X, Palette, BookOpen, Calculator,
+  ShieldCheck, Menu, X, Palette, BookOpen, Calculator, Wifi,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminSubscriptionsTab from './AdminSubscriptionsTab';
@@ -13,6 +13,7 @@ import AdminUsersTab from './AdminUsersTab';
 import AdminFinancialTab from './AdminFinancialTab';
 import AdminKnowledgeBaseTab from './AdminKnowledgeBaseTab';
 import AdminCalculatorTab from './AdminCalculatorTab';
+import AdminGatewayTab from './AdminGatewayTab';
 import DesignSystemTab from '../dashboard-tabs/DesignSystemTab';
 
 const TABS = [
@@ -20,6 +21,7 @@ const TABS = [
   { id: 'subscriptions',   label: 'Assinaturas',         icon: CreditCard },
   { id: 'financial',       label: 'Financeiro',           icon: TrendingUp },
   { id: 'users',           label: 'Usuários',             icon: Users },
+  { id: 'gateway',          label: 'Monitor Gateway',       icon: Wifi },
   { id: 'knowledge-base',  label: 'Base de Conhecimento', icon: BookOpen },
   { id: 'calculator',      label: 'Calculadora',          icon: Calculator },
   { id: 'design-system',   label: 'Design System',        icon: Palette },
@@ -128,6 +130,7 @@ export default function AdminDashboard() {
           {activeTab === 'subscriptions'  && <AdminSubscriptionsTab />}
           {activeTab === 'financial'      && <AdminFinancialTab />}
           {activeTab === 'users'          && <AdminUsersTab />}
+          {activeTab === 'gateway'        && <AdminGatewayTab />}
           {activeTab === 'knowledge-base' && <AdminKnowledgeBaseTab />}
           {activeTab === 'calculator'     && <AdminCalculatorTab />}
           {activeTab === 'design-system'  && <DesignSystemTab />}
