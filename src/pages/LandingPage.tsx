@@ -703,7 +703,7 @@ export default function LandingPage() {
 
           {/* Text */}
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">O problema</span>
+
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3 mb-6 leading-tight">
               Uma plataforma feita para quem organiza com propósito
             </h2>
