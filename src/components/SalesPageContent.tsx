@@ -392,10 +392,10 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         </header>
 
         <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* ── Formulário (esquerda) ── */}
-            <form id="checkout-form" onSubmit={handleSubmit} className="lg:col-span-2 space-y-4">
+            <form id="checkout-form" onSubmit={handleSubmit} className="lg:col-span-2 space-y-4 self-start">
 
               {/* Seus dados */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
