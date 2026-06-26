@@ -4,7 +4,8 @@ import { auth } from '../firebase';
 import { getDocument, createDocument, listDocuments, removeDocument } from './firebase-utils';
 import { notifIfReadOrMissing } from './notifications';
 import { UserProfile, PlanLevel, ConvitePendente } from '../types';
-import { where } from 'firebase/firestore';
+import { where, doc, getDocFromServer } from 'firebase/firestore';
+import { db } from '../firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -74,8 +75,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshProfile = async () => {
     if (!user) return;
-    const updated = await getDocument<UserProfile>('users', user.uid);
-    if (updated) setProfile(updated);
+    try {
+      const snap = await getDocFromServer(doc(db, 'users', user.uid));
+      if (snap.exists()) setProfile(snap.data() as UserProfile);
+    } catch {
+      const updated = await getDocument<UserProfile>('users', user.uid);
+      if (updated) setProfile(updated);
+    }
   };
 
   const logout = async () => {
