@@ -26,11 +26,16 @@ export default function GatewayTab() {
   const [sandbox, setSandbox] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Estado local para atualizar o banner imediatamente após conectar/desconectar
+  // null = usa profile do contexto; true/false = override local
+  const [localConnected, setLocalConnected] = useState<boolean | null>(null);
+  const [localSandbox, setLocalSandbox] = useState<boolean | null>(null);
+  const [localConnectedAt, setLocalConnectedAt] = useState<string | null>(null);
 
-  const isConnected = profile?.gateway_connected === true;
+  const isConnected = localConnected !== null ? localConnected : (profile?.gateway_connected === true);
   const gatewayType = profile?.gateway?.type ?? 'asaas';
-  const isSandbox = profile?.gateway?.sandbox;
-  const connectedAt = profile?.gateway?.connected_at
+  const isSandbox = localSandbox !== null ? localSandbox : profile?.gateway?.sandbox;
+  const connectedAt = (localConnectedAt ?? profile?.gateway?.connected_at)
     ? new Date(profile.gateway.connected_at).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
@@ -48,7 +53,10 @@ export default function GatewayTab() {
       const fns = getFunctions(app, 'us-central1');
       const saveGateway = httpsCallable(fns, 'saveGatewayConfig');
       await saveGateway({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox });
-      await refreshProfile();
+      setLocalConnected(true);
+      setLocalSandbox(sandbox);
+      setLocalConnectedAt(new Date().toISOString());
+      refreshProfile(); // atualiza contexto em background, sem bloquear a UI
       toast.success('Gateway conectado! Pagamentos automáticos habilitados.');
       setApiKey('');
     } catch (err: any) {
@@ -68,7 +76,10 @@ export default function GatewayTab() {
         gateway: null,
       } as any);
       await updateDocument('organizer_public', user.uid, { gateway_connected: false } as any);
-      await refreshProfile();
+      setLocalConnected(false);
+      setLocalSandbox(null);
+      setLocalConnectedAt(null);
+      refreshProfile();
       toast.success('Gateway desconectado.');
     } catch {
       toast.error('Erro ao desconectar.');
