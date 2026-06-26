@@ -98,10 +98,10 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
           const ticketsData = await listDocuments<Ticket>(`eventos/${targetId}/tickets`);
           setTickets(ticketsData);
 
-          // Verifica se o organizador tem gateway conectado (campo público)
+          // Verifica se o organizador tem gateway conectado (coleção pública, sem expor dados sensíveis)
           if (eventData?.criado_por) {
-            const organizer = await getDocument<{ gateway_connected?: boolean }>('users', eventData.criado_por);
-            setGatewayConnected(organizer?.gateway_connected === true);
+            const orgMeta = await getDocument<{ gateway_connected?: boolean }>('organizer_public', eventData.criado_por);
+            setGatewayConnected(orgMeta?.gateway_connected === true);
           }
         } catch (error) {
           console.error('Error fetching data:', error);

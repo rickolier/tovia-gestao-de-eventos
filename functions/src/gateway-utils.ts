@@ -4,7 +4,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 const ALGORITHM = 'aes-256-gcm';
 
 export function encrypt(text: string, keyHex: string): string {
-  const key = Buffer.from(keyHex, 'hex');
+  const key = Buffer.from(keyHex.trim(), 'hex');
   const iv = randomBytes(16);
   const cipher = createCipheriv(ALGORITHM, key, iv);
   let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -15,7 +15,7 @@ export function encrypt(text: string, keyHex: string): string {
 
 export function decrypt(data: string, keyHex: string): string {
   const [ivHex, authTagHex, encrypted] = data.split(':');
-  const key = Buffer.from(keyHex, 'hex');
+  const key = Buffer.from(keyHex.trim(), 'hex');
   const iv = Buffer.from(ivHex, 'hex');
   const authTag = Buffer.from(authTagHex, 'hex');
   const decipher = createDecipheriv(ALGORITHM, key, iv);
@@ -39,12 +39,17 @@ export function asaasBaseUrl(sandbox: boolean) {
 
 export async function testAsaasApiKey(apiKey: string, sandbox: boolean): Promise<boolean> {
   try {
-    const res = await axios.get(`${asaasBaseUrl(sandbox)}/finance/currentBalance`, {
+    // GET /customers?limit=1 is a lightweight endpoint available in all Asaas plans
+    const res = await axios.get(`${asaasBaseUrl(sandbox)}/customers`, {
+      params: { limit: 1 },
       headers: asaasHeaders(apiKey),
-      timeout: 6000,
+      timeout: 10000,
     });
     return res.status === 200;
-  } catch {
+  } catch (e: any) {
+    const status = e?.response?.status;
+    const data = JSON.stringify(e?.response?.data ?? e?.message ?? 'unknown');
+    console.error(`[testAsaasApiKey] sandbox=${sandbox} status=${status} error=${data}`);
     return false;
   }
 }

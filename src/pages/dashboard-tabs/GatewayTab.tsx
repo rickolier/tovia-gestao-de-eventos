@@ -66,6 +66,7 @@ export default function GatewayTab() {
         gateway_connected: false,
         gateway: null,
       } as any);
+      await updateDocument('organizer_public', user.uid, { gateway_connected: false } as any);
       toast.success('Gateway desconectado.');
     } catch {
       toast.error('Erro ao desconectar.');

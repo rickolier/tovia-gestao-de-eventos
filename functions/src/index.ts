@@ -243,7 +243,7 @@ export const saveGatewayConfig = functions.onCall(
       console.warn("Webhook registration failed (non-fatal):", e);
     }
 
-    await db.collection("users").doc(userId).update({
+    await db.collection("users").doc(userId).set({
       gateway_connected: true,
       gateway: {
         type: gatewayType,
@@ -252,7 +252,9 @@ export const saveGatewayConfig = functions.onCall(
         connected_at: new Date().toISOString(),
         encrypted_webhook_token: encryptedWebhookToken,
       },
-    });
+    }, { merge: true });
+
+    await db.collection("organizer_public").doc(userId).set({ gateway_connected: true }, { merge: true });
 
     return { success: true };
   }
