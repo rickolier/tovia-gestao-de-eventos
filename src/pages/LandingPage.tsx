@@ -84,8 +84,8 @@ const PLANS = [
   {
     id: 'personalizado',
     name: 'Personalizado',
-    subtitle: 'Sem limites',
-    price: 'R$ 299/mês',
+    subtitle: 'Limites maiores',
+    price: 'Sob consulta',
     limits: 'Eventos ilimitados · Inscrições ilimitadas · + 0,8% sobre inscritos pagos',
     description: 'Para organizações com múltiplos eventos de grande porte — cresça sem preocupação com limites.',
     modules: ['Tudo do Pro', 'Eventos e inscrições ilimitados', '0,8% apenas sobre inscrições pagas', 'Suporte prioritário e onboarding dedicado'],
@@ -1027,89 +1027,71 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
             {PLANS.map((plan) => (
               <div
                 key={plan.id}
                 className={cn(
                   'rounded-3xl p-8 border-2 flex flex-col transition-all',
                   plan.highlight
-                    ? 'border-primary bg-gradient-to-br from-[var(--sidebar)] to-primary text-white shadow-2xl shadow-primary/20 scale-[1.02]'
+                    ? 'border-primary bg-gradient-to-br from-[var(--sidebar)] to-primary text-white shadow-2xl shadow-primary/20 scale-[1.06]'
                     : 'border-border bg-white hover:border-primary/30 hover:shadow-md'
                 )}
               >
-                {/* Badge mais popular */}
+                {/* Badge recomendado */}
                 {plan.highlight && (
-                  <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-5">
-                    Mais popular
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-5 self-start">
+                    Recomendado
                   </span>
                 )}
 
-                {/* Nome */}
-                <div className="mb-3">
-                  <span className={cn('text-xs font-semibold uppercase tracking-widest', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
+                {/* Nome + subtítulo */}
+                <div className="mb-5">
+                  <h3 className={cn('text-2xl font-black tracking-tight', plan.highlight ? 'text-white' : 'text-foreground')}>
                     {plan.name}
-                  </span>
-                  <h3 className={cn('text-xl font-black mt-0.5', plan.highlight ? 'text-white' : 'text-foreground')}>
-                    {plan.subtitle}
                   </h3>
+                  <span className={cn('text-xs font-semibold uppercase tracking-widest mt-1 block', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
+                    {plan.subtitle}
+                  </span>
                 </div>
 
                 {/* Preço */}
                 {plan.id === 'start' ? (
-                  <div className="flex items-baseline gap-1 mb-4">
+                  <div className="flex items-baseline gap-1 mb-6">
                     <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
                       Grátis
                     </span>
                   </div>
+                ) : plan.id === 'personalizado' ? (
+                  <div className="mb-6">
+                    <p className={cn('text-sm font-medium leading-snug', plan.highlight ? 'text-white/70' : 'text-muted-foreground')}>
+                      Valor sob consulta — nossa equipe monta uma proposta para o seu volume.
+                    </p>
+                  </div>
                 ) : billing === 'mensal' ? (
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <div className="flex items-baseline gap-1">
                       <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                        {plan.id === 'essencial' ? 'R$69' : plan.id === 'pro' ? 'R$129' : 'R$299'}
+                        {plan.id === 'essencial' ? 'R$69' : 'R$129'}
                       </span>
                       <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
                     </div>
-                    <p className={cn('text-xs mt-1', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>
-                      Cartão de crédito recorrente
-                    </p>
                   </div>
                 ) : (
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <div className="flex items-baseline gap-1">
                       <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                        {plan.id === 'essencial' ? 'R$57,50' : plan.id === 'pro' ? 'R$107,50' : 'R$249,17'}
+                        {plan.id === 'essencial' ? 'R$57,50' : 'R$107,50'}
                       </span>
                       <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
                     </div>
                     <p className={cn('text-xs line-through mt-0.5', plan.highlight ? 'text-white/40' : 'text-muted-foreground/60')}>
-                      {plan.id === 'essencial' ? 'R$828,00' : plan.id === 'pro' ? 'R$1.548,00' : 'R$3.588,00'}/ano
+                      {plan.id === 'essencial' ? 'R$828,00' : 'R$1.548,00'}/ano
                     </p>
                     <p className={cn('text-xs font-bold', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                      {plan.id === 'essencial' ? 'R$690,00' : plan.id === 'pro' ? 'R$1.290,00' : 'R$2.990,00'}/ano
+                      {plan.id === 'essencial' ? 'R$690,00' : 'R$1.290,00'}/ano
                     </p>
-                    {/* Formas de pagamento anual */}
-                    <div className={cn('mt-3 rounded-xl p-3 space-y-1.5 text-xs', plan.highlight ? 'bg-white/10' : 'bg-muted/50')}>
-                      <p className={cn('font-bold text-[10px] uppercase tracking-widest mb-2', plan.highlight ? 'text-white/50' : 'text-muted-foreground')}>Formas de pagamento</p>
-                      {[
-                        'Cartão em 12x sem juros',
-                        'Pix à vista',
-                        'Boleto à vista',
-                      ].map(m => (
-                        <div key={m} className={cn('flex items-center gap-2', plan.highlight ? 'text-white/80' : 'text-foreground')}>
-                          <CheckCircle className={cn('w-3.5 h-3.5 shrink-0', plan.highlight ? 'text-emerald-300' : 'text-primary')} />
-                          {m}
-                        </div>
-                      ))}
-                    </div>
                   </div>
-                )}
-
-                {/* Limites */}
-                {plan.limits && (
-                  <p className={cn('text-[11px] font-medium rounded-lg px-3 py-1.5 mb-5 leading-relaxed', plan.highlight ? 'bg-white/10 text-white/70' : 'bg-gray-50 border border-border text-muted-foreground')}>
-                    {plan.limits}
-                  </p>
                 )}
 
                 {/* Descrição */}
@@ -1129,17 +1111,29 @@ export default function LandingPage() {
                   ))}
                 </ul>
 
-                <Link
-                  to="/login?cadastro=true"
-                  className={cn(
-                    'text-center font-black text-sm uppercase tracking-widest py-3 rounded-xl transition-all',
-                    plan.highlight
-                      ? 'bg-white text-primary hover:bg-white/90'
-                      : 'bg-primary text-white hover:bg-primary/90'
-                  )}
-                >
-                  Começar agora
-                </Link>
+                {plan.id === 'personalizado' ? (
+                  <a
+                    href="mailto:contato@tovia.app"
+                    className={cn(
+                      'text-center font-black text-sm uppercase tracking-widest py-3 rounded-xl transition-all',
+                      'bg-primary text-white hover:bg-primary/90'
+                    )}
+                  >
+                    Fale com a gente
+                  </a>
+                ) : (
+                  <Link
+                    to="/login?cadastro=true"
+                    className={cn(
+                      'text-center font-black text-sm uppercase tracking-widest py-3 rounded-xl transition-all',
+                      plan.highlight
+                        ? 'bg-white text-primary hover:bg-white/90'
+                        : 'bg-primary text-white hover:bg-primary/90'
+                    )}
+                  >
+                    Começar agora
+                  </Link>
+                )}
               </div>
             ))}
           </div>
