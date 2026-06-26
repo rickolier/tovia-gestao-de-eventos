@@ -400,6 +400,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       </div>
                       <p className="text-[11px] text-muted-foreground px-1">
                         A cobrança será gerada automaticamente no Asaas no momento da inscrição.
+                        O campo <strong>CPF</strong> é solicitado obrigatoriamente no formulário.
                       </p>
                     </div>
                   ) : (

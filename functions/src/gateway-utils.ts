@@ -117,6 +117,7 @@ export interface AsaasChargeResult {
   id: string;
   invoiceUrl: string;
   bankSlipUrl?: string;
+  identificationField?: string;
   pixQrCode?: { encodedImage: string; payload: string; expirationDate: string };
   status: string;
 }
@@ -132,6 +133,21 @@ export async function createAsaasCharge(
     billingType: AsaasBillingType;
     installmentCount?: number;
     externalReference: string;
+    creditCard?: {
+      holderName: string;
+      number: string;
+      expiryMonth: string;
+      expiryYear: string;
+      ccv: string;
+    };
+    creditCardHolderInfo?: {
+      name: string;
+      email: string;
+      cpfCnpj: string;
+      phone?: string;
+      postalCode?: string;
+      addressNumber?: string;
+    };
   },
 ): Promise<AsaasChargeResult> {
   const base = asaasBaseUrl(sandbox);
@@ -146,18 +162,23 @@ export async function createAsaasCharge(
     externalReference: opts.externalReference,
   };
 
-  if (opts.billingType === 'CREDIT_CARD' && opts.installmentCount && opts.installmentCount > 1) {
-    body.installmentCount = opts.installmentCount;
-    body.installmentValue = parseFloat((opts.value / opts.installmentCount).toFixed(2));
+  if (opts.billingType === 'CREDIT_CARD') {
+    if (opts.creditCard) body.creditCard = opts.creditCard;
+    if (opts.creditCardHolderInfo) body.creditCardHolderInfo = opts.creditCardHolderInfo;
+    if (opts.installmentCount && opts.installmentCount > 1) {
+      body.installmentCount = opts.installmentCount;
+      body.installmentValue = parseFloat((opts.value / opts.installmentCount).toFixed(2));
+    }
   }
 
-  const res = await axios.post(`${base}/payments`, body, { headers, timeout: 10000 });
+  const res = await axios.post(`${base}/payments`, body, { headers, timeout: 15000 });
   const p = res.data;
 
   const result: AsaasChargeResult = {
     id: p.id,
     invoiceUrl: p.invoiceUrl,
     bankSlipUrl: p.bankSlipUrl,
+    identificationField: p.identificationField,
     status: p.status,
   };
 

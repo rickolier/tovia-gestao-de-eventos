@@ -24,6 +24,7 @@ interface CheckoutResult {
   paymentUrl: string;
   pixQrCode?: { encodedImage: string; payload: string; expirationDate: string } | null;
   bankSlipUrl?: string | null;
+  identificationField?: string | null;
   chargeId: string;
 }
 
@@ -67,6 +68,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const [selectedMethod, setSelectedMethod] = useState('');
   const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
   const [cpf, setCpf] = useState('');
+  const [card, setCard] = useState({ holderName: '', number: '', expiry: '', ccv: '' });
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -188,6 +190,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         if (useGateway) {
           const fns = getFunctions(app, 'us-central1');
           const createCharge = httpsCallable(fns, 'createEventCharge');
+          const [expiryMonth, expiryYear] = card.expiry.split('/');
           const result = await createCharge({
             eventoId,
             inscricaoId: id,
@@ -195,6 +198,14 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             attendeeName: nome,
             attendeeEmail: email,
             attendeeCpf: cpf.replace(/\D/g, ''),
+            attendeePhone: telefone,
+            creditCard: selectedMethod === 'credito' ? {
+              holderName: card.holderName,
+              number: card.number.replace(/\s/g, ''),
+              expiryMonth: expiryMonth ?? '',
+              expiryYear: expiryYear ? `20${expiryYear}` : '',
+              ccv: card.ccv,
+            } : undefined,
             valor: valorFinal,
           });
           setCheckoutResult(result.data as CheckoutResult);
@@ -238,7 +249,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
               <img src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`} alt="QR Code PIX"
                 className="w-44 h-44 mx-auto rounded-2xl border border-gray-200" />
               <div className="space-y-2">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Chave PIX copia e cola</p>
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
                 <div className="flex gap-2">
                   <input readOnly value={checkoutResult.pixQrCode.payload}
                     className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700" />
@@ -247,18 +258,47 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     <Copy className="w-4 h-4 text-gray-500" />
                   </button>
                 </div>
-                <p className="text-xs text-gray-400">Após o pagamento, sua inscrição será confirmada automaticamente.</p>
+                <p className="text-xs text-gray-400">Após o pagamento, sua inscrição é confirmada automaticamente.</p>
               </div>
+            </div>
+          ) : selectedMethod === 'boleto' ? (
+            <div className="w-full space-y-4">
+              {checkoutResult.identificationField && (
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Linha digitável</p>
+                  <div className="flex gap-2">
+                    <input readOnly value={checkoutResult.identificationField}
+                      className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 break-all" />
+                    <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.identificationField!); toast.success('Código copiado!'); }}
+                      className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 shrink-0">
+                      <Copy className="w-4 h-4 text-gray-500" />
+                    </button>
+                  </div>
+                </div>
+              )}
+              <p className="text-xs text-gray-500">Vence em 3 dias. Pague em qualquer banco, app ou lotérica.</p>
+              {checkoutResult.bankSlipUrl && (
+                <a href={checkoutResult.bankSlipUrl} target="_blank" rel="noopener noreferrer">
+                  <button type="button" className="w-full h-11 rounded-xl border border-gray-200 text-gray-600 font-bold flex items-center justify-center gap-2 hover:bg-gray-50 text-sm">
+                    Ver boleto em PDF <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                </a>
+              )}
+              <p className="text-xs text-gray-400">Sua inscrição é confirmada automaticamente após o pagamento.</p>
+            </div>
+          ) : selectedMethod === 'credito' ? (
+            <div className="w-full space-y-3 text-center">
+              <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-7 h-7 text-green-600" />
+              </div>
+              <p className="text-sm font-bold text-gray-700">Pagamento aprovado!</p>
+              <p className="text-xs text-gray-500">Seu cartão foi cobrado com sucesso. Inscrição confirmada.</p>
             </div>
           ) : (
             <div className="w-full space-y-3">
-              <p className="text-sm text-gray-500">
-                {selectedMethod === 'boleto' ? 'Seu boleto foi gerado. Clique abaixo para pagar.' : 'Clique abaixo para completar o pagamento.'}
-              </p>
-              <a href={checkoutResult.bankSlipUrl ?? checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
+              <a href={checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
                 <button type="button" className="w-full h-11 rounded-xl bg-primary text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-                  {selectedMethod === 'boleto' ? 'Ver e pagar boleto' : 'Ir para pagamento'}
-                  <ExternalLink className="w-4 h-4" />
+                  Ir para pagamento <ExternalLink className="w-4 h-4" />
                 </button>
               </a>
             </div>
@@ -653,9 +693,56 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     );
                   })()}
 
+                  {/* Formulário de cartão — aparece quando cartão selecionado */}
+                  {gatewayConnected && total > 0 && !allDoacao && selectedMethod === 'credito' && (
+                    <div className="space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Dados do cartão</p>
+                      <Input
+                        placeholder="Número do cartão"
+                        value={card.number}
+                        onChange={e => {
+                          const v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                          setCard(c => ({ ...c, number: v.replace(/(\d{4})(?=\d)/g, '$1 ') }));
+                        }}
+                        className="rounded-xl border-gray-200 bg-white h-10 text-sm font-mono tracking-widest"
+                        maxLength={19}
+                      />
+                      <Input
+                        placeholder="Nome no cartão"
+                        value={card.holderName}
+                        onChange={e => setCard(c => ({ ...c, holderName: e.target.value.toUpperCase() }))}
+                        className="rounded-xl border-gray-200 bg-white h-10 text-sm"
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <Input
+                          placeholder="MM/AA"
+                          value={card.expiry}
+                          onChange={e => {
+                            const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                            setCard(c => ({ ...c, expiry: v.length > 2 ? `${v.slice(0,2)}/${v.slice(2)}` : v }));
+                          }}
+                          className="rounded-xl border-gray-200 bg-white h-10 text-sm"
+                          maxLength={5}
+                        />
+                        <Input
+                          placeholder="CVV"
+                          value={card.ccv}
+                          onChange={e => setCard(c => ({ ...c, ccv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                          className="rounded-xl border-gray-200 bg-white h-10 text-sm"
+                          maxLength={4}
+                          type="password"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <Button
                     type="submit"
-                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && (!selectedMethod || cpf.replace(/\D/g, '').length < 11))}
+                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && (
+                      !selectedMethod ||
+                      cpf.replace(/\D/g, '').length < 11 ||
+                      (selectedMethod === 'credito' && (!card.number.replace(/\s/g,'') || !card.holderName || !card.expiry || !card.ccv))
+                    ))}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2"
                   >
                     {submitting

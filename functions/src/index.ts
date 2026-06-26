@@ -278,6 +278,8 @@ export const createEventCharge = functions.onCall(
       attendeeName,
       attendeeEmail,
       attendeeCpf,
+      attendeePhone,
+      creditCard,
       valor,
     } = request.data as {
       eventoId: string;
@@ -287,6 +289,14 @@ export const createEventCharge = functions.onCall(
       attendeeName: string;
       attendeeEmail: string;
       attendeeCpf?: string;
+      attendeePhone?: string;
+      creditCard?: {
+        holderName: string;
+        number: string;
+        expiryMonth: string;
+        expiryYear: string;
+        ccv: string;
+      };
       valor: number;
     };
 
@@ -353,6 +363,13 @@ export const createEventCharge = functions.onCall(
         billingType: mapBillingType(paymentMethod),
         installmentCount: installments,
         externalReference: `event:${eventoId}:${inscricaoId}`,
+        creditCard: creditCard,
+        creditCardHolderInfo: creditCard ? {
+          name: attendeeName,
+          email: attendeeEmail,
+          cpfCnpj: (attendeeCpf || '').replace(/\D/g, ''),
+          phone: (attendeePhone || '').replace(/\D/g, ''),
+        } : undefined,
       });
     } catch (e: any) {
       const body = JSON.stringify(e?.response?.data ?? e?.message);
@@ -375,6 +392,7 @@ export const createEventCharge = functions.onCall(
       paymentUrl: charge.invoiceUrl,
       pixQrCode: charge.pixQrCode ?? null,
       bankSlipUrl: charge.bankSlipUrl ?? null,
+      identificationField: charge.identificationField ?? null,
       chargeId: charge.id,
     };
   }
