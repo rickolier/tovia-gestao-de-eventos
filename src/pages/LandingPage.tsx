@@ -1028,68 +1028,51 @@ export default function LandingPage() {
 
           {/* Tabela unificada */}
           <div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
-            <table className="w-full text-sm min-w-[640px]">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 <tr className="border-b-2 border-border">
-                  {/* Coluna de features */}
-                  <th className="text-left px-6 py-6 w-[34%]">
+                  <th className="text-left px-6 py-6 w-[40%]">
                     <p className="text-base font-black text-foreground">Funcionalidades</p>
                     <p className="text-xs text-muted-foreground font-normal mt-0.5">Compare os planos</p>
                   </th>
 
                   {/* Start */}
-                  <th className="text-center px-4 py-6 w-[16.5%]">
+                  <th className="text-center px-4 py-6 w-[20%]">
                     <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Start</p>
                     <p className="text-2xl font-black text-foreground">Grátis</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">para sempre</p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-center text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
+                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
                       Começar
                     </Link>
                   </th>
 
                   {/* Essencial */}
-                  <th className="text-center px-4 py-6 w-[16.5%] bg-primary/5 relative">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Mais popular</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Essencial</p>
-                    <p className="text-2xl font-black text-primary">
+                  <th className="text-center px-4 py-6 w-[20%]">
+                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Essencial</p>
+                    <p className="text-2xl font-black text-foreground">
                       {billing === 'mensal' ? 'R$69' : 'R$57,50'}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {billing === 'anual' ? <>
-                        <span className="line-through text-muted-foreground/50">R$828</span>{' '}
-                        <span className="font-bold text-primary">R$690/ano</span>
-                      </> : '/mês'}
+                      {billing === 'anual' ? <><span className="line-through text-muted-foreground/50">R$828</span>{' '}<span className="font-bold text-primary">R$690/ano</span></> : '/mês'}
                     </p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-center text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
-                      Começar agora
-                    </Link>
-                  </th>
-
-                  {/* Pro */}
-                  <th className="text-center px-4 py-6 w-[16.5%]">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Pro</p>
-                    <p className="text-2xl font-black text-foreground">
-                      {billing === 'mensal' ? 'R$129' : 'R$107,50'}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {billing === 'anual' ? <>
-                        <span className="line-through text-muted-foreground/50">R$1.548</span>{' '}
-                        <span className="font-bold text-primary">R$1.290/ano</span>
-                      </> : '/mês'}
-                    </p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-center text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
+                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
                       Começar
                     </Link>
                   </th>
 
-                  {/* Personalizado */}
-                  <th className="text-center px-4 py-6 w-[16.5%]">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Personalizado</p>
-                    <p className="text-base font-black text-foreground leading-tight mt-1">Sob<br/>consulta</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">+ 0,8% s/ pagos</p>
-                    <a href="mailto:contato@tovia.app" className="mt-4 block text-center text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
-                      Fale conosco
-                    </a>
+                  {/* Pro — destaque */}
+                  <th className="text-center px-4 py-6 w-[20%] bg-primary/5 relative">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Recomendado</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Pro</p>
+                    <p className="text-2xl font-black text-primary">
+                      {billing === 'mensal' ? 'R$129' : 'R$107,50'}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {billing === 'anual' ? <><span className="line-through text-muted-foreground/50">R$1.548</span>{' '}<span className="font-bold text-primary">R$1.290/ano</span></> : '/mês'}
+                    </p>
+                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+                      Começar agora
+                    </Link>
                   </th>
                 </tr>
               </thead>
@@ -1099,63 +1082,61 @@ export default function LandingPage() {
                   {
                     category: 'Eventos & Limites',
                     rows: [
-                      { label: 'Eventos ativos simultâneos', start: '1', essencial: '3', pro: '10', personalizado: 'Ilimitado' },
-                      { label: 'Vagas por evento', start: '200', essencial: '500', pro: '1.000', personalizado: 'Ilimitado' },
-                      { label: 'Tipos de ingresso', start: '1', essencial: '3', pro: '10', personalizado: 'Ilimitado' },
-                      { label: 'Páginas de inscrição', start: '1', essencial: '3', pro: '10', personalizado: 'Ilimitado' },
+                      { label: 'Eventos ativos simultâneos', start: '1', essencial: '3', pro: '10' },
+                      { label: 'Vagas por evento',           start: '200', essencial: '500', pro: '1.000' },
+                      { label: 'Tipos de ingresso',          start: '1', essencial: '3', pro: '10' },
+                      { label: 'Páginas de inscrição',       start: '1', essencial: '3', pro: '10' },
                     ],
                   },
                   {
                     category: 'Inscrições',
                     rows: [
-                      { label: 'Inscrições gratuitas', start: true, essencial: true, pro: true, personalizado: true },
-                      { label: 'Formulários personalizados', start: true, essencial: true, pro: true, personalizado: true },
-                      { label: 'Gestão de participantes', start: true, essencial: true, pro: true, personalizado: true },
-                      { label: 'Ingressos com valores (pagos)', start: false, essencial: true, pro: true, personalizado: true },
-                      { label: 'Consulta de inscrição por CPF', start: true, essencial: true, pro: true, personalizado: true },
+                      { label: 'Inscrições gratuitas',           start: true,  essencial: true,  pro: true  },
+                      { label: 'Formulários personalizados',     start: true,  essencial: true,  pro: true  },
+                      { label: 'Gestão de participantes',        start: true,  essencial: true,  pro: true  },
+                      { label: 'Consulta de inscrição por CPF',  start: true,  essencial: true,  pro: true  },
+                      { label: 'Ingressos com valores (pagos)',  start: false, essencial: true,  pro: true  },
                     ],
                   },
                   {
                     category: 'Financeiro',
                     rows: [
-                      { label: 'Registro manual de pagamentos', start: false, essencial: true, pro: true, personalizado: true },
-                      { label: 'Registro de doações', start: false, essencial: true, pro: true, personalizado: true },
-                      { label: 'Gateway próprio (BYOG)', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'PIX, Boleto e Cartão automáticos', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'Relatórios financeiros', start: false, essencial: true, pro: true, personalizado: true },
-                      { label: 'Taxa variável sobre inscrições pagas', start: false, essencial: false, pro: false, personalizado: '0,8%' },
+                      { label: 'Registro manual de pagamentos', start: false, essencial: true,  pro: true },
+                      { label: 'Registro de doações',           start: false, essencial: true,  pro: true },
+                      { label: 'Relatórios financeiros',        start: false, essencial: true,  pro: true },
+                      { label: 'Gateway próprio (BYOG)',         start: false, essencial: false, pro: true },
+                      { label: 'PIX, Boleto e Cartão automáticos', start: false, essencial: false, pro: true },
                     ],
                   },
                   {
                     category: 'Gestão Avançada',
                     rows: [
-                      { label: 'Grupos, quartos e mesas', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'Tarefas com equipe integrada', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'Gestão de recursos e fornecedores', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'Relatórios completos', start: false, essencial: false, pro: true, personalizado: true },
-                      { label: 'Suporte prioritário + onboarding', start: false, essencial: false, pro: false, personalizado: true },
+                      { label: 'Grupos, quartos e mesas',              start: false, essencial: false, pro: true },
+                      { label: 'Tarefas com equipe integrada',         start: false, essencial: false, pro: true },
+                      { label: 'Gestão de recursos e fornecedores',    start: false, essencial: false, pro: true },
+                      { label: 'Relatórios completos',                  start: false, essencial: false, pro: true },
                     ],
                   },
-                ] as { category: string; rows: { label: string; start: boolean | string; essencial: boolean | string; pro: boolean | string; personalizado: boolean | string }[] }[]).map((section, si) => (
+                ] as { category: string; rows: { label: string; start: boolean | string; essencial: boolean | string; pro: boolean | string }[] }[]).map((section, si) => (
                   <React.Fragment key={`s-${si}`}>
                     <tr className="border-t-2 border-border bg-muted/40">
-                      <td colSpan={5} className="px-6 py-2.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
+                      <td colSpan={4} className="px-6 py-2.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
                         {section.category}
                       </td>
                     </tr>
                     {section.rows.map((row, ri) => (
                       <tr key={`${si}-${ri}`} className="border-t border-border/40 hover:bg-muted/20 transition-colors">
                         <td className="px-6 py-3.5 text-foreground font-medium text-sm">{row.label}</td>
-                        {(['start', 'essencial', 'pro', 'personalizado'] as const).map(plan => {
+                        {(['start', 'essencial', 'pro'] as const).map(plan => {
                           const val = row[plan];
-                          const isHL = plan === 'essencial';
+                          const isHL = plan === 'pro';
                           return (
                             <td key={plan} className={`text-center px-4 py-3.5 ${isHL ? 'bg-primary/5' : ''}`}>
                               {typeof val === 'boolean'
                                 ? val
                                   ? <CheckCircle className="w-4 h-4 text-primary mx-auto" />
                                   : <span className="text-muted-foreground/30 font-bold">—</span>
-                                : <span className={cn('text-xs font-bold', val === 'Ilimitado' || val === '0,8%' ? 'text-primary' : 'text-foreground')}>{val}</span>
+                                : <span className={cn('text-xs font-bold', val === 'Ilimitado' ? 'text-primary' : 'text-foreground')}>{val}</span>
                               }
                             </td>
                           );
@@ -1168,11 +1149,19 @@ export default function LandingPage() {
             </table>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground mt-8">
-            Precisa de algo além do Personalizado?{' '}
-            <a href="mailto:contato@tovia.app" className="text-primary font-semibold hover:underline">Fale com a gente</a>{' '}
-            e montamos uma solução sob medida.
-          </p>
+          {/* Box Personalizado */}
+          <div className="mt-6 rounded-2xl border border-border bg-card px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+            <div>
+              <p className="text-base font-black text-foreground">Precisa de um plano personalizado para o seu evento?</p>
+              <p className="text-sm text-muted-foreground mt-1">Volumes maiores, eventos ilimitados, suporte dedicado e condições especiais.</p>
+            </div>
+            <a
+              href="mailto:contato@tovia.app"
+              className="shrink-0 bg-primary hover:bg-primary/90 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all shadow-md shadow-primary/20 whitespace-nowrap"
+            >
+              Entre em contato
+            </a>
+          </div>
         </div>
       </section>
 
