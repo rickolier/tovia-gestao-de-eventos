@@ -274,6 +274,7 @@ export const createEventCharge = functions.onCall(
     const {
       eventoId,
       inscricaoId,
+      isDonation,
       paymentMethod,
       installments,
       attendeeName,
@@ -285,6 +286,7 @@ export const createEventCharge = functions.onCall(
     } = request.data as {
       eventoId: string;
       inscricaoId: string;
+      isDonation?: boolean;
       paymentMethod: string;
       installments?: number;
       attendeeName: string;
@@ -387,10 +389,10 @@ export const createEventCharge = functions.onCall(
         throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
       }
 
-      await db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId).update({
-        status: "pagamento_iniciado",
+      const subColl = isDonation ? 'doacoes' : 'inscricoes';
+      await db.collection(`eventos/${eventoId}/${subColl}`).doc(inscricaoId).update({
+        ...(isDonation ? { formaPagamento: 'recorrente' } : { status: 'pagamento_iniciado', forma_pagamento: 'recorrente' }),
         gateway_subscription_id: subscription.id,
-        forma_pagamento: "recorrente",
         installments: totalInstallments,
         installment_value: installmentValue,
       });
@@ -426,14 +428,16 @@ export const createEventCharge = functions.onCall(
       throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
     }
 
+    const chargeColl = isDonation ? 'doacoes' : 'inscricoes';
     await db
-      .collection(`eventos/${eventoId}/inscricoes`)
+      .collection(`eventos/${eventoId}/${chargeColl}`)
       .doc(inscricaoId)
       .update({
-        status: "pagamento_iniciado",
+        ...(isDonation
+          ? { formaPagamento: paymentMethod }
+          : { status: 'pagamento_iniciado', forma_pagamento: paymentMethod }),
         gateway_charge_id: charge.id,
         gateway_payment_url: charge.invoiceUrl,
-        forma_pagamento: paymentMethod,
       });
 
     return {

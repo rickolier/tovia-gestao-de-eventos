@@ -226,7 +226,7 @@ exports.saveGatewayConfig = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
 // ─── Criar cobrança de evento (BYOG) ─────────────────────────────────────────
 exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY"], region: "us-central1" }, async (request) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-    const { eventoId, inscricaoId, paymentMethod, installments, attendeeName, attendeeEmail, attendeeCpf, attendeePhone, creditCard, valor, } = request.data;
+    const { eventoId, inscricaoId, isDonation, paymentMethod, installments, attendeeName, attendeeEmail, attendeeCpf, attendeePhone, creditCard, valor, } = request.data;
     if (!eventoId || !inscricaoId || !paymentMethod || !attendeeName || !attendeeEmail || !valor) {
         throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
@@ -294,13 +294,8 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
             console.error("[createEventCharge] createSubscription failed:", body);
             throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
         }
-        await db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId).update({
-            status: "pagamento_iniciado",
-            gateway_subscription_id: subscription.id,
-            forma_pagamento: "recorrente",
-            installments: totalInstallments,
-            installment_value: installmentValue,
-        });
+        const subColl = isDonation ? 'doacoes' : 'inscricoes';
+        await db.collection(`eventos/${eventoId}/${subColl}`).doc(inscricaoId).update(Object.assign(Object.assign({}, (isDonation ? { formaPagamento: 'recorrente' } : { status: 'pagamento_iniciado', forma_pagamento: 'recorrente' })), { gateway_subscription_id: subscription.id, installments: totalInstallments, installment_value: installmentValue }));
         return {
             paymentUrl: null,
             pixQrCode: null,
@@ -331,15 +326,13 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
         console.error("[createEventCharge] createCharge failed:", body);
         throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
     }
+    const chargeColl = isDonation ? 'doacoes' : 'inscricoes';
     await db
-        .collection(`eventos/${eventoId}/inscricoes`)
+        .collection(`eventos/${eventoId}/${chargeColl}`)
         .doc(inscricaoId)
-        .update({
-        status: "pagamento_iniciado",
-        gateway_charge_id: charge.id,
-        gateway_payment_url: charge.invoiceUrl,
-        forma_pagamento: paymentMethod,
-    });
+        .update(Object.assign(Object.assign({}, (isDonation
+        ? { formaPagamento: paymentMethod }
+        : { status: 'pagamento_iniciado', forma_pagamento: paymentMethod })), { gateway_charge_id: charge.id, gateway_payment_url: charge.invoiceUrl }));
     return {
         paymentUrl: charge.invoiceUrl,
         pixQrCode: (_j = charge.pixQrCode) !== null && _j !== void 0 ? _j : null,

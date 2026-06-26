@@ -73,9 +73,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const canceledEvents = ['PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUNDED'];
 
   try {
-    const inscricaoRef = db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId);
-    const inscricaoDoc = await inscricaoRef.get();
-    if (!inscricaoDoc.exists) return res.status(200).send('ok');
+    let inscricaoRef = db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId);
+    let inscricaoDoc = await inscricaoRef.get();
+    let isDonation = false;
+
+    if (!inscricaoDoc.exists) {
+      // Fallback: pode ser uma doação
+      inscricaoRef = db.collection(`eventos/${eventoId}/doacoes`).doc(inscricaoId);
+      inscricaoDoc = await inscricaoRef.get();
+      isDonation = true;
+      if (!inscricaoDoc.exists) return res.status(200).send('ok');
+    }
 
     const inscricao = inscricaoDoc.data()!;
 
@@ -84,12 +92,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ? new Date(payment.paymentDate).toISOString()
         : new Date().toISOString();
 
-      await inscricaoRef.update({
-        status: 'pago',
-        valor_pago: payment.value,
-        data_pagamento: dataPagamento,
-        validada_manual: true,
-      });
+      if (isDonation) {
+        await inscricaoRef.update({
+          status: 'aprovada',
+          valor_pago: payment.value,
+          data_pagamento: dataPagamento,
+          formaPagamento: mapBillingType(payment.billingType),
+        });
+      } else {
+        await inscricaoRef.update({
+          status: 'pago',
+          valor_pago: payment.value,
+          data_pagamento: dataPagamento,
+          validada_manual: true,
+        });
+      }
 
       // Registra o pagamento automático
       const pagamentoId = `auto_${inscricaoId}`;
@@ -106,23 +123,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         gateway_payment_id: payment.id,
       });
 
-      // E-mail de confirmação para o participante
+      // E-mail de confirmação
+      const recipientEmail = inscricao.email ?? inscricao.doadorNome;
+      const recipientName = isDonation ? (inscricao.doadorNome ?? '') : (inscricao.nome ?? '');
       if (inscricao.email) {
         const eventoDoc = await db.collection('eventos').doc(eventoId).get();
         const eventoNome = eventoDoc.exists ? (eventoDoc.data()!.nome ?? 'evento') : 'evento';
-        await sendEmail(
-          inscricao.email,
-          `Inscrição confirmada — ${eventoNome} ✅`,
-          `<p>Olá, <strong>${inscricao.nome ?? ''}</strong>!</p>
-           <p>Seu pagamento foi confirmado e sua inscrição no evento <strong>${eventoNome}</strong> está garantida.</p>
-           <p>Número do pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>
-           <br><p>Até lá!<br><em>Equipe Tovia</em></p>`,
-        );
+        const subject = isDonation
+          ? `Doação confirmada — ${eventoNome} ✅`
+          : `Inscrição confirmada — ${eventoNome} ✅`;
+        const body = isDonation
+          ? `<p>Olá, <strong>${recipientName}</strong>!</p>
+             <p>Sua doação para o evento <strong>${eventoNome}</strong> foi confirmada. Obrigado pela contribuição!</p>
+             <p>Número do pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>
+             <br><p>Equipe Tovia</p>`
+          : `<p>Olá, <strong>${recipientName}</strong>!</p>
+             <p>Seu pagamento foi confirmado e sua inscrição no evento <strong>${eventoNome}</strong> está garantida.</p>
+             <p>Número do pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>
+             <br><p>Até lá!<br><em>Equipe Tovia</em></p>`;
+        await sendEmail(inscricao.email, subject, body);
+        void recipientEmail;
       }
     }
 
     if (canceledEvents.includes(eventType)) {
-      await inscricaoRef.update({ status: 'cancelada' });
+      await inscricaoRef.update({ status: isDonation ? 'cancelada' : 'cancelada' });
     }
 
     return res.status(200).send('ok');

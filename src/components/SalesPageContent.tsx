@@ -110,7 +110,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         return;
       }
     }
-    const needsCpf = gatewayConnected && total > 0 && !allDoacao;
+    const needsCpf = gatewayConnected && total > 0;
     if (needsCpf && cpf.replace(/\D/g, '').length < 11) {
       toast.error('Informe um CPF válido para continuar.');
       return;
@@ -139,13 +139,14 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         if (ticket?.permite_patrocinio) {
           finalidade = `${ticket.nome} — ${quantities[ticket.id] || 0} inscrição(ões) patrocinadas`;
         }
+        const useDonationGateway = gatewayConnected && !!selectedMethod && total > 0;
         const doacaoData: Omit<Donation, 'id'> & { id: string; pessoaId: string; email?: string; telefone?: string; respostas_formulario?: Record<string, string | boolean> } = {
           id: doacaoId,
           eventoId,
           valor: total,
           valorLiquido: total,
           taxaAdm: 0,
-          formaPagamento: '',
+          formaPagamento: useDonationGateway ? selectedMethod : '',
           dataPagamento: new Date().toISOString(),
           doadorNome: nome,
           pessoaId,
@@ -161,6 +162,35 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         await createDocument(`eventos/${eventoId}/doacoes`, doacaoId, doacaoData as any);
         setIsDoacaoSubmission(true);
         setInscricaoId(doacaoId);
+
+        if (useDonationGateway) {
+          const fns = getFunctions(app, 'us-central1');
+          const createCharge = httpsCallable(fns, 'createEventCharge');
+          const [expiryMonth, expiryYear] = card.expiry.split('/');
+          const result = await createCharge({
+            eventoId,
+            inscricaoId: doacaoId,
+            isDonation: true,
+            paymentMethod: selectedMethod,
+            attendeeName: nome,
+            attendeeEmail: email,
+            attendeeCpf: cpf.replace(/\D/g, ''),
+            attendeePhone: telefone,
+            installments: installments > 1 ? installments : undefined,
+            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
+              holderName: card.holderName,
+              number: card.number.replace(/\s/g, ''),
+              expiryMonth: expiryMonth ?? '',
+              expiryYear: expiryYear ? `20${expiryYear}` : '',
+              ccv: card.ccv,
+            } : undefined,
+            valor: total,
+          });
+          setCheckoutResult(result.data as CheckoutResult);
+          setStep('checkout');
+          return;
+        }
+
         setStep('success');
         onSuccess?.(doacaoId);
       } else {
@@ -372,19 +402,27 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   // ── Form / Checkout page ─────────────────────────────────────────────────
   if (step === 'form') {
     const paidTickets = selectedTickets.filter(t => t.tipo === 'pago');
-    let allowedMethods = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
-    paidTickets.forEach(t => {
-      const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
-      allowedMethods = allowedMethods.filter(x => m.includes(x));
-    });
+    let allowedMethods: string[];
+    if (allDoacao) {
+      // Doações: usar métodos configurados no ingresso ou padrão (exceto recorrente)
+      const donationTicket = selectedTickets[0];
+      const configured = (donationTicket?.metodos_pagamento || []).filter(m => ['pix', 'boleto', 'credito'].includes(m));
+      allowedMethods = configured.length > 0 ? configured : ['pix', 'boleto', 'credito'];
+    } else {
+      allowedMethods = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
+      paidTickets.forEach(t => {
+        const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
+        allowedMethods = allowedMethods.filter(x => m.includes(x));
+      });
+    }
     allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'recorrente'].includes(m));
 
-    const firstTicket = paidTickets[0];
+    const firstTicket = allDoacao ? selectedTickets[0] : paidTickets[0];
     const maxParcelasCredito = firstTicket?.max_parcelas_credito ?? 1;
     const maxParcelasRecorrente = firstTicket?.max_parcelas_recorrente ?? 2;
 
     const needsCard = selectedMethod === 'credito' || selectedMethod === 'recorrente';
-    const isGatewayPaid = gatewayConnected && total > 0 && !allDoacao;
+    const isGatewayPaid = gatewayConnected && total > 0;
     const canSubmit = !submitting && (!isGatewayPaid || (
       !!selectedMethod &&
       cpf.replace(/\D/g, '').length === 11 &&
@@ -592,7 +630,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                   disabled={!canSubmit}
                   className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black shadow-lg shadow-primary/20"
                 >
-                  {submitting ? 'Processando...' : allDoacao ? 'Confirmar doação' : isGatewayPaid ? 'Gerar cobrança' : 'Confirmar inscrição'}
+                  {submitting ? 'Processando...' : isGatewayPaid ? (allDoacao ? 'Gerar cobrança de doação' : 'Gerar cobrança') : allDoacao ? 'Confirmar doação' : 'Confirmar inscrição'}
                 </Button>
                 <p className="text-center text-xs text-gray-400">Ao confirmar, você concorda com os termos do evento.</p>
               </div>
@@ -650,7 +688,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     onClick={handleSubmit}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
                   >
-                    {submitting ? 'Processando...' : allDoacao ? 'Confirmar doação' : isGatewayPaid ? 'Gerar cobrança' : 'Confirmar inscrição'}
+                    {submitting ? 'Processando...' : isGatewayPaid ? (allDoacao ? 'Gerar cobrança de doação' : 'Gerar cobrança') : allDoacao ? 'Confirmar doação' : 'Confirmar inscrição'}
                   </Button>
                   <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
                     <Shield className="w-3 h-3" />
