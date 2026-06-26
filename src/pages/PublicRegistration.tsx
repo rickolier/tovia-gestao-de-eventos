@@ -7,27 +7,28 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { 
-  Calendar, 
-  MapPin, 
-  User, 
-  Mail, 
-  Phone, 
-  CheckCircle2, 
-  ArrowRight, 
-  CreditCard, 
+import {
+  Calendar,
+  MapPin,
+  User,
+  CheckCircle2,
+  ArrowRight,
+  CreditCard,
   AlertCircle,
   Plus,
   Minus,
   Clock,
   Info,
+  ChevronRight,
+  Copy,
   ExternalLink,
-  ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import Logo from '../components/Logo';
 import { motion, AnimatePresence } from 'motion/react';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../firebase';
 
 interface RegistrationFlowProps {
   eventoId?: string;
@@ -35,14 +36,24 @@ interface RegistrationFlowProps {
   isSimulation?: boolean;
 }
 
+interface CheckoutResult {
+  paymentUrl: string;
+  pixQrCode?: { encodedImage: string; payload: string; expirationDate: string } | null;
+  bankSlipUrl?: string | null;
+  chargeId: string;
+}
+
 function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: RegistrationFlowProps) {
   const [evento, setEvento] = useState<Evento | null>(initialEvento || null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(!initialEvento);
-  const [step, setStep] = useState<'landing' | 'info' | 'payment' | 'success'>('landing');
+  const [step, setStep] = useState<'landing' | 'info' | 'payment' | 'checkout' | 'success'>('landing');
   const [ticketQuantities, setTicketQuantities] = useState<Record<string, number>>({});
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [numeroPedido, setNumeroPedido] = useState('');
+  const [selectedMethod, setSelectedMethod] = useState<string>('');
+  const [gatewayConnected, setGatewayConnected] = useState(false);
+  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -72,18 +83,26 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
       const fetchData = async () => {
         if (!initialEvento) setLoading(true);
         try {
+          let eventData = initialEvento;
           if (!initialEvento) {
-            const eventData = await getDocument<Evento>('eventos', targetId);
-            if (!eventData) {
+            const fetched = await getDocument<Evento>('eventos', targetId);
+            if (!fetched) {
               toast.error('Evento não encontrado');
               setLoading(false);
               return;
             }
-            setEvento({ ...eventData, id: targetId });
+            eventData = { ...fetched, id: targetId };
+            setEvento(eventData);
           }
-          
+
           const ticketsData = await listDocuments<Ticket>(`eventos/${targetId}/tickets`);
           setTickets(ticketsData);
+
+          // Verifica se o organizador tem gateway conectado (campo público)
+          if (eventData?.criado_por) {
+            const organizer = await getDocument<{ gateway_connected?: boolean }>('users', eventData.criado_por);
+            setGatewayConnected(organizer?.gateway_connected === true);
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
           toast.error('Erro ao carregar dados do evento');
@@ -169,13 +188,16 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
 
   const handlePaymentSubmit = async () => {
     if (!evento || selectedTickets.length === 0) return;
-    
+    if (gatewayConnected && !selectedMethod) {
+      toast.error('Selecione uma forma de pagamento.');
+      return;
+    }
+
     setLoading(true);
     try {
       const registrationId = uuidv4();
-      const total = totalAmount + totalTax;
+      const total = totalAmount;
 
-      // Create Registration
       const inscricaoData: Record<string, unknown> = {
         nome: formData.nome,
         sobrenome: formData.sobrenome,
@@ -190,7 +212,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
         ticket_nome: selectedTickets[0].nome,
         valor_total: total,
         valor_pago: 0,
-        status: 'pendente',
+        status: gatewayConnected ? 'pagamento_iniciado' : 'pendente',
         data_inscricao: new Date().toISOString(),
         quantidades: ticketQuantities,
         precisa_ajuda: false,
@@ -204,11 +226,31 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
       await createDocument(`eventos/${evento.id}/inscricoes`, registrationId, inscricaoData as any);
 
       setNumeroPedido(registrationId.slice(0, 8).toUpperCase());
+
+      // BYOG: cria cobrança real no gateway do organizador
+      if (gatewayConnected && selectedMethod) {
+        const fns = getFunctions(app, 'us-central1');
+        const createCharge = httpsCallable(fns, 'createEventCharge');
+        const result = await createCharge({
+          eventoId: evento.id,
+          inscricaoId: registrationId,
+          paymentMethod: selectedMethod,
+          attendeeName: `${formData.nome} ${formData.sobrenome}`.trim(),
+          attendeeEmail: formData.email,
+          valor: total,
+        });
+        const data = result.data as CheckoutResult;
+        setCheckoutResult(data);
+        setStep('checkout');
+        return;
+      }
+
+      // Modo manual (sem gateway)
       setStep('success');
-      toast.success('Inscrição realizada com sucesso!');
-    } catch (error) {
+      toast.success('Inscrição realizada! O organizador vai confirmar o pagamento.');
+    } catch (error: any) {
       console.error('Error creating registration:', error);
-      toast.error('Erro ao processar inscrição');
+      toast.error(error?.message || 'Erro ao processar inscrição');
     } finally {
       setLoading(false);
     }
@@ -658,82 +700,181 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CreditCard className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle>Pagamento Simulado</CardTitle>
+                  <CardTitle>{gatewayConnected ? 'Pagamento' : 'Confirmar Inscrição'}</CardTitle>
                   <CardDescription>
-                    Finalize sua inscrição com segurança
+                    {gatewayConnected ? 'Escolha como deseja pagar' : 'O organizador entrará em contato para confirmar o pagamento'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="bg-background p-6 rounded-2xl space-y-3">
-                    <div className="flex justify-between text-sm text-muted-foreground uppercase font-black tracking-widest opacity-60">
-                      <span>Total a Pagar</span>
-                    </div>
-                    <div className="flex justify-between items-baseline pt-1">
-                      <span className="text-4xl font-black text-primary tracking-tighter">R$ {(totalAmount + totalTax).toFixed(2)}</span>
-                    </div>
+                  <div className="bg-background p-6 rounded-2xl space-y-1">
+                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">Total a Pagar</p>
+                    <span className="text-4xl font-black text-primary tracking-tighter">
+                      R$ {totalAmount.toFixed(2)}
+                    </span>
                   </div>
 
-                  <div className="space-y-4">
-                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
-                    <div className="grid grid-cols-1 gap-2">
-                      {allowedMethods.length === 0 && <p className="text-xs text-red-500 font-bold">Nenhuma forma de pagamento disponível para estes tickets.</p>}
-                      {allowedMethods.map(method => (
-                        <div 
-                          key={method} 
-                          className="flex items-center justify-between p-4 bg-muted/30 rounded-2xl border-2 border-transparent hover:border-primary/20 cursor-pointer transition-all"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                              {method === 'pix' && <span className="font-black text-xs text-primary">PIX</span>}
-                              {method === 'boleto' && <span className="font-black text-xs text-amber-600">BOL</span>}
-                              {method === 'credito' && <CreditCard className="w-5 h-5 text-blue-600" />}
-                              {method === 'credito_recorrente' && <CreditCard className="w-5 h-5 text-purple-600" />}
-                              {method === 'debito' && <CreditCard className="w-5 h-5 text-green-600" />}
-                              {method === 'dinheiro' && <span className="font-black text-xs text-emerald-600">$</span>}
+                  {gatewayConnected ? (
+                    <div className="space-y-3">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
+                      {allowedMethods.length === 0 && (
+                        <p className="text-xs text-red-500 font-bold px-1">Nenhuma forma disponível para estes ingressos.</p>
+                      )}
+                      {allowedMethods.map(method => {
+                        const methodLabels: Record<string, string> = {
+                          pix: 'PIX',
+                          boleto: 'Boleto Bancário',
+                          credito: 'Cartão de Crédito',
+                          debito: 'Cartão de Débito',
+                          dinheiro: 'Dinheiro',
+                        };
+                        const isSelected = selectedMethod === method;
+                        return (
+                          <button
+                            key={method}
+                            onClick={() => setSelectedMethod(method)}
+                            className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                              isSelected
+                                ? 'border-primary bg-primary/5'
+                                : 'border-transparent bg-muted/30 hover:border-primary/20'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                {method === 'pix' && <span className="font-black text-xs text-primary">PIX</span>}
+                                {method === 'boleto' && <span className="font-black text-xs text-amber-600">BOL</span>}
+                                {(method === 'credito' || method === 'debito') && <CreditCard className="w-5 h-5 text-blue-600" />}
+                                {method === 'dinheiro' && <span className="font-black text-xs text-emerald-600">$</span>}
+                              </div>
+                              <div className="text-left">
+                                <p className="font-bold text-sm">{methodLabels[method] ?? method}</p>
+                                {method === 'pix' && <p className="text-[10px] text-muted-foreground">Aprovação imediata</p>}
+                                {method === 'boleto' && <p className="text-[10px] text-muted-foreground">Vence em 3 dias úteis</p>}
+                                {method === 'credito' && <p className="text-[10px] text-muted-foreground">Em até {maxInstallments}x</p>}
+                              </div>
                             </div>
-                            <span className="font-bold text-sm capitalize">{method.replace('_', ' ')}</span>
-                          </div>
-                          <div className="w-4 h-4 rounded-full border-2 border-primary/20" />
-                        </div>
-                      ))}
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-primary' : 'border-muted-foreground/30'}`}>
+                              {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                  </div>
-
-                  {allowedMethods.some(m => m.includes('credito')) && (
-                    <div className="space-y-3 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-primary">Parcelamento Disponível</Label>
-                        <Badge className="bg-primary text-white text-[10px] font-black tracking-tighter">Até {maxInstallments}x</Badge>
-                      </div>
-                      <p className="text-[10px] text-primary/60 font-medium">
-                        {evento.config_pagamento?.installmentLogic === 'limited' 
-                          ? 'Calculado com base na data limite do evento.' 
-                          : 'Parcelamento livre garantido pelo produtor.'}
-                      </p>
+                  ) : (
+                    <div className="p-4 border border-blue-100 bg-blue-50 rounded-2xl text-sm text-blue-800">
+                      <Info className="w-4 h-4 mb-1" />
+                      <p className="font-bold">Pagamento manual</p>
+                      <p className="text-xs mt-1 text-blue-700">O organizador vai receber sua inscrição e entrar em contato com as instruções de pagamento.</p>
                     </div>
                   )}
 
-                  <div className="p-4 border border-amber-100 bg-amber-50 rounded-2xl text-[10px] text-amber-800 font-bold uppercase tracking-wide leading-relaxed">
-                    <AlertCircle className="w-4 h-4 mb-1" />
-                    Ambiante de Simulação: O pagamento real não será processado nesta demonstração.
-                  </div>
-
                   <div className="flex gap-3">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={() => setStep('info')}
                       className="flex-1 rounded-xl h-12"
                     >
                       Voltar
                     </Button>
-                    <Button 
+                    <Button
                       onClick={handlePaymentSubmit}
-                      disabled={loading}
-                      className="flex-[2] bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-bold"
+                      disabled={loading || (gatewayConnected && !selectedMethod)}
+                      className="flex-[2] bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-bold disabled:opacity-40"
                     >
-                      {loading ? 'Processando...' : 'Confirmar e Pagar'}
+                      {loading ? 'Processando...' : gatewayConnected ? 'Gerar cobrança' : 'Confirmar inscrição'}
                     </Button>
                   </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {step === 'checkout' && checkoutResult && (
+            <motion.div
+              key="checkout"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="max-w-md mx-auto"
+            >
+              <Card className="border-none shadow-2xl rounded-3xl overflow-hidden">
+                <div className="h-2 bg-primary" />
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    {selectedMethod === 'pix' ? (
+                      <span className="font-black text-primary text-lg">PIX</span>
+                    ) : (
+                      <CreditCard className="w-8 h-8 text-primary" />
+                    )}
+                  </div>
+                  <CardTitle>
+                    {selectedMethod === 'pix' ? 'Pague via PIX' : selectedMethod === 'boleto' ? 'Boleto gerado' : 'Pagamento online'}
+                  </CardTitle>
+                  <CardDescription>Pedido #{numeroPedido}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  {/* PIX: show QR code or copy key */}
+                  {selectedMethod === 'pix' && checkoutResult.pixQrCode ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-center">
+                        <img
+                          src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`}
+                          alt="QR Code PIX"
+                          className="w-48 h-48 rounded-2xl border border-border"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Chave PIX (copia e cola)</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            readOnly
+                            value={checkoutResult.pixQrCode.payload}
+                            className="font-mono text-xs rounded-xl border-none bg-muted/40 h-10"
+                          />
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="rounded-xl h-10 w-10 shrink-0"
+                            onClick={() => {
+                              navigator.clipboard.writeText(checkoutResult.pixQrCode!.payload);
+                              toast.success('Chave PIX copiada!');
+                            }}
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          Após pagar, sua inscrição será confirmada automaticamente.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-muted-foreground text-center">
+                        {selectedMethod === 'boleto'
+                          ? 'Seu boleto foi gerado. Clique abaixo para visualizar e pagar.'
+                          : 'Clique abaixo para completar o pagamento com segurança.'}
+                      </p>
+                      <a
+                        href={checkoutResult.bankSlipUrl ?? checkoutResult.paymentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <Button className="w-full h-12 rounded-xl font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
+                          {selectedMethod === 'boleto' ? 'Ver e pagar boleto' : 'Ir para pagamento'}
+                          <ExternalLink className="w-4 h-4 ml-2" />
+                        </Button>
+                      </a>
+                    </div>
+                  )}
+
+                  <Button
+                    variant="ghost"
+                    className="w-full text-muted-foreground"
+                    onClick={() => setStep('success')}
+                  >
+                    Já realizei o pagamento
+                  </Button>
                 </CardContent>
               </Card>
             </motion.div>
@@ -765,7 +906,9 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                   <Button 
                     onClick={() => {
                       setStep('landing');
-                      setFormData({ nome: '', sobrenome: '', email: '', telefone: '', genero: '', estadoCivil: '', dataNascimento: '' });
+                      setFormData({ nome: '', sobrenome: '', email: '', telefone: '', genero: '', estadoCivil: '', dataNascimento: '', nomeResponsavel: '', telefoneResponsavel: '' });
+                      setSelectedMethod('');
+                      setCheckoutResult(null);
                       setTicketQuantities({});
                     }}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 font-bold text-lg shadow-lg shadow-primary/20"

@@ -15,6 +15,14 @@ export interface ArtigoBC {
   atualizado_em: string;
 }
 
+export interface GatewayConfig {
+  type: 'asaas';
+  encrypted_api_key: string;
+  sandbox: boolean;
+  connected_at: string;
+  encrypted_webhook_token?: string;
+}
+
 export interface UserProfile {
   uid: string;
   nome: string;
@@ -46,6 +54,8 @@ export interface UserProfile {
   isDemo?: boolean;
   pagina_publica?: boolean;
   desativado?: boolean;
+  gateway_connected?: boolean;
+  gateway?: GatewayConfig;
 }
 
 export interface FormField {

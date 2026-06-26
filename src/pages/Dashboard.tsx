@@ -18,6 +18,7 @@ import {
   Palette,
   GraduationCap,
   BookOpen,
+  Plug,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -36,6 +37,7 @@ import CalendarTab from './dashboard-tabs/CalendarTab';
 import CalculatorTab from './dashboard-tabs/CalculatorTab';
 import BillingTab from './dashboard-tabs/BillingTab';
 import DesignSystemTab from './dashboard-tabs/DesignSystemTab';
+import GatewayTab from './dashboard-tabs/GatewayTab';
 
 export default function Dashboard() {
   const { user, profile } = useAuth();
@@ -147,6 +149,7 @@ export default function Dashboard() {
     { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
     { id: 'relatorios',  label: 'Relatórios',     icon: BarChart3 },
     { id: 'faturamento', label: 'Faturamento',    icon: CreditCard },
+    { id: 'gateway',     label: 'Gateway',        icon: Plug },
     ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
   ];
 
@@ -282,6 +285,7 @@ export default function Dashboard() {
             {activeTab === 'relatorios'     && <ReportsTab eventos={eventos} />}
             {activeTab === 'perfil'         && <ProfileTab />}
             {activeTab === 'faturamento'    && <BillingTab />}
+            {activeTab === 'gateway'        && <GatewayTab />}
             {activeTab === 'design-system'  && isAdmin && <DesignSystemTab />}
           </div>
         </div>
