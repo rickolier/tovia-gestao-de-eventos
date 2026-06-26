@@ -201,6 +201,54 @@ export async function createAsaasCharge(
   return result;
 }
 
+export async function createAsaasSubscription(
+  apiKey: string,
+  sandbox: boolean,
+  opts: {
+    customerId: string;
+    installmentValue: number;
+    nextDueDate: string;
+    description: string;
+    maxPayments: number;
+    externalReference: string;
+    creditCard: {
+      holderName: string;
+      number: string;
+      expiryMonth: string;
+      expiryYear: string;
+      ccv: string;
+    };
+    creditCardHolderInfo: {
+      name: string;
+      email: string;
+      cpfCnpj: string;
+      phone?: string;
+    };
+  },
+): Promise<{ id: string; status: string }> {
+  const base = asaasBaseUrl(sandbox);
+  const headers = asaasHeaders(apiKey);
+
+  const res = await axios.post(
+    `${base}/subscriptions`,
+    {
+      customer: opts.customerId,
+      billingType: 'CREDIT_CARD',
+      value: opts.installmentValue,
+      nextDueDate: opts.nextDueDate,
+      cycle: 'MONTHLY',
+      maxPayments: opts.maxPayments,
+      description: opts.description,
+      externalReference: opts.externalReference,
+      creditCard: opts.creditCard,
+      creditCardHolderInfo: opts.creditCardHolderInfo,
+    },
+    { headers, timeout: 15000 },
+  );
+
+  return { id: res.data.id, status: res.data.status ?? 'ACTIVE' };
+}
+
 export function mapBillingType(method: string): AsaasBillingType {
   const map: Record<string, AsaasBillingType> = {
     pix: 'PIX',

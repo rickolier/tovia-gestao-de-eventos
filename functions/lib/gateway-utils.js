@@ -11,6 +11,7 @@ exports.testAsaasApiKey = testAsaasApiKey;
 exports.registerAsaasWebhook = registerAsaasWebhook;
 exports.createOrFindAsaasCustomer = createOrFindAsaasCustomer;
 exports.createAsaasCharge = createAsaasCharge;
+exports.createAsaasSubscription = createAsaasSubscription;
 exports.mapBillingType = mapBillingType;
 const axios_1 = __importDefault(require("axios"));
 const crypto_1 = require("crypto");
@@ -145,6 +146,24 @@ async function createAsaasCharge(apiKey, sandbox, opts) {
         }
     }
     return result;
+}
+async function createAsaasSubscription(apiKey, sandbox, opts) {
+    var _a;
+    const base = asaasBaseUrl(sandbox);
+    const headers = asaasHeaders(apiKey);
+    const res = await axios_1.default.post(`${base}/subscriptions`, {
+        customer: opts.customerId,
+        billingType: 'CREDIT_CARD',
+        value: opts.installmentValue,
+        nextDueDate: opts.nextDueDate,
+        cycle: 'MONTHLY',
+        maxPayments: opts.maxPayments,
+        description: opts.description,
+        externalReference: opts.externalReference,
+        creditCard: opts.creditCard,
+        creditCardHolderInfo: opts.creditCardHolderInfo,
+    }, { headers, timeout: 15000 });
+    return { id: res.data.id, status: (_a = res.data.status) !== null && _a !== void 0 ? _a : 'ACTIVE' };
 }
 function mapBillingType(method) {
     var _a;

@@ -39,6 +39,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     data_limite: '',
     permite_parcelamento: false,
     metodos_pagamento: defaultMetodos,
+    max_parcelas_credito: 1,
+    max_parcelas_recorrente: 2,
     exibir_preco: true,
     valor_livre: false,
     permite_patrocinio: false,
@@ -109,6 +111,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         data_limite: '',
         permite_parcelamento: false,
         metodos_pagamento: defaultMetodos,
+        max_parcelas_credito: 1,
+        max_parcelas_recorrente: 2,
         exibir_preco: true,
         valor_livre: false,
         permite_patrocinio: false,
@@ -130,6 +134,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       data_limite: ticket.data_limite || '',
       permite_parcelamento: ticket.permite_parcelamento || false,
       metodos_pagamento: ticket.metodos_pagamento || defaultMetodos,
+      max_parcelas_credito: ticket.max_parcelas_credito ?? 1,
+      max_parcelas_recorrente: ticket.max_parcelas_recorrente ?? 2,
       exibir_preco: ticket.exibir_preco !== false,
       valor_livre: ticket.valor_livre || false,
       permite_patrocinio: ticket.permite_patrocinio || false,
@@ -374,28 +380,59 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   ) : plan.modules.autoPayments ? (
                     <div className="space-y-2">
                       <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento (Asaas)</Label>
-                      <div className="grid grid-cols-3 gap-2 p-4 bg-muted/30 rounded-xl">
+                      <div className="p-4 bg-muted/30 rounded-xl space-y-3">
                         {[
                           { id: 'pix', label: 'PIX' },
                           { id: 'boleto', label: 'Boleto' },
-                          { id: 'credito', label: 'Cartão' },
+                          { id: 'credito', label: 'Cartão (parcelado)' },
+                          { id: 'recorrente', label: 'Recorrente' },
                         ].map(method => (
-                          <label key={method.id} className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={(formData.metodos_pagamento || []).includes(method.id)}
-                              onChange={(e) => {
-                                const current = formData.metodos_pagamento || [];
-                                if (e.target.checked) {
-                                  setFormData({...formData, metodos_pagamento: [...current, method.id]});
-                                } else {
-                                  setFormData({...formData, metodos_pagamento: current.filter(m => m !== method.id)});
-                                }
-                              }}
-                              className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
-                            />
-                            <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">{method.label}</span>
-                          </label>
+                          <div key={method.id} className="space-y-2">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                              <input
+                                type="checkbox"
+                                checked={(formData.metodos_pagamento || []).includes(method.id)}
+                                onChange={(e) => {
+                                  const current = formData.metodos_pagamento || [];
+                                  if (e.target.checked) {
+                                    setFormData({...formData, metodos_pagamento: [...current, method.id]});
+                                  } else {
+                                    setFormData({...formData, metodos_pagamento: current.filter(m => m !== method.id)});
+                                  }
+                                }}
+                                className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                              />
+                              <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">{method.label}</span>
+                            </label>
+                            {method.id === 'credito' && (formData.metodos_pagamento || []).includes('credito') && (
+                              <div className="ml-6 flex items-center gap-2">
+                                <span className="text-[11px] text-muted-foreground">Máx. parcelas:</span>
+                                <select
+                                  value={formData.max_parcelas_credito || 1}
+                                  onChange={e => setFormData({...formData, max_parcelas_credito: Number(e.target.value)})}
+                                  className="text-xs font-bold rounded-lg border border-border bg-background px-2 py-1 focus:ring-primary focus:outline-none"
+                                >
+                                  {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                                    <option key={n} value={n}>{n === 1 ? 'Somente à vista' : `até ${n}x`}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                            {method.id === 'recorrente' && (formData.metodos_pagamento || []).includes('recorrente') && (
+                              <div className="ml-6 flex items-center gap-2">
+                                <span className="text-[11px] text-muted-foreground">Parcelas disponíveis:</span>
+                                <select
+                                  value={formData.max_parcelas_recorrente || 2}
+                                  onChange={e => setFormData({...formData, max_parcelas_recorrente: Number(e.target.value)})}
+                                  className="text-xs font-bold rounded-lg border border-border bg-background px-2 py-1 focus:ring-primary focus:outline-none"
+                                >
+                                  {[2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                                    <option key={n} value={n}>até {n}x</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                       <p className="text-[11px] text-muted-foreground px-1">

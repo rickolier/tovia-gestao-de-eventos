@@ -11,6 +11,7 @@ import {
   registerAsaasWebhook,
   createOrFindAsaasCustomer,
   createAsaasCharge,
+  createAsaasSubscription,
   mapBillingType,
 } from "./gateway-utils";
 
@@ -353,6 +354,59 @@ export const createEventCharge = functions.onCall(
     dueDate.setDate(dueDate.getDate() + 3);
     const dueDateStr = dueDate.toISOString().split("T")[0];
 
+    const holderInfo = creditCard ? {
+      name: attendeeName,
+      email: attendeeEmail,
+      cpfCnpj: (attendeeCpf || '').replace(/\D/g, ''),
+      phone: (attendeePhone || '').replace(/\D/g, ''),
+    } : undefined;
+
+    // ── Cobrança recorrente (assinatura mensal com maxPayments) ──────────────
+    if (paymentMethod === 'recorrente') {
+      if (!creditCard) {
+        throw new functions.HttpsError("invalid-argument", "Dados do cartão são obrigatórios para cobrança recorrente.");
+      }
+      const totalInstallments = Math.max(2, installments ?? 2);
+      const installmentValue = parseFloat((valor / totalInstallments).toFixed(2));
+
+      let subscription: { id: string; status: string };
+      try {
+        subscription = await createAsaasSubscription(apiKey, sandbox, {
+          customerId,
+          installmentValue,
+          nextDueDate: dueDateStr,
+          description: `Inscrição — ${evento.nome} (${totalInstallments}x recorrente)`,
+          maxPayments: totalInstallments,
+          externalReference: `event:${eventoId}:${inscricaoId}`,
+          creditCard,
+          creditCardHolderInfo: holderInfo!,
+        });
+      } catch (e: any) {
+        const body = JSON.stringify(e?.response?.data ?? e?.message);
+        console.error("[createEventCharge] createSubscription failed:", body);
+        throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
+      }
+
+      await db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId).update({
+        status: "pagamento_iniciado",
+        gateway_subscription_id: subscription.id,
+        forma_pagamento: "recorrente",
+        installments: totalInstallments,
+        installment_value: installmentValue,
+      });
+
+      return {
+        paymentUrl: null,
+        pixQrCode: null,
+        bankSlipUrl: null,
+        identificationField: null,
+        chargeId: subscription.id,
+        installmentValue,
+        installmentCount: totalInstallments,
+      };
+    }
+
+    // ── Cobrança única / crédito parcelado ────────────────────────────────────
     let charge: Awaited<ReturnType<typeof createAsaasCharge>>;
     try {
       charge = await createAsaasCharge(apiKey, sandbox, {
@@ -363,13 +417,8 @@ export const createEventCharge = functions.onCall(
         billingType: mapBillingType(paymentMethod),
         installmentCount: installments,
         externalReference: `event:${eventoId}:${inscricaoId}`,
-        creditCard: creditCard,
-        creditCardHolderInfo: creditCard ? {
-          name: attendeeName,
-          email: attendeeEmail,
-          cpfCnpj: (attendeeCpf || '').replace(/\D/g, ''),
-          phone: (attendeePhone || '').replace(/\D/g, ''),
-        } : undefined,
+        creditCard,
+        creditCardHolderInfo: holderInfo,
       });
     } catch (e: any) {
       const body = JSON.stringify(e?.response?.data ?? e?.message);
@@ -377,7 +426,6 @@ export const createEventCharge = functions.onCall(
       throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
     }
 
-    // Atualiza a inscrição com dados da cobrança
     await db
       .collection(`eventos/${eventoId}/inscricoes`)
       .doc(inscricaoId)
@@ -394,6 +442,8 @@ export const createEventCharge = functions.onCall(
       bankSlipUrl: charge.bankSlipUrl ?? null,
       identificationField: charge.identificationField ?? null,
       chargeId: charge.id,
+      installmentValue: null,
+      installmentCount: null,
     };
   }
 );

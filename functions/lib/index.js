@@ -225,7 +225,7 @@ exports.saveGatewayConfig = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
 });
 // ─── Criar cobrança de evento (BYOG) ─────────────────────────────────────────
 exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY"], region: "us-central1" }, async (request) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     const { eventoId, inscricaoId, paymentMethod, installments, attendeeName, attendeeEmail, attendeeCpf, attendeePhone, creditCard, valor, } = request.data;
     if (!eventoId || !inscricaoId || !paymentMethod || !attendeeName || !attendeeEmail || !valor) {
         throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
@@ -263,6 +263,55 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 3);
     const dueDateStr = dueDate.toISOString().split("T")[0];
+    const holderInfo = creditCard ? {
+        name: attendeeName,
+        email: attendeeEmail,
+        cpfCnpj: (attendeeCpf || '').replace(/\D/g, ''),
+        phone: (attendeePhone || '').replace(/\D/g, ''),
+    } : undefined;
+    // ── Cobrança recorrente (assinatura mensal com maxPayments) ──────────────
+    if (paymentMethod === 'recorrente') {
+        if (!creditCard) {
+            throw new functions.HttpsError("invalid-argument", "Dados do cartão são obrigatórios para cobrança recorrente.");
+        }
+        const totalInstallments = Math.max(2, installments !== null && installments !== void 0 ? installments : 2);
+        const installmentValue = parseFloat((valor / totalInstallments).toFixed(2));
+        let subscription;
+        try {
+            subscription = await (0, gateway_utils_1.createAsaasSubscription)(apiKey, sandbox, {
+                customerId,
+                installmentValue,
+                nextDueDate: dueDateStr,
+                description: `Inscrição — ${evento.nome} (${totalInstallments}x recorrente)`,
+                maxPayments: totalInstallments,
+                externalReference: `event:${eventoId}:${inscricaoId}`,
+                creditCard,
+                creditCardHolderInfo: holderInfo,
+            });
+        }
+        catch (e) {
+            const body = JSON.stringify((_f = (_e = e === null || e === void 0 ? void 0 : e.response) === null || _e === void 0 ? void 0 : _e.data) !== null && _f !== void 0 ? _f : e === null || e === void 0 ? void 0 : e.message);
+            console.error("[createEventCharge] createSubscription failed:", body);
+            throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
+        }
+        await db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId).update({
+            status: "pagamento_iniciado",
+            gateway_subscription_id: subscription.id,
+            forma_pagamento: "recorrente",
+            installments: totalInstallments,
+            installment_value: installmentValue,
+        });
+        return {
+            paymentUrl: null,
+            pixQrCode: null,
+            bankSlipUrl: null,
+            identificationField: null,
+            chargeId: subscription.id,
+            installmentValue,
+            installmentCount: totalInstallments,
+        };
+    }
+    // ── Cobrança única / crédito parcelado ────────────────────────────────────
     let charge;
     try {
         charge = await (0, gateway_utils_1.createAsaasCharge)(apiKey, sandbox, {
@@ -273,21 +322,15 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
             billingType: (0, gateway_utils_1.mapBillingType)(paymentMethod),
             installmentCount: installments,
             externalReference: `event:${eventoId}:${inscricaoId}`,
-            creditCard: creditCard,
-            creditCardHolderInfo: creditCard ? {
-                name: attendeeName,
-                email: attendeeEmail,
-                cpfCnpj: (attendeeCpf || '').replace(/\D/g, ''),
-                phone: (attendeePhone || '').replace(/\D/g, ''),
-            } : undefined,
+            creditCard,
+            creditCardHolderInfo: holderInfo,
         });
     }
     catch (e) {
-        const body = JSON.stringify((_f = (_e = e === null || e === void 0 ? void 0 : e.response) === null || _e === void 0 ? void 0 : _e.data) !== null && _f !== void 0 ? _f : e === null || e === void 0 ? void 0 : e.message);
+        const body = JSON.stringify((_h = (_g = e === null || e === void 0 ? void 0 : e.response) === null || _g === void 0 ? void 0 : _g.data) !== null && _h !== void 0 ? _h : e === null || e === void 0 ? void 0 : e.message);
         console.error("[createEventCharge] createCharge failed:", body);
         throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
     }
-    // Atualiza a inscrição com dados da cobrança
     await db
         .collection(`eventos/${eventoId}/inscricoes`)
         .doc(inscricaoId)
@@ -299,10 +342,12 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
     });
     return {
         paymentUrl: charge.invoiceUrl,
-        pixQrCode: (_g = charge.pixQrCode) !== null && _g !== void 0 ? _g : null,
-        bankSlipUrl: (_h = charge.bankSlipUrl) !== null && _h !== void 0 ? _h : null,
-        identificationField: (_j = charge.identificationField) !== null && _j !== void 0 ? _j : null,
+        pixQrCode: (_j = charge.pixQrCode) !== null && _j !== void 0 ? _j : null,
+        bankSlipUrl: (_k = charge.bankSlipUrl) !== null && _k !== void 0 ? _k : null,
+        identificationField: (_l = charge.identificationField) !== null && _l !== void 0 ? _l : null,
         chargeId: charge.id,
+        installmentValue: null,
+        installmentCount: null,
     };
 });
 //# sourceMappingURL=index.js.map

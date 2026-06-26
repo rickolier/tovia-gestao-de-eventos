@@ -21,11 +21,13 @@ import Logo from './Logo';
 type Step = 'ticket' | 'form' | 'checkout' | 'success';
 
 interface CheckoutResult {
-  paymentUrl: string;
+  paymentUrl: string | null;
   pixQrCode?: { encodedImage: string; payload: string; expirationDate: string } | null;
   bankSlipUrl?: string | null;
   identificationField?: string | null;
   chargeId: string;
+  installmentValue?: number | null;
+  installmentCount?: number | null;
 }
 
 function safeUrl(url: string | undefined): string | undefined {
@@ -69,6 +71,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
   const [cpf, setCpf] = useState('');
   const [card, setCard] = useState({ holderName: '', number: '', expiry: '', ccv: '' });
+  const [installments, setInstallments] = useState(1);
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -199,7 +202,8 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             attendeeEmail: email,
             attendeeCpf: cpf.replace(/\D/g, ''),
             attendeePhone: telefone,
-            creditCard: selectedMethod === 'credito' ? {
+            installments: installments > 1 ? installments : undefined,
+            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
               holderName: card.holderName,
               number: card.number.replace(/\s/g, ''),
               expiryMonth: expiryMonth ?? '',
@@ -292,7 +296,23 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                 <CheckCircle2 className="w-7 h-7 text-green-600" />
               </div>
               <p className="text-sm font-bold text-gray-700">Pagamento aprovado!</p>
-              <p className="text-xs text-gray-500">Seu cartão foi cobrado com sucesso. Inscrição confirmada.</p>
+              <p className="text-xs text-gray-500">
+                {installments > 1
+                  ? `Parcelado em ${installments}x de ${formatPrice(total / installments)}. Inscrição confirmada.`
+                  : 'Seu cartão foi cobrado com sucesso. Inscrição confirmada.'}
+              </p>
+            </div>
+          ) : selectedMethod === 'recorrente' ? (
+            <div className="w-full space-y-3 text-center">
+              <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-7 h-7 text-green-600" />
+              </div>
+              <p className="text-sm font-bold text-gray-700">Cobrança recorrente ativada!</p>
+              <p className="text-xs text-gray-500">
+                1ª parcela de {formatPrice(total / installments)} cobrada agora.{' '}
+                {installments > 1 && `${installments - 1} parcela(s) restante(s) cobrada(s) mensalmente.`}
+              </p>
+              <p className="text-xs text-gray-400">Sua inscrição será confirmada após o processamento do cartão.</p>
             </div>
           ) : (
             <div className="w-full space-y-3">
@@ -357,15 +377,32 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
       allowedMethods = allowedMethods.filter(x => m.includes(x));
     });
-    allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito'].includes(m));
+    allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'recorrente'].includes(m));
+
+    const firstTicket = paidTickets[0];
+    const maxParcelasCredito = firstTicket?.max_parcelas_credito ?? 1;
+    const maxParcelasRecorrente = firstTicket?.max_parcelas_recorrente ?? 2;
+
+    const needsCard = selectedMethod === 'credito' || selectedMethod === 'recorrente';
     const isGatewayPaid = gatewayConnected && total > 0 && !allDoacao;
     const canSubmit = !submitting && (!isGatewayPaid || (
       !!selectedMethod &&
       cpf.replace(/\D/g, '').length === 11 &&
-      (selectedMethod !== 'credito' || (card.number.replace(/\s/g, '').length >= 13 && !!card.holderName && !!card.expiry && !!card.ccv))
+      (!needsCard || (card.number.replace(/\s/g, '').length >= 13 && !!card.holderName && !!card.expiry && !!card.ccv))
     ));
-    const methodLabels: Record<string, string> = { pix: 'PIX', boleto: 'Boleto', credito: 'Cartão de crédito' };
-    const methodDescs: Record<string, string> = { pix: 'Confirmação imediata após o pagamento', boleto: 'Boleto bancário — vence em 3 dias', credito: 'Débito imediato no cartão' };
+
+    const methodLabels: Record<string, string> = {
+      pix: 'PIX',
+      boleto: 'Boleto',
+      credito: 'Cartão de crédito',
+      recorrente: 'Recorrente',
+    };
+    const methodDescs: Record<string, string> = {
+      pix: 'Confirmação imediata após o pagamento',
+      boleto: 'Boleto bancário — vence em 3 dias',
+      credito: maxParcelasCredito > 1 ? `À vista ou em até ${maxParcelasCredito}x — reserva o total do limite` : 'Débito imediato no cartão',
+      recorrente: `Cobranças mensais de ${maxParcelasRecorrente}x — reserva apenas a parcela do mês`,
+    };
 
     return (
       <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -453,7 +490,8 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                   </div>
                   <div className="px-6 py-5 space-y-3">
                     {allowedMethods.map(method => (
-                      <button key={method} type="button" onClick={() => setSelectedMethod(method)}
+                      <button key={method} type="button"
+                        onClick={() => { setSelectedMethod(method); setInstallments(method === 'recorrente' ? 2 : 1); }}
                         className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all ${selectedMethod === method ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'}`}>
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${selectedMethod === method ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
                           {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : <CreditCard className="w-4 h-4" />}
@@ -468,7 +506,41 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                       </button>
                     ))}
 
-                    {selectedMethod === 'credito' && (
+                    {/* Seletor de parcelas — crédito */}
+                    {selectedMethod === 'credito' && maxParcelasCredito > 1 && (
+                      <div className="flex items-center gap-3 px-1">
+                        <span className="text-sm text-gray-600 font-semibold shrink-0">Parcelar em:</span>
+                        <select
+                          value={installments}
+                          onChange={e => setInstallments(Number(e.target.value))}
+                          className="flex-1 rounded-xl border border-gray-200 bg-white h-10 px-3 text-sm font-bold focus:ring-primary focus:outline-none"
+                        >
+                          {Array.from({ length: maxParcelasCredito }, (_, i) => i + 1).map(n => (
+                            <option key={n} value={n}>
+                              {n === 1 ? `À vista — ${formatPrice(total)}` : `${n}x de ${formatPrice(total / n)} (total ${formatPrice(total)})`}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Seletor de parcelas — recorrente */}
+                    {selectedMethod === 'recorrente' && (
+                      <div className="flex items-center gap-3 px-1">
+                        <span className="text-sm text-gray-600 font-semibold shrink-0">Parcelas:</span>
+                        <select
+                          value={installments}
+                          onChange={e => setInstallments(Number(e.target.value))}
+                          className="flex-1 rounded-xl border border-gray-200 bg-white h-10 px-3 text-sm font-bold focus:ring-primary focus:outline-none"
+                        >
+                          {Array.from({ length: maxParcelasRecorrente - 1 }, (_, i) => i + 2).map(n => (
+                            <option key={n} value={n}>{n}x de {formatPrice(total / n)} /mês</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {needsCard && (
                       <div className="space-y-3 pt-3 border-t border-gray-100">
                         <p className="text-xs font-black uppercase tracking-widest text-gray-400">Dados do cartão</p>
                         <Input
