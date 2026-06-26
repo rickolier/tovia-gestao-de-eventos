@@ -54,31 +54,41 @@ const PLANS = [
   {
     id: 'start',
     name: 'Start',
-    subtitle: 'Inscrições',
+    subtitle: 'Inscrições gratuitas',
     price: 'Grátis',
     limits: '1 evento · até 200 vagas · 1 tipo de ingresso',
-    description: 'Para eventos simples com foco em inscrições e participantes.',
-    modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios'],
+    description: 'Para dar os primeiros passos — crie seu evento e gerencie participantes sem custo.',
+    modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios básicos'],
     highlight: false,
   },
   {
     id: 'essencial',
     name: 'Essencial',
     subtitle: 'Inscrições + Financeiro',
-    price: 'R$ 39,90/mês',
+    price: 'R$ 69/mês',
     limits: '3 eventos · até 500 vagas cada · 3 tipos de ingresso',
-    description: 'Para quem precisa organizar o financeiro do evento — registre pagamentos recebidos, doações e acompanhe tudo com clareza.',
-    modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro de pagamentos e doações', 'Configuração de Taxas e Margens para gestão real'],
-    highlight: true,
+    description: 'Para organizar o financeiro do evento — registre pagamentos e doações com clareza.',
+    modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro manual de pagamentos e doações', 'Controle financeiro e saldo livre'],
+    highlight: false,
   },
   {
     id: 'pro',
     name: 'Pro',
-    subtitle: 'Completo',
-    price: 'R$ 99,00/mês',
-    limits: '10 eventos · até 1000 vagas cada · 10 tipos de ingresso',
-    description: 'O plano para quem não quer preocupações!',
-    modules: ['Tudo do Essencial', 'Administre recursos, contratações e fornecedores', 'Gestão de Tarefas com equipe integrada', 'Distribua participantes em grupos, quartos, mesas'],
+    subtitle: 'Pagamentos Automáticos',
+    price: 'R$ 129/mês',
+    limits: '10 eventos · até 1.000 vagas cada · 10 tipos de ingresso',
+    description: 'Checkout online com PIX, boleto e cartão direto para sua conta. Gestão completa de equipe e recursos.',
+    modules: ['Tudo do Essencial', 'Pagamentos automáticos (BYOG)', 'PIX, Boleto e Cartão de crédito', 'Grupos, quartos e mesas', 'Tarefas e equipe integrada'],
+    highlight: true,
+  },
+  {
+    id: 'personalizado',
+    name: 'Personalizado',
+    subtitle: 'Sem limites',
+    price: 'R$ 299/mês',
+    limits: 'Eventos ilimitados · Inscrições ilimitadas · + 0,8% sobre inscritos pagos',
+    description: 'Para organizações com múltiplos eventos de grande porte — cresça sem preocupação com limites.',
+    modules: ['Tudo do Pro', 'Eventos e inscrições ilimitados', '0,8% apenas sobre inscrições pagas', 'Suporte prioritário e onboarding dedicado'],
     highlight: false,
   },
 ];
@@ -434,34 +444,34 @@ function AnimDashboard() {
 const FAQ_ITEMS = [
   {
     q: 'O Tovia é gratuito?',
-    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para mais eventos e funcionalidades financeiras, temos os planos Essencial e Pro.',
+    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para funcionalidades financeiras e mais eventos, os planos Essencial (R$69/mês) e Pro (R$129/mês) são a escolha certa.',
   },
   {
     q: 'O Tovia realiza cobranças de ingressos?',
-    a: 'Não. O Tovia é uma plataforma de organização — você registra manualmente os pagamentos recebidos e doações. Nós não intermediamos nem processamos cobranças.',
+    a: 'No Essencial, não — você registra os pagamentos manualmente. No plano Pro e Personalizado, você conecta seu próprio gateway de pagamento (Asaas, Pagar.me ou Mercado Pago) e recebe os valores direto na sua conta. O Tovia nunca intermedia seu dinheiro.',
   },
   {
     q: 'Posso criar mais de um evento ao mesmo tempo?',
-    a: 'No plano Start você pode ter 1 evento ativo. No Essencial, até 3 eventos simultâneos. No Pro, até 10 eventos. Para necessidades maiores, entre em contato conosco.',
+    a: 'Sim. Start: 1 evento. Essencial: até 3 simultâneos. Pro: até 10. Personalizado: ilimitado. Se precisar de mais, entre em contato.',
   },
   {
     q: 'Preciso saber programar para usar o Tovia?',
-    a: 'Não. O Tovia foi feito para qualquer pessoa conseguir usar. Crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
+    a: 'Não. O Tovia foi feito para qualquer pessoa conseguir usar — crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
   },
   {
     q: 'Posso cancelar meu plano a qualquer momento?',
-    a: 'Sim. Não há fidelidade ou multa. Você pode cancelar ou mudar de plano quando quiser, diretamente pelo painel.',
+    a: 'Sim. Não há fidelidade ou multa. Cancele ou mude de plano quando quiser, direto pelo painel.',
   },
   {
-    q: 'O Tovia funciona para qualquer tipo de evento?',
-    a: 'Sim! Foi criado pensando em igrejas que organizam acampamentos, conferências, retiros e encontros. Mas funciona para qualquer evento que precise de inscrições e organização.',
+    q: 'O que é o plano Personalizado e o que significa os 0,8%?',
+    a: 'O plano Personalizado (R$299/mês) é para organizações com múltiplos eventos de grande porte. Além da mensalidade, cobramos 0,8% apenas sobre inscrições que geraram pagamento — inscrições gratuitas não geram cobrança variável.',
   },
 ];
 
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 bg-[#f0f7f3]">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">FAQ</span>
@@ -693,7 +703,7 @@ export default function LandingPage() {
 
           {/* Text */}
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Quem somos</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">O problema</span>
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3 mb-6 leading-tight">
               Uma plataforma feita para quem organiza com propósito
             </h2>
@@ -713,7 +723,7 @@ export default function LandingPage() {
       {/* ── Significado do nome ── */}
       <section className="bg-[#f0f7f3] w-full py-10 px-6">
       <div className="max-w-3xl mx-auto text-center">
-        <span className="text-xs font-semibold uppercase tracking-widest text-primary">O nome</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-primary">A solução</span>
         <h2 className="text-3xl font-black text-foreground tracking-tight mt-3 mb-6">
           Tovia — טוֹבִיָּה
         </h2>
@@ -928,6 +938,61 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Prova social ── */}
+      <section className="py-20 px-6 bg-[#f0f7f3]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Prova social</span>
+            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
+              Quem organiza com o Tovia
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'João Silva',
+                role: 'Pastor e organizador de eventos',
+                church: 'Igreja Vida Nova · São Paulo',
+                text: 'Organizamos nosso retiro com mais de 300 pessoas usando o Tovia. Nunca foi tão simples acompanhar as inscrições e o financeiro ao mesmo tempo.',
+                avatar: 'JS',
+              },
+              {
+                name: 'Ana Paula Mendes',
+                role: 'Coordenadora de eventos',
+                church: 'Ministério Nova Esperança · Curitiba',
+                text: 'A página de inscrição foi criada em minutos. Compartilhamos o link com o grupo e as inscrições chegaram automaticamente, sem precisar de planilha.',
+                avatar: 'AM',
+              },
+              {
+                name: 'Carlos Eduardo',
+                role: 'Líder de jovens',
+                church: 'Igreja Ressurreição · Belo Horizonte',
+                text: 'Sempre controlamos os inscritos em planilhas e era um caos. O Tovia mudou completamente como trabalhamos. Hoje tudo está organizado em um só lugar.',
+                avatar: 'CE',
+              },
+            ].map((t) => (
+              <div key={t.name} className="bg-white rounded-3xl p-7 border border-border flex flex-col gap-5 hover:shadow-md transition-all">
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground leading-relaxed flex-1">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-border">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-black text-primary shrink-0">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{t.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{t.role} · {t.church}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Planos ── */}
       <section id="planos" className="pt-12 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
@@ -962,7 +1027,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
             {PLANS.map((plan) => (
               <div
                 key={plan.id}
@@ -1001,7 +1066,7 @@ export default function LandingPage() {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                        {plan.id === 'essencial' ? 'R$39,90' : 'R$99,00'}
+                        {plan.id === 'essencial' ? 'R$69' : plan.id === 'pro' ? 'R$129' : 'R$299'}
                       </span>
                       <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
                     </div>
@@ -1013,15 +1078,15 @@ export default function LandingPage() {
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
                       <span className={cn('text-4xl font-black', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                        {plan.id === 'essencial' ? 'R$33,25' : 'R$82,50'}
+                        {plan.id === 'essencial' ? 'R$57,50' : plan.id === 'pro' ? 'R$107,50' : 'R$249,17'}
                       </span>
                       <span className={cn('text-sm font-medium', plan.highlight ? 'text-white/60' : 'text-muted-foreground')}>/mês</span>
                     </div>
                     <p className={cn('text-xs line-through mt-0.5', plan.highlight ? 'text-white/40' : 'text-muted-foreground/60')}>
-                      {plan.id === 'essencial' ? 'R$478,80' : 'R$1.188,00'}/ano
+                      {plan.id === 'essencial' ? 'R$828,00' : plan.id === 'pro' ? 'R$1.548,00' : 'R$3.588,00'}/ano
                     </p>
                     <p className={cn('text-xs font-bold', plan.highlight ? 'text-emerald-300' : 'text-primary')}>
-                      {plan.id === 'essencial' ? 'R$399,00' : 'R$990,00'}/ano
+                      {plan.id === 'essencial' ? 'R$690,00' : plan.id === 'pro' ? 'R$1.290,00' : 'R$2.990,00'}/ano
                     </p>
                     {/* Formas de pagamento anual */}
                     <div className={cn('mt-3 rounded-xl p-3 space-y-1.5 text-xs', plan.highlight ? 'bg-white/10' : 'bg-muted/50')}>
@@ -1080,11 +1145,11 @@ export default function LandingPage() {
           </div>
           {/* Contato para planos maiores */}
           <p className="text-center text-sm text-muted-foreground mt-10">
-            Precisa de mais eventos ou vagas?{' '}
+            Precisa de algo além do Personalizado?{' '}
             <a href="mailto:contato@tovia.app" className="text-primary font-semibold hover:underline">
-              Entre em contato conosco
+              Fale com a gente
             </a>{' '}
-            e montamos um plano sob medida.
+            e montamos uma solução sob medida.
           </p>
         </div>
       </section>
@@ -1109,8 +1174,8 @@ export default function LandingPage() {
                   <th className="text-left px-6 py-5 text-foreground font-black text-base w-1/2">Funcionalidade</th>
                   {[
                     { name: 'Start', price: 'Grátis', highlight: false },
-                    { name: 'Essencial', price: 'R$ 39,90/mês', highlight: true },
-                    { name: 'Pro', price: 'R$ 99,00/mês', highlight: false },
+                    { name: 'Essencial', price: 'R$ 69/mês', highlight: true },
+                    { name: 'Pro', price: 'R$ 129/mês', highlight: false },
                   ].map(plan => (
                     <th key={plan.name} className={`text-center px-4 py-5 w-[16%] ${plan.highlight ? 'bg-primary/5' : ''}`}>
                       <p className={`font-black text-base ${plan.highlight ? 'text-primary' : 'text-foreground'}`}>{plan.name}</p>
@@ -1194,61 +1259,6 @@ export default function LandingPage() {
 
       {/* ── FAQ ── */}
       <FAQ />
-
-      {/* ── Depoimentos ── */}
-      <section className="py-20 px-6 bg-[#f0f7f3]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Depoimentos</span>
-            <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
-              Quem organiza com o Tovia
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'João Silva',
-                role: 'Pastor e organizador de eventos',
-                church: 'Igreja Vida Nova · São Paulo',
-                text: 'Organizamos nosso retiro com mais de 300 pessoas usando o Tovia. Nunca foi tão simples acompanhar as inscrições e o financeiro ao mesmo tempo.',
-                avatar: 'JS',
-              },
-              {
-                name: 'Ana Paula Mendes',
-                role: 'Coordenadora de eventos',
-                church: 'Ministério Nova Esperança · Curitiba',
-                text: 'A página de inscrição foi criada em minutos. Compartilhamos o link com o grupo e as inscrições chegaram automaticamente, sem precisar de planilha.',
-                avatar: 'AM',
-              },
-              {
-                name: 'Carlos Eduardo',
-                role: 'Líder de jovens',
-                church: 'Igreja Ressurreição · Belo Horizonte',
-                text: 'Sempre controlamos os inscritos em planilhas e era um caos. O Tovia mudou completamente como trabalhamos. Hoje tudo está organizado em um só lugar.',
-                avatar: 'CE',
-              },
-            ].map((t) => (
-              <div key={t.name} className="bg-white rounded-3xl p-7 border border-border flex flex-col gap-5 hover:shadow-md transition-all">
-                <div className="flex gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-foreground leading-relaxed flex-1">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-2 border-t border-border">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-black text-primary shrink-0">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground">{t.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{t.role} · {t.church}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA Final ── */}
       <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-24 px-6 relative overflow-hidden">

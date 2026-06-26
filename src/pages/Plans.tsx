@@ -19,9 +19,9 @@ const MODULE_DESCRIPTIONS = [
   'Recursos, grupos e tarefas',
 ];
 
-const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro'];
+const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro', 'personalizado'];
 const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
-const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 39,90/mês', pro: 'R$ 99,00/mês', personalizado: 'R$ 299,00/mês' };
+const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 69/mês', pro: 'R$ 129/mês', personalizado: 'R$ 299/mês + 0,8%' };
 const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2, personalizado: 3 };
 
 export default function Plans() {
@@ -117,7 +117,7 @@ export default function Plans() {
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
           {PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
             const moduleCount = PLAN_MODULES_COUNT[level];
