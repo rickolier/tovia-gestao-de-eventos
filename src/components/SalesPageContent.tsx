@@ -66,6 +66,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const [gatewayConnected, setGatewayConnected] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('');
   const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
+  const [cpf, setCpf] = useState('');
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -103,6 +104,11 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         toast.error(`O campo "${campo.label}" é obrigatório.`);
         return;
       }
+    }
+    const needsCpf = gatewayConnected && total > 0 && !allDoacao;
+    if (needsCpf && cpf.replace(/\D/g, '').length < 11) {
+      toast.error('Informe um CPF válido para continuar.');
+      return;
     }
     setSubmitting(true);
     try {
@@ -188,6 +194,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             paymentMethod: selectedMethod,
             attendeeName: nome,
             attendeeEmail: email,
+            attendeeCpf: cpf.replace(/\D/g, ''),
             valor: valorFinal,
           });
           setCheckoutResult(result.data as CheckoutResult);
@@ -588,6 +595,29 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     />
                   ))}
 
+                  {/* CPF obrigatório para cobranças via gateway */}
+                  {gatewayConnected && total > 0 && !allDoacao && (
+                    <div className="space-y-1.5 pt-2 border-t border-gray-100">
+                      <Label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                        CPF <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="text"
+                        required
+                        placeholder="000.000.000-00"
+                        value={cpf}
+                        onChange={e => {
+                          const v = e.target.value.replace(/\D/g, '').slice(0, 11);
+                          setCpf(v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+                            .replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3')
+                            .replace(/(\d{3})(\d{1,3})/, '$1.$2'));
+                        }}
+                        className="rounded-lg border border-gray-200 bg-white h-10 text-gray-900 text-sm"
+                      />
+                      <p className="text-[11px] text-gray-400">Necessário para emissão da cobrança.</p>
+                    </div>
+                  )}
+
                   {/* Seletor de pagamento para Pro+ com gateway */}
                   {gatewayConnected && total > 0 && !allDoacao && (() => {
                     const paidTickets = selectedTickets.filter(t => t.tipo === 'pago');
@@ -625,7 +655,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
 
                   <Button
                     type="submit"
-                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && !selectedMethod)}
+                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && (!selectedMethod || cpf.replace(/\D/g, '').length < 11))}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2"
                   >
                     {submitting

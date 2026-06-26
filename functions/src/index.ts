@@ -277,6 +277,7 @@ export const createEventCharge = functions.onCall(
       installments,
       attendeeName,
       attendeeEmail,
+      attendeeCpf,
       valor,
     } = request.data as {
       eventoId: string;
@@ -285,6 +286,7 @@ export const createEventCharge = functions.onCall(
       installments?: number;
       attendeeName: string;
       attendeeEmail: string;
+      attendeeCpf?: string;
       valor: number;
     };
 
@@ -320,28 +322,43 @@ export const createEventCharge = functions.onCall(
     const sandbox: boolean = orgData.gateway.sandbox ?? false;
 
     // Cria ou reutiliza cliente Asaas do participante
-    const customerId = await createOrFindAsaasCustomer(
-      apiKey,
-      sandbox,
-      attendeeName,
-      attendeeEmail,
-      `attendee:${inscricaoId}`
-    );
+    let customerId: string;
+    try {
+      customerId = await createOrFindAsaasCustomer(
+        apiKey,
+        sandbox,
+        attendeeName,
+        attendeeEmail,
+        `attendee:${inscricaoId}`,
+        attendeeCpf,
+      );
+    } catch (e: any) {
+      const body = JSON.stringify(e?.response?.data ?? e?.message);
+      console.error("[createEventCharge] createCustomer failed:", body);
+      throw new functions.HttpsError("internal", `Erro ao criar cliente Asaas: ${body}`);
+    }
 
     // Data de vencimento: 3 dias a partir de hoje
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 3);
     const dueDateStr = dueDate.toISOString().split("T")[0];
 
-    const charge = await createAsaasCharge(apiKey, sandbox, {
-      customerId,
-      value: valor,
-      dueDate: dueDateStr,
-      description: `Inscrição — ${evento.nome}`,
-      billingType: mapBillingType(paymentMethod),
-      installmentCount: installments,
-      externalReference: `event:${eventoId}:${inscricaoId}`,
-    });
+    let charge: Awaited<ReturnType<typeof createAsaasCharge>>;
+    try {
+      charge = await createAsaasCharge(apiKey, sandbox, {
+        customerId,
+        value: valor,
+        dueDate: dueDateStr,
+        description: `Inscrição — ${evento.nome}`,
+        billingType: mapBillingType(paymentMethod),
+        installmentCount: installments,
+        externalReference: `event:${eventoId}:${inscricaoId}`,
+      });
+    } catch (e: any) {
+      const body = JSON.stringify(e?.response?.data ?? e?.message);
+      console.error("[createEventCharge] createCharge failed:", body);
+      throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
+    }
 
     // Atualiza a inscrição com dados da cobrança
     await db

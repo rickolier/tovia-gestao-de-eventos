@@ -87,6 +87,7 @@ export async function createOrFindAsaasCustomer(
   name: string,
   email: string,
   externalRef: string,
+  cpfCnpj?: string,
 ): Promise<string> {
   const base = asaasBaseUrl(sandbox);
   const headers = asaasHeaders(apiKey);
@@ -101,11 +102,12 @@ export async function createOrFindAsaasCustomer(
     return search.data.data[0].id as string;
   }
 
-  const create = await axios.post(
-    `${base}/customers`,
-    { name, email, externalReference: externalRef },
-    { headers, timeout: 8000 },
-  );
+  const payload: Record<string, string> = { name, email, externalReference: externalRef };
+  if (cpfCnpj) {
+    payload.cpfCnpj = cpfCnpj.replace(/\D/g, ''); // remove pontuação
+  }
+
+  const create = await axios.post(`${base}/customers`, payload, { headers, timeout: 8000 });
   return create.data.id as string;
 }
 
