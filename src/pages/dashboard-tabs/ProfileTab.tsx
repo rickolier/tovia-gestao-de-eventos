@@ -7,12 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink, Trash2 } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink, Trash2, Loader2, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '../../lib/plan-limits';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import {
+  maskTelefone, maskCEP, maskCPFouCNPJ,
+  validateEmail, validateTelefone, validateCEP,
+  fetchEnderecoByСEP,
+} from '../../lib/validators';
 
 export default function ProfileTab() {
   const { user, profile, refreshProfile } = useAuth();
@@ -59,6 +64,29 @@ export default function ProfileTab() {
       toast.error('Erro ao remover foto.');
     } finally {
       setUploadingPhoto(false);
+    }
+  };
+
+  const [cepLoading, setCepLoading] = useState(false);
+
+  const handleCepChange = async (raw: string) => {
+    const masked = maskCEP(raw);
+    setFormData(prev => ({ ...prev, cep: masked }));
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length === 8) {
+      setCepLoading(true);
+      const addr = await fetchEnderecoByСEP(digits);
+      setCepLoading(false);
+      if (addr) {
+        setFormData(prev => ({
+          ...prev,
+          endereco: addr.logradouro || prev.endereco,
+          bairro: addr.bairro || prev.bairro,
+        }));
+        toast.success(`${addr.localidade} — ${addr.uf}`);
+      } else {
+        toast.error('CEP não encontrado.');
+      }
     }
   };
 
@@ -125,6 +153,13 @@ export default function ProfileTab() {
     e.preventDefault();
     if (!user) return;
 
+    if (!formData.nome.trim()) { toast.error('O nome do responsável é obrigatório.'); return; }
+    if (formData.contato_email && !validateEmail(formData.contato_email)) {
+      toast.error('E-mail de contato inválido.'); return;
+    }
+    if (formData.telefone && !validateTelefone(formData.telefone)) {
+      toast.error('Telefone inválido. Use o formato (00) 00000-0000.'); return;
+    }
     if (!isValidUrl(formData.site)) { toast.error('URL do website inválida. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_1)) { toast.error('Link Importante 1 inválido. Use http:// ou https://'); return; }
     if (!isValidUrl(formData.link_importante_2)) { toast.error('Link Importante 2 inválido. Use http:// ou https://'); return; }
@@ -132,6 +167,9 @@ export default function ProfileTab() {
     if (docDigits && docDigits.length !== 11 && docDigits.length !== 14) {
       toast.error('CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos.');
       return;
+    }
+    if (formData.cep && !validateCEP(formData.cep)) {
+      toast.error('CEP inválido. Use o formato 00000-000.'); return;
     }
 
     setLoading(true);
@@ -284,9 +322,9 @@ export default function ProfileTab() {
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> Telefone/WhatsApp</Label>
-                <Input 
+                <Input
                   value={formData.telefone}
-                  onChange={e => setFormData({...formData, telefone: e.target.value})}
+                  onChange={e => setFormData({...formData, telefone: maskTelefone(e.target.value)})}
                   placeholder="(00) 00000-0000"
                   className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold"
                 />
@@ -346,11 +384,25 @@ export default function ProfileTab() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CPF / CNPJ *</Label>
-                <Input value={formData.cnpj} onChange={e => setFormData({...formData, cnpj: e.target.value})} placeholder="000.000.000-00 ou 00.000.000/0001-00" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+                <Input value={formData.cnpj} onChange={e => setFormData({...formData, cnpj: maskCPFouCNPJ(e.target.value)})} placeholder="000.000.000-00 ou 00.000.000/0001-00" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">CEP</Label>
-                <Input value={formData.cep} onChange={e => setFormData({...formData, cep: e.target.value})} placeholder="00000-000" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-primary" /> CEP
+                </Label>
+                <div className="relative">
+                  <Input
+                    value={formData.cep}
+                    onChange={e => handleCepChange(e.target.value)}
+                    placeholder="00000-000"
+                    maxLength={9}
+                    className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold pr-10"
+                  />
+                  {cepLoading && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />
+                  )}
+                </div>
+                <p className="text-[10px] text-muted-foreground">Preencha o CEP para auto-completar o endereço.</p>
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Endereço</Label>

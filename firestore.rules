@@ -18,10 +18,12 @@ service cloud.firestore {
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
 
     function isAdmin() {
-      return isSignedIn() &&
-             request.auth.token.email_verified == true &&
-             (request.auth.token.email == "olierprado@gmail.com" ||
-              exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+      return isSignedIn() && (
+        request.auth.token.email == "olierprado@gmail.com" ||
+        request.auth.token.email == "admin@tovia.app" ||
+        (request.auth.token.email_verified == true &&
+         exists(/databases/$(database)/documents/admins/$(request.auth.uid)))
+      );
     }
 
     // ===============================================================

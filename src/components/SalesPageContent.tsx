@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile, Donation } from '../types';
-import { createDocument, getDocument } from '../lib/firebase-utils';
+import { createDocument, getDocument, updateDocument } from '../lib/firebase-utils';
+import { maskTelefone, maskCPF, validateEmail, validateTelefone, validateCPF } from '../lib/validators';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -105,13 +106,28 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     for (const campo of pagina.campos_formulario) {
-      if (campo.obrigatorio && !formValues[campo.id]) {
+      const val = String(formValues[campo.id] || '').trim();
+      if (campo.obrigatorio && !val) {
         toast.error(`O campo "${campo.label}" é obrigatório.`);
         return;
       }
+      if (val) {
+        if (campo.tipo === 'email' && !validateEmail(val)) {
+          toast.error(`E-mail inválido no campo "${campo.label}".`);
+          return;
+        }
+        if (campo.tipo === 'telefone' && !validateTelefone(val)) {
+          toast.error(`Telefone inválido no campo "${campo.label}". Use (00) 00000-0000.`);
+          return;
+        }
+        if (campo.label.toLowerCase().includes('cpf') && val.replace(/\D/g, '').length === 11 && !validateCPF(val)) {
+          toast.error(`CPF inválido no campo "${campo.label}".`);
+          return;
+        }
+      }
     }
     const needsCpf = gatewayConnected && total > 0;
-    if (needsCpf && cpf.replace(/\D/g, '').length < 11) {
+    if (needsCpf && !validateCPF(cpf)) {
       toast.error('Informe um CPF válido para continuar.');
       return;
     }
@@ -129,7 +145,11 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       const telefone = telefoneField ? String(formValues[telefoneField.id] || '') : '';
 
       const pessoaId = uuidv4();
-      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, { id: pessoaId, nome, email, telefone });
+      const cpfDigits = cpf.replace(/\D/g, '');
+      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, {
+        id: pessoaId, nome, email, telefone,
+        ...(cpfDigits ? { cpf: cpfDigits } : {}),
+      });
 
       if (allDoacao) {
         // Página de doação: cria documento Donation em vez de Inscricao
@@ -207,6 +227,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           nome,
           email,
           telefone,
+          ...(cpfDigits ? { cpf: cpfDigits } : {}),
           respostas_formulario: respostas,
           quantidades: quantities,
           valor_total: valorFinal,
@@ -505,13 +526,9 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                       type="text"
                       required
                       placeholder="000.000.000-00"
+                      maxLength={14}
                       value={cpf}
-                      onChange={e => {
-                        const v = e.target.value.replace(/\D/g, '').slice(0, 11);
-                        setCpf(v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
-                          .replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3')
-                          .replace(/(\d{3})(\d{1,3})/, '$1.$2'));
-                      }}
+                      onChange={e => setCpf(maskCPF(e.target.value))}
                       className="rounded-xl border border-gray-200 bg-white h-11 text-gray-900 text-sm"
                     />
                     <p className="text-[11px] text-gray-400">Necessário para emissão da cobrança.</p>
@@ -1031,8 +1048,18 @@ const FormField: React.FC<{
       {!['textarea', 'select', 'checkbox'].includes(campo.tipo) && (
         <Input
           type={campo.tipo === 'email' ? 'email' : campo.tipo === 'numero' ? 'number' : campo.tipo === 'data' ? 'date' : 'text'}
-          required={campo.obrigatorio} placeholder={campo.placeholder} value={String(value || '')}
-          onChange={e => onChange(e.target.value)} className={inputClass} />
+          required={campo.obrigatorio}
+          placeholder={campo.placeholder}
+          value={String(value || '')}
+          maxLength={campo.tipo === 'telefone' ? 15 : campo.label.toLowerCase().includes('cpf') ? 14 : undefined}
+          onChange={e => {
+            const v = e.target.value;
+            if (campo.tipo === 'telefone') return onChange(maskTelefone(v));
+            if (campo.label.toLowerCase().includes('cpf')) return onChange(maskCPF(v));
+            onChange(v);
+          }}
+          className={inputClass}
+        />
       )}
     </div>
   );

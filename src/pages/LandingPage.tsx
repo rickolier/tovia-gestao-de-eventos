@@ -538,6 +538,9 @@ export default function LandingPage() {
 
           {/* CTAs */}
           <div className="hidden md:flex items-center gap-3">
+            <Link to="/consultar" className="text-sm font-semibold text-muted-foreground hover:text-primary border border-border rounded-xl px-4 py-2 transition-colors">
+              Consultar inscrição
+            </Link>
             <Link to="/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
               Entrar
             </Link>
@@ -566,6 +569,7 @@ export default function LandingPage() {
               </Link>
             ))}
             <div className="pt-2 flex flex-col gap-3">
+              <Link to="/consultar" onClick={() => setMobileMenuOpen(false)} className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Consultar inscrição</Link>
               <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
               <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar conta grátis</Link>
             </div>

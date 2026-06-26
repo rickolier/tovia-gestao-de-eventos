@@ -57,9 +57,12 @@ export default function AdminGatewayTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [charges, setCharges] = useState<GatewayCharge[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
       const [allUsers, inscSnap, doacSnap] = await Promise.all([
         listDocuments<UserProfile>('users'),
         getDocs(collectionGroup(db, 'inscricoes')),
@@ -87,10 +90,14 @@ export default function AdminGatewayTab() {
       });
 
       setCharges(gatewayCharges);
+    } catch (e: any) {
+      setError(e.message || 'Erro ao carregar dados do gateway.');
+    } finally {
       setLoading(false);
     }
-    load();
-  }, []);
+  };
+
+  useEffect(() => { load(); }, []);
 
   const connectedOrgs = users.filter(u => u.gateway_connected);
   const prodOrgs = connectedOrgs.filter(u => !u.gateway?.sandbox);
@@ -149,6 +156,16 @@ export default function AdminGatewayTab() {
       <div className="flex items-center justify-center py-32 gap-3">
         <RefreshCw className="w-5 h-5 animate-spin text-primary" />
         <span className="text-sm font-bold text-muted-foreground">Carregando dados do gateway...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-3xl bg-red-50 border border-red-100 p-8 text-center space-y-3">
+        <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
+        <p className="text-sm text-red-600 font-medium">{error}</p>
+        <button onClick={load} className="text-xs text-red-500 underline">Tentar novamente</button>
       </div>
     );
   }

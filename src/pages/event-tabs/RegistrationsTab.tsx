@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { maskCPF, maskTelefone, validateEmail, validateTelefone, validateCPF } from '../../lib/validators';
 
 const ITEMS_PER_PAGE = 50;
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '../../lib/firebase-utils';
@@ -193,11 +194,27 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // When creating via page selector, ticketId comes from formData (set by the select inside the form)
       const selectedTicket = tickets.find(t => t.id === formData.ticketId);
       if (!selectedTicket) {
         toast.error('Selecione um ingresso válido.');
         return;
+      }
+
+      if (!selectedPagina) {
+        if (!formData.nome.trim()) { toast.error('Nome é obrigatório.'); return; }
+        if (!formData.email.trim() || !validateEmail(formData.email)) {
+          toast.error('Informe um e-mail válido.'); return;
+        }
+        if (formData.telefone && !validateTelefone(formData.telefone)) {
+          toast.error('Telefone inválido. Use o formato (00) 00000-0000.'); return;
+        }
+        const cpfDigits = formData.cpf.replace(/\D/g, '');
+        if (cpfDigits && !validateCPF(formData.cpf)) {
+          toast.error('CPF inválido.'); return;
+        }
+        if (formData.idade < 0 || formData.idade > 120) {
+          toast.error('Informe uma idade válida (0–120).'); return;
+        }
       }
 
       const initialStatus = formData.precisa_ajuda ? 'ajuda_solicitada' : 'pendente';
@@ -286,7 +303,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           id: pessoaId,
           nome: nome || formData.nome,
           email: email || formData.email,
-          cpf: formData.cpf,
+          cpf: formData.cpf.replace(/\D/g, ''),
           telefone: telefone || formData.telefone,
           idade: Number(formData.idade),
           genero: formData.genero,
@@ -302,6 +319,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           nome: nome || formData.nome,
           email: email || formData.email,
           telefone: telefone || formData.telefone,
+          ...(formData.cpf ? { cpf: formData.cpf.replace(/\D/g, '') } : {}),
           status: initialStatus,
           valor_total: selectedTicket.valor,
           valor_pago: 0,
@@ -1194,11 +1212,11 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="cpf" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">CPF</Label>
-                      <Input id="cpf" value={formData.cpf} onChange={e => setFormData({...formData, cpf: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
+                      <Input id="cpf" placeholder="000.000.000-00" maxLength={14} value={formData.cpf} onChange={e => setFormData({...formData, cpf: maskCPF(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="telefone" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Telefone</Label>
-                      <Input id="telefone" value={formData.telefone} onChange={e => setFormData({...formData, telefone: e.target.value})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
+                      <Input id="telefone" placeholder="(00) 00000-0000" maxLength={15} value={formData.telefone} onChange={e => setFormData({...formData, telefone: maskTelefone(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
