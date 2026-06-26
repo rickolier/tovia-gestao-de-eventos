@@ -757,45 +757,52 @@ export default function LandingPage() {
                 step: '01',
                 title: 'Crie sua conta',
                 desc: 'Cadastre-se gratuitamente em menos de 1 minuto, sem cartão de crédito necessário.',
-                Anim: AnimConta,
+                img: '/screenshots/step1-conta.jpg',
+                imgPos: 'center top',
               },
               {
                 step: '02',
                 title: 'Configure o evento',
                 desc: 'Defina vagas, ingressos e formulários personalizados em poucos cliques.',
-                Anim: AnimEvento,
+                img: '/screenshots/step2-evento.jpg',
+                imgPos: 'center top',
               },
               {
                 step: '03',
                 title: 'Compartilhe o link',
                 desc: 'Seus participantes se inscrevem diretamente pela página criada pelo Tovia.',
-                Anim: AnimCompartilhar,
+                img: '/screenshots/step3-paginas.jpg',
+                imgPos: 'right top',
               },
               {
                 step: '04',
                 title: 'Acompanhe tudo',
                 desc: 'Inscrições, financeiro e equipe em tempo real, centralizados em um só lugar.',
-                Anim: AnimDashboard,
+                img: '/screenshots/step4-dashboard.jpg',
+                imgPos: 'right top',
               },
-            ] as { step: string; title: string; desc: string; Anim: React.FC }[]).map(({ step, title, desc, Anim }) => (
+            ]).map(({ step, title, desc, img, imgPos }) => (
               <div
                 key={step}
-                className="relative rounded-3xl overflow-hidden min-h-[240px] p-7 pb-0 flex flex-col"
+                className="relative rounded-3xl overflow-hidden min-h-[260px] p-7 pb-0 flex flex-col"
                 style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e4a2e 100%)' }}
               >
-                {/* Decorative blob */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
-
                 {/* Text */}
-                <span className="inline-flex text-xs font-black text-emerald-300 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4">
+                <span className="inline-flex text-xs font-black text-emerald-300 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4 relative z-10">
                   {step}º Passo
                 </span>
-                <h3 className="text-xl font-black text-white leading-tight mb-2 max-w-[58%]">{title}</h3>
-                <p className="text-xs text-white/50 leading-relaxed max-w-[55%]">{desc}</p>
+                <h3 className="text-xl font-black text-white leading-tight mb-2 max-w-[55%] relative z-10">{title}</h3>
+                <p className="text-xs text-white/50 leading-relaxed max-w-[50%] relative z-10">{desc}</p>
 
-                {/* Animated mockup — bottom-right, flush */}
-                <div className="absolute bottom-0 right-4 flex items-end">
-                  <Anim />
+                {/* Screenshot real — right side, flush bottom */}
+                <div className="absolute inset-y-0 right-0 w-[52%] overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1e4a2e] via-transparent to-transparent z-10 pointer-events-none" />
+                  <img
+                    src={img}
+                    alt=""
+                    className="absolute top-4 right-0 h-[90%] w-auto rounded-tl-xl shadow-2xl ring-1 ring-white/10"
+                    style={{ objectFit: 'cover', objectPosition: imgPos }}
+                  />
                 </div>
               </div>
             ))}
