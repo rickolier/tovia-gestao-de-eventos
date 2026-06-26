@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X } from 'lucide-react';
+import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X, PlugZap, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
@@ -386,21 +386,56 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   const custoPorInscrito = totalInscritos > 0 ? totalSaidas / totalInscritos : 0;
   const margemPorInscrito = totalInscritos > 0 ? (totalArrecadado - totalSaidas) / totalInscritos : 0;
 
+  const isAutoPay = plan.modules.autoPayments;
+  const gatewayConnected = profile?.gateway_connected === true;
+
   return (
     <div className="space-y-6 text-foreground">
+      {/* Banner de modo de pagamento */}
+      {isAutoPay && (
+        gatewayConnected ? (
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-green-50 border border-green-200">
+            <PlugZap className="w-5 h-5 text-green-600 shrink-0" />
+            <div>
+              <p className="text-sm font-black text-green-900">Pagamentos automáticos via Asaas</p>
+              <p className="text-xs text-green-700 mt-0.5">As cobranças são geradas automaticamente na hora da inscrição. O participante paga na página do evento.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+              <div>
+                <p className="text-sm font-black text-amber-900">Gateway não conectado</p>
+                <p className="text-xs text-amber-700 mt-0.5">Conecte seu Asaas para ativar cobranças automáticas. Enquanto isso, o controle é manual.</p>
+              </div>
+            </div>
+            <a href="/dashboard?tab=gateway" className="shrink-0">
+              <button className="text-xs font-black text-amber-800 underline underline-offset-2 whitespace-nowrap">Conectar gateway</button>
+            </a>
+          </div>
+        )
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight text-foreground">Financeiro</h2>
-          <p className="text-sm text-muted-foreground font-medium">Controle de pagamentos e destinação de doações.</p>
+          <p className="text-sm text-muted-foreground font-medium">
+            {isAutoPay && gatewayConnected
+              ? 'Acompanhe o status dos pagamentos gerados via Asaas.'
+              : 'Controle de pagamentos e destinação de doações.'}
+          </p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
-          <Button 
-            onClick={() => setIsPayDialogOpen(true)}
-            className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95 text-sm"
-          >
-            <Plus className="w-4 h-4 shrink-0" />
-            Novo Pagamento
-          </Button>
+          {(!isAutoPay || !gatewayConnected) && (
+            <Button
+              onClick={() => setIsPayDialogOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95 text-sm"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              Novo Pagamento
+            </Button>
+          )}
         </div>
       </div>
 

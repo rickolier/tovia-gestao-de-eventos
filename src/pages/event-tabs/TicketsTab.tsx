@@ -28,6 +28,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
   const [ticketToDelete, setTicketToDelete] = useState<string | null>(null);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
 
+  const defaultMetodos = plan.modules.autoPayments ? ['pix', 'boleto', 'credito'] : [];
+
   const [formData, setFormData] = useState({
     nome: '',
     tipo: 'pago' as 'pago' | 'gratuito' | 'doacao',
@@ -35,7 +37,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     limite_vagas: 0,
     data_limite: '',
     permite_parcelamento: false,
-    metodos_pagamento: ['pix', 'boleto', 'credito'],
+    metodos_pagamento: defaultMetodos,
     exibir_preco: true,
     valor_livre: false,
     permite_patrocinio: false,
@@ -105,7 +107,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         limite_vagas: 0,
         data_limite: '',
         permite_parcelamento: false,
-        metodos_pagamento: ['pix', 'boleto', 'credito'],
+        metodos_pagamento: defaultMetodos,
         exibir_preco: true,
         valor_livre: false,
         permite_patrocinio: false,
@@ -126,7 +128,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       limite_vagas: ticket.limite_vagas || 0,
       data_limite: ticket.data_limite || '',
       permite_parcelamento: ticket.permite_parcelamento || false,
-      metodos_pagamento: ticket.metodos_pagamento || ['pix', 'boleto', 'credito'],
+      metodos_pagamento: ticket.metodos_pagamento || defaultMetodos,
       exibir_preco: ticket.exibir_preco !== false,
       valor_livre: ticket.valor_livre || false,
       permite_patrocinio: ticket.permite_patrocinio || false,
@@ -356,38 +358,50 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   </div>
                 )}
 
-                {/* Formas de pagamento — apenas para planos com financeiro */}
+                {/* Formas de pagamento — comportamento varia por plano */}
                 {!onlyFreeTickets && formData.tipo === 'pago' && (
-                <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento Aceitas</Label>
-                  <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-xl">
-                    {[
-                      { id: 'pix', label: 'PIX' },
-                      { id: 'boleto', label: 'Boleto' },
-                      { id: 'credito', label: 'Crédito' },
-                      { id: 'credito_recorrente', label: 'Crédito Recorrente' },
-                      { id: 'debito', label: 'Débito' },
-                      { id: 'dinheiro', label: 'Dinheiro' },
-                    ].map(method => (
-                      <label key={method.id} className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          checked={(formData.metodos_pagamento || []).includes(method.id)}
-                          onChange={(e) => {
-                            const current = formData.metodos_pagamento || [];
-                            if (e.target.checked) {
-                              setFormData({...formData, metodos_pagamento: [...current, method.id]});
-                            } else {
-                              setFormData({...formData, metodos_pagamento: current.filter(m => m !== method.id)});
-                            }
-                          }}
-                          className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
-                        />
-                        <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">{method.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                  plan.modules.autoPayments ? (
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento (Asaas)</Label>
+                      <div className="grid grid-cols-3 gap-2 p-4 bg-muted/30 rounded-xl">
+                        {[
+                          { id: 'pix', label: 'PIX' },
+                          { id: 'boleto', label: 'Boleto' },
+                          { id: 'credito', label: 'Cartão' },
+                        ].map(method => (
+                          <label key={method.id} className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={(formData.metodos_pagamento || []).includes(method.id)}
+                              onChange={(e) => {
+                                const current = formData.metodos_pagamento || [];
+                                if (e.target.checked) {
+                                  setFormData({...formData, metodos_pagamento: [...current, method.id]});
+                                } else {
+                                  setFormData({...formData, metodos_pagamento: current.filter(m => m !== method.id)});
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                            />
+                            <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">{method.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground px-1">
+                        A cobrança será gerada automaticamente no Asaas no momento da inscrição.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                      <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-bold text-blue-800">Pagamento manual</p>
+                        <p className="text-[11px] text-blue-700 mt-0.5">
+                          O participante se inscreve e você confirma o pagamento manualmente no módulo financeiro do evento.
+                        </p>
+                      </div>
+                    </div>
+                  )
                 )}
 
                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4">

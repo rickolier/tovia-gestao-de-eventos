@@ -25,6 +25,7 @@ import { signOut } from 'firebase/auth';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { cn } from '@/lib/utils';
+import { getPlanConfig } from '../lib/plan-limits';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import OnboardingTour, { hasTourBeenSeen } from '../components/OnboardingTour';
@@ -141,6 +142,7 @@ export default function Dashboard() {
   };
 
   const isAdmin = user?.email === 'admin@tovia.app';
+  const plan = getPlanConfig(profile?.plano);
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
     { id: 'inicio',      label: 'Início',        icon: House },
@@ -149,7 +151,7 @@ export default function Dashboard() {
     { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
     { id: 'relatorios',  label: 'Relatórios',     icon: BarChart3 },
     { id: 'faturamento', label: 'Faturamento',    icon: CreditCard },
-    { id: 'gateway',     label: 'Gateway',        icon: Plug },
+    ...(plan.modules.autoPayments ? [{ id: 'gateway', label: 'Gateway', icon: Plug }] : []),
     ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
   ];
 
