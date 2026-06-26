@@ -145,8 +145,9 @@ export interface Ticket {
   data_limite: string;
   permite_parcelamento: boolean;
   metodos_pagamento: string[];
-  max_parcelas_credito?: number;    // 1–12; 1 = somente à vista
-  max_parcelas_recorrente?: number; // 2–12; 0/undefined = desabilitado
+  max_parcelas_credito?: number;      // 1–12; 1 = somente à vista
+  max_parcelas_recorrente?: number;   // 2–12; 0/undefined = desabilitado
+  installment_logic?: 'free' | 'limited'; // free = sem restrição de data; limited = limitado pela data do evento
   exibir_preco?: boolean;
   // opções exclusivas de doação
   valor_livre?: boolean;        // participante digita o valor

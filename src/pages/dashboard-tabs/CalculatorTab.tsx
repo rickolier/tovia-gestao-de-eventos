@@ -3,12 +3,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Calculator, Users, CreditCard, DollarSign, Percent, TrendingUp, Info, Plus } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Calculator, Users, CreditCard, DollarSign, Percent, TrendingUp, Info, Plus, ArrowUpFromLine, ArrowDownToLine } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function CalculatorTab() {
   const navigate = useNavigate();
+
   const [venueCostType, setVenueCostType] = useState<'total' | 'per_person'>('total');
   const [venueValue, setVenueValue] = useState<number>(0);
   const [minParticipants, setMinParticipants] = useState<number>(0);
@@ -17,10 +17,13 @@ export default function CalculatorTab() {
   const [marginType, setMarginType] = useState<'percentage' | 'fixed'>('percentage');
   const [marginValue, setMarginValue] = useState<number>(10);
 
-  const [boletoFee, setBoletoFee] = useState<number>(2.99);
-  const [debitFee, setDebitFee] = useState<number>(1.99);
-  const [creditFee, setCreditFee] = useState<number>(3.99);
-  const [recurringFee, setRecurringFee] = useState<number>(4.99);
+  const [taxaAbsorbida, setTaxaAbsorbida] = useState<'pagador' | 'margem'>('pagador');
+
+  // Taxas Asaas — defaults públicos do site deles
+  const [pixFee, setPixFee] = useState<number>(0.99);         // % sobre o valor
+  const [boletoFee, setBoletoFee] = useState<number>(3.49);   // R$ fixo por boleto
+  const [creditFee, setCreditFee] = useState<number>(2.99);   // % à vista
+  const [recurringFee, setRecurringFee] = useState<number>(2.49); // % por parcela recorrente
 
   const [results, setResults] = useState({
     totalVenueCost: 0,
@@ -28,222 +31,287 @@ export default function CalculatorTab() {
     costPerPersonMax: 0,
     suggestedPricePix: 0,
     suggestedPriceBoleto: 0,
-    suggestedPriceDebit: 0,
     suggestedPriceCredit: 0,
     suggestedPriceRecurring: 0,
-    marginAmountPerPerson: 0
+    marginAmountPerPerson: 0,
   });
 
   useEffect(() => {
-    const calculate = () => {
-      const avgParticipants = (minParticipants + maxParticipants) / 2 || maxParticipants || minParticipants || 1;
+    const avg = (minParticipants + maxParticipants) / 2 || maxParticipants || minParticipants || 1;
 
-      let totalVenueCost = 0;
-      let costPerPerson = 0;
-      let costPerPersonMinLimit = 0;
-      let costPerPersonMaxLimit = 0;
+    let totalVenueCost = 0;
+    let costPerPerson = 0;
+    let costPerPersonMin = 0;
+    let costPerPersonMax = 0;
 
-      if (venueCostType === 'total') {
-        totalVenueCost = venueValue;
-        costPerPerson = totalVenueCost / avgParticipants;
-        costPerPersonMinLimit = maxParticipants > 0 ? totalVenueCost / maxParticipants : 0;
-        costPerPersonMaxLimit = minParticipants > 0 ? totalVenueCost / minParticipants : 0;
-      } else {
-        costPerPerson = venueValue;
-        totalVenueCost = venueValue * avgParticipants;
-        costPerPersonMinLimit = venueValue;
-        costPerPersonMaxLimit = venueValue;
-      }
+    if (venueCostType === 'total') {
+      totalVenueCost = venueValue;
+      costPerPerson = totalVenueCost / avg;
+      costPerPersonMin = maxParticipants > 0 ? totalVenueCost / maxParticipants : 0;
+      costPerPersonMax = minParticipants > 0 ? totalVenueCost / minParticipants : 0;
+    } else {
+      costPerPerson = venueValue;
+      totalVenueCost = venueValue * avg;
+      costPerPersonMin = venueValue;
+      costPerPersonMax = venueValue;
+    }
 
-      let marginAmount = 0;
-      if (marginType === 'percentage') {
-        marginAmount = costPerPerson * (marginValue / 100);
-      } else {
-        marginAmount = marginValue;
-      }
+    const marginAmount =
+      marginType === 'percentage' ? costPerPerson * (marginValue / 100) : marginValue;
 
-      const basePrice = costPerPerson + marginAmount;
+    const base = costPerPerson + marginAmount;
 
-      const calcFinalPrice = (base: number, fee: number) => {
-        if (fee >= 100) return 0;
-        return base / (1 - fee / 100);
-      };
+    // Preço sugerido por método:
+    // pagador = participante paga a taxa em cima do base (organizer recebe base)
+    // margem  = participante paga o base (organizer paga a taxa do próprio bolso)
+    const calcPct = (fee: number) =>
+      taxaAbsorbida === 'pagador' ? (fee >= 100 ? 0 : base / (1 - fee / 100)) : base;
 
-      setResults({
-        totalVenueCost,
-        costPerPersonMin: costPerPersonMinLimit,
-        costPerPersonMax: costPerPersonMaxLimit,
-        suggestedPricePix: calcFinalPrice(basePrice, 0),
-        suggestedPriceBoleto: calcFinalPrice(basePrice, boletoFee),
-        suggestedPriceDebit: calcFinalPrice(basePrice, debitFee),
-        suggestedPriceCredit: calcFinalPrice(basePrice, creditFee),
-        suggestedPriceRecurring: calcFinalPrice(basePrice, recurringFee),
-        marginAmountPerPerson: marginAmount
-      });
-    };
+    const calcFixed = (fee: number) =>
+      taxaAbsorbida === 'pagador' ? base + fee : base;
 
-    calculate();
-  }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue, boletoFee, debitFee, creditFee, recurringFee]);
+    setResults({
+      totalVenueCost,
+      costPerPersonMin,
+      costPerPersonMax,
+      suggestedPricePix: calcPct(pixFee),
+      suggestedPriceBoleto: calcFixed(boletoFee),
+      suggestedPriceCredit: calcPct(creditFee),
+      suggestedPriceRecurring: calcPct(recurringFee),
+      marginAmountPerPerson: marginAmount,
+    });
+  }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue,
+      taxaAbsorbida, pixFee, boletoFee, creditFee, recurringFee]);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  };
+  const fmt = (v: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+
+  const taxaOpts = [
+    {
+      value: 'pagador' as const,
+      title: 'Taxas pelo Participante',
+      desc: 'A taxa é somada ao valor base. Você recebe o valor base integralmente.',
+      icon: <ArrowUpFromLine className="w-4 h-4" />,
+      color: 'amber',
+    },
+    {
+      value: 'margem' as const,
+      title: 'Taxas pela Sua Margem',
+      desc: 'O participante paga o valor base. A taxa é descontada da sua margem.',
+      icon: <ArrowDownToLine className="w-4 h-4" />,
+      color: 'emerald',
+    },
+  ];
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-black tracking-tight text-foreground">Calculadora de Custos</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Planeje seu evento com precisão e defina o preço ideal por forma de pagamento.</p>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Simule o impacto das taxas do Asaas e encontre o melhor valor para seus ingressos.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Column: Form */}
+        {/* Left Column */}
         <div className="lg:col-span-7 space-y-4">
+          {/* Custos */}
           <Card className="border border-border shadow-sm rounded-2xl overflow-hidden">
-            {/* Card header */}
             <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-muted/30">
               <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Info className="w-4 h-4 text-primary" />
               </div>
-              <h3 className="text-sm font-black text-foreground tracking-tight">Definição de Custos</h3>
+              <h3 className="text-sm font-black text-foreground tracking-tight">Custos do Evento</h3>
             </div>
-
             <CardContent className="p-5 space-y-5">
-              {/* Venue Cost Section */}
               <div className="space-y-4">
                 <div>
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2 block">Forma de cálculo do local</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2 block">
+                    Forma de cálculo do custo
+                  </Label>
                   <div className="grid grid-cols-2 gap-1.5 bg-muted/40 p-1 rounded-xl border border-border/50">
-                    <button
-                      onClick={() => setVenueCostType('total')}
-                      className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${venueCostType === 'total' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'}`}
-                    >
-                      VALOR TOTAL
-                    </button>
-                    <button
-                      onClick={() => setVenueCostType('per_person')}
-                      className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${venueCostType === 'per_person' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'}`}
-                    >
-                      POR VAGA
-                    </button>
+                    {(['total', 'per_person'] as const).map(v => (
+                      <button
+                        key={v}
+                        onClick={() => setVenueCostType(v)}
+                        className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${
+                          venueCostType === v ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'
+                        }`}
+                      >
+                        {v === 'total' ? 'VALOR TOTAL' : 'POR VAGA'}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="grid gap-1.5">
-                    <Label htmlFor="venueValue" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                      {venueCostType === 'total' ? 'Custo Total do Contrato (R$)' : 'Custo por Inscrição/Vaga (R$)'}
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                      {venueCostType === 'total' ? 'Custo Total do Evento (R$)' : 'Custo por Inscrição/Vaga (R$)'}
                     </Label>
                     <div className="relative">
                       <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="venueValue"
                         type="number"
                         placeholder="0.00"
-                        className="pl-10 h-10 rounded-xl border-border bg-muted/20 focus:bg-background transition-all font-bold"
+                        className="pl-10 h-10 rounded-xl border-border bg-muted/20 font-bold"
                         value={venueValue || ''}
-                        onChange={(e) => setVenueValue(Number(e.target.value))}
+                        onChange={e => setVenueValue(Number(e.target.value))}
                       />
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="minParticipants" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Vagas Mínimas</Label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          id="minParticipants"
-                          type="number"
-                          placeholder="0"
-                          className="pl-10 h-10 rounded-xl border-border bg-muted/20 focus:bg-background transition-all font-medium"
-                          value={minParticipants || ''}
-                          onChange={(e) => setMinParticipants(Number(e.target.value))}
-                        />
+                    {[
+                      { label: 'Vagas Mínimas', val: minParticipants, set: setMinParticipants },
+                      { label: 'Vagas Máximas', val: maxParticipants, set: setMaxParticipants },
+                    ].map(({ label, val, set }) => (
+                      <div key={label} className="grid gap-1.5">
+                        <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</Label>
+                        <div className="relative">
+                          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            className="pl-10 h-10 rounded-xl border-border bg-muted/20 font-medium"
+                            value={val || ''}
+                            onChange={e => set(Number(e.target.value))}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="maxParticipants" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Vagas Máximas</Label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          id="maxParticipants"
-                          type="number"
-                          placeholder="0"
-                          className="pl-10 h-10 rounded-xl border-border bg-muted/20 focus:bg-background transition-all font-medium"
-                          value={maxParticipants || ''}
-                          onChange={(e) => setMaxParticipants(Number(e.target.value))}
-                        />
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Margin Section */}
+              {/* Margem */}
               <div className="space-y-4 pt-4 border-t border-border/60">
                 <div>
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2 block">Tipo de Margem Desejada</Label>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2 block">
+                    Margem Desejada
+                  </Label>
                   <div className="grid grid-cols-2 gap-1.5 bg-muted/40 p-1 rounded-xl border border-border/50">
-                    <button
-                      onClick={() => setMarginType('percentage')}
-                      className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${marginType === 'percentage' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'}`}
-                    >
-                      PORCENTAGEM (%)
-                    </button>
-                    <button
-                      onClick={() => setMarginType('fixed')}
-                      className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${marginType === 'fixed' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'}`}
-                    >
-                      VALOR FIXO (R$)
-                    </button>
+                    {(['percentage', 'fixed'] as const).map(v => (
+                      <button
+                        key={v}
+                        onClick={() => setMarginType(v)}
+                        className={`py-2 px-3 rounded-lg text-xs font-black transition-all ${
+                          marginType === v ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/60'
+                        }`}
+                      >
+                        {v === 'percentage' ? 'PORCENTAGEM (%)' : 'VALOR FIXO (R$)'}
+                      </button>
+                    ))}
                   </div>
                 </div>
-
                 <div className="grid gap-1.5">
-                  <Label htmlFor="marginValue" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                    {marginType === 'percentage' ? 'Margem Adicional (%)' : 'Margem Adicional em Reais (R$)'}
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    {marginType === 'percentage' ? 'Margem (%)' : 'Margem (R$)'}
                   </Label>
                   <div className="relative">
-                    {marginType === 'percentage' ? (
-                      <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    )}
+                    {marginType === 'percentage'
+                      ? <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      : <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />}
                     <Input
-                      id="marginValue"
                       type="number"
-                      placeholder={marginType === 'percentage' ? "10" : "50.00"}
-                      className="pl-10 h-10 rounded-xl border-border bg-muted/20 focus:bg-background transition-all font-medium"
+                      placeholder={marginType === 'percentage' ? '10' : '50.00'}
+                      className="pl-10 h-10 rounded-xl border-border bg-muted/20 font-medium"
                       value={marginValue || ''}
-                      onChange={(e) => setMarginValue(Number(e.target.value))}
+                      onChange={e => setMarginValue(Number(e.target.value))}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Fees Section */}
-              <div className="pt-4 border-t border-border/60">
-                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Taxas por forma de pagamento (%)</Label>
-                <div className="grid grid-cols-4 gap-3">
-                  {[
-                    { label: 'BOLETO', value: boletoFee, onChange: setBoletoFee },
-                    { label: 'DÉBITO', value: debitFee, onChange: setDebitFee },
-                    { label: 'CRÉDITO', value: creditFee, onChange: setCreditFee },
-                    { label: 'RECORRENTE', value: recurringFee, onChange: setRecurringFee },
-                  ].map(({ label, value, onChange }) => (
-                    <div key={label} className="space-y-1.5">
-                      <Label className="text-[10px] font-bold text-muted-foreground">{label}</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        className="h-10 rounded-xl bg-muted/20 font-bold text-center"
-                        value={value}
-                        onChange={(e) => onChange(Number(e.target.value))}
-                      />
-                    </div>
-                  ))}
+              {/* Quem absorve */}
+              <div className="space-y-3 pt-4 border-t border-border/60">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <Percent className="w-3 h-3 text-primary" /> Quem paga a taxa do gateway?
+                </Label>
+                <div className="grid gap-1.5">
+                  {taxaOpts.map(opt => {
+                    const active = taxaAbsorbida === opt.value;
+                    const isAmber = opt.color === 'amber';
+                    return (
+                      <div
+                        key={opt.value}
+                        onClick={() => setTaxaAbsorbida(opt.value)}
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all select-none ${
+                          active
+                            ? isAmber ? 'border-amber-400 bg-amber-50' : 'border-emerald-500 bg-emerald-50'
+                            : 'border-transparent bg-muted/40 hover:bg-muted/60'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                            active ? (isAmber ? 'bg-amber-400 text-white' : 'bg-emerald-500 text-white') : 'bg-muted text-muted-foreground'
+                          }`}>
+                            {opt.icon}
+                          </div>
+                          <div className="flex-1">
+                            <p className={`text-xs font-black uppercase tracking-widest ${
+                              active ? (isAmber ? 'text-amber-700' : 'text-emerald-700') : 'text-foreground'
+                            }`}>{opt.title}</p>
+                            <p className="text-[11px] text-muted-foreground font-medium">{opt.desc}</p>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                            active ? (isAmber ? 'border-amber-400' : 'border-emerald-500') : 'border-muted-foreground'
+                          }`}>
+                            {active && <div className={`w-2 h-2 rounded-full ${isAmber ? 'bg-amber-400' : 'bg-emerald-500'}`} />}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Taxas Asaas */}
+              <div className="pt-4 border-t border-border/60 space-y-3">
+                <div>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground block mb-0.5">
+                    Taxas do Asaas (seu contrato)
+                  </Label>
+                  <p className="text-[11px] text-muted-foreground font-medium">
+                    Valores padrão do Asaas. Ajuste se seu plano for diferente.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PIX (%)</Label>
+                    <Input
+                      type="number" step="0.01"
+                      className="h-10 rounded-xl bg-muted/20 font-bold text-center"
+                      value={pixFee}
+                      onChange={e => setPixFee(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">BOLETO (R$ fixo)</Label>
+                    <Input
+                      type="number" step="0.01"
+                      className="h-10 rounded-xl bg-muted/20 font-bold text-center"
+                      value={boletoFee}
+                      onChange={e => setBoletoFee(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">CRÉDITO (%)</Label>
+                    <Input
+                      type="number" step="0.01"
+                      className="h-10 rounded-xl bg-muted/20 font-bold text-center"
+                      value={creditFee}
+                      onChange={e => setCreditFee(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">RECORRENTE (%)</Label>
+                    <Input
+                      type="number" step="0.01"
+                      className="h-10 rounded-xl bg-muted/20 font-bold text-center"
+                      value={recurringFee}
+                      onChange={e => setRecurringFee(Number(e.target.value))}
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -259,65 +327,71 @@ export default function CalculatorTab() {
                 <TrendingUp className="w-4 h-4 text-white" />
               </div>
             </div>
-
             <CardContent className="p-5 space-y-5">
-              {/* Cost Highlight */}
+              {/* Custo médio */}
               <div className="text-center space-y-0.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block">Custo Médio por Vaga</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block">
+                  Custo Médio por Vaga
+                </span>
                 <div className="text-3xl font-black text-foreground tracking-tight">
-                  {formatCurrency((results.costPerPersonMin + results.costPerPersonMax) / 2)}
+                  {fmt((results.costPerPersonMin + results.costPerPersonMax) / 2)}
                 </div>
               </div>
 
-              {/* Min-Max + Margin */}
+              {/* Faixa + margem */}
               <div className="space-y-2">
                 {results.costPerPersonMin !== results.costPerPersonMax && (
                   <div className="bg-muted/40 px-4 py-3 rounded-xl border border-border/50 flex justify-between items-center">
                     <div>
                       <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block">Faixa Min–Max</span>
                       <span className="text-sm font-black text-foreground">
-                        {formatCurrency(results.costPerPersonMin)} — {formatCurrency(results.costPerPersonMax)}
+                        {fmt(results.costPerPersonMin)} — {fmt(results.costPerPersonMax)}
                       </span>
                     </div>
                     <Info className="w-4 h-4 text-muted-foreground/30" />
                   </div>
                 )}
-
                 <div className="bg-primary px-4 py-3 rounded-xl flex items-center justify-between">
                   <div>
                     <span className="text-[9px] font-black uppercase tracking-widest text-white/60 block">Sua Margem</span>
-                    <span className="text-xl font-black text-white">{formatCurrency(results.marginAmountPerPerson)}</span>
+                    <span className="text-xl font-black text-white">{fmt(results.marginAmountPerPerson)}</span>
                   </div>
                   <span className="text-[9px] text-white/50 font-bold uppercase tracking-widest">por inscrição</span>
                 </div>
               </div>
 
-              {/* Payment channels */}
+              {/* Preço sugerido por canal */}
               <div className="space-y-3">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Preço por canal de pagamento</h4>
-
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {taxaAbsorbida === 'pagador' ? 'Cobrar do participante' : 'Participante paga (você absorve a taxa)'}
+                </h4>
                 <div className="space-y-2">
                   {[
-                    { label: 'Via PIX', price: results.suggestedPricePix, color: 'bg-emerald-500/10 text-emerald-600', highlight: false },
-                    { label: 'Via Boleto', price: results.suggestedPriceBoleto, color: 'bg-amber-500/10 text-amber-600', highlight: false },
-                    { label: 'Via Débito', price: results.suggestedPriceDebit, color: 'bg-blue-500/10 text-blue-600', highlight: false },
-                    { label: 'Crédito', price: results.suggestedPriceCredit, color: 'bg-primary text-white', highlight: true },
-                    { label: 'Recorrente', price: results.suggestedPriceRecurring, color: 'bg-purple-500/10 text-purple-600', highlight: false },
-                  ].map(({ label, price, color, highlight }) => (
+                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `${pixFee}%`,         color: 'bg-emerald-500/10 text-emerald-600' },
+                    { label: 'Boleto',     price: results.suggestedPriceBoleto,    fee: fmt(boletoFee),       color: 'bg-amber-500/10 text-amber-600' },
+                    { label: 'Crédito',    price: results.suggestedPriceCredit,    fee: `${creditFee}%`,      color: 'bg-primary text-white', highlight: true },
+                    { label: 'Recorrente', price: results.suggestedPriceRecurring, fee: `${recurringFee}%`,   color: 'bg-purple-500/10 text-purple-600' },
+                  ].map(({ label, price, fee, color, highlight }) => (
                     <div
                       key={label}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${highlight ? 'bg-primary/10 border-primary/20' : 'bg-card border-border/50 hover:border-primary/20'}`}
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
+                        highlight ? 'bg-primary/10 border-primary/20' : 'bg-card border-border/50 hover:border-primary/20'
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${color}`}>
                           <CreditCard className="w-4 h-4" />
                         </div>
                         <div>
-                          <span className={`text-xs font-black uppercase tracking-wider ${highlight ? 'text-primary' : 'text-foreground'}`}>{label}</span>
-                          {highlight && <span className="block text-[8px] font-black text-primary/50 uppercase tracking-widest">Recomendado</span>}
+                          <span className={`text-xs font-black uppercase tracking-wider ${highlight ? 'text-primary' : 'text-foreground'}`}>
+                            {label}
+                          </span>
+                          <span className="block text-[9px] text-muted-foreground font-medium">taxa: {fee}</span>
                         </div>
                       </div>
-                      <span className={`text-base font-black ${highlight ? 'text-primary' : 'text-foreground'}`}>{formatCurrency(price)}</span>
+                      <span className={`text-base font-black ${highlight ? 'text-primary' : 'text-foreground'}`}>
+                        {fmt(price)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -332,7 +406,7 @@ export default function CalculatorTab() {
         <Button
           onClick={() => {
             sessionStorage.setItem('tovia_calc_config', JSON.stringify({
-              boletoFee, creditFee, debitFee, recurringFee,
+              pixFee, boletoFee, creditFee, recurringFee,
               maxParticipants, minParticipants, results,
             }));
             navigate('/eventos/novo');
@@ -344,10 +418,10 @@ export default function CalculatorTab() {
         </Button>
       </div>
 
-      {/* Disclaimer */}
       <div className="bg-muted/30 px-5 py-4 rounded-xl border border-border/50 text-center">
         <p className="text-xs text-muted-foreground font-medium max-w-2xl mx-auto">
-          Estes cálculos são estimativas baseadas nos valores fornecidos. Podem haver variações dependendo de outros custos não listados. Recomendamos sempre uma margem de segurança para imprevistos.
+          Taxas padrão do Asaas: PIX 0,99% · Boleto R$3,49 · Crédito 2,99% · Recorrente 2,49%.
+          Esses valores podem variar conforme seu plano contratado. Consulte seu painel Asaas para confirmar.
         </p>
       </div>
     </div>

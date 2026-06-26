@@ -41,6 +41,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
     metodos_pagamento: defaultMetodos,
     max_parcelas_credito: 1,
     max_parcelas_recorrente: 2,
+    installment_logic: 'free' as 'free' | 'limited',
     exibir_preco: true,
     valor_livre: false,
     permite_patrocinio: false,
@@ -113,6 +114,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         metodos_pagamento: defaultMetodos,
         max_parcelas_credito: 1,
         max_parcelas_recorrente: 2,
+        installment_logic: 'free' as 'free' | 'limited',
         exibir_preco: true,
         valor_livre: false,
         permite_patrocinio: false,
@@ -136,6 +138,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       metodos_pagamento: ticket.metodos_pagamento || defaultMetodos,
       max_parcelas_credito: ticket.max_parcelas_credito ?? 1,
       max_parcelas_recorrente: ticket.max_parcelas_recorrente ?? 2,
+      installment_logic: (ticket as any).installment_logic ?? 'free',
       exibir_preco: ticket.exibir_preco !== false,
       valor_livre: ticket.valor_livre || false,
       permite_patrocinio: ticket.permite_patrocinio || false,
@@ -188,6 +191,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               data_limite: '',
               permite_parcelamento: false,
               metodos_pagamento: ['pix', 'boleto', 'credito'],
+              max_parcelas_credito: 1,
+              max_parcelas_recorrente: 2,
+              installment_logic: 'free' as 'free' | 'limited',
               exibir_preco: true,
             });
             setIsDialogOpen(true);
@@ -434,6 +440,32 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                             )}
                           </div>
                         ))}
+
+                        {/* Lógica de parcelamento — exibir se credito ou recorrente estão ativos */}
+                        {((formData.metodos_pagamento || []).includes('credito') || (formData.metodos_pagamento || []).includes('recorrente')) && (
+                          <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
+                            <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Lógica de Parcelamento</p>
+                            {[
+                              { value: 'free', label: 'Parcelamento Livre', desc: 'Disponível em qualquer momento, até o limite definido acima.' },
+                              { value: 'limited', label: 'Limitado pela data do evento', desc: 'Nº de parcelas calculado automaticamente pela data do evento.' },
+                            ].map(opt => (
+                              <label key={opt.value} className="flex items-start gap-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name="installment_logic"
+                                  value={opt.value}
+                                  checked={formData.installment_logic === opt.value}
+                                  onChange={() => setFormData({ ...formData, installment_logic: opt.value as 'free' | 'limited' })}
+                                  className="mt-0.5 w-3.5 h-3.5 text-primary focus:ring-primary"
+                                />
+                                <div>
+                                  <p className="text-xs font-bold text-foreground">{opt.label}</p>
+                                  <p className="text-[10px] text-muted-foreground">{opt.desc}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        )}
                       </div>
                       <p className="text-[11px] text-muted-foreground px-1">
                         A cobrança será gerada automaticamente no Asaas no momento da inscrição.

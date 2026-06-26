@@ -14,7 +14,6 @@ interface PlanConfig {
     // Módulo 2 — Financeiro Manual (Essencial+)
     manualPayments: boolean;
     donations: boolean;
-    financeiroConfig: boolean;
     // Módulo 3 — Pagamentos Automáticos via gateway (Pro)
     autoPayments: boolean;
     // Módulo 4 — Gestão do Evento: recursos, tarefas, equipe (Pro)
@@ -37,7 +36,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       registrations: true,
       manualPayments: false,
       donations: false,
-      financeiroConfig: false,
       autoPayments: false,
       eventManagement: false,
       tasksAndTeam: false,
@@ -55,7 +53,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       registrations: true,
       manualPayments: true,
       donations: true,
-      financeiroConfig: true,
       autoPayments: false,
       eventManagement: false,
       tasksAndTeam: false,
@@ -73,7 +70,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       registrations: true,
       manualPayments: true,
       donations: true,
-      financeiroConfig: true,
       autoPayments: true,
       eventManagement: true,
       tasksAndTeam: true,
@@ -92,7 +88,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       registrations: true,
       manualPayments: true,
       donations: true,
-      financeiroConfig: true,
       autoPayments: true,
       eventManagement: true,
       tasksAndTeam: true,

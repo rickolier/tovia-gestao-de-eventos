@@ -43,7 +43,6 @@ import ManagementTab from './event-tabs/ManagementTab';
 import TasksTab from './event-tabs/TasksTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
 import SalesPagesTab from './event-tabs/SalesPagesTab';
-import FinanceiroConfigTab from './event-tabs/FinanceiroConfigTab';
 import EquipeTab from './event-tabs/EquipeTab';
 import { toast } from 'sonner';
 import { getPlanConfig } from '../lib/plan-limits';
@@ -134,7 +133,6 @@ export default function EventDetail() {
     { value: 'grupos',         label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.eventManagement) },
     { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: showTab('tasks', plan.modules.tasksAndTeam) },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
-    { value: 'financeiro-config', label: 'Config. Fin.',   shortLabel: 'Config.',  icon: Settings2,  show: !isGuest && plan.modules.financeiroConfig },
     { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: !isGuest && plan.modules.reports },
     { value: 'equipe',            label: 'Equipe',         shortLabel: 'Equipe',   icon: UserCog,    show: isOwner && plan.modules.tasksAndTeam },
   ].filter(t => t.show);
@@ -160,7 +158,6 @@ export default function EventDetail() {
     {
       category: 'Financeiro',
       items: [
-        { value: 'financeiro-config', label: 'Configurações', icon: Settings2,  show: !isGuest && plan.modules.financeiroConfig },
         { value: 'financial',         label: 'Pagamentos',    icon: DollarSign, show: !isGuest && plan.modules.manualPayments },
         { value: 'donations',         label: 'Doações',       icon: Heart,      show: !isGuest && plan.modules.donations },
       ],
@@ -396,9 +393,6 @@ export default function EventDetail() {
             </TabsContent>
             <TabsContent value="sales-pages" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <SalesPagesTab eventoId={evento.id} />
-            </TabsContent>
-            <TabsContent value="financeiro-config" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <FinanceiroConfigTab evento={evento} />
             </TabsContent>
             <TabsContent value="reports" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <ReportsTab evento={evento} />
