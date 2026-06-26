@@ -91,9 +91,8 @@ service cloud.firestore {
 
     match /eventos/{eventoId} {
       allow get: if isValidId(eventoId); // Open get for public event page, but ID must be valid
-      allow list: if (isSignedIn() && (
+      allow list: if isAdmin() || (isSignedIn() && (
         resource.data.criado_por == request.auth.uid ||
-        isAdmin() ||
         resource.data.get('equipeIds', []).hasAll([request.auth.uid])
       )) || (
         // Página pública do organizador: listagem sem auth quando organizador tem pagina_publica ativa
@@ -192,10 +191,16 @@ service cloud.firestore {
     }
 
     // ===============================================================
-    // Collection Group — admin pode listar inscricoes de todos os eventos
-    // Necessário para queries collectionGroup('inscricoes') no painel admin
+    // Collection Groups — admin pode listar subcoleções de todos os eventos
+    // Necessário para collectionGroup() no painel admin
     // ===============================================================
     match /{path=**}/inscricoes/{inscricaoId} {
+      allow list: if isAdmin();
+    }
+    match /{path=**}/doacoes/{doacaoId} {
+      allow list: if isAdmin();
+    }
+    match /{path=**}/pagamentos/{pagamentoId} {
       allow list: if isAdmin();
     }
   }
