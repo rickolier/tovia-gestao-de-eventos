@@ -1,4 +1,4 @@
-export type PlanLevel = 'start' | 'essencial' | 'pro';
+export type PlanLevel = 'start' | 'essencial' | 'pro' | 'personalizado';
 
 export interface ArtigoBC {
   id: string;

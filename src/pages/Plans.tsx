@@ -20,9 +20,9 @@ const MODULE_DESCRIPTIONS = [
 ];
 
 const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro'];
-const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3 };
-const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 39,90/mês', pro: 'R$ 99,00/mês' };
-const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2 };
+const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
+const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 39,90/mês', pro: 'R$ 99,00/mês', personalizado: 'R$ 299,00/mês' };
+const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2, personalizado: 3 };
 
 export default function Plans() {
   const { user, profile } = useAuth();

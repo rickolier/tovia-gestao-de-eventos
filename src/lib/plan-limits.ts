@@ -7,6 +7,7 @@ interface PlanConfig {
   maxActiveEvents: number;
   maxAttendeesPerEvent: number;
   maxTicketsPerEvent: number;
+  maxFreeAttendeesTotal?: number;
   modules: {
     // Módulo 1 — Inscrições (todos os planos)
     registrations: boolean;
@@ -68,6 +69,25 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
+    modules: {
+      registrations: true,
+      manualPayments: true,
+      donations: true,
+      financeiroConfig: true,
+      autoPayments: true,
+      eventManagement: true,
+      tasksAndTeam: true,
+      reports: true,
+    },
+  },
+  personalizado: {
+    name: 'Personalizado',
+    label: 'Ilimitado + Pagamentos Automáticos',
+    description: 'Todos os módulos sem limite de eventos ou inscritos pagos. Eventos gratuitos limitados a 10.000 inscritos por evento.',
+    maxActiveEvents: Infinity,
+    maxAttendeesPerEvent: Infinity,
+    maxTicketsPerEvent: Infinity,
+    maxFreeAttendeesTotal: 10000,
     modules: {
       registrations: true,
       manualPayments: true,

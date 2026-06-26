@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+
+const ITEMS_PER_PAGE = 50;
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '../../lib/firebase-utils';
 import { Inscricao, Pessoa, Ticket, Pagamento, Evento, PaginaVenda, CampoFormulario } from '../../types';
 import { notifOnce } from '../../lib/notifications';
@@ -44,6 +46,9 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const [showPageSelector, setShowPageSelector] = useState(false);
   const [dynamicValues, setDynamicValues] = useState<Record<string, string | boolean>>({});
   
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(0);
+
   // Sorting and Filtering State
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
@@ -716,6 +721,14 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
     return 0;
   });
 
+  useEffect(() => { setCurrentPage(0); }, [searchTerm, columnFilters, sortConfig]);
+
+  const totalPages = Math.ceil(filteredRegistrations.length / ITEMS_PER_PAGE);
+  const paginatedRegistrations = filteredRegistrations.slice(
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
+  );
+
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -1365,7 +1378,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredRegistrations.map(reg => (
+                paginatedRegistrations.map(reg => (
                   <TableRow key={reg.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 group">
                     <TableCell className="py-4 px-6">
                       <div className="flex flex-col">
@@ -1437,6 +1450,55 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
             </TableBody>
           </Table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-3 border-t border-border/30">
+            <span className="text-xs text-muted-foreground">
+              {currentPage * ITEMS_PER_PAGE + 1}–{Math.min((currentPage + 1) * ITEMS_PER_PAGE, filteredRegistrations.length)} de {filteredRegistrations.length} inscritos
+            </span>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-3 text-xs rounded-lg"
+                disabled={currentPage === 0}
+                onClick={() => setCurrentPage(p => p - 1)}
+              >
+                ← Anterior
+              </Button>
+              {Array.from({ length: totalPages }, (_, i) => i).filter(i =>
+                i === 0 || i === totalPages - 1 || Math.abs(i - currentPage) <= 1
+              ).reduce<(number | '...')[]>((acc, i, idx, arr) => {
+                if (idx > 0 && (i as number) - (arr[idx - 1] as number) > 1) acc.push('...');
+                acc.push(i);
+                return acc;
+              }, []).map((item, idx) =>
+                item === '...' ? (
+                  <span key={`ellipsis-${idx}`} className="px-1 text-xs text-muted-foreground">…</span>
+                ) : (
+                  <Button
+                    key={item}
+                    variant={currentPage === item ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`h-8 w-8 p-0 text-xs rounded-lg ${currentPage === item ? 'bg-primary text-white' : ''}`}
+                    onClick={() => setCurrentPage(item as number)}
+                  >
+                    {(item as number) + 1}
+                  </Button>
+                )
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-3 text-xs rounded-lg"
+                disabled={currentPage >= totalPages - 1}
+                onClick={() => setCurrentPage(p => p + 1)}
+              >
+                Próximo →
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
