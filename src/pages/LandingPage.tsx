@@ -1026,127 +1026,155 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Tabela unificada */}
-          <div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
-            <table className="w-full text-sm min-w-[560px]">
-              <thead>
-                <tr className="border-b-2 border-border">
-                  <th className="text-left px-6 py-6 w-[40%]">
-                    <p className="text-base font-black text-foreground">Funcionalidades</p>
-                    <p className="text-xs text-muted-foreground font-normal mt-0.5">Compare os planos</p>
-                  </th>
+          {/* Cards de planos */}
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
 
-                  {/* Start */}
-                  <th className="text-center px-4 py-6 w-[20%]">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Start</p>
-                    <p className="text-2xl font-black text-foreground">Grátis</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">para sempre</p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
-                      Começar
-                    </Link>
-                  </th>
-
-                  {/* Essencial */}
-                  <th className="text-center px-4 py-6 w-[20%]">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Essencial</p>
-                    <p className="text-2xl font-black text-foreground">
-                      {billing === 'mensal' ? 'R$69' : 'R$57,50'}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {billing === 'anual' ? <><span className="line-through text-muted-foreground/50">R$828</span>{' '}<span className="font-bold text-primary">R$690/ano</span></> : '/mês'}
-                    </p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground transition-all">
-                      Começar
-                    </Link>
-                  </th>
-
-                  {/* Pro — destaque */}
-                  <th className="text-center px-4 py-6 w-[20%] bg-primary/5 relative">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Recomendado</p>
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Pro</p>
-                    <p className="text-2xl font-black text-primary">
-                      {billing === 'mensal' ? 'R$129' : 'R$107,50'}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {billing === 'anual' ? <><span className="line-through text-muted-foreground/50">R$1.548</span>{' '}<span className="font-bold text-primary">R$1.290/ano</span></> : '/mês'}
-                    </p>
-                    <Link to="/login?cadastro=true" className="mt-4 block text-xs font-black uppercase tracking-widest py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
-                      Começar agora
-                    </Link>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {([
-                  {
-                    category: 'Eventos & Limites',
-                    rows: [
-                      { label: 'Eventos ativos simultâneos', start: '1', essencial: '3', pro: '10' },
-                      { label: 'Vagas por evento',           start: '200', essencial: '500', pro: '1.000' },
-                      { label: 'Tipos de ingresso',          start: '1', essencial: '3', pro: '10' },
-                      { label: 'Páginas de inscrição',       start: '1', essencial: '3', pro: '10' },
-                    ],
-                  },
-                  {
-                    category: 'Inscrições',
-                    rows: [
-                      { label: 'Inscrições gratuitas',           start: true,  essencial: true,  pro: true  },
-                      { label: 'Formulários personalizados',     start: true,  essencial: true,  pro: true  },
-                      { label: 'Gestão de participantes',        start: true,  essencial: true,  pro: true  },
-                      { label: 'Consulta de inscrição por CPF',  start: true,  essencial: true,  pro: true  },
-                      { label: 'Ingressos com valores (pagos)',  start: false, essencial: true,  pro: true  },
-                    ],
-                  },
-                  {
-                    category: 'Financeiro',
-                    rows: [
-                      { label: 'Registro manual de pagamentos', start: false, essencial: true,  pro: true },
-                      { label: 'Registro de doações',           start: false, essencial: true,  pro: true },
-                      { label: 'Relatórios financeiros',        start: false, essencial: true,  pro: true },
-                      { label: 'Gateway próprio (BYOG)',         start: false, essencial: false, pro: true },
-                      { label: 'PIX, Boleto e Cartão automáticos', start: false, essencial: false, pro: true },
-                    ],
-                  },
-                  {
-                    category: 'Gestão Avançada',
-                    rows: [
-                      { label: 'Grupos, quartos e mesas',              start: false, essencial: false, pro: true },
-                      { label: 'Tarefas com equipe integrada',         start: false, essencial: false, pro: true },
-                      { label: 'Gestão de recursos e fornecedores',    start: false, essencial: false, pro: true },
-                      { label: 'Relatórios completos',                  start: false, essencial: false, pro: true },
-                    ],
-                  },
-                ] as { category: string; rows: { label: string; start: boolean | string; essencial: boolean | string; pro: boolean | string }[] }[]).map((section, si) => (
-                  <React.Fragment key={`s-${si}`}>
-                    <tr className="border-t-2 border-border bg-muted/40">
-                      <td colSpan={4} className="px-6 py-2.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
-                        {section.category}
-                      </td>
-                    </tr>
-                    {section.rows.map((row, ri) => (
-                      <tr key={`${si}-${ri}`} className="border-t border-border/40 hover:bg-muted/20 transition-colors">
-                        <td className="px-6 py-3.5 text-foreground font-medium text-sm">{row.label}</td>
-                        {(['start', 'essencial', 'pro'] as const).map(plan => {
-                          const val = row[plan];
-                          const isHL = plan === 'pro';
-                          return (
-                            <td key={plan} className={`text-center px-4 py-3.5 ${isHL ? 'bg-primary/5' : ''}`}>
-                              {typeof val === 'boolean'
-                                ? val
-                                  ? <CheckCircle className="w-4 h-4 text-primary mx-auto" />
-                                  : <span className="text-muted-foreground/30 font-bold">—</span>
-                                : <span className={cn('text-xs font-bold', val === 'Ilimitado' ? 'text-primary' : 'text-foreground')}>{val}</span>
-                              }
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </React.Fragment>
+            {/* ── START ── */}
+            <div className="rounded-3xl border border-border bg-card p-8 flex flex-col gap-5">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Plano</p>
+                <p className="text-4xl font-black text-foreground tracking-tight">Start</p>
+                <p className="text-sm text-muted-foreground mt-1">Para quem está começando</p>
+              </div>
+              <div className="rounded-2xl bg-muted px-5 py-4 flex items-end gap-1">
+                <span className="text-3xl font-black text-foreground">Grátis</span>
+                <span className="text-muted-foreground text-sm mb-0.5">para sempre</span>
+              </div>
+              <ul className="flex-1 space-y-2.5 text-sm">
+                {[
+                  { ok: true,  label: '1 evento ativo' },
+                  { ok: true,  label: 'Até 200 vagas por evento' },
+                  { ok: true,  label: 'Formulários personalizados' },
+                  { ok: true,  label: 'Inscrições gratuitas' },
+                  { ok: true,  label: 'Consulta de inscrição por CPF' },
+                  { ok: false, label: 'Ingressos pagos' },
+                  { ok: false, label: 'Relatórios financeiros' },
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    {f.ok
+                      ? <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                      : <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0"><X className="w-3 h-3 text-muted-foreground/40" /></span>
+                    }
+                    <span className={f.ok ? 'text-foreground' : 'text-muted-foreground/50 line-through'}>{f.label}</span>
+                  </li>
                 ))}
-              </tbody>
-            </table>
+              </ul>
+              <Link
+                to="/login?cadastro=true"
+                className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
+              >
+                Começar grátis
+              </Link>
+            </div>
+
+            {/* ── ESSENCIAL ── */}
+            <div className="rounded-3xl border border-border bg-card p-8 flex flex-col gap-5">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Plano</p>
+                <p className="text-4xl font-black text-foreground tracking-tight">Essencial</p>
+                <p className="text-sm text-muted-foreground mt-1">Para eventos recorrentes</p>
+              </div>
+              <div className="rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-black text-primary">
+                    {billing === 'mensal' ? 'R$69' : 'R$57,50'}
+                  </span>
+                  <span className="text-muted-foreground text-sm mb-0.5">/mês</span>
+                </div>
+                {billing === 'anual' && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    <span className="line-through">R$828</span>
+                    {' → '}
+                    <span className="font-bold text-primary">R$690/ano</span>
+                  </p>
+                )}
+              </div>
+              <ul className="flex-1 space-y-2.5 text-sm">
+                {[
+                  { ok: true,  label: '3 eventos ativos simultâneos' },
+                  { ok: true,  label: 'Até 500 vagas por evento' },
+                  { ok: true,  label: 'Ingressos com valores (pagos)' },
+                  { ok: true,  label: 'Registro manual de pagamentos' },
+                  { ok: true,  label: 'Relatórios financeiros' },
+                  { ok: false, label: 'Gateway próprio (PIX automático)' },
+                  { ok: false, label: 'Gestão de grupos e equipes' },
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    {f.ok
+                      ? <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                      : <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0"><X className="w-3 h-3 text-muted-foreground/40" /></span>
+                    }
+                    <span className={f.ok ? 'text-foreground' : 'text-muted-foreground/50 line-through'}>{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/login?cadastro=true"
+                className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
+              >
+                Assinar Essencial
+              </Link>
+            </div>
+
+            {/* ── PRO ── destaque */}
+            <div className="rounded-3xl bg-primary p-8 flex flex-col gap-5 shadow-2xl shadow-primary/30 relative overflow-hidden">
+              {/* glow decoration */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
+              <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
+
+              {/* Recomendado badge */}
+              <div className="absolute top-5 right-5 bg-white/20 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+                <Star className="w-3 h-3 fill-white" /> Recomendado
+              </div>
+
+              <div className="relative">
+                <p className="text-[11px] font-black uppercase tracking-widest text-white/60 mb-2">Plano</p>
+                <p className="text-4xl font-black text-white tracking-tight">Pro</p>
+                <p className="text-sm text-white/70 mt-1">Para quem leva a sério</p>
+              </div>
+
+              <div className="relative rounded-2xl bg-white/15 border border-white/20 px-5 py-4">
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-black text-white">
+                    {billing === 'mensal' ? 'R$129' : 'R$107,50'}
+                  </span>
+                  <span className="text-white/70 text-sm mb-0.5">/mês</span>
+                </div>
+                {billing === 'anual' && (
+                  <p className="text-xs text-white/60 mt-1">
+                    <span className="line-through">R$1.548</span>
+                    {' → '}
+                    <span className="font-bold text-white">R$1.290/ano</span>
+                  </p>
+                )}
+              </div>
+
+              <ul className="relative flex-1 space-y-2.5 text-sm">
+                {[
+                  '10 eventos ativos simultâneos',
+                  'Até 1.000 vagas por evento',
+                  'Gateway próprio (BYOG)',
+                  'PIX, Boleto e Cartão automáticos',
+                  'Grupos, quartos e mesas',
+                  'Gestão de equipe e tarefas',
+                  'Relatórios completos',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-white" />
+                    </span>
+                    <span className="text-white">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                to="/login?cadastro=true"
+                className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-white text-primary hover:bg-white/90 transition-all shadow-lg"
+              >
+                Assinar Pro agora
+              </Link>
+            </div>
           </div>
 
           {/* Box Personalizado */}
