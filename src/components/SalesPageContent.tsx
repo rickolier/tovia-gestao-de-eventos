@@ -10,12 +10,22 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Calendar, MapPin, Clock, Plus, Minus, CheckCircle2, ArrowLeft,
   Ticket as TicketIcon, Shield, Lock, HeadphonesIcon, Instagram, Globe, Mail, Phone,
+  CreditCard, Copy, ExternalLink,
 } from 'lucide-react';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '../firebase';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import Logo from './Logo';
 
-type Step = 'ticket' | 'form' | 'success';
+type Step = 'ticket' | 'form' | 'checkout' | 'success';
+
+interface CheckoutResult {
+  paymentUrl: string;
+  pixQrCode?: { encodedImage: string; payload: string; expirationDate: string } | null;
+  bankSlipUrl?: string | null;
+  chargeId: string;
+}
 
 function safeUrl(url: string | undefined): string | undefined {
   if (!url) return undefined;
@@ -53,11 +63,17 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
   const [formValues, setFormValues] = useState<Record<string, string | boolean>>({});
   const [organizador, setOrganizador] = useState<UserProfile | null>(null);
   const [isDoacaoSubmission, setIsDoacaoSubmission] = useState(false);
+  const [gatewayConnected, setGatewayConnected] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState('');
+  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
 
   useEffect(() => {
     if (evento.criado_por) {
       getDocument<UserProfile>('users', evento.criado_por)
         .then(u => { if (u) setOrganizador(u); })
+        .catch(() => {});
+      getDocument<{ gateway_connected?: boolean }>('organizer_public', evento.criado_por)
+        .then(meta => { setGatewayConnected(meta?.gateway_connected === true); })
         .catch(() => {});
     }
   }, [evento.criado_por]);
@@ -141,6 +157,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         const id = uuidv4();
         const ticket = selectedTickets[0];
         const valorFinal = ticket ? getTicketTotal(ticket) : total;
+        const useGateway = gatewayConnected && selectedMethod && valorFinal > 0;
         await createDocument(`eventos/${eventoId}/inscricoes`, id, {
           id, eventoId,
           pessoaId,
@@ -153,7 +170,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           quantidades: quantities,
           valor_total: valorFinal,
           valor_pago: 0,
-          status: valorFinal === 0 ? 'pago' : 'pendente',
+          status: valorFinal === 0 ? 'pago' : useGateway ? 'pagamento_iniciado' : 'pendente',
           data_inscricao: new Date().toISOString(),
           precisa_ajuda: false,
           validada_manual: false,
@@ -161,6 +178,23 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           pagina_venda_slug: pagina.slug,
         } as any);
         setInscricaoId(id);
+
+        if (useGateway) {
+          const fns = getFunctions(app, 'us-central1');
+          const createCharge = httpsCallable(fns, 'createEventCharge');
+          const result = await createCharge({
+            eventoId,
+            inscricaoId: id,
+            paymentMethod: selectedMethod,
+            attendeeName: nome,
+            attendeeEmail: email,
+            valor: valorFinal,
+          });
+          setCheckoutResult(result.data as CheckoutResult);
+          setStep('checkout');
+          return;
+        }
+
         setStep('success');
         onSuccess?.(id);
       }
@@ -170,6 +204,66 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       setSubmitting(false);
     }
   };
+
+  // ── Checkout screen ───────────────────────────────────────────────────────
+  if (step === 'checkout' && checkoutResult) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="border-b border-gray-100 px-6 py-4">
+          <Logo showTagline={false} />
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 text-center max-w-sm mx-auto w-full">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            {selectedMethod === 'pix'
+              ? <span className="text-xl font-black text-primary">PIX</span>
+              : <CreditCard className="w-8 h-8 text-primary" />}
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-gray-900">
+              {selectedMethod === 'pix' ? 'Pague via PIX' : selectedMethod === 'boleto' ? 'Boleto gerado' : 'Pagamento online'}
+            </h1>
+            <p className="text-gray-500 text-sm mt-1">Pedido #{inscricaoId?.slice(0, 8).toUpperCase()}</p>
+          </div>
+
+          {selectedMethod === 'pix' && checkoutResult.pixQrCode ? (
+            <div className="w-full space-y-4">
+              <img src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`} alt="QR Code PIX"
+                className="w-44 h-44 mx-auto rounded-2xl border border-gray-200" />
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Chave PIX copia e cola</p>
+                <div className="flex gap-2">
+                  <input readOnly value={checkoutResult.pixQrCode.payload}
+                    className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700" />
+                  <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.pixQrCode!.payload); toast.success('Chave copiada!'); }}
+                    className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+                    <Copy className="w-4 h-4 text-gray-500" />
+                  </button>
+                </div>
+                <p className="text-xs text-gray-400">Após o pagamento, sua inscrição será confirmada automaticamente.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full space-y-3">
+              <p className="text-sm text-gray-500">
+                {selectedMethod === 'boleto' ? 'Seu boleto foi gerado. Clique abaixo para pagar.' : 'Clique abaixo para completar o pagamento.'}
+              </p>
+              <a href={checkoutResult.bankSlipUrl ?? checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
+                <button type="button" className="w-full h-11 rounded-xl bg-primary text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                  {selectedMethod === 'boleto' ? 'Ver e pagar boleto' : 'Ir para pagamento'}
+                  <ExternalLink className="w-4 h-4" />
+                </button>
+              </a>
+            </div>
+          )}
+
+          <button type="button" onClick={() => { setStep('success'); onSuccess?.(inscricaoId!); }}
+            className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2">
+            Já realizei o pagamento
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // ── Success screen ────────────────────────────────────────────────────────
   if (step === 'success') {
@@ -492,12 +586,54 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                       onChange={v => setFormValues(prev => ({ ...prev, [campo.id]: v }))}
                     />
                   ))}
+
+                  {/* Seletor de pagamento para Pro+ com gateway */}
+                  {gatewayConnected && total > 0 && !allDoacao && (() => {
+                    const paidTickets = selectedTickets.filter(t => t.tipo === 'pago');
+                    let allowed = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
+                    paidTickets.forEach(t => {
+                      const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
+                      allowed = allowed.filter(x => m.includes(x));
+                    });
+                    allowed = allowed.filter(m => ['pix', 'boleto', 'credito'].includes(m));
+                    const labels: Record<string, string> = { pix: 'PIX', boleto: 'Boleto', credito: 'Cartão' };
+                    const descs: Record<string, string> = { pix: 'Aprovação imediata', boleto: 'Vence em 3 dias', credito: 'Cartão de crédito' };
+                    return (
+                      <div className="space-y-2 pt-2 border-t border-gray-100">
+                        <Label className="text-sm font-semibold text-gray-700">Forma de pagamento</Label>
+                        <div className="grid gap-2">
+                          {allowed.map(method => (
+                            <button key={method} type="button" onClick={() => setSelectedMethod(method)}
+                              className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${selectedMethod === method ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/30'}`}>
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${selectedMethod === method ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : <CreditCard className="w-4 h-4" />}
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold text-gray-800">{labels[method]}</p>
+                                <p className="text-xs text-gray-400">{descs[method]}</p>
+                              </div>
+                              <div className={`ml-auto w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedMethod === method ? 'border-primary' : 'border-gray-300'}`}>
+                                {selectedMethod === method && <div className="w-2 h-2 rounded-full bg-primary" />}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <Button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && !selectedMethod)}
                     className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2"
                   >
-                    {submitting ? 'Enviando...' : allDoacao ? 'Confirmar doação' : 'Confirmar inscrição'}
+                    {submitting
+                      ? 'Processando...'
+                      : allDoacao
+                        ? 'Confirmar doação'
+                        : gatewayConnected && total > 0
+                          ? 'Gerar cobrança'
+                          : 'Confirmar inscrição'}
                   </Button>
                   <p className="text-center text-xs text-gray-400">Ao confirmar, você concorda com os termos do evento.</p>
                 </form>

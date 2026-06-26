@@ -22,6 +22,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
 
   const plan = getPlanConfig(profile?.plano);
   const onlyFreeTickets = !plan.modules.manualPayments;
+  const gatewayConnected = profile?.gateway_connected === true;
   const reachedTicketLimit = tickets.length >= plan.maxTicketsPerEvent;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -360,7 +361,17 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
 
                 {/* Formas de pagamento — comportamento varia por plano */}
                 {!onlyFreeTickets && formData.tipo === 'pago' && (
-                  plan.modules.autoPayments ? (
+                  plan.modules.autoPayments && !gatewayConnected ? (
+                    <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border border-amber-200">
+                      <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-bold text-amber-800">Gateway não conectado</p>
+                        <p className="text-[11px] text-amber-700 mt-0.5">
+                          Conecte o Asaas no <strong>Dashboard → Gateway</strong> para definir as formas de pagamento.
+                        </p>
+                      </div>
+                    </div>
+                  ) : plan.modules.autoPayments ? (
                     <div className="space-y-2">
                       <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento (Asaas)</Label>
                       <div className="grid grid-cols-3 gap-2 p-4 bg-muted/30 rounded-xl">

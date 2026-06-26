@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import axios from "axios";
+import { createHash } from "crypto";
 import {
   encrypt,
   decrypt,
@@ -254,7 +255,11 @@ export const saveGatewayConfig = functions.onCall(
       },
     }, { merge: true });
 
-    await db.collection("organizer_public").doc(userId).set({ gateway_connected: true }, { merge: true });
+    const webhookTokenHash = createHash("sha256").update(webhookToken).digest("hex");
+    await db.collection("organizer_public").doc(userId).set({
+      gateway_connected: true,
+      webhook_token_hash: webhookTokenHash,
+    }, { merge: true });
 
     return { success: true };
   }

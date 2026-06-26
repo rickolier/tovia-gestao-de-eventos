@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createHash } from 'crypto';
 import { db } from './_firebase';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -47,6 +48,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const inscricaoId = parts[2];
 
   if (!eventoId || !inscricaoId) return res.status(200).send('ok');
+
+  // Valida token do Asaas via SHA256 armazenado no organizer_public
+  try {
+    const eventoDoc = await db.collection('eventos').doc(eventoId).get();
+    if (eventoDoc.exists) {
+      const organizerId: string = eventoDoc.data()!.criado_por;
+      const orgPublicDoc = await db.collection('organizer_public').doc(organizerId).get();
+      if (orgPublicDoc.exists) {
+        const storedHash: string = orgPublicDoc.data()!.webhook_token_hash ?? '';
+        const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
+        const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
+        if (storedHash && incomingHash !== storedHash) {
+          console.warn(`[eventPaymentWebhook] token mismatch for evento ${eventoId}`);
+          return res.status(401).send('Unauthorized');
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('[eventPaymentWebhook] token validation error (non-fatal):', e);
+  }
 
   const paidEvents = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'];
   const canceledEvents = ['PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUNDED'];
