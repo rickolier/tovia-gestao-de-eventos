@@ -198,7 +198,8 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         setStep('success');
         onSuccess?.(id);
       }
-    } catch {
+    } catch (err: any) {
+      console.error('[SalesPage] handleSubmit error:', err?.code, err?.message, err);
       toast.error('Erro ao enviar. Tente novamente.');
     } finally {
       setSubmitting(false);

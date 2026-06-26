@@ -133,7 +133,8 @@ service cloud.firestore {
 
       match /pessoas/{pessoaId} {
         allow read: if isEventOwner(eventoId);
-        allow write: if isEventOwner(eventoId);
+        allow create: if true; // Público — criada no momento da inscrição
+        allow update, delete: if isEventOwner(eventoId);
       }
 
       match /pagamentos/{pagamentoId} {
@@ -151,7 +152,8 @@ service cloud.firestore {
 
       match /doacoes/{doacaoId} {
         allow read: if isEventOwner(eventoId);
-        allow create, update, delete: if isEventOwner(eventoId);
+        allow create: if true; // Público — criada na página de doação
+        allow update, delete: if isEventOwner(eventoId);
       }
 
       match /quartos/{quartoId} {
