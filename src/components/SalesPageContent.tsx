@@ -349,6 +349,251 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     );
   }
 
+  // ── Form / Checkout page ─────────────────────────────────────────────────
+  if (step === 'form') {
+    const paidTickets = selectedTickets.filter(t => t.tipo === 'pago');
+    let allowedMethods = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
+    paidTickets.forEach(t => {
+      const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
+      allowedMethods = allowedMethods.filter(x => m.includes(x));
+    });
+    allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito'].includes(m));
+    const isGatewayPaid = gatewayConnected && total > 0 && !allDoacao;
+    const canSubmit = !submitting && (!isGatewayPaid || (
+      !!selectedMethod &&
+      cpf.replace(/\D/g, '').length === 11 &&
+      (selectedMethod !== 'credito' || (card.number.replace(/\s/g, '').length >= 13 && !!card.holderName && !!card.expiry && !!card.ccv))
+    ));
+    const methodLabels: Record<string, string> = { pix: 'PIX', boleto: 'Boleto', credito: 'Cartão de crédito' };
+    const methodDescs: Record<string, string> = { pix: 'Confirmação imediata após o pagamento', boleto: 'Boleto bancário — vence em 3 dias', credito: 'Débito imediato no cartão' };
+
+    return (
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setStep('ticket')}
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors text-sm font-semibold"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline text-sm">Voltar</span>
+            </button>
+            <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
+              <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
+              <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            </a>
+            <div className="flex items-center gap-1.5 text-gray-400 text-xs font-semibold">
+              <Lock className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Compra segura</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+            {/* ── Formulário (esquerda) ── */}
+            <form id="checkout-form" onSubmit={handleSubmit} className="lg:col-span-2 space-y-4">
+
+              {/* Seus dados */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-black shrink-0">1</div>
+                  <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Seus dados</h2>
+                </div>
+                <div className="px-6 py-5 space-y-4">
+                  {pagina.campos_formulario.map(campo => (
+                    <FormField
+                      key={campo.id}
+                      campo={campo}
+                      value={formValues[campo.id]}
+                      onChange={v => setFormValues(prev => ({ ...prev, [campo.id]: v }))}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* CPF */}
+              {isGatewayPaid && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-black shrink-0">2</div>
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Documento</h2>
+                  </div>
+                  <div className="px-6 py-5 space-y-1.5">
+                    <Label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                      CPF <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      required
+                      placeholder="000.000.000-00"
+                      value={cpf}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, '').slice(0, 11);
+                        setCpf(v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+                          .replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3')
+                          .replace(/(\d{3})(\d{1,3})/, '$1.$2'));
+                      }}
+                      className="rounded-xl border border-gray-200 bg-white h-11 text-gray-900 text-sm"
+                    />
+                    <p className="text-[11px] text-gray-400">Necessário para emissão da cobrança.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Pagamento */}
+              {isGatewayPaid && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-black shrink-0">3</div>
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Pagamento</h2>
+                  </div>
+                  <div className="px-6 py-5 space-y-3">
+                    {allowedMethods.map(method => (
+                      <button key={method} type="button" onClick={() => setSelectedMethod(method)}
+                        className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all ${selectedMethod === method ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${selectedMethod === method ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
+                          {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : <CreditCard className="w-4 h-4" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-gray-900">{methodLabels[method]}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{methodDescs[method]}</p>
+                        </div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${selectedMethod === method ? 'border-primary' : 'border-gray-300'}`}>
+                          {selectedMethod === method && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                        </div>
+                      </button>
+                    ))}
+
+                    {selectedMethod === 'credito' && (
+                      <div className="space-y-3 pt-3 border-t border-gray-100">
+                        <p className="text-xs font-black uppercase tracking-widest text-gray-400">Dados do cartão</p>
+                        <Input
+                          placeholder="Número do cartão"
+                          value={card.number}
+                          onChange={e => {
+                            const v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                            setCard(c => ({ ...c, number: v.replace(/(\d{4})(?=\d)/g, '$1 ') }));
+                          }}
+                          className="rounded-xl border-gray-200 h-11 text-sm font-mono tracking-widest"
+                          maxLength={19}
+                        />
+                        <Input
+                          placeholder="Nome como está no cartão"
+                          value={card.holderName}
+                          onChange={e => setCard(c => ({ ...c, holderName: e.target.value.toUpperCase() }))}
+                          className="rounded-xl border-gray-200 h-11 text-sm"
+                        />
+                        <div className="grid grid-cols-2 gap-3">
+                          <Input
+                            placeholder="Validade MM/AA"
+                            value={card.expiry}
+                            onChange={e => {
+                              const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                              setCard(c => ({ ...c, expiry: v.length > 2 ? `${v.slice(0, 2)}/${v.slice(2)}` : v }));
+                            }}
+                            className="rounded-xl border-gray-200 h-11 text-sm"
+                            maxLength={5}
+                          />
+                          <Input
+                            placeholder="CVV"
+                            value={card.ccv}
+                            onChange={e => setCard(c => ({ ...c, ccv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                            className="rounded-xl border-gray-200 h-11 text-sm"
+                            maxLength={4}
+                            type="password"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Botão — mobile */}
+              <div className="lg:hidden space-y-2">
+                <Button
+                  type="submit"
+                  disabled={!canSubmit}
+                  className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black shadow-lg shadow-primary/20"
+                >
+                  {submitting ? 'Processando...' : allDoacao ? 'Confirmar doação' : isGatewayPaid ? 'Gerar cobrança' : 'Confirmar inscrição'}
+                </Button>
+                <p className="text-center text-xs text-gray-400">Ao confirmar, você concorda com os termos do evento.</p>
+              </div>
+            </form>
+
+            {/* ── Resumo do pedido (direita, sticky) ── */}
+            <div className="hidden lg:block lg:col-span-1">
+              <div className="sticky top-24 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                {/* Evento */}
+                <div className="p-5 border-b border-gray-100">
+                  <div className="flex gap-3 items-start">
+                    {evento.imagem_url ? (
+                      <img src={evento.imagem_url} alt={evento.nome} className="w-16 h-16 rounded-xl object-cover shrink-0 border border-gray-100" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                        <TicketIcon className="w-6 h-6 text-primary/40" />
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="font-black text-gray-900 text-sm leading-tight line-clamp-2">{evento.nome}</p>
+                      <p className="text-xs text-gray-500 mt-1">{formatDate(evento.data_inicio)}</p>
+                      {evento.local && <p className="text-xs text-gray-400 mt-0.5 truncate">{evento.local}</p>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Itens */}
+                <div className="px-5 py-4 border-b border-gray-100 space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Resumo do pedido</p>
+                  {selectedTickets.map(t => (
+                    <div key={t.id} className="flex justify-between items-start gap-2 text-sm">
+                      <span className="text-gray-600 leading-tight">
+                        {t.tipo === 'doacao' && t.valor_livre
+                          ? `Doação · ${t.nome}`
+                          : `${quantities[t.id]}× ${t.nome}`}
+                      </span>
+                      <span className="font-semibold text-gray-900 shrink-0">
+                        {t.tipo === 'doacao' && t.valor_livre
+                          ? formatPrice(doacaoValores[t.id] || 0)
+                          : formatPrice(getTicketTotal(t))}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Total + botão */}
+                <div className="p-5 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-black text-gray-900">Total</span>
+                    <span className="font-black text-xl text-primary">{formatPrice(total)}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    disabled={!canSubmit}
+                    onClick={handleSubmit}
+                    className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-12 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+                  >
+                    {submitting ? 'Processando...' : allDoacao ? 'Confirmar doação' : isGatewayPaid ? 'Gerar cobrança' : 'Confirmar inscrição'}
+                  </Button>
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+                    <Shield className="w-3 h-3" />
+                    <span>Dados protegidos com SSL</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // ── Main layout ───────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -589,172 +834,6 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                     {totalQty === 0 ? 'Selecione uma Inscrição' : `Continuar · ${totalQty} ingresso(s)`}
                   </Button>
                 </div>
-              </div>
-            )}
-
-            {/* Form */}
-            {step === 'form' && (
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
-                <div className="px-5 pt-5 pb-3 border-b border-gray-100 flex items-center gap-3">
-                  <button onClick={() => setStep('ticket')} className="text-gray-400 hover:text-gray-700 transition-colors">
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                  <p className="text-xs font-black uppercase tracking-widest text-gray-400">Seus dados</p>
-                </div>
-
-                {/* Resumo */}
-                <div className="px-5 py-3 bg-primary/5 border-b border-primary/10">
-                  {selectedTickets.map(t => (
-                    <div key={t.id} className="flex justify-between text-sm">
-                      {t.tipo === 'doacao' && t.valor_livre ? (
-                        <>
-                          <span className="text-gray-600">Doação · {t.nome}</span>
-                          <span className="font-bold text-gray-900">{formatPrice(doacaoValores[t.id] || 0)}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-gray-600">{quantities[t.id]}× {t.nome}</span>
-                          <span className="font-bold text-gray-900">{formatPrice(getTicketTotal(t))}</span>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                  <div className="flex justify-between font-black text-sm pt-2 border-t border-primary/10 mt-2">
-                    <span className="text-gray-700">Total</span>
-                    <span className="text-primary">{formatPrice(total)}</span>
-                  </div>
-                </div>
-
-                <form onSubmit={handleSubmit} className="px-5 py-5 space-y-4">
-                  {pagina.campos_formulario.map(campo => (
-                    <FormField
-                      key={campo.id}
-                      campo={campo}
-                      value={formValues[campo.id]}
-                      onChange={v => setFormValues(prev => ({ ...prev, [campo.id]: v }))}
-                    />
-                  ))}
-
-                  {/* CPF obrigatório para cobranças via gateway */}
-                  {gatewayConnected && total > 0 && !allDoacao && (
-                    <div className="space-y-1.5 pt-2 border-t border-gray-100">
-                      <Label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
-                        CPF <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        type="text"
-                        required
-                        placeholder="000.000.000-00"
-                        value={cpf}
-                        onChange={e => {
-                          const v = e.target.value.replace(/\D/g, '').slice(0, 11);
-                          setCpf(v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
-                            .replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3')
-                            .replace(/(\d{3})(\d{1,3})/, '$1.$2'));
-                        }}
-                        className="rounded-lg border border-gray-200 bg-white h-10 text-gray-900 text-sm"
-                      />
-                      <p className="text-[11px] text-gray-400">Necessário para emissão da cobrança.</p>
-                    </div>
-                  )}
-
-                  {/* Seletor de pagamento para Pro+ com gateway */}
-                  {gatewayConnected && total > 0 && !allDoacao && (() => {
-                    const paidTickets = selectedTickets.filter(t => t.tipo === 'pago');
-                    let allowed = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
-                    paidTickets.forEach(t => {
-                      const m = t.metodos_pagamento || ['pix', 'boleto', 'credito'];
-                      allowed = allowed.filter(x => m.includes(x));
-                    });
-                    allowed = allowed.filter(m => ['pix', 'boleto', 'credito'].includes(m));
-                    const labels: Record<string, string> = { pix: 'PIX', boleto: 'Boleto', credito: 'Cartão' };
-                    const descs: Record<string, string> = { pix: 'Aprovação imediata', boleto: 'Vence em 3 dias', credito: 'Cartão de crédito' };
-                    return (
-                      <div className="space-y-2 pt-2 border-t border-gray-100">
-                        <Label className="text-sm font-semibold text-gray-700">Forma de pagamento</Label>
-                        <div className="grid gap-2">
-                          {allowed.map(method => (
-                            <button key={method} type="button" onClick={() => setSelectedMethod(method)}
-                              className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${selectedMethod === method ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/30'}`}>
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${selectedMethod === method ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
-                                {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : <CreditCard className="w-4 h-4" />}
-                              </div>
-                              <div>
-                                <p className="text-sm font-bold text-gray-800">{labels[method]}</p>
-                                <p className="text-xs text-gray-400">{descs[method]}</p>
-                              </div>
-                              <div className={`ml-auto w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedMethod === method ? 'border-primary' : 'border-gray-300'}`}>
-                                {selectedMethod === method && <div className="w-2 h-2 rounded-full bg-primary" />}
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Formulário de cartão — aparece quando cartão selecionado */}
-                  {gatewayConnected && total > 0 && !allDoacao && selectedMethod === 'credito' && (
-                    <div className="space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Dados do cartão</p>
-                      <Input
-                        placeholder="Número do cartão"
-                        value={card.number}
-                        onChange={e => {
-                          const v = e.target.value.replace(/\D/g, '').slice(0, 16);
-                          setCard(c => ({ ...c, number: v.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                        }}
-                        className="rounded-xl border-gray-200 bg-white h-10 text-sm font-mono tracking-widest"
-                        maxLength={19}
-                      />
-                      <Input
-                        placeholder="Nome no cartão"
-                        value={card.holderName}
-                        onChange={e => setCard(c => ({ ...c, holderName: e.target.value.toUpperCase() }))}
-                        className="rounded-xl border-gray-200 bg-white h-10 text-sm"
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Input
-                          placeholder="MM/AA"
-                          value={card.expiry}
-                          onChange={e => {
-                            const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-                            setCard(c => ({ ...c, expiry: v.length > 2 ? `${v.slice(0,2)}/${v.slice(2)}` : v }));
-                          }}
-                          className="rounded-xl border-gray-200 bg-white h-10 text-sm"
-                          maxLength={5}
-                        />
-                        <Input
-                          placeholder="CVV"
-                          value={card.ccv}
-                          onChange={e => setCard(c => ({ ...c, ccv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                          className="rounded-xl border-gray-200 bg-white h-10 text-sm"
-                          maxLength={4}
-                          type="password"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <Button
-                    type="submit"
-                    disabled={submitting || (gatewayConnected && total > 0 && !allDoacao && (
-                      !selectedMethod ||
-                      cpf.replace(/\D/g, '').length < 11 ||
-                      (selectedMethod === 'credito' && (!card.number.replace(/\s/g,'') || !card.holderName || !card.expiry || !card.ccv))
-                    ))}
-                    className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-11 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-2"
-                  >
-                    {submitting
-                      ? 'Processando...'
-                      : allDoacao
-                        ? 'Confirmar doação'
-                        : gatewayConnected && total > 0
-                          ? 'Gerar cobrança'
-                          : 'Confirmar inscrição'}
-                  </Button>
-                  <p className="text-center text-xs text-gray-400">Ao confirmar, você concorda com os termos do evento.</p>
-                </form>
               </div>
             )}
 
