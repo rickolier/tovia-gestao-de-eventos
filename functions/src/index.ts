@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
 import axios from "axios";
 import { createHash } from "crypto";
 import {
@@ -14,7 +15,7 @@ import {
 } from "./gateway-utils";
 
 admin.initializeApp();
-const db = admin.firestore();
+const db = getFirestore(admin.app(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
 
 const ASAAS_BASE_URL = "https://sandbox.asaas.com/api/v3";
 
