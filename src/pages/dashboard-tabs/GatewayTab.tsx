@@ -21,7 +21,7 @@ import { updateDocument } from '../../lib/firebase-utils';
 import app from '../../firebase';
 
 export default function GatewayTab() {
-  const { profile, user } = useAuth();
+  const { profile, user, refreshProfile } = useAuth();
   const [apiKey, setApiKey] = useState('');
   const [sandbox, setSandbox] = useState(false);
   const [showKey, setShowKey] = useState(false);
@@ -48,6 +48,7 @@ export default function GatewayTab() {
       const fns = getFunctions(app, 'us-central1');
       const saveGateway = httpsCallable(fns, 'saveGatewayConfig');
       await saveGateway({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox });
+      await refreshProfile();
       toast.success('Gateway conectado! Pagamentos automáticos habilitados.');
       setApiKey('');
     } catch (err: any) {
@@ -67,6 +68,7 @@ export default function GatewayTab() {
         gateway: null,
       } as any);
       await updateDocument('organizer_public', user.uid, { gateway_connected: false } as any);
+      await refreshProfile();
       toast.success('Gateway desconectado.');
     } catch {
       toast.error('Erro ao desconectar.');
