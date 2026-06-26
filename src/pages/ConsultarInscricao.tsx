@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Logo from '../components/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { maskCPF, validateCPF } from '../lib/validators';
@@ -83,9 +81,18 @@ export default function ConsultarInscricao() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-6 py-4">
-        <div className="max-w-xl mx-auto flex items-center justify-between">
-          <Link to="/"><Logo showTagline={false} /></Link>
+      <header className="bg-white border-b border-gray-100 px-6 py-3 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+          <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
+            <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
+            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+          </a>
+          <span className="hidden sm:block text-xs font-semibold text-gray-500 text-center">
+            Consultar inscrição
+          </span>
+          <a href="/" className="text-xs font-black text-primary hover:underline whitespace-nowrap">
+            Crie o seu evento →
+          </a>
         </div>
       </header>
 
