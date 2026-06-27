@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDocument, listDocuments, createDocument } from '../lib/firebase-utils';
+import { getDocument, listDocuments, createDocument, updateDocument } from '../lib/firebase-utils';
+import { Cupom } from '../types';
+import { Tag, X, Loader2 } from 'lucide-react';
 import { Evento, Ticket } from '../types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -54,6 +56,9 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
   const [selectedMethod, setSelectedMethod] = useState<string>('');
   const [gatewayConnected, setGatewayConnected] = useState(false);
   const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
+  const [codigoCupom, setCodigoCupom] = useState('');
+  const [cupomAplicado, setCupomAplicado] = useState<Cupom | null>(null);
+  const [cupomLoading, setCupomLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
     sobrenome: '',
@@ -126,6 +131,12 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
 
   const selectedTickets = tickets.filter(t => ticketQuantities[t.id] > 0);
   const totalAmount = selectedTickets.reduce((sum, t) => sum + (t.valor * (ticketQuantities[t.id] || 0)), 0);
+  const desconto = cupomAplicado
+    ? cupomAplicado.tipo === 'porcentagem'
+      ? totalAmount * (cupomAplicado.valor / 100)
+      : Math.min(cupomAplicado.valor, totalAmount)
+    : 0;
+  const totalComDesconto = Math.max(0, totalAmount - desconto);
   const totalTax = totalAmount * 0.1; // Simulating 10% tax like in the image
 
   const calculateMaxInstallments = () => {
@@ -186,6 +197,30 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
     setStep('payment');
   };
 
+  const handleValidarCupom = async () => {
+    if (!evento || !codigoCupom.trim()) return;
+    setCupomLoading(true);
+    try {
+      const cupons = await listDocuments<Cupom>(`eventos/${evento.id}/cupons`);
+      const cupom = cupons.find(c => c.codigo === codigoCupom.trim().toUpperCase());
+      if (!cupom) { toast.error('Cupom não encontrado.'); return; }
+      if (!cupom.ativo) { toast.error('Este cupom não está ativo.'); return; }
+      if (cupom.data_validade && new Date(cupom.data_validade) < new Date()) { toast.error('Este cupom está expirado.'); return; }
+      if (cupom.limite_usos && cupom.usos >= cupom.limite_usos) { toast.error('Este cupom atingiu o limite de usos.'); return; }
+      setCupomAplicado(cupom);
+      toast.success(`Cupom aplicado! ${cupom.tipo === 'porcentagem' ? `${cupom.valor}% de desconto` : `R$ ${cupom.valor.toFixed(2)} de desconto`}`);
+    } catch {
+      toast.error('Erro ao validar cupom.');
+    } finally {
+      setCupomLoading(false);
+    }
+  };
+
+  const handleRemoverCupom = () => {
+    setCupomAplicado(null);
+    setCodigoCupom('');
+  };
+
   const handlePaymentSubmit = async () => {
     if (!evento || selectedTickets.length === 0) return;
     if (gatewayConnected && !selectedMethod) {
@@ -196,7 +231,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
     setLoading(true);
     try {
       const registrationId = uuidv4();
-      const total = totalAmount;
+      const total = totalComDesconto;
 
       const inscricaoData: Record<string, unknown> = {
         nome: formData.nome,
@@ -224,6 +259,13 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
         inscricaoData.telefone_responsavel = formData.telefoneResponsavel;
       }
       await createDocument(`eventos/${evento.id}/inscricoes`, registrationId, inscricaoData as any);
+
+      // Incrementa usos do cupom
+      if (cupomAplicado) {
+        await updateDocument(`eventos/${evento.id}/cupons`, cupomAplicado.id, {
+          usos: cupomAplicado.usos + 1,
+        });
+      }
 
       setNumeroPedido(registrationId.slice(0, 8).toUpperCase());
 
@@ -708,10 +750,59 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                 <CardContent className="space-y-6">
                   <div className="bg-background p-6 rounded-2xl space-y-1">
                     <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">Total a Pagar</p>
+                    {cupomAplicado && (
+                      <p className="text-sm text-muted-foreground line-through">R$ {totalAmount.toFixed(2)}</p>
+                    )}
                     <span className="text-4xl font-black text-primary tracking-tighter">
-                      R$ {totalAmount.toFixed(2)}
+                      R$ {totalComDesconto.toFixed(2)}
                     </span>
+                    {cupomAplicado && (
+                      <p className="text-xs font-black text-emerald-600">
+                        − R$ {desconto.toFixed(2)} de desconto aplicado
+                      </p>
+                    )}
                   </div>
+
+                  {/* Cupom */}
+                  {!cupomAplicado ? (
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1.5">
+                        <Tag className="w-3 h-3" /> Cupom de desconto
+                      </Label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Código do cupom"
+                          value={codigoCupom}
+                          onChange={e => setCodigoCupom(e.target.value.toUpperCase())}
+                          onKeyDown={e => e.key === 'Enter' && handleValidarCupom()}
+                          className="rounded-xl h-11 font-bold tracking-wider uppercase"
+                          maxLength={20}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleValidarCupom}
+                          disabled={cupomLoading || !codigoCupom.trim()}
+                          className="rounded-xl h-11 px-4 font-black shrink-0"
+                        >
+                          {cupomLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                      <Tag className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-sm font-black text-emerald-700">{cupomAplicado.codigo}</p>
+                        <p className="text-xs text-emerald-600">
+                          {cupomAplicado.tipo === 'porcentagem' ? `${cupomAplicado.valor}% de desconto` : `R$ ${cupomAplicado.valor.toFixed(2)} de desconto`}
+                        </p>
+                      </div>
+                      <button onClick={handleRemoverCupom} className="text-emerald-400 hover:text-red-500 transition-colors p-1">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
 
                   {gatewayConnected ? (
                     <div className="space-y-3">
