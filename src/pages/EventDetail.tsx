@@ -30,6 +30,7 @@ import {
   Globe,
   Settings2,
   UserCog,
+  Calculator,
 } from 'lucide-react';
 import OverviewTab from './event-tabs/OverviewTab';
 import TicketsTab from './event-tabs/TicketsTab';
@@ -39,6 +40,7 @@ import DonationsTab from './event-tabs/DonationsTab';
 import ReportsTab from './event-tabs/ReportsTab';
 import RoomsTab from './event-tabs/RoomsTab';
 import ManagementTab from './event-tabs/ManagementTab';
+import CalculatorTab from './dashboard-tabs/CalculatorTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
 import SalesPagesTab from './event-tabs/SalesPagesTab';
 import EquipeTab from './event-tabs/EquipeTab';
@@ -127,6 +129,7 @@ export default function EventDetail() {
     { value: 'registrations',  label: 'Participantes',shortLabel: 'Pessoas',   icon: Users,           show: showTab('registrations', plan.modules.registrations) },
     { value: 'financial',      label: 'Pagamentos',   shortLabel: 'Pagam.',    icon: DollarSign,      show: !isGuest && plan.modules.manualPayments },
     { value: 'donations',      label: 'Doações',      shortLabel: 'Doações',   icon: Heart,           show: !isGuest && plan.modules.donations },
+    { value: 'calculadora',    label: 'Calculadora',  shortLabel: 'Calc.',     icon: Calculator,      show: showTab('management', plan.modules.eventManagement) },
     { value: 'management',     label: 'Recursos',     shortLabel: 'Recursos',  icon: Wallet,          show: showTab('management', plan.modules.eventManagement) },
     { value: 'grupos',         label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.eventManagement) },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
@@ -162,8 +165,9 @@ export default function EventDetail() {
     {
       category: 'Gestão',
       items: [
-        { value: 'management', label: 'Recursos', icon: Wallet,   show: showTab('management', plan.modules.eventManagement) },
-        { value: 'grupos',     label: 'Grupos',   icon: Bed,      show: showTab('rooms', plan.modules.eventManagement) },
+        { value: 'calculadora', label: 'Calculadora', icon: Calculator, show: showTab('management', plan.modules.eventManagement) },
+        { value: 'management', label: 'Recursos',    icon: Wallet,     show: showTab('management', plan.modules.eventManagement) },
+        { value: 'grupos',     label: 'Grupos',      icon: Bed,        show: showTab('rooms', plan.modules.eventManagement) },
         { value: 'equipe',     label: 'Equipe',   icon: UserCog,  show: showTab('tasks', plan.modules.tasksAndTeam) },
       ],
     },
@@ -368,6 +372,9 @@ export default function EventDetail() {
             </TabsContent>
             <TabsContent value="financial" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <FinancialTab eventoId={evento.id} />
+            </TabsContent>
+            <TabsContent value="calculadora" className="mt-0 border-none p-0 shadow-none bg-transparent">
+              <CalculatorTab evento={evento} onUpdate={fetchEventoData} />
             </TabsContent>
             <TabsContent value="management" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <ManagementTab evento={evento} onUpdate={fetchEventoData} />

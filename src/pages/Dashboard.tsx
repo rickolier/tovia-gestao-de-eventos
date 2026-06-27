@@ -13,7 +13,6 @@ import {
   Calendar as CalendarIcon,
   Menu,
   X,
-  Calculator,
   Settings,
   Palette,
   GraduationCap,
@@ -34,7 +33,6 @@ import HomeTab from './dashboard-tabs/HomeTab';
 import ReportsTab from './dashboard-tabs/ReportsTab';
 import ProfileTab from './dashboard-tabs/ProfileTab';
 import CalendarTab from './dashboard-tabs/CalendarTab';
-import CalculatorTab from './dashboard-tabs/CalculatorTab';
 import ConfiguracoesTab from './dashboard-tabs/ConfiguracoesTab';
 import DesignSystemTab from './dashboard-tabs/DesignSystemTab';
 
@@ -146,7 +144,6 @@ export default function Dashboard() {
     { id: 'inicio',      label: 'Início',        icon: House },
     { id: 'perfil',      label: 'Meu Perfil',    icon: User },
     { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
-    { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
     { id: 'relatorios',     label: 'Relatórios',    icon: BarChart3 },
     { id: 'configuracoes',  label: 'Configurações', icon: Settings },
     ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
@@ -280,7 +277,6 @@ export default function Dashboard() {
           <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
             {activeTab === 'inicio'         && <HomeTab eventos={eventos} />}
             {activeTab === 'agenda'         && <CalendarTab eventos={eventos} />}
-            {activeTab === 'calculadora'    && <CalculatorTab />}
             {activeTab === 'relatorios'     && <ReportsTab eventos={eventos} />}
             {activeTab === 'perfil'         && <ProfileTab />}
             {activeTab === 'configuracoes'  && <ConfiguracoesTab />}

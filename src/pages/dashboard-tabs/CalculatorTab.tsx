@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Users, CreditCard, DollarSign, Percent, TrendingUp, Info, ArrowUpFromLine, ArrowDownToLine } from 'lucide-react';
+import { Users, CreditCard, DollarSign, Percent, TrendingUp, Info, ArrowUpFromLine, ArrowDownToLine, Check, Loader2 } from 'lucide-react';
+import { Evento } from '../../types';
+import { updateDocument } from '../../lib/firebase-utils';
+import { toast } from 'sonner';
 
-export default function CalculatorTab() {
+interface Props {
+  evento: Evento;
+  onUpdate?: () => void;
+}
+
+export default function CalculatorTab({ evento, onUpdate }: Props) {
   const [venueCostType, setVenueCostType] = useState<'total' | 'per_person'>('total');
   const [venueValue, setVenueValue] = useState<number>(0);
   const [minParticipants, setMinParticipants] = useState<number>(0);
@@ -79,6 +87,22 @@ export default function CalculatorTab() {
   }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue,
       taxaAbsorbida, pixFee, boletoFee, creditFee, recurringFee]);
 
+  const [savingMargem, setSavingMargem] = useState(false);
+  const [margemSalva, setMargemSalva] = useState(false);
+
+  const handleAplicarMargem = async () => {
+    if (!results.marginAmountPerPerson) return;
+    setSavingMargem(true);
+    try {
+      await updateDocument('eventos', evento.id, { margem_por_inscricao: results.marginAmountPerPerson });
+      setMargemSalva(true);
+      onUpdate?.();
+      toast.success(`Margem de ${fmt(results.marginAmountPerPerson)} aplicada ao evento!`);
+      setTimeout(() => setMargemSalva(false), 3000);
+    } catch { toast.error('Erro ao salvar margem.'); }
+    finally { setSavingMargem(false); }
+  };
+
   const fmt = (v: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
@@ -102,9 +126,9 @@ export default function CalculatorTab() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-foreground">Calculadora de Custos</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground">Calculadora de Ingressos</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Simule o impacto das taxas do Asaas e encontre o melhor valor para seus ingressos.
+          Calcule o valor ideal do ingresso para <span className="font-semibold text-foreground">{evento.nome}</span> e aplique a margem diretamente nos Recursos.
         </p>
       </div>
 
@@ -392,6 +416,28 @@ export default function CalculatorTab() {
                   ))}
                 </div>
               </div>
+
+              {/* Aplicar margem ao evento */}
+              {results.marginAmountPerPerson > 0 && (
+                <div className="pt-4 border-t border-border/60">
+                  <button
+                    onClick={handleAplicarMargem}
+                    disabled={savingMargem}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white text-sm font-black hover:bg-primary/90 transition-all active:scale-[0.98] shadow-md shadow-primary/20 disabled:opacity-60"
+                  >
+                    {savingMargem ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Salvando...</>
+                    ) : margemSalva ? (
+                      <><Check className="w-4 h-4" /> Margem aplicada!</>
+                    ) : (
+                      <><TrendingUp className="w-4 h-4" /> Aplicar {fmt(results.marginAmountPerPerson)}/inscrição nos Recursos</>
+                    )}
+                  </button>
+                  <p className="text-[10px] text-muted-foreground text-center mt-2">
+                    Salva a margem calculada em Recursos e ativa o painel de saúde financeira.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -403,20 +449,6 @@ export default function CalculatorTab() {
           Esses valores podem variar conforme seu plano contratado. Consulte seu painel Asaas para confirmar.
         </p>
       </div>
-
-      {results.marginAmountPerPerson > 0 && (
-        <div className="bg-primary/5 border border-primary/20 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-black text-primary">
-              Sua margem: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(results.marginAmountPerPerson)} / inscrição
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Aplique esse valor em <strong>Recursos</strong> do seu evento para acompanhar a saúde financeira em tempo real.
-            </p>
-          </div>
-          <TrendingUp className="w-8 h-8 text-primary/30 shrink-0" />
-        </div>
-      )}
     </div>
   );
 }
