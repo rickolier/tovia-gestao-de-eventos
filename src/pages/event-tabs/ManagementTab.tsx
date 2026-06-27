@@ -167,8 +167,8 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
         </div>
       </div>
 
-      {/* ── Painel de Saúde Financeira da Margem ── */}
-      <div className={cn(
+      {/* ── Painel de Saúde Financeira da Margem — só aparece quando margem está configurada ── */}
+      {margem > 0 && <div className={cn(
         'rounded-3xl border p-6 space-y-4',
         saudeColor === 'emerald' ? 'bg-emerald-50 border-emerald-200' :
         saudeColor === 'amber'   ? 'bg-amber-50 border-amber-200' :
@@ -276,7 +276,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             </div>
           </div>
         )}
-      </div>
+      </div>}
 
       <div className="space-y-8">
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
