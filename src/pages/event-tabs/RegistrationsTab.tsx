@@ -8,7 +8,7 @@ import { notifOnce } from '../../lib/notifications';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, ShieldOff, QrCode } from 'lucide-react';
+import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, QrCode } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { QRCodeSVG } from 'qrcode.react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -32,9 +32,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAnonimizarDialogOpen, setIsAnonimizarDialogOpen] = useState(false);
   const [qrInscricao, setQrInscricao] = useState<(Inscricao & { pessoa?: Pessoa }) | null>(null);
-  const [itemToAnonimizar, setItemToAnonimizar] = useState<{ regId: string; pessoaId?: string } | null>(null);
   const [importLoading, setImportLoading] = useState(false);
   const [importPreview, setImportPreview] = useState<any[]>([]);
   const [importTicketId, setImportTicketId] = useState('');
@@ -455,38 +453,6 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
     }
   };
 
-  const handleAnonimizar = (regId: string, pessoaId?: string) => {
-    setItemToAnonimizar({ regId, pessoaId });
-    setIsAnonimizarDialogOpen(true);
-  };
-
-  const confirmAnonimizar = async () => {
-    if (!itemToAnonimizar) return;
-    try {
-      const { regId, pessoaId } = itemToAnonimizar;
-      await updateDocument(`eventos/${eventoId}/inscricoes`, regId, {
-        nome: '[removido]',
-        sobrenome: '[removido]',
-        email: '[removido]',
-        telefone: '[removido]',
-        data_nascimento: '[removido]',
-        genero: '[removido]',
-        estadoCivil: '[removido]',
-        nome_responsavel: '[removido]',
-        telefone_responsavel: '[removido]',
-        respostas_formulario: {},
-      });
-      if (pessoaId) {
-        await removeDocument(`eventos/${eventoId}/pessoas`, pessoaId);
-      }
-      toast.success('Dados pessoais anonimizados conforme solicitação LGPD.');
-      setIsAnonimizarDialogOpen(false);
-      setItemToAnonimizar(null);
-      fetchData();
-    } catch (error) {
-      toast.error('Erro ao anonimizar dados.');
-    }
-  };
 
   const resetForm = () => {
     setFormData({
@@ -1291,47 +1257,14 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isAnonimizarDialogOpen} onOpenChange={setIsAnonimizarDialogOpen}>
-          <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
-            <DialogHeader className="mb-4">
-              <DialogTitle className="text-xl font-black text-amber-600 tracking-tight flex items-center gap-3">
-                <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
-                  <ShieldOff className="w-5 h-5 shrink-0" />
-                </div>
-                Anonimizar dados (LGPD)
-              </DialogTitle>
-            </DialogHeader>
-            <div className="py-2 space-y-3">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Esta ação atende à solicitação de exclusão de dados do participante conforme o <strong className="text-foreground">Art. 18 da LGPD</strong>.
-              </p>
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
-                <p className="text-xs font-black text-amber-800 uppercase tracking-wide mb-2">O que será removido</p>
-                <p className="text-xs text-amber-700">Nome, e-mail, telefone, data de nascimento, gênero, estado civil, dados do responsável e respostas do formulário.</p>
-              </div>
-              <div className="bg-muted/50 rounded-xl p-4 space-y-1">
-                <p className="text-xs font-black text-muted-foreground uppercase tracking-wide mb-2">O que será mantido</p>
-                <p className="text-xs text-muted-foreground">Registro da inscrição, status, valores e pagamentos (obrigação fiscal de retenção por 5 anos).</p>
-              </div>
-              <p className="text-xs text-muted-foreground">Esta ação <span className="font-bold text-foreground">não pode ser desfeita</span>.</p>
-            </div>
-            <div className="flex flex-col md:flex-row justify-end gap-3 pt-4">
-              <Button variant="ghost" onClick={() => setIsAnonimizarDialogOpen(false)} className="rounded-2xl h-12 px-8 font-black text-muted-foreground hover:bg-muted">Cancelar</Button>
-              <Button onClick={confirmAnonimizar} className="bg-amber-500 hover:bg-amber-600 text-white rounded-2xl h-12 px-8 font-black shadow-lg active:scale-95 transition-all">
-                <ShieldOff className="w-4 h-4 mr-2" />
-                Anonimizar dados
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
 
       <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden bg-card transition-colors border border-border/50">
-        <div className="overflow-x-auto">
-          <Table>
+        <div>
+          <Table className="table-fixed w-full">
             <TableHeader className="bg-muted/50 border-b border-border/50 hover:bg-muted/50">
               <TableRow className="hover:bg-transparent">
-                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-6 group">
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-4 w-[28%] group">
                   <div className="flex items-center">
                     <button 
                       onClick={() => requestSort('nome')}
@@ -1377,8 +1310,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 <FilterHeader label="Status" filterKey="status" columnKey="status" />
                 <FilterHeader label="Financeiro" filterKey="financeiro" columnKey="financeiro" />
                 <FilterHeader label="Método" filterKey="metodo" columnKey="metodo" />
-                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14">Respostas</TableHead>
-                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-6">Gerenciar</TableHead>
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 w-[10%]">Resp.</TableHead>
+                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-3 w-[12%]">Gerenciar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -1400,7 +1333,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               ) : (
                 paginatedRegistrations.map(reg => (
                   <TableRow key={reg.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 group">
-                    <TableCell className="py-4 px-6">
+                    <TableCell className="py-4 px-4">
                       <div className="flex flex-col">
                         <span className="font-black text-foreground tracking-tight">{reg.pessoa?.nome}</span>
                         <span className="text-[10px] text-muted-foreground font-medium">{reg.pessoa?.email}</span>
@@ -1427,8 +1360,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       {reg.respostas_formulario && Object.keys(reg.respostas_formulario).length > 0 ? (
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 hover:bg-primary/10">
-                              Ver {Object.keys(reg.respostas_formulario).length} respostas
+                            <Button variant="ghost" size="sm" className="h-7 px-2 rounded-lg text-[10px] font-black text-primary bg-primary/5 hover:bg-primary/10">
+                              {Object.keys(reg.respostas_formulario).length} resp.
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-72 p-4 rounded-2xl border-none shadow-2xl bg-card" align="start">
@@ -1447,7 +1380,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-right px-6">
+                    <TableCell className="text-right px-3">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
                         {reg.status === 'pago' && (
                           <Button variant="ghost" size="icon" onClick={() => setQrInscricao(reg)} className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all" title="Ver QR Code">
@@ -1458,9 +1391,6 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                           <>
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all" title="Editar inscrição">
                               <Edit2 className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleAnonimizar(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all" title="Anonimizar dados (LGPD)">
-                              <ShieldOff className="w-4 h-4" />
                             </Button>
                             <Button variant="ghost" size="icon" onClick={() => handleDelete(reg.id, reg.pessoaId)} className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all" title="Excluir inscrição">
                               <Trash2 className="w-4 h-4" />
