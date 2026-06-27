@@ -107,6 +107,17 @@ export default function EventDetail() {
     fetchUnreadCount();
   }, [user, id, activeTab]);
 
+  // Auto-expand the sidebar section that contains the active tab
+  useEffect(() => {
+    const tabToCategory: Record<string, string> = {
+      tickets: 'Inscrições', 'sales-pages': 'Inscrições', registrations: 'Inscrições',
+      financial: 'Financeiro', donations: 'Financeiro',
+      calculadora: 'Gestão', management: 'Gestão', grupos: 'Gestão', equipe: 'Gestão',
+    };
+    const cat = tabToCategory[activeTab];
+    if (cat) setExpandedSections(prev => new Set([...prev, cat]));
+  }, [activeTab]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background text-foreground">
@@ -176,14 +187,6 @@ export default function EventDetail() {
     },
   ].map(s => ({ ...s, items: s.items.filter(i => i.show) }))
    .filter(s => s.items.length > 0);
-
-  // Auto-expand the section that contains the active tab
-  useEffect(() => {
-    const section = sidebarSections.find(s => s.category && s.items.some(i => i.value === activeTab));
-    if (section?.category) {
-      setExpandedSections(prev => new Set([...prev, section.category!]));
-    }
-  }, [activeTab]);
 
   const toggleSection = (category: string) => {
     setExpandedSections(prev => {
