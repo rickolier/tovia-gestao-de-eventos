@@ -19,6 +19,7 @@ import TermosDeUso from './pages/TermosDeUso';
 import BaseConhecimento from './pages/BaseConhecimento';
 import ArtigoBaseConhecimento from './pages/ArtigoBaseConhecimento';
 import ConsultarInscricao from './pages/ConsultarInscricao';
+import CheckinPage from './pages/CheckinPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
@@ -112,6 +113,14 @@ export default function App() {
               element={
                 <PrivateRoute>
                   <EditEvent />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/eventos/:id/checkin"
+              element={
+                <PrivateRoute>
+                  <CheckinPage />
                 </PrivateRoute>
               }
             />

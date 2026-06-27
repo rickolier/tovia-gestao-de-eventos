@@ -8,8 +8,9 @@ import { notifOnce } from '../../lib/notifications';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, ShieldOff } from 'lucide-react';
+import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, ShieldOff, QrCode } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { QRCodeSVG } from 'qrcode.react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,6 +33,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAnonimizarDialogOpen, setIsAnonimizarDialogOpen] = useState(false);
+  const [qrInscricao, setQrInscricao] = useState<(Inscricao & { pessoa?: Pessoa }) | null>(null);
   const [itemToAnonimizar, setItemToAnonimizar] = useState<{ regId: string; pessoaId?: string } | null>(null);
   const [importLoading, setImportLoading] = useState(false);
   const [importPreview, setImportPreview] = useState<any[]>([]);
@@ -1447,6 +1449,11 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                     </TableCell>
                     <TableCell className="text-right px-6">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                        {reg.status === 'pago' && (
+                          <Button variant="ghost" size="icon" onClick={() => setQrInscricao(reg)} className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all" title="Ver QR Code">
+                            <QrCode className="w-4 h-4" />
+                          </Button>
+                        )}
                         {!readOnly && (
                           <>
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(reg)} className="h-10 w-10 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all" title="Editar inscrição">
@@ -1518,6 +1525,31 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           </div>
         )}
       </Card>
+
+      {/* QR Code Dialog */}
+      <Dialog open={!!qrInscricao} onOpenChange={o => { if (!o) setQrInscricao(null); }}>
+        <DialogContent className="sm:max-w-xs rounded-[2rem] border-none shadow-2xl p-0 bg-card overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-2">
+            <DialogTitle className="text-base font-black">QR Code do Ingresso</DialogTitle>
+          </DialogHeader>
+          {qrInscricao && (
+            <div className="flex flex-col items-center gap-4 px-6 pb-6">
+              <div className="bg-white p-4 rounded-2xl shadow-inner">
+                <QRCodeSVG value={qrInscricao.id} size={180} level="M" />
+              </div>
+              <div className="text-center">
+                <p className="font-black text-foreground">{qrInscricao.pessoa?.nome || qrInscricao.nome}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{qrInscricao.ticket?.nome || qrInscricao.ticket_nome}</p>
+                {qrInscricao.presenca && (
+                  <span className="mt-2 inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                    <CheckCircle className="w-3 h-3" /> Presença confirmada
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

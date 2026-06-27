@@ -18,6 +18,7 @@ const PERMISSAO_LABELS: Record<EquipePermissao, string> = {
   management:    'Editar recursos',
   rooms:         'Editar grupos',
   tasks:         'Editar tarefas',
+  checkin:       'Realizar checkin',
 };
 
 const DEFAULT_PERMS: EquipePermissao[] = ['registrations', 'management', 'rooms', 'tasks'];

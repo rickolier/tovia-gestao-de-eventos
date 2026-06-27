@@ -72,7 +72,7 @@ interface PaymentMethodConfig {
   tipo_taxa: 'fixo' | 'porcentagem';
 }
 
-export type EquipePermissao = 'registrations' | 'management' | 'rooms' | 'tasks';
+export type EquipePermissao = 'registrations' | 'management' | 'rooms' | 'tasks' | 'checkin';
 
 export interface ConvitePendente {
   id: string;
@@ -191,6 +191,8 @@ export interface Inscricao {
   paginaVendaId?: string;
   pagina_venda_id?: string;
   respostas_formulario?: Record<string, string | boolean>;
+  presenca?: boolean;
+  checkin_at?: string;
 }
 
 export interface Pagamento {

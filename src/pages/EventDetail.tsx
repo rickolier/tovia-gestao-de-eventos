@@ -31,6 +31,7 @@ import {
   Settings2,
   UserCog,
   Calculator,
+  ScanLine,
 } from 'lucide-react';
 import OverviewTab from './event-tabs/OverviewTab';
 import TicketsTab from './event-tabs/TicketsTab';
@@ -346,13 +347,20 @@ export default function EventDetail() {
               )}
             </div>
             <div className="absolute inset-0 w-full h-full" style={{ backgroundColor: evento.cor_tema || '#1a4d2e' }} />
-            <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end ${activeTab === 'overview' ? 'p-5 md:p-8' : 'p-4 md:p-6'} z-20 transition-all duration-300`}>
+            <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end justify-between ${activeTab === 'overview' ? 'p-5 md:p-8' : 'p-4 md:p-6'} z-20 transition-all duration-300`}>
               <div className="text-white">
                 <h2 className={`${activeTab === 'overview' ? 'text-2xl md:text-4xl' : 'text-lg md:text-2xl'} font-black mb-1 drop-shadow-xl tracking-tight transition-all duration-300`}>{evento.nome}</h2>
                 <p className={`text-sm font-bold opacity-90 flex items-center gap-2 drop-shadow-lg ${activeTab === 'overview' ? 'flex' : 'hidden md:flex'}`}>
                   <MapPin className="w-4 h-4 text-primary-foreground" /> {evento.local}
                 </p>
               </div>
+              <Link
+                to={`/eventos/${evento.id}/checkin`}
+                className="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl transition-all shrink-0"
+              >
+                <ScanLine className="w-4 h-4" />
+                <span className="hidden sm:inline">Checkin</span>
+              </Link>
             </div>
           </div>
 
