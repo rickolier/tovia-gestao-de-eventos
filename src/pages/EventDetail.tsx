@@ -277,8 +277,8 @@ export default function EventDetail() {
                         'w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors mb-0.5',
                         'text-[11px] font-bold uppercase tracking-widest',
                         hasActiveChild && !isExpanded
-                          ? 'text-white/70 bg-white/10'
-                          : 'text-white/35 hover:text-white/60 hover:bg-white/5',
+                          ? 'text-white bg-white/10'
+                          : 'text-white/70 hover:text-white hover:bg-white/5',
                       )}
                     >
                       <span>{section.category}</span>
