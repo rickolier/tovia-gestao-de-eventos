@@ -274,11 +274,10 @@ export default function EventDetail() {
                     <button
                       onClick={() => toggleSection(section.category!)}
                       className={cn(
-                        'w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors mb-0.5',
-                        'text-[11px] font-bold uppercase tracking-widest',
-                        hasActiveChild && !isExpanded
-                          ? 'text-white bg-white/10'
-                          : 'text-white/70 hover:text-white hover:bg-white/5',
+                        'w-full flex items-center justify-between px-3 py-2 rounded-lg mb-0.5',
+                        'text-[11px] uppercase tracking-widest',
+                        'text-[rgba(255,255,255,0.65)]',
+                        hasActiveChild && !isExpanded ? 'font-bold' : 'font-normal',
                       )}
                     >
                       <span>{section.category}</span>

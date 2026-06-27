@@ -107,8 +107,8 @@
   border-radius: 0.625rem;
   font-size: 0.875rem;
   font-weight: 400;
-  color: rgba(255,255,255,0.75);
-  transition: all 0.15s ease;
+  color: rgba(255,255,255,0.65);
+  transition: color 0.15s ease;
   cursor: pointer;
   width: 100%;
   text-align: left;
@@ -117,13 +117,13 @@
 }
 
 .sidebar-nav-item:hover {
-  background: var(--sidebar-hover-bg);
-  color: white;
+  background: transparent;
+  color: rgba(255,255,255,0.65);
 }
 
 .sidebar-nav-item.active {
   background: transparent;
-  color: white;
+  color: rgba(255,255,255,0.65);
   font-weight: 700;
 }
 
