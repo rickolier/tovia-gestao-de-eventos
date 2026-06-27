@@ -35,6 +35,7 @@ export interface UserProfile {
   numero?: string;
   complemento?: string;
   bairro?: string;
+  cidade?: string;
   cargo?: string;
   bio?: string;
   descricao?: string;

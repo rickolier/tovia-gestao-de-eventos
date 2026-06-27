@@ -82,6 +82,7 @@ export default function ProfileTab() {
           ...prev,
           endereco: addr.logradouro || prev.endereco,
           bairro: addr.bairro || prev.bairro,
+          cidade: addr.localidade || prev.cidade,
         }));
         toast.success(`${addr.localidade} — ${addr.uf}`);
       } else {
@@ -139,6 +140,7 @@ export default function ProfileTab() {
     numero: profile?.numero || '',
     complemento: profile?.complemento || '',
     bairro: profile?.bairro || '',
+    cidade: profile?.cidade || '',
   });
 
   const isValidUrl = (url: string) => {
@@ -419,6 +421,10 @@ export default function ProfileTab() {
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Bairro</Label>
                 <Input value={formData.bairro} onChange={e => setFormData({...formData, bairro: e.target.value})} placeholder="Ex: Centro" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Cidade</Label>
+                <Input value={formData.cidade} onChange={e => setFormData({...formData, cidade: e.target.value})} placeholder="Ex: São Paulo" className="rounded-xl bg-muted/50 border-none focus-visible:ring-primary font-bold" />
               </div>
             </div>
           </CardContent>
