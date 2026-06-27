@@ -26,12 +26,12 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
   useEffect(() => {
     Promise.all([
       listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`),
-      listDocuments<Ticket>('tickets', []),
+      listDocuments<Ticket>(`eventos/${evento.id}/tickets`),
       listDocuments<FinancialTransaction>(`eventos/${evento.id}/transacoes`),
       listDocuments<Donation>(`eventos/${evento.id}/doacoes`),
     ]).then(([insc, tks, trans, dons]) => {
       setInscricoes(insc);
-      setTickets(tks.filter(t => t.eventoId === evento.id));
+      setTickets(tks);
       setSaidas(trans.filter(t => t.tipo === 'saida'));
       setTotalDoacoes(dons.reduce((s, d) => s + d.valor, 0));
       setLoading(false);
