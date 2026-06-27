@@ -133,6 +133,7 @@ export interface Evento {
   };
   
   campos_customizados: FormField[];
+  margem_por_inscricao?: number;
 }
 
 export interface Ticket {

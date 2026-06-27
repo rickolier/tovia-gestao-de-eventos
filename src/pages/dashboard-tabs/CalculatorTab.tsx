@@ -403,6 +403,20 @@ export default function CalculatorTab() {
           Esses valores podem variar conforme seu plano contratado. Consulte seu painel Asaas para confirmar.
         </p>
       </div>
+
+      {results.marginAmountPerPerson > 0 && (
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-black text-primary">
+              Sua margem: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(results.marginAmountPerPerson)} / inscrição
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Aplique esse valor em <strong>Recursos</strong> do seu evento para acompanhar a saúde financeira em tempo real.
+            </p>
+          </div>
+          <TrendingUp className="w-8 h-8 text-primary/30 shrink-0" />
+        </div>
+      )}
     </div>
   );
 }

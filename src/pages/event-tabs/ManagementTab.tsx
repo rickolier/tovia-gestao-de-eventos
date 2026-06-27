@@ -6,14 +6,14 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   DollarSign,
-  FileText,
   Plus,
   Trash2,
-  PieChart,
   Coins,
   Activity,
-  ChevronRight,
-  Users
+  Users,
+  Heart,
+  Pencil,
+  Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,10 +30,13 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { listDocuments, createDocument, removeDocument, updateDocument } from '../../lib/firebase-utils';
 import { FinancialTransaction, Evento, Inscricao, Donation } from '../../types';
+import { cn } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
+
+const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
 export default function ManagementTab({ evento, onUpdate }: { evento: Evento, onUpdate?: () => void }) {
   const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
@@ -41,6 +44,12 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   const [donations, setDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Margem por inscrição
+  const [margem, setMargem] = useState<number>(evento.margem_por_inscricao ?? 0);
+  const [margemInput, setMargemInput] = useState<string>(String(evento.margem_por_inscricao ?? ''));
+  const [editingMargem, setEditingMargem] = useState(false);
+  const [savingMargem, setSavingMargem] = useState(false);
 
   const [formData, setFormData] = useState({
     tipo: 'saida' as 'entrada' | 'saida',
@@ -105,6 +114,20 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
     }
   };
 
+  const handleSaveMargem = async () => {
+    const val = Number(margemInput);
+    if (isNaN(val) || val < 0) { toast.error('Valor inválido.'); return; }
+    setSavingMargem(true);
+    try {
+      await updateDocument('eventos', evento.id, { margem_por_inscricao: val });
+      setMargem(val);
+      setEditingMargem(false);
+      onUpdate?.();
+      toast.success('Margem salva!');
+    } catch { toast.error('Erro ao salvar.'); }
+    finally { setSavingMargem(false); }
+  };
+
   const totalEntradasOutras = transactions.filter(t => t.tipo === 'entrada' && t.categoria !== 'Doação').reduce((acc, t) => acc + t.valor, 0);
   const totalSaldosDoacoes = donations.filter(d => d.status === 'aprovada' && d.destino === 'livre').reduce((acc, d) => acc + (d.valorRestante ?? d.valorLiquido ?? d.valor), 0);
   const totalSaidas = transactions.filter(t => t.tipo === 'saida').reduce((acc, t) => acc + t.valor, 0);
@@ -124,6 +147,11 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   const saldoLivre = totalBruto - totalSaidas;
 
   const totalInscritos = registrations.length;
+  const inscritosPagos = registrations.filter(r => (r.valor_pago ?? 0) > 0).length;
+  const orcamentoMargem = margem * inscritosPagos;
+  const saldoMargem = orcamentoMargem - totalSaidas;
+  const saudePct = orcamentoMargem > 0 ? Math.max(0, (saldoMargem / orcamentoMargem) * 100) : null;
+  const saudeColor = saudePct === null ? null : saudePct >= 20 ? 'emerald' : saudePct > 0 ? 'amber' : 'red';
 
   return (
     <div className="space-y-8">
@@ -137,6 +165,117 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             Novo Lançamento
           </Button>
         </div>
+      </div>
+
+      {/* ── Painel de Saúde Financeira da Margem ── */}
+      <div className={cn(
+        'rounded-3xl border p-6 space-y-4',
+        saudeColor === 'emerald' ? 'bg-emerald-50 border-emerald-200' :
+        saudeColor === 'amber'   ? 'bg-amber-50 border-amber-200' :
+        saudeColor === 'red'     ? 'bg-red-50 border-red-200' :
+        'bg-card border-border'
+      )}>
+        {/* Margem config row */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <div className="flex items-center gap-3">
+            <div className={cn('w-10 h-10 rounded-2xl flex items-center justify-center shrink-0',
+              saudeColor === 'emerald' ? 'bg-emerald-500 text-white' :
+              saudeColor === 'amber'   ? 'bg-amber-500 text-white' :
+              saudeColor === 'red'     ? 'bg-red-500 text-white' :
+              'bg-primary/10 text-primary'
+            )}>
+              <Heart className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Saúde Financeira da Margem</p>
+              <p className={cn('text-sm font-semibold',
+                saudeColor === 'emerald' ? 'text-emerald-700' :
+                saudeColor === 'amber'   ? 'text-amber-700' :
+                saudeColor === 'red'     ? 'text-red-700' :
+                'text-muted-foreground'
+              )}>
+                {saudeColor === null ? 'Configure a margem por inscrição para acompanhar a saúde do evento.' :
+                 saudeColor === 'emerald' ? `Saudável — ${fmt(saldoMargem)} disponíveis` :
+                 saudeColor === 'amber'   ? `Atenção — apenas ${fmt(saldoMargem)} restantes` :
+                 `Orçamento estourado em ${fmt(Math.abs(saldoMargem))}`}
+              </p>
+            </div>
+          </div>
+
+          {/* Margem per inscricao input */}
+          <div className="flex items-center gap-2 shrink-0">
+            {editingMargem ? (
+              <>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-bold">R$</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    autoFocus
+                    value={margemInput}
+                    onChange={e => setMargemInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSaveMargem()}
+                    className="w-36 pl-8 pr-3 h-9 rounded-xl border border-border bg-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    placeholder="0,00"
+                  />
+                </div>
+                <button
+                  onClick={handleSaveMargem}
+                  disabled={savingMargem}
+                  className="h-9 w-9 rounded-xl bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors shrink-0"
+                >
+                  <Check className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => { setMargemInput(String(margem || '')); setEditingMargem(true); }}
+                className="flex items-center gap-2 px-4 h-9 rounded-xl border border-border bg-white hover:bg-muted/50 transition-colors text-sm font-semibold text-foreground"
+              >
+                <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                {margem > 0 ? `${fmt(margem)} / inscrição` : 'Definir margem'}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Health bar + numbers — only when margem is set */}
+        {margem > 0 && (
+          <div className="space-y-3">
+            <div className="h-3 rounded-full bg-black/10 overflow-hidden">
+              <div
+                className={cn('h-full rounded-full transition-all duration-500',
+                  saudeColor === 'emerald' ? 'bg-emerald-500' :
+                  saudeColor === 'amber'   ? 'bg-amber-400' :
+                  'bg-red-500'
+                )}
+                style={{ width: `${Math.min(100, saudePct ?? 0)}%` }}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Orçamento</p>
+                <p className="text-base font-black text-foreground">{fmt(orcamentoMargem)}</p>
+                <p className="text-[10px] text-muted-foreground">{fmt(margem)} × {inscritosPagos} pagos</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Comprometido</p>
+                <p className="text-base font-black text-foreground">{fmt(totalSaidas)}</p>
+                <p className="text-[10px] text-muted-foreground">lançamentos de saída</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Saldo</p>
+                <p className={cn('text-base font-black',
+                  saudeColor === 'emerald' ? 'text-emerald-600' :
+                  saudeColor === 'amber'   ? 'text-amber-600' :
+                  'text-red-600'
+                )}>{fmt(saldoMargem)}</p>
+                <p className="text-[10px] text-muted-foreground">{(saudePct ?? 0).toFixed(0)}% livre</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="space-y-8">
