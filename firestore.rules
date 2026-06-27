@@ -72,7 +72,7 @@ service cloud.firestore {
           'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao',
           'redes_social', 'link_importante_1', 'link_importante_2',
           'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano',
-          'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'pagina_publica'
+          'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'pagina_publica'
         ])
       );
       // Toggle pagina_publica isolado — sem exigir isValidUser (não toca nome/email)
@@ -172,6 +172,11 @@ service cloud.firestore {
       match /paginas_venda/{paginaId} {
         allow get: if true; // público para rota pública funcionar
         allow list: if true; // público para rota pública funcionar
+        allow create, update, delete: if isEventOwner(eventoId);
+      }
+
+      match /cupons/{cupomId} {
+        allow read: if isEventOwner(eventoId);
         allow create, update, delete: if isEventOwner(eventoId);
       }
     }

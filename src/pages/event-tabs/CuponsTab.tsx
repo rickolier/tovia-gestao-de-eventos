@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument } from '../../lib/firebase-utils';
 import { Cupom } from '../../types';
-import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,7 +32,7 @@ export default function CuponsTab({ eventoId }: Props) {
   const [form, setForm] = useState(EMPTY_FORM);
 
   useEffect(() => {
-    listDocuments<Cupom>('cupons', [where('eventoId', '==', eventoId)])
+    listDocuments<Cupom>(`eventos/${eventoId}/cupons`)
       .then(data => {
         setCupons(data.sort((a, b) => b.criado_em.localeCompare(a.criado_em)));
         setLoading(false);
@@ -69,7 +68,7 @@ export default function CuponsTab({ eventoId }: Props) {
         ativo: true,
         criado_em: new Date().toISOString(),
       };
-      await createDocument('cupons', id, novoCupom);
+      await createDocument(`eventos/${eventoId}/cupons`, id, novoCupom);
       setCupons(prev => [novoCupom, ...prev]);
       setIsDialogOpen(false);
       toast.success(`Cupom ${codigo} criado!`);
@@ -81,12 +80,12 @@ export default function CuponsTab({ eventoId }: Props) {
   };
 
   const toggleAtivo = async (cupom: Cupom) => {
-    await updateDocument('cupons', cupom.id, { ativo: !cupom.ativo });
+    await updateDocument(`eventos/${eventoId}/cupons`, cupom.id, { ativo: !cupom.ativo });
     setCupons(prev => prev.map(c => c.id === cupom.id ? { ...c, ativo: !c.ativo } : c));
   };
 
   const handleDelete = async (id: string) => {
-    await removeDocument('cupons', id);
+    await removeDocument(`eventos/${eventoId}/cupons`, id);
     setCupons(prev => prev.filter(c => c.id !== id));
     toast.success('Cupom removido.');
   };
