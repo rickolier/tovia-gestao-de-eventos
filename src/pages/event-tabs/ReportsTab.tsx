@@ -22,6 +22,9 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
   const [totalDoacoes, setTotalDoacoes] = useState(0);
   const [loading, setLoading]         = useState(true);
   const [exportLoading, setExportLoading] = useState(false);
+  const [presencaExpandida, setPresencaExpandida] = useState(false);
+
+  const PRESENCA_LIMIT = 5;
 
   useEffect(() => {
     Promise.all([
@@ -168,25 +171,37 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
           {pagas.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">Nenhum inscrito confirmado ainda.</p>
           ) : (
-            <div className="divide-y divide-border/50 max-h-72 overflow-y-auto rounded-xl border border-border/30">
-              {pagas.map(insc => (
-                <div key={insc.id} className={cn('flex items-center gap-3 px-4 py-2.5 text-sm', insc.presenca ? 'bg-emerald-50/50' : '')}>
-                  <div className={cn('w-2 h-2 rounded-full shrink-0', insc.presenca ? 'bg-emerald-500' : 'bg-muted-foreground/30')} />
-                  <span className={cn('font-bold flex-1 truncate', insc.presenca ? 'text-emerald-700' : 'text-foreground')}>
-                    {insc.nome ?? '—'}
-                  </span>
-                  <span className="text-xs text-muted-foreground truncate">{insc.ticket_nome}</span>
-                  {insc.presenca && insc.checkin_at && (
-                    <span className="text-[10px] font-black text-emerald-600 shrink-0">
-                      {new Date(insc.checkin_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            <>
+              <div className="divide-y divide-border/50 rounded-xl border border-border/30 overflow-hidden">
+                {(presencaExpandida ? pagas : pagas.slice(0, PRESENCA_LIMIT)).map(insc => (
+                  <div key={insc.id} className={cn('flex items-center gap-3 px-4 py-2.5 text-sm', insc.presenca ? 'bg-emerald-50/50' : '')}>
+                    <div className={cn('w-2 h-2 rounded-full shrink-0', insc.presenca ? 'bg-emerald-500' : 'bg-muted-foreground/30')} />
+                    <span className={cn('font-bold flex-1 truncate', insc.presenca ? 'text-emerald-700' : 'text-foreground')}>
+                      {insc.nome ?? '—'}
                     </span>
-                  )}
-                  {!insc.presenca && (
-                    <span className="text-[10px] font-black text-muted-foreground/50 shrink-0">Ausente</span>
-                  )}
-                </div>
-              ))}
-            </div>
+                    <span className="text-xs text-muted-foreground truncate">{insc.ticket_nome}</span>
+                    {insc.presenca && insc.checkin_at && (
+                      <span className="text-[10px] font-black text-emerald-600 shrink-0">
+                        {new Date(insc.checkin_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    )}
+                    {!insc.presenca && (
+                      <span className="text-[10px] font-black text-muted-foreground/50 shrink-0">Ausente</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {pagas.length > PRESENCA_LIMIT && (
+                <button
+                  onClick={() => setPresencaExpandida(e => !e)}
+                  className="w-full text-xs font-black text-primary hover:text-primary/80 py-2 transition-colors"
+                >
+                  {presencaExpandida
+                    ? 'Mostrar menos ↑'
+                    : `Ver todos (${pagas.length}) ↓`}
+                </button>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
