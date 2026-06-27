@@ -23,7 +23,6 @@ import {
   Wallet,
   LogOut,
   MapPin,
-  CheckSquare,
   Bell,
   Menu,
   PanelLeftClose,
@@ -40,7 +39,6 @@ import DonationsTab from './event-tabs/DonationsTab';
 import ReportsTab from './event-tabs/ReportsTab';
 import RoomsTab from './event-tabs/RoomsTab';
 import ManagementTab from './event-tabs/ManagementTab';
-import TasksTab from './event-tabs/TasksTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
 import SalesPagesTab from './event-tabs/SalesPagesTab';
 import EquipeTab from './event-tabs/EquipeTab';
@@ -131,10 +129,9 @@ export default function EventDetail() {
     { value: 'donations',      label: 'Doações',      shortLabel: 'Doações',   icon: Heart,           show: !isGuest && plan.modules.donations },
     { value: 'management',     label: 'Recursos',     shortLabel: 'Recursos',  icon: Wallet,          show: showTab('management', plan.modules.eventManagement) },
     { value: 'grupos',         label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.eventManagement) },
-    { value: 'tasks',          label: 'Tarefas',      shortLabel: 'Tarefas',   icon: CheckSquare,     show: showTab('tasks', plan.modules.tasksAndTeam) },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
     { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: !isGuest && plan.modules.reports },
-    { value: 'equipe',            label: 'Equipe',         shortLabel: 'Equipe',   icon: UserCog,    show: isOwner && plan.modules.tasksAndTeam },
+    { value: 'equipe',            label: 'Equipe',         shortLabel: 'Equipe',   icon: UserCog,    show: showTab('tasks', plan.modules.tasksAndTeam) },
   ].filter(t => t.show);
 
   // Categorised sidebar structure
@@ -163,12 +160,11 @@ export default function EventDetail() {
       ],
     },
     {
-      category: 'Gestão do Evento',
+      category: 'Gestão',
       items: [
-        { value: 'management', label: 'Recursos', icon: Wallet,      show: showTab('management', plan.modules.eventManagement) },
-        { value: 'grupos',     label: 'Grupos',   icon: Bed,         show: showTab('rooms', plan.modules.eventManagement) },
-        { value: 'tasks',      label: 'Tarefas',  icon: CheckSquare, show: showTab('tasks', plan.modules.tasksAndTeam) },
-        { value: 'equipe',     label: 'Equipe',   icon: UserCog,     show: isOwner && plan.modules.tasksAndTeam },
+        { value: 'management', label: 'Recursos', icon: Wallet,   show: showTab('management', plan.modules.eventManagement) },
+        { value: 'grupos',     label: 'Grupos',   icon: Bed,      show: showTab('rooms', plan.modules.eventManagement) },
+        { value: 'equipe',     label: 'Equipe',   icon: UserCog,  show: showTab('tasks', plan.modules.tasksAndTeam) },
       ],
     },
   ].map(s => ({ ...s, items: s.items.filter(i => i.show) }))
@@ -375,9 +371,6 @@ export default function EventDetail() {
             </TabsContent>
             <TabsContent value="management" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <ManagementTab evento={evento} onUpdate={fetchEventoData} />
-            </TabsContent>
-            <TabsContent value="tasks" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <TasksTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="donations" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <DonationsTab eventoId={evento.id} />

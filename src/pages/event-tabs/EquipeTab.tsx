@@ -5,12 +5,13 @@ import { where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, Mail, Users, ShieldCheck, Clock, Copy } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Users, ShieldCheck, Clock, Copy, CheckSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../../lib/AuthContext';
 import { Email } from '../../lib/email';
 import { notifOnce } from '../../lib/notifications';
+import TasksTab from './TasksTab';
 
 const PERMISSAO_LABELS: Record<EquipePermissao, string> = {
   registrations: 'Ver inscritos',
@@ -28,10 +29,13 @@ interface Props {
 
 export default function EquipeTab({ evento, onUpdate }: Props) {
   const { profile } = useAuth();
+  const [subTab, setSubTab] = useState<'membros' | 'tarefas'>('membros');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingInvites, setPendingInvites] = useState<ConvitePendente[]>([]);
   const [loadedPending, setLoadedPending] = useState(false);
+
+  const isOwner = profile?.uid === evento.criado_por;
 
   const equipe: EquipeMembro[] = evento.equipe || [];
 
@@ -152,7 +156,39 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div>
+      {/* Sub-tab navigation */}
+      <div className="border-b border-border flex gap-1 mb-6">
+        {isOwner && (
+          <button
+            onClick={() => setSubTab('membros')}
+            className={cn(
+              'flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors',
+              subTab === 'membros'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <Users className="w-4 h-4" /> Membros
+          </button>
+        )}
+        <button
+          onClick={() => setSubTab('tarefas')}
+          className={cn(
+            'flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors',
+            subTab === 'tarefas'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <CheckSquare className="w-4 h-4" /> Tarefas
+        </button>
+      </div>
+
+      {subTab === 'tarefas' && <TasksTab eventoId={evento.id} />}
+
+      {subTab === 'membros' && isOwner && (
+      <div className="max-w-2xl mx-auto space-y-8">
       <div>
         <h2 className="text-2xl font-black tracking-tight text-foreground">Equipe do Evento</h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -299,6 +335,8 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
             </div>
           ))}
         </div>
+      )}
+      </div>
       )}
     </div>
   );

@@ -14,11 +14,10 @@ import {
   Menu,
   X,
   Calculator,
-  CreditCard,
+  Settings,
   Palette,
   GraduationCap,
   BookOpen,
-  Plug,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
@@ -36,9 +35,8 @@ import ReportsTab from './dashboard-tabs/ReportsTab';
 import ProfileTab from './dashboard-tabs/ProfileTab';
 import CalendarTab from './dashboard-tabs/CalendarTab';
 import CalculatorTab from './dashboard-tabs/CalculatorTab';
-import BillingTab from './dashboard-tabs/BillingTab';
+import ConfiguracoesTab from './dashboard-tabs/ConfiguracoesTab';
 import DesignSystemTab from './dashboard-tabs/DesignSystemTab';
-import GatewayTab from './dashboard-tabs/GatewayTab';
 
 export default function Dashboard() {
   const { user, profile } = useAuth();
@@ -149,9 +147,8 @@ export default function Dashboard() {
     { id: 'perfil',      label: 'Meu Perfil',    icon: User },
     { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
     { id: 'calculadora', label: 'Calculadora',    icon: Calculator },
-    { id: 'relatorios',  label: 'Relatórios',     icon: BarChart3 },
-    { id: 'faturamento', label: 'Faturamento',    icon: CreditCard },
-    ...(plan.modules.autoPayments ? [{ id: 'gateway', label: 'Gateway', icon: Plug }] : []),
+    { id: 'relatorios',     label: 'Relatórios',    icon: BarChart3 },
+    { id: 'configuracoes',  label: 'Configurações', icon: Settings },
     ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
   ];
 
@@ -286,8 +283,7 @@ export default function Dashboard() {
             {activeTab === 'calculadora'    && <CalculatorTab />}
             {activeTab === 'relatorios'     && <ReportsTab eventos={eventos} />}
             {activeTab === 'perfil'         && <ProfileTab />}
-            {activeTab === 'faturamento'    && <BillingTab />}
-            {activeTab === 'gateway'        && <GatewayTab />}
+            {activeTab === 'configuracoes'  && <ConfiguracoesTab />}
             {activeTab === 'design-system'  && isAdmin && <DesignSystemTab />}
           </div>
         </div>
