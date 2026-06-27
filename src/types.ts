@@ -284,6 +284,19 @@ export interface PaginaVenda {
   criado_em: string;
 }
 
+export interface Cupom {
+  id: string;
+  eventoId: string;
+  codigo: string;
+  tipo: 'porcentagem' | 'fixo';
+  valor: number;
+  limite_usos?: number;
+  usos: number;
+  data_validade?: string;
+  ativo: boolean;
+  criado_em: string;
+}
+
 export interface Task {
   id: string;
   eventoId: string;

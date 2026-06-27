@@ -5,8 +5,10 @@ import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Ticket as TicketIcon, Trash2, Edit2, AlertCircle } from 'lucide-react';
+import { Plus, Ticket as TicketIcon, Trash2, Edit2, AlertCircle, Tag } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import CuponsTab from './CuponsTab';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,6 +19,7 @@ import { getPlanConfig } from '../../lib/plan-limits';
 
 export default function TicketsTab({ eventoId }: { eventoId: string }) {
   const { profile } = useAuth();
+  const [subTab, setSubTab] = useState<'ingressos' | 'cupons'>('ingressos');
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -167,6 +170,30 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-8 text-foreground">
+      {/* Sub-tab nav */}
+      <div className="border-b border-border flex gap-1">
+        {([
+          { id: 'ingressos', label: 'Ingressos', icon: TicketIcon },
+          { id: 'cupons',    label: 'Cupons',    icon: Tag },
+        ] as const).map(t => (
+          <button
+            key={t.id}
+            onClick={() => setSubTab(t.id)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors',
+              subTab === t.id
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <t.icon className="w-4 h-4" />{t.label}
+          </button>
+        ))}
+      </div>
+
+      {subTab === 'cupons' && <CuponsTab eventoId={eventoId} />}
+
+      {subTab === 'ingressos' && <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-2xl font-black tracking-tight text-foreground">Ingressos</h2>
@@ -615,6 +642,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
           ))}
         </div>
       )}
+      </>}
     </div>
   );
 }
