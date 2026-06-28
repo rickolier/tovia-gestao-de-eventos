@@ -417,20 +417,13 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
         )
       )}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Financeiro</h2>
-          <p className="text-sm text-muted-foreground font-medium">
-            {isAutoPay && gatewayConnected
-              ? 'Acompanhe o status dos pagamentos gerados via Asaas.'
-              : 'Controle de pagamentos e destinação de doações.'}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3 w-full md:w-auto">
+      <div className="tab-page-header">
+        <h2>Pagamentos</h2>
+        <div className="flex flex-wrap gap-3">
           {(!isAutoPay || !gatewayConnected) && (
             <Button
               onClick={() => setIsPayDialogOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95 text-sm"
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
             >
               <Plus className="w-4 h-4 shrink-0" />
               Novo Pagamento

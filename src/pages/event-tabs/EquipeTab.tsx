@@ -190,11 +190,8 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
 
       {subTab === 'membros' && isOwner && (
       <div className="max-w-2xl mx-auto space-y-8">
-      <div>
-        <h2 className="text-2xl font-black tracking-tight text-foreground">Equipe do Evento</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Convide colaboradores para ajudar na gestão. Eles não terão acesso ao financeiro nem às configurações do evento.
-        </p>
+      <div className="tab-page-header">
+        <h2>Equipe</h2>
       </div>
 
       {/* Convidar */}

@@ -155,16 +155,12 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Recursos</h2>
-        </div>
-        <div className="flex flex-wrap gap-4 w-full md:w-auto">
-          <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95">
-            <Plus className="w-5 h-5 stroke-[3px]" />
-            Novo Lançamento
-          </Button>
-        </div>
+      <div className="tab-page-header">
+        <h2>Recursos</h2>
+        <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95">
+          <Plus className="w-5 h-5 stroke-[3px]" />
+          Novo Lançamento
+        </Button>
       </div>
 
       {/* ── Painel de Saúde Financeira da Margem — só aparece quando margem está configurada ── */}

@@ -430,27 +430,24 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-8 text-foreground pb-20 pt-4">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Doações</h2>
-          <p className="text-sm text-muted-foreground font-medium">Gestão de ofertas e destinação de recursos.</p>
-        </div>
-        <div className="flex flex-wrap gap-3 w-full md:w-auto">
-          <Button 
+      <div className="tab-page-header">
+        <h2>Doações</h2>
+        <div className="flex flex-wrap gap-3">
+          <Button
             onClick={() => setIsAllocationOpen(true)}
             variant="outline"
-            className="border-primary text-primary hover:bg-primary/5 gap-2 rounded-2xl flex-1 md:flex-none font-bold h-11 px-6 transition-all active:scale-95"
+            className="border-primary text-primary hover:bg-primary/5 gap-2 rounded-2xl flex-none font-bold h-11 px-6 transition-all active:scale-95"
           >
             <TrendingUp className="w-4 h-4" />
             Destinar Doação
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               resetForm();
               setEditingId(null);
               setIsDonationDialogOpen(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl flex-1 md:flex-none font-black h-11 px-6 shadow-lg shadow-primary/20 transition-all active:scale-95"
+            className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl flex-none font-black h-11 px-6 shadow-lg shadow-primary/20 transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" />
             Nova Doação

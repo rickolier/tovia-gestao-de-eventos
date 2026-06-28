@@ -796,6 +796,9 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
 
   return (
     <div className="space-y-6 text-foreground">
+      <div className="tab-page-header">
+        <h2>Participantes</h2>
+      </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="relative w-full md:w-96 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />

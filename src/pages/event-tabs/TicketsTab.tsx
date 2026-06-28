@@ -170,8 +170,11 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-8 text-foreground">
+      <div className="tab-page-header">
+        <h2>Ingressos</h2>
+      </div>
       {/* Sub-tab nav */}
-      <div className="border-b border-border flex gap-1">
+      <div className="border-b border-border flex gap-1 -mt-4">
         {([
           { id: 'ingressos', label: 'Ingressos', icon: TicketIcon },
           { id: 'cupons',    label: 'Cupons',    icon: Tag },

@@ -109,16 +109,12 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
   return (
     <div className="space-y-8 text-foreground">
 
-      {/* Header row */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight">Relatório do Evento</h2>
-          <p className="text-sm text-muted-foreground mt-1">{evento.nome}</p>
-        </div>
+      <div className="tab-page-header">
+        <h2>Relatórios</h2>
         <Button
           onClick={handleExportPDF}
           disabled={exportLoading}
-          className="rounded-2xl font-black gap-2 h-11 px-5"
+          className="rounded-2xl font-black gap-2 h-11 px-5 shrink-0"
         >
           {exportLoading
             ? <><Loader2 className="w-4 h-4 animate-spin" /> Gerando…</>

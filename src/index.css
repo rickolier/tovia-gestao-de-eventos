@@ -137,11 +137,30 @@
   @apply rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all;
 }
 
-/* Tab section page header */
+/* Standardized page header — all event tabs */
 .tab-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-page-header h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  line-height: 1.25;
+}
+
+/* legacy — kept for compatibility */
+.tab-page-header-legacy {
   margin-bottom: 1.5rem;
 }
-.tab-page-header h1, .tab-page-header h2 {
+.tab-page-header-legacy h1, .tab-page-header-legacy h2 {
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--foreground);

@@ -125,11 +125,8 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
-      <div>
-        <h1 className="text-2xl font-black tracking-tight text-foreground">Calculadora de Ingressos</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Calcule o valor ideal do ingresso para <span className="font-semibold text-foreground">{evento.nome}</span> e aplique a margem diretamente nos Recursos.
-        </p>
+      <div className="tab-page-header">
+        <h2>Calculadora</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

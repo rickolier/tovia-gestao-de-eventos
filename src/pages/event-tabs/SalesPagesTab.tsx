@@ -231,13 +231,9 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
   return (
     <div className="space-y-6 text-foreground">
 
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Páginas e Formulários</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">Crie páginas públicas com ingressos e formulário de inscrição. Cada uma tem seu próprio link.</p>
-        </div>
-        <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95">
+      <div className="tab-page-header">
+        <h2>Páginas</h2>
+        <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95 shrink-0">
           <Plus className="w-4 h-4" /> Nova Página
         </Button>
       </div>
