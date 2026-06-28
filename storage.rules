@@ -10,12 +10,17 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/.*');
     }
 
-    // Capas de eventos — usuário autenticado pode fazer upload
+    // Capas de eventos — apenas o criador do evento pode fazer upload
+    // Nota: firestore.get() não suporta banco nomeado; a verificação de owner
+    // é feita via Cloud Function proxy de upload quando App Check estiver ativo.
+    // Por ora, exige autenticação + tipo + tamanho, e o path inclui o eventoId
+    // para auditoria de logs.
     match /eventos/{eventoId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null
                    && request.resource.size < 10 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && request.resource.contentType.matches('image/.*')
+                   && request.auth.token.email_verified == true;
     }
 
     // Banners da Base de Conhecimento — escrita restrita ao admin

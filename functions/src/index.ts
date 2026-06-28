@@ -18,7 +18,32 @@ import {
 admin.initializeApp();
 const db = getFirestore(admin.app(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
 
-const ASAAS_BASE_URL = "https://sandbox.asaas.com/api/v3";
+const ASAAS_BASE_URL = process.env.ASAAS_BASE_URL ?? "https://sandbox.asaas.com/api/v3";
+
+// ─── Rate limiting ────────────────────────────────────────────────────────────
+// Bloqueia abuso de Cloud Functions (billing attack, brute-force).
+// Janela deslizante de 1 hora por uid+ação.
+async function checkRateLimit(uid: string, action: string, maxPerHour = 20): Promise<void> {
+  const ref = db.collection("_rate_limits").doc(`${uid}_${action}`);
+  const windowMs = 60 * 60 * 1000;
+  const now = Date.now();
+
+  await db.runTransaction(async (tx) => {
+    const doc = await tx.get(ref);
+    const data = doc.data();
+
+    if (!data || now - data.windowStart > windowMs) {
+      tx.set(ref, { count: 1, windowStart: now });
+    } else if (data.count >= maxPerHour) {
+      throw new functions.HttpsError(
+        "resource-exhausted",
+        "Muitas requisições. Tente novamente em 1 hora."
+      );
+    } else {
+      tx.update(ref, { count: data.count + 1 });
+    }
+  });
+}
 
 const PLAN_PRICES: Record<string, number> = {
   essencial: 39.90,
@@ -39,6 +64,8 @@ export const createCheckout = functions.onCall(
     if (!planLevel || !userId || !userEmail) {
       throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
+
+    if (request.auth) await checkRateLimit(request.auth.uid, "createCheckout", 10);
 
     if (planLevel === "start") {
       await db.collection("users").doc(userId).update({ plano: "start", asaasSubscriptionId: null });
@@ -115,9 +142,9 @@ export const suspendUser = functions.onCall(
       throw new functions.HttpsError("unauthenticated", "Não autenticado.");
     }
 
-    const ADMIN_EMAIL = "olierprado@gmail.com";
     const callerEmail = request.auth.token.email;
-    if (callerEmail !== ADMIN_EMAIL) {
+    const isToviaMaster = callerEmail === "admin@tovia.app";
+    if (!isToviaMaster) {
       const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
       if (!adminDoc.exists) {
         throw new functions.HttpsError("permission-denied", "Acesso negado.");
@@ -222,6 +249,8 @@ export const saveGatewayConfig = functions.onCall(
       throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
 
+    await checkRateLimit(request.auth.uid, "saveGatewayConfig", 10);
+
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
     const userId = request.auth.uid;
 
@@ -306,6 +335,10 @@ export const createEventCharge = functions.onCall(
     if (!eventoId || !inscricaoId || !paymentMethod || !attendeeName || !attendeeEmail || !valor) {
       throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
+
+    // Rate limit por IP aproximado (uid anônimo ou autenticado)
+    const rateLimitUid = request.auth?.uid ?? `anon_${attendeeEmail}`;
+    await checkRateLimit(rateLimitUid, "createEventCharge", 15);
 
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
 
@@ -449,5 +482,48 @@ export const createEventCharge = functions.onCall(
       installmentValue: null,
       installmentCount: null,
     };
+  }
+);
+
+// ─── LGPD Art. 18 — Solicitação de exclusão de dados pessoais ────────────────
+// Anonimiza os dados imediatamente e marca a conta para exclusão completa.
+// A deleção definitiva das subcoleções ocorre de forma assíncrona (batch).
+export const requestDataDeletion = functions.onCall(
+  { region: "us-central1" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+
+    const uid = request.auth.uid;
+
+    // Anonimiza dados pessoais no documento do usuário
+    await db.collection("users").doc(uid).update({
+      nome: "[Conta Excluída]",
+      email: "[excluído]",
+      whatsapp: admin.firestore.FieldValue.delete(),
+      bio: admin.firestore.FieldValue.delete(),
+      descricao: admin.firestore.FieldValue.delete(),
+      imagem_url: admin.firestore.FieldValue.delete(),
+      contato_email: admin.firestore.FieldValue.delete(),
+      telefone: admin.firestore.FieldValue.delete(),
+      site: admin.firestore.FieldValue.delete(),
+      redes_social: admin.firestore.FieldValue.delete(),
+      cnpj: admin.firestore.FieldValue.delete(),
+      cep: admin.firestore.FieldValue.delete(),
+      endereco: admin.firestore.FieldValue.delete(),
+      gateway: admin.firestore.FieldValue.delete(),
+      gateway_connected: false,
+      deletion_requested_at: new Date().toISOString(),
+      deletion_status: "pending",
+    });
+
+    // Remove dados públicos do organizador
+    await db.collection("organizer_public").doc(uid).delete();
+
+    // Desativa a conta no Firebase Auth (impede login imediato)
+    await admin.auth().updateUser(uid, { disabled: true });
+
+    return { success: true };
   }
 );
