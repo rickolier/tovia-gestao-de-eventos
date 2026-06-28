@@ -391,6 +391,21 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-6 text-foreground">
+      <div className="tab-page-header">
+        <h2>Pagamentos</h2>
+        <div className="flex flex-wrap gap-3">
+          {(!isAutoPay || !gatewayConnected) && (
+            <Button
+              onClick={() => setIsPayDialogOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              Novo Pagamento
+            </Button>
+          )}
+        </div>
+      </div>
+
       {/* Banner de modo de pagamento */}
       {isAutoPay && (
         gatewayConnected ? (
@@ -416,21 +431,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
           </div>
         )
       )}
-
-      <div className="tab-page-header">
-        <h2>Pagamentos</h2>
-        <div className="flex flex-wrap gap-3">
-          {(!isAutoPay || !gatewayConnected) && (
-            <Button
-              onClick={() => setIsPayDialogOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
-            >
-              <Plus className="w-4 h-4 shrink-0" />
-              Novo Pagamento
-            </Button>
-          )}
-        </div>
-      </div>
 
       <div className="flex flex-col md:flex-row gap-4 items-center">
         <Card className="border-none shadow-sm bg-card rounded-2xl border border-border/50 py-3 px-6 h-12 flex items-center justify-center shrink-0">
