@@ -173,65 +173,66 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
       <div className="tab-page-header">
         <div><h2>Ingressos</h2><p>Configure os tipos de ingresso e cupons de desconto.</p></div>
       </div>
-      {/* Sub-tab nav */}
-      <div className="border-b border-border flex gap-1 -mt-4">
-        {([
-          { id: 'ingressos', label: 'Ingressos', icon: TicketIcon },
-          { id: 'cupons',    label: 'Cupons',    icon: Tag },
-        ] as const).map(t => (
-          <button
-            key={t.id}
-            onClick={() => setSubTab(t.id)}
-            className={cn(
-              'flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors',
-              subTab === t.id
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <t.icon className="w-4 h-4" />{t.label}
-          </button>
-        ))}
+      {/* Sub-tab nav + actions row */}
+      <div className="border-b border-border flex items-center justify-between -mt-4">
+        <div className="flex gap-1">
+          {([
+            { id: 'ingressos', label: 'Ingressos', icon: TicketIcon },
+            { id: 'cupons',    label: 'Cupons',    icon: Tag },
+          ] as const).map(t => (
+            <button
+              key={t.id}
+              onClick={() => setSubTab(t.id)}
+              className={cn(
+                'flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors',
+                subTab === t.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <t.icon className="w-4 h-4" />{t.label}
+            </button>
+          ))}
+        </div>
+        {subTab === 'ingressos' && (
+          <div className="flex items-center gap-3 pb-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">Plano {plan.name}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{tickets.length}/{plan.maxTicketsPerEvent} ingressos</span>
+            <Button
+              disabled={reachedTicketLimit}
+              onClick={() => {
+                if (reachedTicketLimit) {
+                  toast.error("Limite de ingressos atingido para seu plano.");
+                  return;
+                }
+                setEditingTicketId(null);
+                setFormData({
+                  nome: '',
+                  tipo: onlyFreeTickets ? 'gratuito' : 'pago',
+                  valor: 0,
+                  limite_vagas: 0,
+                  data_limite: '',
+                  permite_parcelamento: false,
+                  metodos_pagamento: ['pix', 'boleto', 'credito'],
+                  max_parcelas_credito: 1,
+                  max_parcelas_recorrente: 2,
+                  installment_logic: 'free' as 'free' | 'limited',
+                  exibir_preco: true,
+                });
+                setIsDialogOpen(true);
+              }}
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              Criar Novo Ingresso
+            </Button>
+          </div>
+        )}
       </div>
 
       {subTab === 'cupons' && <CuponsTab eventoId={eventoId} />}
 
       {subTab === 'ingressos' && <>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">Plano {plan.name}</span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{tickets.length}/{plan.maxTicketsPerEvent} ingressos</span>
-        </div>
-        <Button 
-          disabled={reachedTicketLimit}
-          onClick={() => {
-            if (reachedTicketLimit) {
-              toast.error("Limite de ingressos atingido para seu plano.");
-              return;
-            }
-            setEditingTicketId(null);
-            setFormData({
-              nome: '',
-              tipo: onlyFreeTickets ? 'gratuito' : 'pago',
-              valor: 0,
-              limite_vagas: 0,
-              data_limite: '',
-              permite_parcelamento: false,
-              metodos_pagamento: ['pix', 'boleto', 'credito'],
-              max_parcelas_credito: 1,
-              max_parcelas_recorrente: 2,
-              installment_logic: 'free' as 'free' | 'limited',
-              exibir_preco: true,
-            });
-            setIsDialogOpen(true);
-          }}
-          className="bg-primary hover:bg-primary/90 text-white gap-3 rounded-2xl h-14 px-8 font-black shadow-xl shadow-primary/20 transition-all active:scale-95 w-full md:w-auto"
-        >
-          <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-            <Plus className="w-5 h-5" />
-          </div>
-          Criar Novo Ingresso
-        </Button>
 
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           setIsDialogOpen(open);
@@ -538,7 +539,6 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
 
       {reachedTicketLimit && (
         <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 rounded-[2rem] p-6 flex gap-4 items-center animate-in zoom-in-95 duration-500">
