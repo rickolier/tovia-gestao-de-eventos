@@ -431,13 +431,7 @@ export default function EventDetail() {
               <DonationsTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="grupos" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <div className="space-y-6 text-foreground">
-                <div>
-                  <h2 className="text-2xl font-black tracking-tight text-foreground">Grupos</h2>
-                  <p className="text-sm text-muted-foreground mt-0.5">Organize os participantes em grupos, mesas, quartos ou qualquer divisão que o evento precisar.</p>
-                </div>
-                <RoomsTab eventoId={evento.id} />
-              </div>
+              <RoomsTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="sales-pages" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <SalesPagesTab eventoId={evento.id} />
