@@ -157,7 +157,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
     <div className="space-y-8">
       <div className="tab-page-header">
         <div><h2>Recursos</h2><p>Controle de saídas e saúde financeira do evento.</p></div>
-        <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95">
+        <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95">
           <Plus className="w-5 h-5 stroke-[3px]" />
           Novo Lançamento
         </Button>
@@ -369,7 +369,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
                             {t.tipo === 'entrada' ? '+' : '-'} {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(t.valor)}
                           </td>
                           <td className="py-4 text-right pl-4">
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete(t.id)} className="h-9 w-9 text-muted-foreground/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-all">
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(t.id)} className="h-8 w-8 text-muted-foreground/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-all">
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </td>
@@ -467,7 +467,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
                 className="rounded-xl border-none bg-muted/50 h-12 font-medium shadow-sm"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-[1.25rem] h-14 font-black shadow-xl shadow-primary/20 mt-4 transition-all active:scale-95">
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 mt-4 transition-all active:scale-[0.98]">
               Confirmar Lançamento
             </Button>
           </form>

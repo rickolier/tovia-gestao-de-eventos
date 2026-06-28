@@ -218,7 +218,7 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        <Button onClick={() => openForm()} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95">
+        <Button onClick={() => openForm()} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 transition-all active:scale-95">
           <Plus className="w-4 h-4" />
           Nova Tarefa
         </Button>
@@ -269,10 +269,10 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
                       </TableCell>
                       <TableCell className="text-right px-6">
                         <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="icon" onClick={() => openForm(task)} className="rounded-xl h-9 w-9 text-muted-foreground/50 hover:text-primary hover:bg-primary/10">
+                          <Button variant="ghost" size="icon" onClick={() => openForm(task)} className="rounded-lg h-8 w-8 text-muted-foreground/50 hover:text-primary hover:bg-primary/10">
                             <Edit2 className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(task.id)} className="rounded-xl h-9 w-9 text-muted-foreground/50 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20">
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(task.id)} className="rounded-lg h-8 w-8 text-muted-foreground/50 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -477,21 +477,21 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
             <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
               {editingTask && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => handleDelete(editingTask.id)} 
-                  className="rounded-2xl border-destructive/20 text-destructive hover:bg-destructive hover:text-white h-12 px-6 font-bold shadow-sm transition-all"
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => handleDelete(editingTask.id)}
+                  className="rounded-xl h-12 px-6 font-black shadow-lg shadow-destructive/20 transition-all active:scale-95"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Excluir
                 </Button>
               )}
               <div className="flex-1" />
-              <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-2xl h-12 px-6 font-bold text-muted-foreground hover:bg-muted">
+              <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">
                 Cancelar
               </Button>
-              <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-12 h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
+              <Button type="submit" className="bg-primary hover:bg-primary/90 text-white w-full rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
                 {editingTask ? 'Salvar Alterações' : 'Criar Tarefa'}
               </Button>
             </DialogFooter>

@@ -513,7 +513,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   )
                 )}
 
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4">
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4">
                 <TicketIcon className="w-5 h-5" />
                 Salvar Categoria de Ingresso
               </Button>
@@ -530,10 +530,10 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex gap-3 pt-6">
-              <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} className="rounded-xl h-12 font-black flex-1 text-muted-foreground hover:bg-muted">
+              <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} className="rounded-xl h-11 font-bold flex-1 text-muted-foreground hover:bg-muted">
                 Manter Ingresso
               </Button>
-              <Button variant="destructive" onClick={handleDelete} className="rounded-xl h-12 font-black flex-1 shadow-lg shadow-destructive/20 transform transition-all active:scale-95">
+              <Button variant="destructive" onClick={handleDelete} className="rounded-xl h-11 font-black flex-1 shadow-lg shadow-destructive/20 transform transition-all active:scale-95">
                 Excluir Agora
               </Button>
             </DialogFooter>

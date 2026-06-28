@@ -397,7 +397,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
           {(!isAutoPay || !gatewayConnected) && (
             <Button
               onClick={() => setIsPayDialogOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
+              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
             >
               <Plus className="w-4 h-4 shrink-0" />
               Novo Pagamento
@@ -682,7 +682,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                 </div>
               </div>
             )}
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4" disabled={uploadingReceipt}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4" disabled={uploadingReceipt}>
               <CheckCircle className="w-5 h-5" />
               Confirmar Pagamento
             </Button>

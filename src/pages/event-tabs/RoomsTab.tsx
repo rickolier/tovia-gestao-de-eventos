@@ -529,7 +529,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             ))}
           </div>
           <DialogFooter className="pt-6 gap-2">
-            <Button variant="ghost" onClick={() => { setTipoGrupoKey('grupo'); setIsTipoDialogOpen(false); }} className="rounded-xl">Cancelar</Button>
+            <Button variant="ghost" onClick={() => { setTipoGrupoKey('grupo'); setIsTipoDialogOpen(false); }} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
             <Button onClick={() => setIsTipoDialogOpen(false)} className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6">Confirmar</Button>
           </DialogFooter>
         </DialogContent>
@@ -701,7 +701,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
           <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
             <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
-            <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
+            <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white w-full rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
               {editingRoomId ? 'Salvar Alterações' : 'Criar Grupo'}
             </Button>
           </DialogFooter>
@@ -780,7 +780,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
           </div>
           <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
             <Button variant="ghost" onClick={() => setIsAutoConfigOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
-            <Button onClick={handleAutoAllocate} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
+            <Button onClick={handleAutoAllocate} className="bg-primary hover:bg-primary/90 text-white w-full rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
               Gerar e Alocar
             </Button>
           </DialogFooter>
@@ -799,7 +799,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
-            <Button variant="ghost" onClick={() => setIsDeleteRoomDialogOpen(false)} className="rounded-xl h-11 px-6 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
+            <Button variant="ghost" onClick={() => setIsDeleteRoomDialogOpen(false)} className="rounded-xl h-11 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
             <Button variant="destructive" onClick={handleDeleteRoom} className="rounded-xl h-11 px-8 font-black shadow-lg shadow-destructive/20 active:scale-95 transition-all">
               Excluir {label.singular}
             </Button>
