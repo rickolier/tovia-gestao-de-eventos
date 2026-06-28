@@ -275,8 +275,7 @@ export default function EventDetail() {
                       onClick={() => toggleSection(section.category!)}
                       className={cn(
                         'w-full flex items-center justify-between px-3 py-2 rounded-lg mb-0.5',
-                        'text-[11px] uppercase tracking-widest text-white',
-                        hasActiveChild && !isExpanded ? 'font-bold' : 'font-normal',
+                        'text-[11px] uppercase tracking-widest text-white font-bold',
                       )}
                     >
                       <span>{section.category}</span>
