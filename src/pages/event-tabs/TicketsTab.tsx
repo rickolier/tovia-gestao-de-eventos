@@ -583,7 +583,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
           {tickets.map(ticket => (
             <Card key={ticket.id} className="border-none shadow-sm rounded-[2.5rem] overflow-hidden bg-card border border-border/50 group hover:shadow-2xl transition-all relative">
               <div className={`h-2 w-full absolute top-0 left-0 ${ticket.tipo === 'gratuito' ? 'bg-blue-400' : ticket.tipo === 'doacao' ? 'bg-pink-400' : 'bg-primary'}`} />
-              <CardHeader className="pb-4 pt-10 px-8 relative z-10">
+              <CardHeader className="pb-2 pt-7 px-6 relative z-10">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-base font-bold text-foreground">{ticket.nome}</CardTitle>
                   <Badge variant="secondary" className={`font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-lg ${
@@ -593,9 +593,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="px-8 pb-8 relative z-10">
-                <div className="space-y-6">
-                  <p className="text-4xl font-black text-foreground tracking-tighter">
+              <CardContent className="px-6 pb-5 relative z-10">
+                <div className="space-y-3">
+                  <p className="text-3xl font-black text-foreground tracking-tighter">
                     {ticket.exibir_preco === false
                       ? <span className="text-lg text-muted-foreground font-medium">Valor oculto</span>
                       : ticket.tipo === 'gratuito' ? 'Grátis'
@@ -603,35 +603,35 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(ticket.valor)
                     }
                   </p>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-muted/30 p-3 rounded-2xl border border-border/50">
-                      <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60 mb-1">Limite</p>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/30 p-2.5 rounded-xl border border-border/50">
+                      <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60 mb-0.5">Limite</p>
                       <p className="text-sm font-black text-foreground">{ticket.limite_vagas || 'Sem limite'}</p>
                     </div>
-                    <div className="bg-muted/30 p-3 rounded-2xl border border-border/50">
-                      <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60 mb-1">Expira em</p>
+                    <div className="bg-muted/30 p-2.5 rounded-xl border border-border/50">
+                      <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60 mb-0.5">Expira em</p>
                       <p className="text-sm font-black text-foreground">{ticket.data_limite ? new Date(ticket.data_limite).toLocaleDateString('pt-BR') : 'Indeterminado'}</p>
                     </div>
                   </div>
 
-                  <div className="flex gap-3 pt-4">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="flex-1 bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl font-black h-12 transition-all active:scale-95"
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl font-black h-9 transition-all active:scale-95"
                       onClick={() => handleEdit(ticket)}
                     >
-                      <Edit2 className="w-4 h-4 mr-2" />
+                      <Edit2 className="w-3.5 h-3.5 mr-1.5" />
                       Ajustar
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="flex-1 bg-muted/50 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 rounded-xl font-black h-12 transition-all active:scale-95"
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 bg-muted/50 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 rounded-xl font-black h-9 transition-all active:scale-95"
                       onClick={() => confirmDelete(ticket.id)}
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
+                      <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                       Remover
                     </Button>
                   </div>
