@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
-import Logo from '../components/Logo';
+import { useAuth } from '~/context/AuthContext';
+import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle2, RefreshCw } from 'lucide-react';
 

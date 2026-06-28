@@ -8,8 +8,8 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import { auth } from '../firebase';
-import { Email } from '../lib/email';
+import { auth } from '~/services/firebase';
+import { Email } from '~/services/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,8 +17,8 @@ import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import Logo from '../components/Logo';
-import { useAuth } from '../lib/AuthContext';
+import Logo from '~/components/Logo';
+import { useAuth } from '~/context/AuthContext';
 
 export default function Login() {
   const { user, isAuthReady, processEquipeJoin } = useAuth();

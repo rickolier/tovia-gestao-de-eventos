@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
-import { getDocument, listDocuments, updateDocument } from '../lib/firebase-utils';
-import { Evento, Inscricao } from '../types';
+import { useAuth } from '~/context/AuthContext';
+import { getDocument, listDocuments, updateDocument } from '~/services/firestore';
+import { Evento, Inscricao } from '~/types';
 import { CheckCircle2, XCircle, AlertCircle, Search, QrCode, List, ArrowLeft, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Logo from '../components/Logo';
+import Logo from '~/components/Logo';
 import QrScanner from 'qr-scanner';
 
 type ScanResult = { type: 'success'; nome: string; ticket: string; inscricaoId: string }

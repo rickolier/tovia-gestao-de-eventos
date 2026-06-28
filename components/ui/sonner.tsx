@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme } from "../../src/lib/ThemeProvider"
+import { useTheme } from "../../src/context/ThemeProvider"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 

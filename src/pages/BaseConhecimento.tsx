@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../lib/AuthContext';
-import { listDocuments } from '../lib/firebase-utils';
-import { ArtigoBC } from '../types';
+import { useAuth } from '~/context/AuthContext';
+import { listDocuments } from '~/services/firestore';
+import { ArtigoBC } from '~/types';
 import { orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 

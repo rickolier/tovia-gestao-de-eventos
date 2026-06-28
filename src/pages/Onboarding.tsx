@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
-import { updateDocument } from '../lib/firebase-utils';
-import { PlanLevel } from '../types';
-import { PLAN_CONFIGS } from '../lib/plan-limits';
-import Logo from '../components/Logo';
+import { useAuth } from '~/context/AuthContext';
+import { updateDocument } from '~/services/firestore';
+import { PlanLevel } from '~/types';
+import { PLAN_CONFIGS } from '~/utils/plan-limits';
+import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Check, TicketIcon, DollarSign, Wallet, ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { maskCPF, validateCPF } from '../lib/validators';
+import { maskCPF, validateCPF } from '~/utils/validators';
 import {
   Search, CheckCircle2, Clock, XCircle, AlertCircle,
   CalendarDays, MapPin, Ticket, CreditCard, ArrowRight, Loader2,
