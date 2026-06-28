@@ -232,7 +232,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-6 text-foreground">
 
       <div className="tab-page-header">
-        <h2>Páginas</h2>
+        <div><h2>Páginas</h2><p>Páginas públicas de inscrição com formulário.</p></div>
         <Button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95 shrink-0">
           <Plus className="w-4 h-4" /> Nova Página
         </Button>

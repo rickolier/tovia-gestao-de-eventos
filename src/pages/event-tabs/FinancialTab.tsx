@@ -392,7 +392,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   return (
     <div className="space-y-6 text-foreground">
       <div className="tab-page-header">
-        <h2>Pagamentos</h2>
+        <div><h2>Pagamentos</h2><p>Controle de pagamentos dos inscritos.</p></div>
         <div className="flex flex-wrap gap-3">
           {(!isAutoPay || !gatewayConnected) && (
             <Button

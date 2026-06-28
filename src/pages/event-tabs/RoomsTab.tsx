@@ -275,7 +275,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     <div className="space-y-6 text-foreground">
 
       <div className="tab-page-header">
-        <h2>Grupos</h2>
+        <div><h2>Grupos</h2><p>Organize os participantes em grupos, mesas ou quartos.</p></div>
       </div>
 
       {/* ── Top bar ── */}

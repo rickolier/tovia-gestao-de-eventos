@@ -156,7 +156,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   return (
     <div className="space-y-8">
       <div className="tab-page-header">
-        <h2>Recursos</h2>
+        <div><h2>Recursos</h2><p>Controle de saídas e saúde financeira do evento.</p></div>
         <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95">
           <Plus className="w-5 h-5 stroke-[3px]" />
           Novo Lançamento

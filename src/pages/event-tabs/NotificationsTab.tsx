@@ -155,7 +155,7 @@ export default function NotificationsTab({ eventoId }: NotificationsTabProps) {
   return (
     <div className="space-y-6">
       <div className="tab-page-header">
-        <h2>Notificações</h2>
+        <div><h2>Notificações</h2><p>Aprovações e avisos deste evento.</p></div>
       </div>
 
       {notifications.length === 0 ? (

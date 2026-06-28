@@ -205,29 +205,23 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-6 text-foreground">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">Módulo Tarefas e Equipe</h2>
-          <p className="text-sm text-muted-foreground font-medium">Organize a execução do seu evento com agilidade.</p>
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <Tabs value={view} onValueChange={(v: any) => setView(v)} className="bg-muted p-1.5 rounded-2xl">
-            <TabsList className="bg-transparent border-none">
-              <TabsTrigger value="lista" className="rounded-xl gap-2 font-bold px-4 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
-                <LayoutList className="w-4 h-4" />
-                LISTA
-              </TabsTrigger>
-              <TabsTrigger value="quadros" className="rounded-xl gap-2 font-bold px-4 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
-                <Kanban className="w-4 h-4" />
-                QUADROS
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Button onClick={() => openForm()} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 flex-1 md:flex-none transition-all active:scale-95">
-            <Plus className="w-4 h-4" />
-            Nova Tarefa
-          </Button>
-        </div>
+      <div className="flex justify-end gap-3">
+        <Tabs value={view} onValueChange={(v: any) => setView(v)} className="bg-muted p-1.5 rounded-2xl">
+          <TabsList className="bg-transparent border-none">
+            <TabsTrigger value="lista" className="rounded-xl gap-2 font-bold px-4 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+              <LayoutList className="w-4 h-4" />
+              LISTA
+            </TabsTrigger>
+            <TabsTrigger value="quadros" className="rounded-xl gap-2 font-bold px-4 data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+              <Kanban className="w-4 h-4" />
+              QUADROS
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Button onClick={() => openForm()} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-11 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95">
+          <Plus className="w-4 h-4" />
+          Nova Tarefa
+        </Button>
       </div>
 
       <Tabs value={view}>

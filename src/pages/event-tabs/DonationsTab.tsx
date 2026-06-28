@@ -431,7 +431,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
   return (
     <div className="space-y-8 text-foreground pb-20 pt-4">
       <div className="tab-page-header">
-        <h2>Doações</h2>
+        <div><h2>Doações</h2><p>Gestão de ofertas e destinação de recursos.</p></div>
         <div className="flex flex-wrap gap-3">
           <Button
             onClick={() => setIsAllocationOpen(true)}

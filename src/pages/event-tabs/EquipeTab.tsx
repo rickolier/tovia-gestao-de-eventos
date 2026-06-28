@@ -158,6 +158,11 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
 
   return (
     <div>
+      <div className="tab-page-header">
+        <h2>Equipe</h2>
+        <p>Membros e tarefas do evento.</p>
+      </div>
+
       {/* Sub-tab navigation */}
       <div className="border-b border-border flex gap-1 mb-6">
         {isOwner && (
@@ -190,9 +195,6 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
 
       {subTab === 'membros' && isOwner && (
       <div className="max-w-2xl mx-auto space-y-8">
-      <div className="tab-page-header">
-        <h2>Equipe</h2>
-      </div>
 
       {/* Convidar */}
       <div className="bg-card rounded-3xl border border-border p-6 space-y-4">

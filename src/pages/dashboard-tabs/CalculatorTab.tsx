@@ -126,7 +126,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
       <div className="tab-page-header">
-        <h2>Calculadora</h2>
+        <div><h2>Calculadora</h2><p>Calcule o valor ideal do ingresso para cobrir seus custos.</p></div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

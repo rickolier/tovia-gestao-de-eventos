@@ -110,7 +110,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
     <div className="space-y-8 text-foreground">
 
       <div className="tab-page-header">
-        <h2>Relatórios</h2>
+        <div><h2>Relatórios</h2><p>Métricas de presença e financeiro do evento.</p></div>
         <Button
           onClick={handleExportPDF}
           disabled={exportLoading}

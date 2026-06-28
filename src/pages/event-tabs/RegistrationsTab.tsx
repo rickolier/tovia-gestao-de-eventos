@@ -797,7 +797,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   return (
     <div className="space-y-6 text-foreground">
       <div className="tab-page-header">
-        <h2>Participantes</h2>
+        <div><h2>Participantes</h2><p>Lista de inscrições e controle de presença.</p></div>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="relative w-full md:w-96 group">

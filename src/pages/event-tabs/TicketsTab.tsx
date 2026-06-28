@@ -171,7 +171,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
   return (
     <div className="space-y-8 text-foreground">
       <div className="tab-page-header">
-        <h2>Ingressos</h2>
+        <div><h2>Ingressos</h2><p>Configure os tipos de ingresso e cupons de desconto.</p></div>
       </div>
       {/* Sub-tab nav */}
       <div className="border-b border-border flex gap-1 -mt-4">
