@@ -46,6 +46,7 @@ import CalculatorTab from './dashboard-tabs/CalculatorTab';
 import NotificationsTab from './event-tabs/NotificationsTab';
 import SalesPagesTab from './event-tabs/SalesPagesTab';
 import EquipeTab from './event-tabs/EquipeTab';
+import CheckinTab from './event-tabs/CheckinTab';
 import { toast } from 'sonner';
 import { getPlanConfig } from '../lib/plan-limits';
 
@@ -110,7 +111,7 @@ export default function EventDetail() {
   // Auto-expand the sidebar section that contains the active tab
   useEffect(() => {
     const tabToCategory: Record<string, string> = {
-      tickets: 'Inscrições', 'sales-pages': 'Inscrições', registrations: 'Inscrições',
+      tickets: 'Inscrições', 'sales-pages': 'Inscrições', registrations: 'Inscrições', 'checkin-list': 'Inscrições',
       financial: 'Financeiro', donations: 'Financeiro',
       calculadora: 'Gestão', management: 'Gestão', grupos: 'Gestão', equipe: 'Gestão',
     };
@@ -167,6 +168,7 @@ export default function EventDetail() {
         { value: 'tickets',       label: 'Ingressos',     icon: TicketIcon,  show: !isGuest && plan.modules.registrations },
         { value: 'sales-pages',   label: 'Páginas',       icon: Globe,       show: !isGuest && plan.modules.registrations },
         { value: 'registrations', label: 'Participantes', icon: Users,       show: showTab('registrations', plan.modules.registrations) },
+        { value: 'checkin-list',  label: 'Check-in',      icon: ScanLine,    show: !isGuest && plan.modules.registrations },
       ],
     },
     {
@@ -417,6 +419,9 @@ export default function EventDetail() {
             </TabsContent>
             <TabsContent value="registrations" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <RegistrationsTab eventoId={evento.id} readOnly={isGuest} />
+            </TabsContent>
+            <TabsContent value="checkin-list" className="mt-0 border-none p-0 shadow-none bg-transparent">
+              <CheckinTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="financial" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <FinancialTab eventoId={evento.id} />
