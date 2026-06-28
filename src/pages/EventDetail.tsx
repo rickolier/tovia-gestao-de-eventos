@@ -394,13 +394,13 @@ export default function EventDetail() {
                   <MapPin className="w-4 h-4 text-primary-foreground" /> {evento.local}
                 </p>
               </div>
-              {activeTab === 'overview' && (
+              {(activeTab === 'overview' || activeTab === 'checkin-list') && (
                 <Link
                   to={`/eventos/${evento.id}/checkin`}
                   className="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl transition-all shrink-0"
                 >
                   <ScanLine className="w-4 h-4" />
-                  <span className="hidden sm:inline">Checkin</span>
+                  <span className="hidden sm:inline">Check-in</span>
                 </Link>
               )}
             </div>
