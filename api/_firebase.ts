@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
 if (!getApps().length) {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
@@ -21,3 +22,28 @@ export const db = new Proxy({} as any, {
     return getDb()[prop];
   },
 });
+
+/** Verifica Firebase ID Token do header Authorization: Bearer <token>.
+ *  Retorna o DecodedIdToken ou lança erro com status 401/403. */
+export async function verifyAuth(authHeader: string | undefined, expectedUid?: string) {
+  if (!authHeader?.startsWith('Bearer ')) {
+    const err: any = new Error('Não autenticado.');
+    err.status = 401;
+    throw err;
+  }
+  const token = authHeader.slice(7);
+  let decoded: any;
+  try {
+    decoded = await getAuth(getApp()).verifyIdToken(token);
+  } catch {
+    const err: any = new Error('Token inválido ou expirado.');
+    err.status = 401;
+    throw err;
+  }
+  if (expectedUid && decoded.uid !== expectedUid) {
+    const err: any = new Error('Acesso negado.');
+    err.status = 403;
+    throw err;
+  }
+  return decoded;
+}

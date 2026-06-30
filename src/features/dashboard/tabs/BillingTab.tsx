@@ -180,9 +180,10 @@ export default function BillingTab() {
     setLoading(true);
     setError(null);
     try {
+      const idToken = await auth.currentUser?.getIdToken();
       const res = await fetch('/api/getBillingInfo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({ userId: user.uid }),
       });
       const text = await res.text();

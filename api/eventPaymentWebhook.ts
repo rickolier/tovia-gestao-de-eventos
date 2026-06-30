@@ -49,24 +49,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (!eventoId || !inscricaoId) return res.status(200).send('ok');
 
-  // Valida token do Asaas via SHA256 armazenado no organizer_public
-  try {
-    const eventoDoc = await db.collection('eventos').doc(eventoId).get();
-    if (eventoDoc.exists) {
-      const organizerId: string = eventoDoc.data()!.criado_por;
-      const orgPublicDoc = await db.collection('organizer_public').doc(organizerId).get();
-      if (orgPublicDoc.exists) {
-        const storedHash: string = orgPublicDoc.data()!.webhook_token_hash ?? '';
-        const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
-        const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
-        if (storedHash && incomingHash !== storedHash) {
-          console.warn(`[eventPaymentWebhook] token mismatch for evento ${eventoId}`);
-          return res.status(401).send('Unauthorized');
-        }
-      }
-    }
-  } catch (e) {
-    console.warn('[eventPaymentWebhook] token validation error (non-fatal):', e);
+  // Valida token do Asaas via SHA256 — obrigatório, sem bypass por exceção
+  const eventoDoc = await db.collection('eventos').doc(eventoId).get();
+  if (!eventoDoc.exists) return res.status(200).send('ok');
+  const organizerId: string = eventoDoc.data()!.criado_por;
+  const orgPublicDoc = await db.collection('organizer_public').doc(organizerId).get();
+  const storedHash: string = orgPublicDoc.exists ? (orgPublicDoc.data()!.webhook_token_hash ?? '') : '';
+  if (!storedHash) {
+    console.warn(`[eventPaymentWebhook] evento ${eventoId} sem webhook_token_hash — rejeitado`);
+    return res.status(401).send('Unauthorized');
+  }
+  const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
+  const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
+  if (incomingHash !== storedHash) {
+    console.warn(`[eventPaymentWebhook] token mismatch para evento ${eventoId}`);
+    return res.status(401).send('Unauthorized');
   }
 
   const paidEvents = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'];

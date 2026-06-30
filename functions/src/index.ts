@@ -350,6 +350,18 @@ export const createEventCharge = functions.onCall(
     const evento = eventoDoc.data()!;
     const organizerId: string = evento.criado_por;
 
+    // Verifica que a inscrição pertence a este evento (previne cobrança em inscrição de outro evento)
+    const targetColl = isDonation ? "doacoes" : "inscricoes";
+    const inscricaoSnap = await db.collection(`eventos/${eventoId}/${targetColl}`).doc(inscricaoId).get();
+    if (!inscricaoSnap.exists) {
+      throw new functions.HttpsError("not-found", "Inscrição não encontrada neste evento.");
+    }
+    const inscricaoData = inscricaoSnap.data()!;
+    const alreadyPaid = isDonation ? inscricaoData.status === "aprovada" : inscricaoData.status === "pago";
+    if (alreadyPaid) {
+      throw new functions.HttpsError("failed-precondition", "Esta cobrança já foi processada.");
+    }
+
     // Busca o gateway do organizador
     const orgDoc = await db.collection("users").doc(organizerId).get();
     if (!orgDoc.exists) {
@@ -379,9 +391,8 @@ export const createEventCharge = functions.onCall(
         attendeeCpf,
       );
     } catch (e: any) {
-      const body = JSON.stringify(e?.response?.data ?? e?.message);
-      console.error("[createEventCharge] createCustomer failed:", body);
-      throw new functions.HttpsError("internal", `Erro ao criar cliente Asaas: ${body}`);
+      console.error("[createEventCharge] createCustomer failed — status:", e?.response?.status ?? "unknown");
+      throw new functions.HttpsError("internal", "Erro ao criar cliente no gateway. Tente novamente.");
     }
 
     // Data de vencimento: 3 dias a partir de hoje
@@ -417,9 +428,8 @@ export const createEventCharge = functions.onCall(
           creditCardHolderInfo: holderInfo!,
         });
       } catch (e: any) {
-        const body = JSON.stringify(e?.response?.data ?? e?.message);
-        console.error("[createEventCharge] createSubscription failed:", body);
-        throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
+        console.error("[createEventCharge] createSubscription failed — status:", e?.response?.status ?? "unknown");
+        throw new functions.HttpsError("internal", "Erro ao criar cobrança recorrente. Tente novamente.");
       }
 
       const subColl = isDonation ? 'doacoes' : 'inscricoes';
@@ -456,9 +466,8 @@ export const createEventCharge = functions.onCall(
         creditCardHolderInfo: holderInfo,
       });
     } catch (e: any) {
-      const body = JSON.stringify(e?.response?.data ?? e?.message);
-      console.error("[createEventCharge] createCharge failed:", body);
-      throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
+      console.error("[createEventCharge] createCharge failed — status:", e?.response?.status ?? "unknown");
+      throw new functions.HttpsError("internal", "Erro ao criar cobrança. Tente novamente.");
     }
 
     const chargeColl = isDonation ? 'doacoes' : 'inscricoes';

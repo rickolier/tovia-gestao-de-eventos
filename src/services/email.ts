@@ -8,12 +8,17 @@ import {
   emailConviteEquipe,
   emailConfirmacaoVinculo,
 } from './email-templates';
+import { auth } from './firebase';
 
 async function send(to: string, subject: string, html: string) {
   try {
+    const idToken = await auth.currentUser?.getIdToken();
     await fetch('/api/sendEmail', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(idToken ? { 'Authorization': `Bearer ${idToken}` } : {}),
+      },
       body: JSON.stringify({ to, subject, html }),
     });
   } catch (err) {

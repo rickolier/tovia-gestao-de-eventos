@@ -28,7 +28,7 @@ service firebase.storage {
       allow read: if true;
       allow write: if request.auth != null
                    && request.auth.token.email_verified == true
-                   && request.auth.token.email == "olierprado@gmail.com"
+                   && request.auth.token.email == "admin@tovia.app"
                    && request.resource.size < 10 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
     }

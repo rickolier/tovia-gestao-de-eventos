@@ -1,7 +1,7 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
-import { db } from './_firebase';
+import { db, verifyAuth } from './_firebase';
 
 const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
 
@@ -10,6 +10,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { userId } = req.body || {};
   if (!userId) return res.status(400).json({ error: 'userId obrigatório.' });
+
+  try {
+    await verifyAuth(req.headers.authorization, userId);
+  } catch (e: any) {
+    return res.status(e.status ?? 401).json({ error: e.message });
+  }
 
   const apiKey = process.env.ASAAS_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'Configuração de pagamento ausente.' });

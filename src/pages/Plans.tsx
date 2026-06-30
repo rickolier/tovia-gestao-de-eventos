@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
-import { updateDocument } from '~/services/firestore';
 import { PlanLevel } from '~/types';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
@@ -39,15 +38,10 @@ export default function Plans() {
     setShowDowngradeWarning(false);
     setSaving(true);
     try {
-      if (selected === 'start') {
-        await updateDocument('users', user.uid, { plano: 'start', asaasSubscriptionId: null, planoPendente: null });
-        toast.success('Plano Start ativado!');
-        navigate('/dashboard');
-        return;
-      }
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/createCheckout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({
           planLevel: selected,
           userId: user.uid,
@@ -64,7 +58,10 @@ export default function Plans() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-      if (data.paymentUrl) {
+      if (data.free) {
+        toast.success('Plano Start ativado!');
+        navigate('/dashboard');
+      } else if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
         navigate('/planos/aguardando');

@@ -70,7 +70,7 @@ service cloud.firestore {
         incoming().diff(existing()).affectedKeys().hasOnly([
           'nome', 'whatsapp', 'instituicao', 'cargo', 'bio', 'descricao',
           'redes_social', 'link_importante_1', 'link_importante_2',
-          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt', 'plano',
+          'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt',
           'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'pagina_publica'
         ])
       );
@@ -120,8 +120,8 @@ service cloud.firestore {
       }
 
       match /inscricoes/{inscricaoId} {
-        // get: requer autenticação mínima — participantes convidados precisam criar conta para consultar inscrição
-        allow get: if isEventOwner(eventoId) || isSignedIn();
+        // get: dono do evento ou o próprio participante (via userId gravado na inscrição)
+        allow get: if isEventOwner(eventoId) || (isSignedIn() && resource.data.get('userId', '') == request.auth.uid);
         allow list: if isEventOwner(eventoId);
         // create: público para páginas de venda, mas eventoId deve corresponder ao path
         allow create: if isValidInscricao(incoming()) && incoming().eventoId == eventoId;
