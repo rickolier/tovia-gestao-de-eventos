@@ -55,6 +55,17 @@ service cloud.firestore {
              data.valor is number && data.valor >= 0 && data.valor <= 1000000;
     }
 
+    function isValidDoacao(data) {
+      return isValidId(data.eventoId) &&
+             data.status == 'pendente' &&
+             data.valor is number && data.valor >= 0 && data.valor <= 1000000;
+    }
+
+    function isValidPessoa(data) {
+      return data.nome is string && data.nome.size() <= 200 &&
+             data.email is string && data.email.size() <= 200;
+    }
+
     function isEventOwner(id) {
       return isAdmin() || (get(/databases/$(database)/documents/eventos/$(id)).data.criado_por == request.auth.uid);
     }
@@ -123,8 +134,10 @@ service cloud.firestore {
         // get: dono do evento ou o próprio participante (via userId gravado na inscrição)
         allow get: if isEventOwner(eventoId) || (isSignedIn() && resource.data.get('userId', '') == request.auth.uid);
         allow list: if isEventOwner(eventoId);
-        // create: público para páginas de venda, mas eventoId deve corresponder ao path
-        allow create: if isValidInscricao(incoming()) && incoming().eventoId == eventoId;
+        // create: público para páginas de venda; status inicial restrito a pendente/pagamento_iniciado
+        allow create: if isValidInscricao(incoming()) &&
+          incoming().eventoId == eventoId &&
+          incoming().status in ['pendente', 'pagamento_iniciado'];
         allow update: if (isEventOwner(eventoId) || (isSignedIn() && existing().get('userId', '') == request.auth.uid)) &&
           isValidInscricao(incoming()) &&
           incoming().eventoId == eventoId;
@@ -133,7 +146,7 @@ service cloud.firestore {
 
       match /pessoas/{pessoaId} {
         allow read: if isEventOwner(eventoId);
-        allow create: if true; // Público — criada no momento da inscrição
+        allow create: if isValidPessoa(incoming());
         allow update, delete: if isEventOwner(eventoId);
       }
 
@@ -152,7 +165,7 @@ service cloud.firestore {
 
       match /doacoes/{doacaoId} {
         allow read: if isEventOwner(eventoId);
-        allow create: if true; // Público — criada na página de doação
+        allow create: if isValidDoacao(incoming()) && incoming().eventoId == eventoId;
         allow update, delete: if isEventOwner(eventoId);
       }
 

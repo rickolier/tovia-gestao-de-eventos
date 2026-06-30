@@ -1,6 +1,37 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase';
+import { FieldValue } from 'firebase-admin/firestore';
+
+const RATE_LIMIT_MAX = 10;      // max requests
+const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+
+async function checkRateLimit(ip: string): Promise<boolean> {
+  const key = `buscar_${ip.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const ref = db.collection('_rate_limits').doc(key);
+  const now = Date.now();
+
+  try {
+    const allowed = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      if (!snap.exists) {
+        tx.set(ref, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+        return true;
+      }
+      const data = snap.data()!;
+      if (now > data.resetAt) {
+        tx.set(ref, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+        return true;
+      }
+      if (data.count >= RATE_LIMIT_MAX) return false;
+      tx.update(ref, { count: FieldValue.increment(1) });
+      return true;
+    });
+    return allowed;
+  } catch {
+    return true; // fail open if Firestore unavailable
+  }
+}
 
 function validateCPF(cpf: string): boolean {
   const d = cpf.replace(/\D/g, '');
@@ -32,6 +63,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
+
+  // Rate limit by IP — max 10 requests per 5 minutes
+  const ip = String(
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    'unknown'
+  );
+  const allowed = await checkRateLimit(ip);
+  if (!allowed) {
+    return res.status(429).json({ error: 'Muitas consultas. Aguarde alguns minutos e tente novamente.' });
+  }
 
   const { cpf } = req.body as { cpf?: string };
   if (!cpf) return res.status(400).json({ error: 'CPF é obrigatório.' });
