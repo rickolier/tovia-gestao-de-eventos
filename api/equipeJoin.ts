@@ -55,11 +55,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json({ ok: true, alreadyMember: true });
     }
 
+    // Valida convite: o email do usuário deve ter um convite pendente para este evento
+    const conviteSnap = await db.collection('convites')
+      .where('eventoId', '==', eventoId)
+      .where('email', '==', email.toLowerCase())
+      .limit(1)
+      .get();
+
+    if (conviteSnap.empty) {
+      return res.status(403).json({ error: 'Nenhum convite encontrado para este e-mail neste evento.' });
+    }
+
+    const conviteDoc = conviteSnap.docs[0];
+    const permissoes: string[] = conviteDoc.data().permissoes || ['registrations', 'management', 'rooms', 'tasks'];
+
     const membro = {
       userId: uid,
       email: email.toLowerCase(),
       nome: name,
-      permissoes: ['registrations', 'management', 'rooms', 'tasks'],
+      permissoes,
       adicionadoEm: new Date().toISOString(),
     };
 
@@ -67,6 +81,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       equipe: FieldValue.arrayUnion(membro),
       equipeIds: FieldValue.arrayUnion(uid),
     });
+
+    // Remove o convite após uso
+    await conviteDoc.ref.delete();
 
     // Notificar o dono do evento sobre o novo membro
     if (evento.criado_por) {

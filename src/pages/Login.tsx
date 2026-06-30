@@ -28,6 +28,7 @@ export default function Login() {
   const ADMIN_EMAIL = 'admin@tovia.app';
 
   const eventoIdParam = searchParams.get('eventoId');
+  const inviteEmailParam = searchParams.get('inviteEmail') || '';
 
   // Usuário já logado acessando o link de equipe: processa o join diretamente
   React.useEffect(() => {
@@ -43,7 +44,7 @@ export default function Login() {
 
   const [isRegistering, setIsRegistering] = useState(searchParams.get('cadastro') === 'true');
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(inviteEmailParam);
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -146,13 +147,24 @@ export default function Login() {
           <Logo variant="white" />
           <div className="text-center mt-2">
             <h1 className="text-2xl font-black text-white tracking-tight">
-              {isRegistering ? 'Criar conta' : 'Bem-vindo de volta!'}
+              {inviteEmailParam ? 'Você foi convidado!' : isRegistering ? 'Criar conta' : 'Bem-vindo de volta!'}
             </h1>
             <p className="text-white/60 text-sm mt-1">
-              {isRegistering ? 'Preencha seus dados para começar.' : 'Gestão de eventos simplificada e profissional.'}
+              {inviteEmailParam
+                ? `Crie sua conta com o e-mail ${inviteEmailParam} para entrar na equipe.`
+                : isRegistering ? 'Preencha seus dados para começar.' : 'Gestão de eventos simplificada e profissional.'}
             </p>
           </div>
         </div>
+
+        {/* Invite banner */}
+        {inviteEmailParam && (
+          <div className="bg-amber-400/20 border border-amber-400/40 rounded-2xl p-4 mb-4 text-center">
+            <p className="text-amber-200 text-xs font-bold leading-relaxed">
+              Use obrigatoriamente o e-mail <span className="text-white">{inviteEmailParam}</span> para que o acesso ao evento seja ativado automaticamente.
+            </p>
+          </div>
+        )}
 
         {/* Card */}
         <div className="bg-white/10 border-2 border-white/20 rounded-3xl p-7 backdrop-blur-sm space-y-5">
@@ -183,9 +195,10 @@ export default function Login() {
                   type="email"
                   required
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => !inviteEmailParam && setEmail(e.target.value)}
+                  readOnly={!!inviteEmailParam}
                   placeholder="seu@email.com"
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl h-12 focus-visible:ring-white/40"
+                  className={`pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl h-12 focus-visible:ring-white/40 ${inviteEmailParam ? 'opacity-80 cursor-not-allowed' : ''}`}
                 />
               </div>
             </div>

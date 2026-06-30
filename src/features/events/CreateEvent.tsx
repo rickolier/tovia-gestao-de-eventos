@@ -276,7 +276,23 @@ export default function CreateEvent() {
         </Badge>
       </header>
 
-      <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="max-w-3xl mx-auto py-8 px-4 space-y-4">
+        {/* Aviso de limite de eventos */}
+        {quantidadeEventosAtivos !== null && quantidadeEventosAtivos >= plano.maxActiveEvents && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-4">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-bold text-amber-700">Limite de eventos atingido</p>
+              <p className="text-xs text-amber-600 mt-0.5">
+                O plano <strong>{plano.name}</strong> permite {plano.maxActiveEvents} evento{plano.maxActiveEvents !== 1 ? 's' : ''} ativo{plano.maxActiveEvents !== 1 ? 's' : ''}. Arquive um evento existente ou faça upgrade.
+              </p>
+            </div>
+            <Link to="/plans" className="shrink-0 text-xs font-black bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors">
+              Upgrade →
+            </Link>
+          </div>
+        )}
+
         <Card className="border border-border shadow-sm rounded-2xl overflow-hidden card-flat">
           <div className="h-1.5 bg-primary" />
           <CardHeader className="border-b border-border bg-muted/30">

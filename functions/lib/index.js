@@ -35,17 +35,40 @@ var __importStar = (this && this.__importStar) || (function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
+exports.requestDataDeletion = exports.uploadEventCover = exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
 const functions = __importStar(require("firebase-functions/v2/https"));
 const admin = __importStar(require("firebase-admin"));
 const firestore_1 = require("firebase-admin/firestore");
+const storage_1 = require("firebase-admin/storage");
 const axios_1 = __importDefault(require("axios"));
 const crypto_1 = require("crypto");
 const gateway_utils_1 = require("./gateway-utils");
 admin.initializeApp();
 const db = (0, firestore_1.getFirestore)(admin.app(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
-const ASAAS_BASE_URL = "https://sandbox.asaas.com/api/v3";
+const ASAAS_BASE_URL = (_a = process.env.ASAAS_BASE_URL) !== null && _a !== void 0 ? _a : "https://sandbox.asaas.com/api/v3";
+// ─── Rate limiting ────────────────────────────────────────────────────────────
+// Bloqueia abuso de Cloud Functions (billing attack, brute-force).
+// Janela deslizante de 1 hora por uid+ação.
+async function checkRateLimit(uid, action, maxPerHour = 20) {
+    const ref = db.collection("_rate_limits").doc(`${uid}_${action}`);
+    const windowMs = 60 * 60 * 1000;
+    const now = Date.now();
+    await db.runTransaction(async (tx) => {
+        const doc = await tx.get(ref);
+        const data = doc.data();
+        if (!data || now - data.windowStart > windowMs) {
+            tx.set(ref, { count: 1, windowStart: now });
+        }
+        else if (data.count >= maxPerHour) {
+            throw new functions.HttpsError("resource-exhausted", "Muitas requisições. Tente novamente em 1 hora.");
+        }
+        else {
+            tx.update(ref, { count: data.count + 1 });
+        }
+    });
+}
 const PLAN_PRICES = {
     essencial: 39.90,
     pro: 99.00,
@@ -57,6 +80,8 @@ exports.createCheckout = functions.onCall({ secrets: ["ASAAS_API_KEY"], region: 
     if (!planLevel || !userId || !userEmail) {
         throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
+    if (request.auth)
+        await checkRateLimit(request.auth.uid, "createCheckout", 10);
     if (planLevel === "start") {
         await db.collection("users").doc(userId).update({ plano: "start", asaasSubscriptionId: null });
         return { success: true, free: true };
@@ -108,9 +133,9 @@ exports.suspendUser = functions.onCall({ region: "us-central1" }, async (request
     if (!request.auth) {
         throw new functions.HttpsError("unauthenticated", "Não autenticado.");
     }
-    const ADMIN_EMAIL = "olierprado@gmail.com";
     const callerEmail = request.auth.token.email;
-    if (callerEmail !== ADMIN_EMAIL) {
+    const isToviaMaster = callerEmail === "admin@tovia.app";
+    if (!isToviaMaster) {
         const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
         if (!adminDoc.exists) {
             throw new functions.HttpsError("permission-denied", "Acesso negado.");
@@ -188,6 +213,7 @@ exports.saveGatewayConfig = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
     if (!apiKey || !gatewayType) {
         throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
+    await checkRateLimit(request.auth.uid, "saveGatewayConfig", 10);
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
     const userId = request.auth.uid;
     // Valida a chave chamando endpoint leve do Asaas
@@ -225,11 +251,14 @@ exports.saveGatewayConfig = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
 });
 // ─── Criar cobrança de evento (BYOG) ─────────────────────────────────────────
 exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY"], region: "us-central1" }, async (request) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     const { eventoId, inscricaoId, isDonation, paymentMethod, installments, attendeeName, attendeeEmail, attendeeCpf, attendeePhone, creditCard, valor, } = request.data;
     if (!eventoId || !inscricaoId || !paymentMethod || !attendeeName || !attendeeEmail || !valor) {
         throw new functions.HttpsError("invalid-argument", "Dados incompletos.");
     }
+    // Rate limit por IP aproximado (uid anônimo ou autenticado)
+    const rateLimitUid = (_b = (_a = request.auth) === null || _a === void 0 ? void 0 : _a.uid) !== null && _b !== void 0 ? _b : `anon_${attendeeEmail}`;
+    await checkRateLimit(rateLimitUid, "createEventCharge", 15);
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
     // Busca o evento para descobrir o organizador
     const eventoDoc = await db.collection("eventos").doc(eventoId).get();
@@ -238,26 +267,36 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
     }
     const evento = eventoDoc.data();
     const organizerId = evento.criado_por;
+    // Verifica que a inscrição pertence a este evento (previne cobrança em inscrição de outro evento)
+    const targetColl = isDonation ? "doacoes" : "inscricoes";
+    const inscricaoSnap = await db.collection(`eventos/${eventoId}/${targetColl}`).doc(inscricaoId).get();
+    if (!inscricaoSnap.exists) {
+        throw new functions.HttpsError("not-found", "Inscrição não encontrada neste evento.");
+    }
+    const inscricaoData = inscricaoSnap.data();
+    const alreadyPaid = isDonation ? inscricaoData.status === "aprovada" : inscricaoData.status === "pago";
+    if (alreadyPaid) {
+        throw new functions.HttpsError("failed-precondition", "Esta cobrança já foi processada.");
+    }
     // Busca o gateway do organizador
     const orgDoc = await db.collection("users").doc(organizerId).get();
     if (!orgDoc.exists) {
         throw new functions.HttpsError("not-found", "Organizador não encontrado.");
     }
     const orgData = orgDoc.data();
-    if (!((_a = orgData.gateway) === null || _a === void 0 ? void 0 : _a.encrypted_api_key)) {
+    if (!((_c = orgData.gateway) === null || _c === void 0 ? void 0 : _c.encrypted_api_key)) {
         throw new functions.HttpsError("failed-precondition", "Organizador não tem gateway configurado.");
     }
     const apiKey = (0, gateway_utils_1.decrypt)(orgData.gateway.encrypted_api_key, encKey);
-    const sandbox = (_b = orgData.gateway.sandbox) !== null && _b !== void 0 ? _b : false;
+    const sandbox = (_d = orgData.gateway.sandbox) !== null && _d !== void 0 ? _d : false;
     // Cria ou reutiliza cliente Asaas do participante
     let customerId;
     try {
         customerId = await (0, gateway_utils_1.createOrFindAsaasCustomer)(apiKey, sandbox, attendeeName, attendeeEmail, `attendee:${inscricaoId}`, attendeeCpf);
     }
     catch (e) {
-        const body = JSON.stringify((_d = (_c = e === null || e === void 0 ? void 0 : e.response) === null || _c === void 0 ? void 0 : _c.data) !== null && _d !== void 0 ? _d : e === null || e === void 0 ? void 0 : e.message);
-        console.error("[createEventCharge] createCustomer failed:", body);
-        throw new functions.HttpsError("internal", `Erro ao criar cliente Asaas: ${body}`);
+        console.error("[createEventCharge] createCustomer failed — status:", (_f = (_e = e === null || e === void 0 ? void 0 : e.response) === null || _e === void 0 ? void 0 : _e.status) !== null && _f !== void 0 ? _f : "unknown");
+        throw new functions.HttpsError("internal", "Erro ao criar cliente no gateway. Tente novamente.");
     }
     // Data de vencimento: 3 dias a partir de hoje
     const dueDate = new Date();
@@ -290,9 +329,8 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
             });
         }
         catch (e) {
-            const body = JSON.stringify((_f = (_e = e === null || e === void 0 ? void 0 : e.response) === null || _e === void 0 ? void 0 : _e.data) !== null && _f !== void 0 ? _f : e === null || e === void 0 ? void 0 : e.message);
-            console.error("[createEventCharge] createSubscription failed:", body);
-            throw new functions.HttpsError("internal", `Erro ao criar cobrança recorrente: ${body}`);
+            console.error("[createEventCharge] createSubscription failed — status:", (_h = (_g = e === null || e === void 0 ? void 0 : e.response) === null || _g === void 0 ? void 0 : _g.status) !== null && _h !== void 0 ? _h : "unknown");
+            throw new functions.HttpsError("internal", "Erro ao criar cobrança recorrente. Tente novamente.");
         }
         const subColl = isDonation ? 'doacoes' : 'inscricoes';
         await db.collection(`eventos/${eventoId}/${subColl}`).doc(inscricaoId).update(Object.assign(Object.assign({}, (isDonation ? { formaPagamento: 'recorrente' } : { status: 'pagamento_iniciado', forma_pagamento: 'recorrente' })), { gateway_subscription_id: subscription.id, installments: totalInstallments, installment_value: installmentValue }));
@@ -322,9 +360,8 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
         });
     }
     catch (e) {
-        const body = JSON.stringify((_h = (_g = e === null || e === void 0 ? void 0 : e.response) === null || _g === void 0 ? void 0 : _g.data) !== null && _h !== void 0 ? _h : e === null || e === void 0 ? void 0 : e.message);
-        console.error("[createEventCharge] createCharge failed:", body);
-        throw new functions.HttpsError("internal", `Erro ao criar cobrança Asaas: ${body}`);
+        console.error("[createEventCharge] createCharge failed — status:", (_k = (_j = e === null || e === void 0 ? void 0 : e.response) === null || _j === void 0 ? void 0 : _j.status) !== null && _k !== void 0 ? _k : "unknown");
+        throw new functions.HttpsError("internal", "Erro ao criar cobrança. Tente novamente.");
     }
     const chargeColl = isDonation ? 'doacoes' : 'inscricoes';
     await db
@@ -335,12 +372,88 @@ exports.createEventCharge = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
         : { status: 'pagamento_iniciado', forma_pagamento: paymentMethod })), { gateway_charge_id: charge.id, gateway_payment_url: charge.invoiceUrl }));
     return {
         paymentUrl: charge.invoiceUrl,
-        pixQrCode: (_j = charge.pixQrCode) !== null && _j !== void 0 ? _j : null,
-        bankSlipUrl: (_k = charge.bankSlipUrl) !== null && _k !== void 0 ? _k : null,
-        identificationField: (_l = charge.identificationField) !== null && _l !== void 0 ? _l : null,
+        pixQrCode: (_l = charge.pixQrCode) !== null && _l !== void 0 ? _l : null,
+        bankSlipUrl: (_m = charge.bankSlipUrl) !== null && _m !== void 0 ? _m : null,
+        identificationField: (_o = charge.identificationField) !== null && _o !== void 0 ? _o : null,
         chargeId: charge.id,
         installmentValue: null,
         installmentCount: null,
     };
+});
+// ─── Upload seguro de capa de evento ─────────────────────────────────────────
+// Verifica que o caller é o dono do evento antes de gravar no Storage.
+exports.uploadEventCover = functions.onCall({ region: "us-central1" }, async (request) => {
+    var _a;
+    if (!request.auth) {
+        throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+    const uid = request.auth.uid;
+    const { eventoId, imageBase64, contentType } = request.data;
+    if (!eventoId || !imageBase64 || !contentType) {
+        throw new functions.HttpsError("invalid-argument", "eventoId, imageBase64 e contentType são obrigatórios.");
+    }
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(contentType)) {
+        throw new functions.HttpsError("invalid-argument", "Tipo de imagem inválido. Use JPEG, PNG ou WebP.");
+    }
+    // Verifica que o caller é o dono do evento
+    const eventoSnap = await db.collection("eventos").doc(eventoId).get();
+    if (!eventoSnap.exists) {
+        throw new functions.HttpsError("not-found", "Evento não encontrado.");
+    }
+    const criado_por = (_a = eventoSnap.data().criado_por) !== null && _a !== void 0 ? _a : "";
+    if (criado_por !== uid) {
+        throw new functions.HttpsError("permission-denied", "Você não tem permissão para alterar este evento.");
+    }
+    // Tamanho máximo: 5MB (base64 → ~3.75MB real)
+    if (imageBase64.length > 7 * 1024 * 1024) {
+        throw new functions.HttpsError("invalid-argument", "Imagem muito grande. Máximo 5MB.");
+    }
+    const ext = contentType === "image/png" ? "png" : contentType === "image/webp" ? "webp" : "jpg";
+    const path = `eventos/${eventoId}/capa.${ext}`;
+    const buffer = Buffer.from(imageBase64, "base64");
+    const bucket = (0, storage_1.getStorage)().bucket("ai-studio-applet-webapp-84f64.firebasestorage.app");
+    const file = bucket.file(path);
+    await file.save(buffer, { contentType, resumable: false });
+    await file.makePublic();
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}`;
+    // Atualiza o evento com a nova URL
+    await db.collection("eventos").doc(eventoId).update({ imagem_url: downloadUrl });
+    console.log(`[uploadEventCover] uid=${uid} evento=${eventoId} path=${path}`);
+    return { downloadUrl };
+});
+// ─── LGPD Art. 18 — Solicitação de exclusão de dados pessoais ────────────────
+// Anonimiza os dados imediatamente e marca a conta para exclusão completa.
+// A deleção definitiva das subcoleções ocorre de forma assíncrona (batch).
+exports.requestDataDeletion = functions.onCall({ region: "us-central1" }, async (request) => {
+    if (!request.auth) {
+        throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+    const uid = request.auth.uid;
+    // Anonimiza dados pessoais no documento do usuário
+    await db.collection("users").doc(uid).update({
+        nome: "[Conta Excluída]",
+        email: "[excluído]",
+        whatsapp: admin.firestore.FieldValue.delete(),
+        bio: admin.firestore.FieldValue.delete(),
+        descricao: admin.firestore.FieldValue.delete(),
+        imagem_url: admin.firestore.FieldValue.delete(),
+        contato_email: admin.firestore.FieldValue.delete(),
+        telefone: admin.firestore.FieldValue.delete(),
+        site: admin.firestore.FieldValue.delete(),
+        redes_social: admin.firestore.FieldValue.delete(),
+        cnpj: admin.firestore.FieldValue.delete(),
+        cep: admin.firestore.FieldValue.delete(),
+        endereco: admin.firestore.FieldValue.delete(),
+        gateway: admin.firestore.FieldValue.delete(),
+        gateway_connected: false,
+        deletion_requested_at: new Date().toISOString(),
+        deletion_status: "pending",
+    });
+    // Remove dados públicos do organizador
+    await db.collection("organizer_public").doc(uid).delete();
+    // Desativa a conta no Firebase Auth (impede login imediato)
+    await admin.auth().updateUser(uid, { disabled: true });
+    return { success: true };
 });
 //# sourceMappingURL=index.js.map

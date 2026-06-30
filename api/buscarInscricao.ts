@@ -75,12 +75,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Muitas consultas. Aguarde alguns minutos e tente novamente.' });
   }
 
-  const { cpf } = req.body as { cpf?: string };
+  const { cpf, dataNascimento } = req.body as { cpf?: string; dataNascimento?: string };
   if (!cpf) return res.status(400).json({ error: 'CPF é obrigatório.' });
+  if (!dataNascimento) return res.status(400).json({ error: 'Data de nascimento é obrigatória.' });
 
   const cpfDigits = String(cpf).replace(/\D/g, '');
   if (!validateCPF(cpfDigits)) {
     return res.status(400).json({ error: 'CPF inválido.' });
+  }
+
+  // Normalize date to YYYY-MM-DD
+  const dataNasc = String(dataNascimento).replace(/[^0-9\-]/g, '').slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dataNasc)) {
+    return res.status(400).json({ error: 'Data de nascimento inválida.' });
   }
 
   try {
@@ -96,7 +103,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const eventoCache: Record<string, any> = {};
 
-    const results = await Promise.all(
+    const allResults = await Promise.all(
       inscSnap.docs.map(async (inscDoc) => {
         const insc = inscDoc.data();
         const pathParts = inscDoc.ref.path.split('/');
@@ -114,6 +121,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const valorTotal: number = insc.valor_total ?? 0;
         const valorPago: number = insc.valor_pago ?? 0;
         const status: string = insc.status ?? 'pendente';
+
+        // Validate data_nascimento when available in the record
+        const storedDate: string = insc.data_nascimento ?? '';
+        if (storedDate) {
+          const normalized = storedDate.slice(0, 10);
+          if (normalized !== dataNasc) return null; // mismatch — exclude
+        }
 
         return {
           inscricaoId: inscDoc.id,
@@ -133,9 +147,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     );
 
+    const results = allResults.filter(Boolean);
+
     // Sort: most recent first
     results.sort((a, b) =>
-      new Date(b.dataInscricao).getTime() - new Date(a.dataInscricao).getTime()
+      new Date(b!.dataInscricao).getTime() - new Date(a!.dataInscricao).getTime()
     );
 
     return res.json({ inscricoes: results });

@@ -541,17 +541,22 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
         </Dialog>
 
       {reachedTicketLimit && (
-        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 rounded-[2rem] p-6 flex gap-4 items-center animate-in zoom-in-95 duration-500">
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-[2rem] p-6 flex gap-4 items-center animate-in zoom-in-95 duration-500">
           <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
             <AlertCircle className="h-6 w-6 text-amber-500" />
           </div>
-          <div>
-            <h4 className="text-sm font-black uppercase tracking-widest mb-1">Capacidade Esgotada</h4>
-            <p className="text-xs font-medium opacity-80 leading-relaxed max-w-lg">
-              Seu plano atual ({plan.name}) está com o limite de {plan.maxTicketsPerEvent} categorias de ingressos preenchido. 
-              Para expandir suas opções de venda, considere um upgrade de plano.
+          <div className="flex-1">
+            <h4 className="text-sm font-black text-amber-600 mb-1">Limite de ingressos atingido</h4>
+            <p className="text-xs text-amber-700/80 leading-relaxed">
+              O plano <strong>{plan.name}</strong> permite até <strong>{plan.maxTicketsPerEvent}</strong> tipo{plan.maxTicketsPerEvent !== 1 ? 's' : ''} de ingresso por evento.
             </p>
           </div>
+          <a
+            href="/plans"
+            className="shrink-0 text-xs font-black bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors"
+          >
+            Fazer upgrade →
+          </a>
         </div>
       )}
 

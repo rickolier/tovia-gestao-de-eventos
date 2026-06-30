@@ -519,6 +519,16 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                     </div>
                   </TableCell>
                 </TableRow>
+              ) : registrations.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-20">
+                    <div className="flex flex-col items-center gap-2">
+                      <DollarSign className="w-8 h-8 text-muted-foreground/30" />
+                      <p className="font-bold text-sm text-muted-foreground">Nenhum pagamento registrado ainda</p>
+                      <p className="text-xs text-muted-foreground/60">Quando inscrições forem realizadas, elas aparecerão aqui.</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ) : filteredRegistrations.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-20 text-muted-foreground font-black text-[10px] uppercase tracking-widest">

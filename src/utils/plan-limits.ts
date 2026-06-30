@@ -7,6 +7,7 @@ interface PlanConfig {
   maxActiveEvents: number;
   maxAttendeesPerEvent: number;
   maxTicketsPerEvent: number;
+  maxTeamMembers: number;
   maxFreeAttendeesTotal?: number;
   modules: {
     // Módulo 1 — Inscrições (todos os planos)
@@ -32,6 +33,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
     maxActiveEvents: 1,
     maxAttendeesPerEvent: 200,
     maxTicketsPerEvent: 1,
+    maxTeamMembers: 5,
     modules: {
       registrations: true,
       manualPayments: false,
@@ -49,6 +51,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
     maxActiveEvents: 3,
     maxAttendeesPerEvent: 500,
     maxTicketsPerEvent: 3,
+    maxTeamMembers: 5,
     modules: {
       registrations: true,
       manualPayments: true,
@@ -66,6 +69,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
     maxActiveEvents: 10,
     maxAttendeesPerEvent: 1000,
     maxTicketsPerEvent: 10,
+    maxTeamMembers: 5,
     modules: {
       registrations: true,
       manualPayments: true,
@@ -83,6 +87,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
     maxActiveEvents: Infinity,
     maxAttendeesPerEvent: Infinity,
     maxTicketsPerEvent: Infinity,
+    maxTeamMembers: Infinity,
     maxFreeAttendeesTotal: 10000,
     modules: {
       registrations: true,

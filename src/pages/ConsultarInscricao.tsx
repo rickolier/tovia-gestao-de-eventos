@@ -45,6 +45,7 @@ const METODO_LABELS: Record<string, string> = {
 
 export default function ConsultarInscricao() {
   const [cpf, setCpf] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<InscricaoResult[] | null>(null);
@@ -57,6 +58,10 @@ export default function ConsultarInscricao() {
       setError('CPF inválido. Verifique os dígitos e tente novamente.');
       return;
     }
+    if (!dataNascimento) {
+      setError('Informe sua data de nascimento.');
+      return;
+    }
     setLoading(true);
     setError(null);
     setResults(null);
@@ -65,7 +70,7 @@ export default function ConsultarInscricao() {
       const res = await fetch('/api/buscarInscricao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cpf: digits }),
+        body: JSON.stringify({ cpf: digits, dataNascimento }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao consultar.');
@@ -122,11 +127,21 @@ export default function ConsultarInscricao() {
                 className="h-12 rounded-xl border-gray-200 text-gray-900 text-base font-bold tracking-widest"
                 autoComplete="off"
               />
-              {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">Data de nascimento</label>
+              <Input
+                type="date"
+                value={dataNascimento}
+                onChange={e => { setDataNascimento(e.target.value); setError(null); }}
+                className="h-12 rounded-xl border-gray-200 text-gray-900 text-base"
+                max={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
             <Button
               type="submit"
-              disabled={loading || cpf.replace(/\D/g, '').length < 11}
+              disabled={loading || cpf.replace(/\D/g, '').length < 11 || !dataNascimento}
               className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-sm shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
             >
               {loading

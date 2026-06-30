@@ -662,7 +662,13 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               <TableBody>
                 {donations.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-20 text-muted-foreground italic font-medium">Nenhuma doação ainda.</TableCell>
+                    <TableCell colSpan={8} className="text-center py-20">
+                      <div className="flex flex-col items-center gap-2">
+                        <Heart className="w-8 h-8 text-muted-foreground/30" />
+                        <p className="font-bold text-sm text-muted-foreground">Nenhuma doação registrada ainda</p>
+                        <p className="text-xs text-muted-foreground/60">Use o botão acima para registrar a primeira doação.</p>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ) : (
                   donations.sort((a, b) => new Date(b.dataPagamento || b.data).getTime() - new Date(a.dataPagamento || a.data).getTime()).map(don => (

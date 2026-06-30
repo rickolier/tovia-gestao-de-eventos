@@ -138,7 +138,7 @@ export default function EventDetail() {
 
   // Flat tab list — used by mobile bottom bar
   const allTabs = [
-    { value: 'overview',       label: 'Dashboard',    shortLabel: 'Início',    icon: LayoutDashboard, show: !isGuest },
+    { value: 'overview',       label: 'Dashboard',    shortLabel: 'Início',    icon: LayoutDashboard, show: true },
     { value: 'notifications',  label: 'Notificações', shortLabel: 'Notif.',    icon: Bell,            show: !isGuest, badge: unreadNotifications },
     { value: 'tickets',        label: 'Ingressos',    shortLabel: 'Ingressos', icon: TicketIcon,      show: !isGuest && plan.modules.registrations },
     { value: 'registrations',  label: 'Participantes',shortLabel: 'Pessoas',   icon: Users,           show: showTab('registrations', plan.modules.registrations) },
@@ -157,7 +157,7 @@ export default function EventDetail() {
     {
       category: null,
       items: [
-        { value: 'overview',      label: 'Dashboard',    icon: LayoutDashboard, show: !isGuest },
+        { value: 'overview',      label: 'Dashboard',    icon: LayoutDashboard, show: true },
         { value: 'notifications', label: 'Notificações', icon: Bell,            show: !isGuest, badge: unreadNotifications },
         { value: 'reports',       label: 'Relatórios',   icon: BarChart3,       show: !isGuest && plan.modules.reports },
       ],
