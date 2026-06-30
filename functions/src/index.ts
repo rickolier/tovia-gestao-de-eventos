@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
 import axios from "axios";
 import { createHash } from "crypto";
 import {
@@ -491,6 +492,65 @@ export const createEventCharge = functions.onCall(
       installmentValue: null,
       installmentCount: null,
     };
+  }
+);
+
+// ─── Upload seguro de capa de evento ─────────────────────────────────────────
+// Verifica que o caller é o dono do evento antes de gravar no Storage.
+export const uploadEventCover = functions.onCall(
+  { region: "us-central1" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+
+    const uid = request.auth.uid;
+    const { eventoId, imageBase64, contentType } = request.data as {
+      eventoId?: string;
+      imageBase64?: string;
+      contentType?: string;
+    };
+
+    if (!eventoId || !imageBase64 || !contentType) {
+      throw new functions.HttpsError("invalid-argument", "eventoId, imageBase64 e contentType são obrigatórios.");
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(contentType)) {
+      throw new functions.HttpsError("invalid-argument", "Tipo de imagem inválido. Use JPEG, PNG ou WebP.");
+    }
+
+    // Verifica que o caller é o dono do evento
+    const eventoSnap = await db.collection("eventos").doc(eventoId).get();
+    if (!eventoSnap.exists) {
+      throw new functions.HttpsError("not-found", "Evento não encontrado.");
+    }
+    const criado_por: string = eventoSnap.data()!.criado_por ?? "";
+    if (criado_por !== uid) {
+      throw new functions.HttpsError("permission-denied", "Você não tem permissão para alterar este evento.");
+    }
+
+    // Tamanho máximo: 5MB (base64 → ~3.75MB real)
+    if (imageBase64.length > 7 * 1024 * 1024) {
+      throw new functions.HttpsError("invalid-argument", "Imagem muito grande. Máximo 5MB.");
+    }
+
+    const ext = contentType === "image/png" ? "png" : contentType === "image/webp" ? "webp" : "jpg";
+    const path = `eventos/${eventoId}/capa.${ext}`;
+    const buffer = Buffer.from(imageBase64, "base64");
+
+    const bucket = getStorage().bucket("ai-studio-applet-webapp-84f64.firebasestorage.app");
+    const file = bucket.file(path);
+    await file.save(buffer, { contentType, resumable: false });
+    await file.makePublic();
+
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}`;
+
+    // Atualiza o evento com a nova URL
+    await db.collection("eventos").doc(eventoId).update({ imagem_url: downloadUrl });
+
+    console.log(`[uploadEventCover] uid=${uid} evento=${eventoId} path=${path}`);
+    return { downloadUrl };
   }
 );
 

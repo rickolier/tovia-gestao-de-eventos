@@ -10,8 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, AlertTriangle, ImagePlus, X } from 'lucide-react';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '~/services/firebase';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '~/services/firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
@@ -108,20 +108,19 @@ export default function CreateEvent() {
 
   const uploadImagem = async (eventoId: string): Promise<string> => {
     if (!imagemFile) return '';
-    const ext = imagemFile.type === 'image/png' ? 'png' : 'jpg';
-    const storageRef = ref(storage, `eventos/${eventoId}/capa.${ext}`);
-    const uploadPromise = new Promise<string>((resolve, reject) => {
-      const task = uploadBytesResumable(storageRef, imagemFile, { contentType: imagemFile.type });
-      task.on('state_changed',
-        snap => setUploadProgresso(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        reject,
-        async () => { resolve(await getDownloadURL(task.snapshot.ref)); }
-      );
+    setUploadProgresso(10);
+    const imageBase64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(imagemFile);
     });
-    const timeoutPromise = new Promise<string>((_, reject) =>
-      setTimeout(() => reject(new Error('Upload timeout')), 30000)
-    );
-    return Promise.race([uploadPromise, timeoutPromise]);
+    setUploadProgresso(40);
+    const fns = getFunctions(app, 'us-central1');
+    const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
+    const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
+    setUploadProgresso(100);
+    return result.data.downloadUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
