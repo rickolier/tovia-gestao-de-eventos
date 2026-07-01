@@ -22,9 +22,14 @@ export default function AdminSubscriptionsTab() {
 
   const load = async () => {
     setLoading(true);
-    const data = await listDocuments<UserProfile>('users');
-    setUsers(data.filter(u => !u.isDemo));
-    setLoading(false);
+    try {
+      const data = await listDocuments<UserProfile>('users');
+      setUsers(data.filter(u => !u.isDemo));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);

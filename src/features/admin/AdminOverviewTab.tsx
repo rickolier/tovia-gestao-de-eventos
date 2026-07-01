@@ -17,10 +17,10 @@ export default function AdminOverviewTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listDocuments<UserProfile>('users').then(data => {
-      setUsers(data.filter(u => !u.isDemo));
-      setLoading(false);
-    });
+    listDocuments<UserProfile>('users')
+      .then(data => setUsers(data.filter(u => !u.isDemo)))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const totalUsers = users.length;
