@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '~/services/firebase';
@@ -187,9 +188,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
 
           setProfile(userProfile);
+          Sentry.setUser({ id: firebaseUser.uid, email: firebaseUser.email ?? undefined });
         } else {
           setUser(null);
           setProfile(null);
+          Sentry.setUser(null);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
