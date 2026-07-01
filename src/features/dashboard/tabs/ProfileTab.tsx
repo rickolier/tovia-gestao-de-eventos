@@ -7,12 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink, Trash2, Loader2, MapPin } from 'lucide-react';
+import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as ImageIcon, CreditCard, Camera, Copy, ExternalLink, Trash2, Loader2, MapPin, KeyRound, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
-import { storage } from '~/services/firebase';
+import { storage, auth } from '~/services/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import {
   maskTelefone, maskCEP, maskCPFouCNPJ,
   validateEmail, validateTelefone, validateCEP,
@@ -25,7 +26,23 @@ export default function ProfileTab() {
   const [loading, setLoading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [sendingReset, setSendingReset] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isEmailUser = user?.providerData.some(p => p.providerId === 'password') ?? false;
+
+  const handlePasswordReset = async () => {
+    if (!user?.email) return;
+    setSendingReset(true);
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      toast.success(`E-mail de redefinição enviado para ${user.email}. Verifique sua caixa de entrada.`);
+    } catch {
+      toast.error('Não foi possível enviar o e-mail. Tente novamente.');
+    } finally {
+      setSendingReset(false);
+    }
+  };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -505,6 +522,46 @@ export default function ProfileTab() {
           </Button>
         </div>
       </form>
+
+      {/* ── Segurança da Conta ── */}
+      <div className="mt-2 mb-10">
+        <div className="flex flex-col gap-1 mb-4">
+          <h2 className="text-lg font-black tracking-tight text-foreground">Segurança da Conta</h2>
+          <p className="text-sm text-muted-foreground">Gerencie como você acessa o Tovia.</p>
+        </div>
+
+        <Card className="border border-border rounded-2xl bg-card shadow-sm max-w-md">
+          <CardContent className="px-5 py-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              {isEmailUser
+                ? <KeyRound className="w-5 h-5 text-primary" />
+                : <ShieldCheck className="w-5 h-5 text-primary" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-foreground">
+                {isEmailUser ? 'Senha de acesso' : 'Login com Google'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isEmailUser
+                  ? `Conta: ${user?.email}`
+                  : 'Sua senha é gerenciada pelo Google. Para alterá-la, acesse as configurações da sua conta Google.'}
+              </p>
+            </div>
+            {isEmailUser && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={sendingReset}
+                onClick={handlePasswordReset}
+                className="shrink-0 rounded-xl text-xs font-bold"
+              >
+                {sendingReset ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Alterar senha'}
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
     </div>
   );

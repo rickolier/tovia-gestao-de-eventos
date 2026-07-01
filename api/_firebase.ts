@@ -4,15 +4,26 @@ import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 
+// Deferred initialization — never throw at module level to avoid Vercel plain-text crashes.
+let _initError: Error | null = null;
+
 if (!getApps().length) {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
-  if (!b64) throw new Error('FIREBASE_SERVICE_ACCOUNT_B64 não configurada.');
-  const serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
-  initializeApp({ credential: cert(serviceAccount) });
+  if (!b64) {
+    _initError = new Error('FIREBASE_SERVICE_ACCOUNT_B64 não configurada.');
+  } else {
+    try {
+      const serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
+      initializeApp({ credential: cert(serviceAccount) });
+    } catch (e: any) {
+      _initError = e instanceof Error ? e : new Error(String(e));
+    }
+  }
 }
 
 let _db: any = null;
 export function getDb() {
+  if (_initError) throw _initError;
   if (!_db) _db = getFirestore(getApp(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
   return _db;
 }
@@ -26,6 +37,11 @@ export const db = new Proxy({} as any, {
 /** Verifica Firebase ID Token do header Authorization: Bearer <token>.
  *  Retorna o DecodedIdToken ou lança erro com status 401/403. */
 export async function verifyAuth(authHeader: string | undefined, expectedUid?: string) {
+  if (_initError) {
+    const err: any = new Error('Serviço indisponível: ' + _initError.message);
+    err.status = 503;
+    throw err;
+  }
   if (!authHeader?.startsWith('Bearer ')) {
     const err: any = new Error('Não autenticado.');
     err.status = 401;

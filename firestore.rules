@@ -32,7 +32,7 @@ service cloud.firestore {
     function isValidUser(data) {
       return data.nome is string && data.nome.size() <= 100 &&
              data.email is string && data.email.size() <= 100 &&
-             (!data.keys().hasAll(['plano']) || (data.plano in ['start', 'essencial', 'pro']));
+             (!data.keys().hasAll(['plano']) || (data.plano in ['start', 'essencial', 'pro', 'personalizado']) || data.plano == null);
     }
 
     function isValidEvento(data) {
@@ -93,8 +93,9 @@ service cloud.firestore {
     }
 
     match /notificacoes/{notifId} {
-      // resource == null when doc doesn't exist — allow signed-in users to confirm non-existence (no data leakage)
+      // resource == null when doc doesn't exist (e.g. get on missing notif ID)
       allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || isAdmin());
+      // list: Firestore proves resource.data.userId == request.auth.uid from the WHERE clause
       allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
       allow update: if isSignedIn() && existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['lida']);
       allow create: if isOwner(incoming().userId) || isAdmin();
@@ -103,14 +104,13 @@ service cloud.firestore {
 
     match /eventos/{eventoId} {
       allow get: if isValidId(eventoId); // Open get for public event page, but ID must be valid
-      allow list: if isAdmin() || (isSignedIn() && (
-        resource.data.criado_por == request.auth.uid ||
-        resource.data.get('equipeIds', []).hasAll([request.auth.uid])
-      )) || (
-        // Página pública do organizador: listagem sem auth quando organizador tem pagina_publica ativa
-        resource.data.ativo == true &&
-        get(/databases/$(database)/documents/users/$(resource.data.criado_por)).data.get('pagina_publica', false) == true
-      );
+      // Branches separados para Firestore provar cada constraint independentemente
+      allow list: if isAdmin();
+      allow list: if isSignedIn() && resource.data.criado_por == request.auth.uid;
+      allow list: if isSignedIn() && request.auth.uid in resource.data.equipeIds;
+      allow list: if resource.data.ativo == true
+          && exists(/databases/$(database)/documents/users/$(resource.data.criado_por))
+          && get(/databases/$(database)/documents/users/$(resource.data.criado_por)).data.get('pagina_publica', false) == true;
       allow create: if isSignedIn() && isValidEvento(incoming());
       // Owner/admin: full update; Team member self-join: only equipe+equipeIds, adding themselves
       allow update: if (isEventOwner(eventoId) && isValidEvento(incoming()) && incoming().criado_por == existing().criado_por) ||
@@ -191,6 +191,31 @@ service cloud.firestore {
         allow read: if isEventOwner(eventoId);
         allow create, update, delete: if isEventOwner(eventoId);
       }
+    }
+
+    // ===============================================================
+    // Convites de equipe — o convidado lê/exclui o próprio convite
+    // ===============================================================
+    match /convites/{conviteId} {
+      // Dono do evento pode criar convites
+      allow create: if isSignedIn() && isEventOwner(incoming().eventoId);
+      // O convidado pode listar e deletar convites com seu próprio email
+      allow list: if isSignedIn() && (
+        request.auth.token.email == resource.data.email ||
+        isAdmin() ||
+        isEventOwner(resource.data.eventoId)
+      );
+      allow get: if isSignedIn() && (
+        resource == null ||
+        request.auth.token.email == resource.data.email ||
+        isAdmin() ||
+        isEventOwner(resource.data.eventoId)
+      );
+      allow delete: if isSignedIn() && (
+        request.auth.token.email == resource.data.email ||
+        isAdmin() ||
+        isEventOwner(resource.data.eventoId)
+      );
     }
 
     // ===============================================================

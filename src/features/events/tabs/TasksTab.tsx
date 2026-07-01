@@ -37,6 +37,7 @@ import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '~/context/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
 const CATEGORIES = ['Logística', 'Financeiro', 'Comunicados', 'Equipe', 'Infraestrutura', 'Outros'];
 const STATUS_LIST = [
@@ -48,6 +49,7 @@ const STATUS_LIST = [
 
 export default function TasksTab({ eventoId }: { eventoId: string }) {
   const { user } = useAuth();
+  const [gestaoTourOpen, setGestaoTourOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -79,6 +81,13 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
   useEffect(() => {
     fetchData();
   }, [eventoId]);
+
+  useEffect(() => {
+    if (user && !hasTourBeenSeen(user.uid, 'gestao')) {
+      const timer = setTimeout(() => setGestaoTourOpen(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,6 +214,14 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-6 text-foreground">
+      {gestaoTourOpen && user && (
+        <OnboardingTour
+          userId={user.uid}
+          plan="pro"
+          tourId="gestao"
+          onClose={() => setGestaoTourOpen(false)}
+        />
+      )}
       <div className="flex justify-end gap-3">
         <Tabs value={view} onValueChange={(v: any) => setView(v)} className="bg-muted p-1.5 rounded-2xl">
           <TabsList className="bg-transparent border-none">

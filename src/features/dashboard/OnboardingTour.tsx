@@ -5,21 +5,68 @@ import {
   Ticket, DollarSign, Users, House, User, CalendarDays,
   Calculator, BarChart3, CreditCard, Plus, Globe,
   BookOpen, Package, Bed, ListChecks, UserPlus,
-  Settings2, Heart,
+  Settings2, Heart, QrCode, Tag, GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PlanLevel } from '~/types';
 
+// ─── Tour IDs ────────────────────────────────────────────────────────────────
+
+export type TourId = 'inscricoes' | 'financeiro' | 'gestao';
+
 // ─── Persistence ─────────────────────────────────────────────────────────────
 
-const KEY = (id: string) => `tovia_tour_v1_${id}`;
-export const hasTourBeenSeen = (userId: string) => localStorage.getItem(KEY(userId)) === 'seen';
-export const markTourSeen    = (userId: string) => localStorage.setItem(KEY(userId), 'seen');
+const KEY_V2 = (userId: string, tourId: TourId) => `tovia_tour_v2_${tourId}_${userId}`;
+// Legacy key from v1 (single tour). If seen, treat 'inscricoes' as seen for existing users.
+const KEY_V1 = (userId: string) => `tovia_tour_v1_${userId}`;
+
+export const hasTourBeenSeen = (userId: string, tourId: TourId): boolean => {
+  if (tourId === 'inscricoes' && localStorage.getItem(KEY_V1(userId)) === 'seen') return true;
+  return localStorage.getItem(KEY_V2(userId, tourId)) === 'seen';
+};
+
+export const markTourSeen = (userId: string, tourId: TourId): void => {
+  localStorage.setItem(KEY_V2(userId, tourId), 'seen');
+};
+
+// ─── Tour metadata (for selector UI) ─────────────────────────────────────────
+
+export interface TourMeta {
+  id: TourId;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  plans: PlanLevel[];
+}
+
+export const TOUR_DEFS: TourMeta[] = [
+  {
+    id: 'inscricoes',
+    label: 'Módulo de Inscrições',
+    description: 'Eventos, ingressos, páginas de venda, participantes, cupons e check-in.',
+    icon: <Ticket className="w-4 h-4" />,
+    plans: ['start', 'essencial', 'pro', 'personalizado'],
+  },
+  {
+    id: 'financeiro',
+    label: 'Módulo Financeiro',
+    description: 'Configuração financeira, pagamentos manuais e doações.',
+    icon: <DollarSign className="w-4 h-4" />,
+    plans: ['essencial', 'pro', 'personalizado'],
+  },
+  {
+    id: 'gestao',
+    label: 'Módulo de Gestão',
+    description: 'Recursos, grupos, tarefas, equipe e calculadora de eventos.',
+    icon: <ListChecks className="w-4 h-4" />,
+    plans: ['pro', 'personalizado'],
+  },
+];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface TourStep {
-  target?: string;  // data-tour attribute; undefined = centered modal
+  target?: string;
   title: string;
   description: string;
   icon?: React.ReactNode;
@@ -29,143 +76,196 @@ interface TourStep {
 interface Props {
   userId: string;
   plan: PlanLevel;
+  tourId: TourId;
   onClose: () => void;
 }
 
-// ─── Steps per plan ──────────────────────────────────────────────────────────
+// ─── Steps per tour ──────────────────────────────────────────────────────────
 
-function buildSteps(plan: PlanLevel): TourStep[] {
-  // ── Start (todos os planos) ────────────────────────────────────────────────
-  const steps: TourStep[] = [
-    {
-      title: 'Bem-vindo ao Tovia!',
-      description: 'Sua plataforma de gestão de eventos está pronta. Vamos fazer um tour rápido pelos recursos do seu plano — leva menos de 2 minutos!',
-      icon: <Sparkles className="w-4 h-4" />,
-    },
-    {
-      target: 'nav-perfil',
-      title: 'Complete o seu perfil!',
-      description: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
-      icon: <User className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'nav-agenda',
-      title: 'Agenda de Eventos!',
-      description: 'Visualize todos os seus eventos num calendário mensal. Ideal para nunca perder uma data importante.',
-      icon: <CalendarDays className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'nav-calculadora',
-      title: 'Calcule seu próximo evento!',
-      description: 'Use a calculadora para estimar o investimento do seu evento antes de criá-lo — defina vagas, custos fixos e variáveis e veja a viabilidade financeira.',
-      icon: <Calculator className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'nav-relatorios',
-      title: 'Relatórios!',
-      description: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',
-      icon: <BarChart3 className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'nav-faturamento',
-      title: 'Faturamento!',
-      description: 'Veja o plano que você contratou, seus limites de eventos e participantes, e o histórico de pagamentos da plataforma.',
-      icon: <CreditCard className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'nav-inicio',
-      title: 'Seus eventos!',
-      description: 'Na página Início você encontra todos os seus eventos e acessa qualquer um deles com um clique.',
-      icon: <House className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      target: 'criar-evento',
-      title: 'Crie seu primeiro evento!',
-      description: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
-      icon: <Plus className="w-4 h-4" />,
-      position: 'right',
-    },
-    {
-      title: 'Cada evento precisa dos seus ingressos!',
-      description: 'Dentro de cada evento, configure os ingressos: gratuitos, pagos ou por doação. Você define vagas, prazo e as formas de pagamento aceitas.',
-      icon: <Ticket className="w-4 h-4" />,
-    },
-    {
-      title: 'Páginas de inscrição!',
-      description: 'As páginas de inscrição são links públicos que você compartilha com os participantes. Cada página tem ingressos vinculados, formulário personalizado e confirmação automática por e-mail.',
-      icon: <Globe className="w-4 h-4" />,
-    },
-    {
-      title: 'Participantes!',
-      description: 'Aqui você vê todas as inscrições realizadas: nome, contato, ingresso escolhido, status do pagamento e muito mais. Também é possível exportar a lista.',
-      icon: <Users className="w-4 h-4" />,
-    },
-    {
-      title: 'Base de Conhecimento!',
-      description: 'Ficou com dúvida? Acesse a Base de Conhecimento com tutoriais e respostas detalhadas sobre cada funcionalidade da plataforma.',
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-  ];
+const PLAN_WELCOME: Record<PlanLevel, string> = {
+  start:
+    'Você está no plano Start (gratuito): 1 evento ativo, até 200 participantes, 1 ingresso gratuito por evento. Vamos ver o caminho mais rápido para começar!',
+  essencial:
+    'Plano Essencial: até 3 eventos simultâneos, 500 participantes cada, 3 tipos de ingresso, controle financeiro manual e doações incluídos. Vamos configurar tudo!',
+  pro:
+    'Plano Pro: eventos e participantes ilimitados, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
+  personalizado:
+    'Plano Personalizado com limites ajustados para a sua organização. Vamos conhecer cada módulo do Tovia!',
+};
 
-  // ── Essencial ──────────────────────────────────────────────────────────────
-  if (plan === 'essencial' || plan === 'pro') {
-    steps.push(
+const PLAN_TICKET_DESC: Record<PlanLevel, string> = {
+  start:
+    'No plano Start você cria 1 ingresso gratuito por evento, com número de vagas e prazo. Para criar ingressos pagos ou múltiplos tipos, faça upgrade para o Essencial.',
+  essencial:
+    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento. Para pagamentos online, conecte um gateway nas Configurações do evento.',
+  pro:
+    'Crie quantos tipos de ingresso quiser: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Combine para atender todos os perfis de participante.',
+  personalizado:
+    'Crie quantos tipos de ingresso quiser: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Combine para atender todos os perfis de participante.',
+};
+
+const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
+  start:
+    'Você conhece o módulo de inscrições! Crie seu evento, configure o ingresso gratuito e divulgue o link. Para desbloquear pagamentos e doações, conheça o plano Essencial em Configurações → Faturamento.',
+  essencial:
+    'Você conhece o módulo de inscrições! Próximo passo: explore o Módulo Financeiro — clique em Tutorial na barra lateral e escolha "Módulo Financeiro" para aprender a registrar pagamentos.',
+  pro:
+    'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
+  personalizado:
+    'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
+};
+
+function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
+  if (tourId === 'inscricoes') {
+    return [
       {
-        title: 'Configure os pagamentos do seu evento!',
-        description: 'Na aba Configurações Financeiras do evento, você pode definir as taxas, os valores reais do seu evento.',
-        icon: <Settings2 className="w-4 h-4" />,
+        title: 'Bem-vindo ao Tovia!',
+        description: PLAN_WELCOME[plan],
+        icon: <Sparkles className="w-4 h-4" />,
       },
       {
-        title: 'Confira ou adicione os pagamentos!',
-        description: 'Na aba Financeiro você registra e acompanha todos os pagamentos recebidos — parcelas, confirmações manuais e o fluxo de caixa do evento.',
+        target: 'nav-perfil',
+        title: 'Complete o seu perfil!',
+        description: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
+        icon: <User className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        target: 'nav-agenda',
+        title: 'Agenda de Eventos!',
+        description: 'Visualize todos os seus eventos num calendário mensal. Ideal para nunca perder uma data importante.',
+        icon: <CalendarDays className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        target: 'nav-relatorios',
+        title: 'Relatórios!',
+        description: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',
+        icon: <BarChart3 className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        target: 'nav-configuracoes',
+        title: 'Configurações e Faturamento!',
+        description: 'Gerencie o plano que você contratou, seus limites de eventos e participantes, e o histórico de pagamentos da plataforma.',
+        icon: <CreditCard className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        target: 'nav-inicio',
+        title: 'Seus eventos!',
+        description: 'Na página Início você encontra todos os seus eventos e acessa qualquer um deles com um clique.',
+        icon: <House className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        target: 'criar-evento',
+        title: 'Crie seu primeiro evento!',
+        description: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
+        icon: <Plus className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
+        title: 'Configure os ingressos!',
+        description: PLAN_TICKET_DESC[plan],
+        icon: <Ticket className="w-4 h-4" />,
+      },
+      {
+        title: 'Páginas de inscrição!',
+        description: 'São links públicos que você compartilha com os participantes. Cada página tem ingressos vinculados, formulário personalizado e confirmação automática por e-mail.',
+        icon: <Globe className="w-4 h-4" />,
+      },
+      {
+        title: 'Cupons de desconto!',
+        description: 'Crie cupons percentuais ou fixos para os seus eventos. Compartilhe com o público certo e acompanhe os usos em tempo real.',
+        icon: <Tag className="w-4 h-4" />,
+      },
+      {
+        title: 'Participantes!',
+        description: 'Veja todas as inscrições realizadas: nome, contato, ingresso escolhido e status do pagamento. Exporte a lista quando precisar.',
+        icon: <Users className="w-4 h-4" />,
+      },
+      {
+        title: 'Check-in no dia do evento!',
+        description: 'Use a tela de check-in para confirmar a presença dos participantes no dia. Busque por nome, CPF ou leia o QR Code do ingresso.',
+        icon: <QrCode className="w-4 h-4" />,
+      },
+      {
+        title: plan === 'start' ? 'Você está pronto para começar!' : 'Módulo de Inscrições concluído!',
+        description: PLAN_FINAL_DESC[plan],
+        icon: <BookOpen className="w-4 h-4" />,
+      },
+    ];
+  }
+
+  if (tourId === 'financeiro') {
+    return [
+      {
+        title: 'Módulo Financeiro desbloqueado!',
+        description: 'O Tovia não cobra seus participantes — você usa Pix, dinheiro, transferência ou qualquer meio, e registra aqui o que recebeu. Vamos ver como funciona!',
         icon: <DollarSign className="w-4 h-4" />,
       },
       {
-        title: 'Aqui ficam todas as doações!',
-        description: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você. Você pode também alocar uma doação para um participante!',
+        title: 'Configure as finanças do evento!',
+        description: 'Na aba Configurações do evento, defina as taxas e os valores reais — isso permite que os relatórios financeiros sejam precisos.',
+        icon: <Settings2 className="w-4 h-4" />,
+      },
+      {
+        title: 'Registre e acompanhe pagamentos!',
+        description: 'Na aba Financeiro você registra pagamentos manualmente, confirma entradas, acompanha parcelas e tem uma visão clara do fluxo de caixa.',
+        icon: <DollarSign className="w-4 h-4" />,
+      },
+      {
+        title: 'Acompanhe as doações!',
+        description: 'Na aba Doações você vê todas as contribuições do evento. Você também pode alocar uma doação para um participante específico.',
         icon: <Heart className="w-4 h-4" />,
       },
-    );
-  }
-
-  // ── Pro ────────────────────────────────────────────────────────────────────
-  if (plan === 'pro') {
-    steps.push(
       {
-        title: 'Recursos!',
-        description: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
-        icon: <Package className="w-4 h-4" />,
-      },
-      {
-        title: 'Grupos!',
-        description: 'Divida os participantes em grupos, quartos, mesas ou qualquer outra estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
-        icon: <Bed className="w-4 h-4" />,
-      },
-      {
-        title: 'Tarefas!',
-        description: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
-        icon: <ListChecks className="w-4 h-4" />,
-      },
-      {
-        title: 'Equipe!',
-        description: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Trabalhe junto com quem te ajuda.',
-        icon: <UserPlus className="w-4 h-4" />,
-      },
-      {
-        title: 'Tudo pronto!',
-        description: 'Você conhece tudo que o Tovia tem a oferecer! Para rever este tour a qualquer momento, clique em Tutorial na barra lateral. Bora organizar eventos incríveis!',
+        title: 'Módulo Financeiro concluído!',
+        description: 'Você conhece as ferramentas financeiras do Tovia. Para rever este tutorial, clique em Tutorial na barra lateral e escolha o módulo.',
         icon: <CheckCircle2 className="w-4 h-4" />,
       },
-    );
+    ];
   }
 
-  return steps;
+  // gestao
+  return [
+    {
+      title: 'Módulo de Gestão desbloqueado!',
+      description: 'Com o plano Pro você tem acesso às ferramentas de gestão avançada: recursos, grupos, tarefas, equipe e calculadora de eventos.',
+      icon: <ListChecks className="w-4 h-4" />,
+    },
+    {
+      title: 'Calculadora de Evento!',
+      description: 'Use a calculadora (em Configurações → Calculadora) para estimar o investimento do seu evento — defina vagas, custos fixos e variáveis e veja a viabilidade financeira.',
+      icon: <Calculator className="w-4 h-4" />,
+    },
+    {
+      title: 'Recursos do evento!',
+      description: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
+      icon: <Package className="w-4 h-4" />,
+    },
+    {
+      title: 'Grupos e salas!',
+      description: 'Divida os participantes em grupos, quartos, mesas ou qualquer estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
+      icon: <Bed className="w-4 h-4" />,
+    },
+    {
+      title: 'Tarefas da equipe!',
+      description: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
+      icon: <ListChecks className="w-4 h-4" />,
+    },
+    {
+      title: 'Equipe do evento!',
+      description: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Configure as permissões de cada membro.',
+      icon: <UserPlus className="w-4 h-4" />,
+    },
+    {
+      title: 'Módulo de Gestão concluído!',
+      description: 'Você conhece todas as ferramentas de gestão do Tovia. Para rever este tutorial, clique em Tutorial na barra lateral e escolha o módulo.',
+      icon: <CheckCircle2 className="w-4 h-4" />,
+    },
+  ];
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -174,14 +274,15 @@ const TOOLTIP_W = 296;
 const SPOT_PAD  = 6;
 const GAP       = 14;
 
-export default function OnboardingTour({ userId, plan, onClose }: Props) {
+export default function OnboardingTour({ userId, plan, tourId, onClose }: Props) {
   const [step, setStep]   = useState(0);
   const [rect, setRect]   = useState<DOMRect | null>(null);
   const [ready, setReady] = useState(false);
 
-  const steps   = buildSteps(plan);
+  const steps   = buildSteps(tourId, plan);
   const current = steps[step];
   const isLast  = step === steps.length - 1;
+  const tourMeta = TOUR_DEFS.find(t => t.id === tourId);
 
   const measure = () => {
     if (current.target) {
@@ -204,29 +305,27 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
-  const handleClose = () => { markTourSeen(userId); onClose(); };
+  const handleClose = () => { markTourSeen(userId, tourId); onClose(); };
   const goNext = () => isLast ? handleClose() : setStep(s => s + 1);
   const goPrev = () => step > 0 && setStep(s => s - 1);
 
-  // ── Spotlight style ────────────────────────────────────────────────────────
   const spotStyle = (): React.CSSProperties | undefined => {
     if (!rect) return undefined;
     return {
-      position:     'fixed',
-      left:         rect.left  - SPOT_PAD,
-      top:          rect.top   - SPOT_PAD,
-      width:        rect.width  + SPOT_PAD * 2,
-      height:       rect.height + SPOT_PAD * 2,
-      borderRadius: 12,
-      boxShadow:    '0 0 0 9999px rgba(0,0,0,0.65)',
-      border:       '2px solid rgba(124,58,237,0.55)',
-      zIndex:       9001,
-      pointerEvents:'none',
-      transition:   'left .25s ease, top .25s ease, width .25s ease, height .25s ease',
+      position:      'fixed',
+      left:          rect.left  - SPOT_PAD,
+      top:           rect.top   - SPOT_PAD,
+      width:         rect.width  + SPOT_PAD * 2,
+      height:        rect.height + SPOT_PAD * 2,
+      borderRadius:  12,
+      boxShadow:     '0 0 0 9999px rgba(0,0,0,0.65)',
+      border:        '2px solid rgba(124,58,237,0.55)',
+      zIndex:        9001,
+      pointerEvents: 'none',
+      transition:    'left .25s ease, top .25s ease, width .25s ease, height .25s ease',
     };
   };
 
-  // ── Tooltip style (positioned relative to spotlight) ──────────────────────
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const tooltipStyle = (): React.CSSProperties => {
@@ -246,13 +345,12 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
       Math.max(16, rect.top + rect.height / 2 - 140),
       window.innerHeight - 300,
     );
-    if (pos === 'right') return { position: 'fixed', left: rect.right + GAP, top: centerY, width: TOOLTIP_W, zIndex: 9002 };
-    if (pos === 'left')  return { position: 'fixed', right: window.innerWidth - rect.left + GAP, top: centerY, width: TOOLTIP_W, zIndex: 9002 };
+    if (pos === 'right')  return { position: 'fixed', left: rect.right + GAP, top: centerY, width: TOOLTIP_W, zIndex: 9002 };
+    if (pos === 'left')   return { position: 'fixed', right: window.innerWidth - rect.left + GAP, top: centerY, width: TOOLTIP_W, zIndex: 9002 };
     if (pos === 'bottom') return { position: 'fixed', top: rect.bottom + GAP, left: Math.max(16, rect.left - TOOLTIP_W / 2 + rect.width / 2), width: TOOLTIP_W, zIndex: 9002 };
     return { position: 'fixed', bottom: window.innerHeight - rect.top + GAP, left: Math.max(16, rect.left - TOOLTIP_W / 2 + rect.width / 2), width: TOOLTIP_W, zIndex: 9002 };
   };
 
-  // ── Arrow pointing toward the target ──────────────────────────────────────
   const ArrowLeft = () => (
     <div
       className="absolute top-1/2 -translate-y-1/2 -left-2 w-0 h-0"
@@ -264,27 +362,22 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
 
   return createPortal(
     <div className="fixed inset-0 animate-in fade-in duration-200" style={{ zIndex: 9000 }}>
-
-      {/* Backdrop — transparent when spotlight exists (spotlight provides the dark overlay) */}
       <div
         className="absolute inset-0"
         style={{ backgroundColor: rect ? 'transparent' : 'rgba(0,0,0,0.65)' }}
         onClick={handleClose}
       />
 
-      {/* Spotlight */}
       {rect && <div style={spotStyle()} />}
 
-      {/* Tooltip card */}
       <div
         style={tooltipStyle()}
         className="bg-card border border-border rounded-2xl shadow-2xl p-5 animate-in fade-in slide-in-from-left-2 duration-200"
         onClick={e => e.stopPropagation()}
       >
-        {/* Arrow (only when positioned to right of target) */}
         {rect && current.position === 'right' && !isMobile && <ArrowLeft />}
 
-        {/* Header row */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {current.icon && (
@@ -292,9 +385,14 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
                 {current.icon}
               </div>
             )}
-            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              {step + 1} de {steps.length}
-            </span>
+            <div className="flex flex-col">
+              <span className="text-[9px] font-black uppercase tracking-widest text-primary/70">
+                {tourMeta?.label}
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground">
+                {step + 1} de {steps.length}
+              </span>
+            </div>
           </div>
           <button
             onClick={handleClose}
@@ -319,15 +417,15 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
               key={i}
               className={cn(
                 'h-1.5 rounded-full transition-all duration-300',
-                i === step   ? 'bg-primary w-5' :
-                i  < step   ? 'bg-primary/40 w-1.5' :
-                               'bg-muted w-1.5',
+                i === step ? 'bg-primary w-5' :
+                i  < step  ? 'bg-primary/40 w-1.5' :
+                              'bg-muted w-1.5',
               )}
             />
           ))}
         </div>
 
-        {/* Action buttons */}
+        {/* Buttons */}
         <div className="flex gap-2">
           {step > 0 && (
             <button
@@ -345,6 +443,79 @@ export default function OnboardingTour({ userId, plan, onClose }: Props) {
             {isLast ? 'Concluir' : 'Próximo'}
             {!isLast && <ChevronRight className="w-3.5 h-3.5" />}
           </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// ─── Tour Selector Modal ──────────────────────────────────────────────────────
+
+interface TourSelectorProps {
+  userId: string;
+  plan: PlanLevel;
+  onStart: (tourId: TourId) => void;
+  onClose: () => void;
+}
+
+export function TourSelector({ userId, plan, onStart, onClose }: TourSelectorProps) {
+  const availableTours = TOUR_DEFS.filter(t => t.plans.includes(plan));
+
+  return createPortal(
+    <div className="fixed inset-0 flex items-center justify-center p-4 animate-in fade-in duration-200" style={{ zIndex: 9000 }}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="relative bg-card border border-border rounded-3xl shadow-2xl w-full max-w-sm p-6 animate-in zoom-in-95 duration-200"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <GraduationCap className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-sm font-black text-foreground">Tutoriais por Módulo</h2>
+              <p className="text-[10px] text-muted-foreground">Escolha o módulo que quer ver</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Module list */}
+        <div className="space-y-2">
+          {availableTours.map(tour => {
+            const seen = hasTourBeenSeen(userId, tour.id);
+            return (
+              <button
+                key={tour.id}
+                onClick={() => { onClose(); onStart(tour.id); }}
+                className="w-full flex items-start gap-3 p-4 rounded-2xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
+                  {tour.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-sm font-bold text-foreground">{tour.label}</span>
+                    {seen && (
+                      <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                        Visto
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">{tour.description}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 mt-2 group-hover:text-primary transition-colors" />
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>,

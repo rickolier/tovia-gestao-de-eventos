@@ -186,9 +186,15 @@ export default function BillingTab() {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({ userId: user.uid }),
       });
+      if (res.status === 404) throw new Error('__DEV__');
       const text = await res.text();
       if (!text) throw new Error(`Servidor retornou resposta vazia (${res.status}).`);
-      const json = JSON.parse(text);
+      let json: any;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        throw new Error('Serviço de faturamento indisponível no momento. Tente novamente em instantes.');
+      }
       if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
       setData(json);
     } catch (e: any) {
@@ -210,6 +216,21 @@ export default function BillingTab() {
   );
 
   // ── Erro ─────────────────────────────────────────────────────────────────────
+  if (error === '__DEV__') return (
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Faturamento</h2>
+        <p className="text-sm text-muted-foreground">Gerencie sua assinatura e histórico de pagamentos.</p>
+      </div>
+      <div className="rounded-3xl bg-muted/40 border border-border p-8 text-center space-y-2">
+        <CreditCard className="w-8 h-8 text-muted-foreground mx-auto" />
+        <p className="text-sm font-semibold text-foreground">Faturamento disponível em produção</p>
+        <p className="text-xs text-muted-foreground">Esta seção requer o ambiente Vercel para funcionar. Em produção tudo funcionará normalmente.</p>
+      </div>
+      {zonaDePerigo}
+    </div>
+  );
+
   if (error) return (
     <div className="max-w-3xl mx-auto">
       <div className="rounded-3xl bg-red-50 border border-red-100 p-8 text-center space-y-3">

@@ -128,46 +128,46 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         className="grid grid-cols-2 md:grid-cols-4 gap-4"
       >
         {/* Stat card 1 — Total eventos */}
-        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <Calendar className="w-5 h-5 text-primary" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-2xl font-bold text-foreground leading-none">{eventos.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Total de eventos</p>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-tight">Total de eventos</p>
           </div>
         </div>
 
         {/* Stat card 2 — Ativos */}
-        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-2xl font-bold text-foreground leading-none">{activeEvents.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Ativos</p>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-tight">Ativos</p>
           </div>
         </div>
 
         {/* Stat card 3 — Arquivados */}
-        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4">
+        <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
             <Clock className="w-5 h-5 text-orange-400" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-2xl font-bold text-foreground leading-none">{archivedEvents.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Arquivados</p>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-tight">Arquivados</p>
           </div>
         </div>
 
         {/* Stat card 4 — Plano */}
-        <Link to="/planos" className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-4 hover:border-primary/40 hover:shadow-sm transition-all group">
+        <Link to="/planos" className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3 hover:border-primary/40 hover:shadow-sm transition-all group">
           <div className="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
             <Star className="w-5 h-5 text-violet-500" />
           </div>
-          <div className="flex-1">
-            <p className="text-base font-bold text-foreground leading-none capitalize">{profile?.plano ?? 'Start'}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Plano atual</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-base font-bold text-foreground leading-none capitalize truncate">{profile?.plano ?? 'Start'}</p>
+            <p className="text-xs text-muted-foreground mt-0.5 truncate">Plano atual</p>
           </div>
           <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors" />
         </Link>

@@ -19,11 +19,13 @@ import { storage } from '~/services/firebase';
 import { useAuth } from '~/context/AuthContext';
 import { getPlanConfig } from '~/utils/plan-limits';
 import { FinancialTransaction } from '~/types';
+import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
 import { Progress } from '@/components/ui/progress';
 
 export default function FinancialTab({ eventoId }: { eventoId: string }) {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
+  const [financialTourOpen, setFinancialTourOpen] = useState(false);
   const [payments, setPayments] = useState<Pagamento[]>([]);
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa })[]>([]);
   const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
@@ -90,6 +92,13 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   useEffect(() => {
     fetchData();
   }, [eventoId]);
+
+  useEffect(() => {
+    if (user && !hasTourBeenSeen(user.uid, 'financeiro')) {
+      const timer = setTimeout(() => setFinancialTourOpen(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const ALLOWED_RECEIPT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
   const MAX_RECEIPT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -391,6 +400,14 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
 
   return (
     <div className="space-y-6 text-foreground">
+      {financialTourOpen && user && (
+        <OnboardingTour
+          userId={user.uid}
+          plan={profile?.plano || 'start'}
+          tourId="financeiro"
+          onClose={() => setFinancialTourOpen(false)}
+        />
+      )}
       <div className="tab-page-header">
         <div><h2>Pagamentos</h2><p>Controle de pagamentos dos inscritos.</p></div>
         <div className="flex flex-wrap gap-3">

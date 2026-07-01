@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { getPlanConfig } from '~/utils/plan-limits';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
-import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
+import OnboardingTour, { TourSelector, TourId, hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
 // Tabs
 import HomeTab from './tabs/HomeTab';
@@ -37,14 +37,15 @@ import ConfiguracoesTab from './tabs/ConfiguracoesTab';
 import DesignSystemTab from './tabs/DesignSystemTab';
 
 export default function Dashboard() {
-  const { user, profile } = useAuth();
+  const { user, profile, isAuthReady } = useAuth();
   const [searchParams] = useSearchParams();
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'inicio');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [tourOpen, setTourOpen] = useState(false);
+  const [tourSelectorOpen, setTourSelectorOpen] = useState(false);
+  const [activeTourId, setActiveTourId] = useState<TourId | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function Dashboard() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (user) {
+    if (user && isAuthReady) {
       const fetchData = async () => {
         try {
           const [eventosData, eventosConvidado, notifications] = await Promise.all([
@@ -72,28 +73,18 @@ export default function Dashboard() {
           generateDailySummary(eventosData);
         } catch (error: any) {
           console.error('Error fetching dashboard data:', error);
-          const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-          try {
-            const parsed = JSON.parse(errorMsg);
-            if (parsed.error && parsed.error.includes('permissions')) {
-              toast.error('Erro de permissão no Firebase. Verifique as regras.');
-            } else {
-              toast.error('Erro ao carregar dados: ' + errorMsg);
-            }
-          } catch {
-            toast.error('Erro ao carregar dados do painel');
-          }
+          toast.error('Erro ao carregar dados do painel. Tente recarregar a página.');
         } finally {
           setLoading(false);
         }
       };
       fetchData().then(() => {
-        if (user && !hasTourBeenSeen(user.uid)) setTourOpen(true);
+        if (user && !hasTourBeenSeen(user.uid, 'inscricoes')) setActiveTourId('inscricoes');
       });
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, isAuthReady]);
 
   const generateDailySummary = async (userEvents: Evento[]) => {
     if (!user || userEvents.length === 0) return;
@@ -233,7 +224,7 @@ export default function Dashboard() {
             </button>
           </Link>
           <button
-            onClick={() => setTourOpen(true)}
+            onClick={() => setTourSelectorOpen(true)}
             className="sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10"
           >
             <GraduationCap className="w-[18px] h-[18px]" />
@@ -293,12 +284,23 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Onboarding tour */}
-      {tourOpen && user && (
+      {/* Tour selector */}
+      {tourSelectorOpen && user && (
+        <TourSelector
+          userId={user.uid}
+          plan={profile?.plano || 'start'}
+          onStart={(id) => setActiveTourId(id)}
+          onClose={() => setTourSelectorOpen(false)}
+        />
+      )}
+
+      {/* Active tour */}
+      {activeTourId && user && (
         <OnboardingTour
           userId={user.uid}
           plan={profile?.plano || 'start'}
-          onClose={() => setTourOpen(false)}
+          tourId={activeTourId}
+          onClose={() => setActiveTourId(null)}
         />
       )}
     </div>

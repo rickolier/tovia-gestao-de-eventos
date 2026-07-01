@@ -9,8 +9,12 @@ import firebaseConfig from '../../firebase-applet-config.json';
 const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
 // App Check — protege Firestore/Functions contra acesso direto via apiKey pública.
-// Chave de site reCAPTCHA v3 (pública por natureza, como a apiKey do Firebase).
-// Para testes locais, defina self.FIREBASE_APPCHECK_DEBUG_TOKEN = true no console do browser.
+// Em dev/localhost, reCAPTCHA v3 falha; o debug token contorna isso.
+// O token gerado aparece no console — adicione-o em Firebase Console → App Check → Debug tokens.
+if (import.meta.env.DEV) {
+  (self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = '49a1cd31-033d-4466-a285-eb97b7986f70';
+}
+
 if (getApps().length === 1) {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LfPHD0tAAAAAAx1WB9Zy1zACXwKVXoALgx15SOA'),
