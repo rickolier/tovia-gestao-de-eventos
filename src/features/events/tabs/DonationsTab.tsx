@@ -101,7 +101,6 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
   const confirmDelete = (id: string) => {
-    console.log('[DonationsTab] Opening delete confirmation for:', id);
     setIdToDelete(id);
     setDeleteConfirmOpen(true);
   };
@@ -126,7 +125,6 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     }
 
     setIsSubmitting(true);
-    console.log('Submitting donation...', formData);
     
     try {
       const valorLiquido = Number(formData.valor);
@@ -165,11 +163,9 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
       });
 
         if (editingId) {
-          console.log('Updating donation...', editingId);
           await updateDocument(`eventos/${eventoId}/doacoes`, editingId, donationData);
           toast.success('Doação atualizada!');
         } else {
-          console.log('Creating new donation...');
           await createDocument(`eventos/${eventoId}/doacoes`, donationData.id, donationData);
           
           // Create Financial Transaction ONLY if it's a FREE donation
@@ -223,7 +219,6 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     const toastId = toast.loading('Excluindo doação...');
     
     try {
-      console.log(`[Donations] Deleting donation ${idToDelete} from event ${eventoId}`);
       await removeDocument(`eventos/${eventoId}/doacoes`, idToDelete);
       
       toast.success('Doação excluída!', { id: toastId });

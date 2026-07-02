@@ -109,7 +109,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       body: JSON.stringify({ idToken, eventoId }),
     });
     const body = await res.json().catch(() => ({}));
-    console.log('[equipeJoin] response:', res.status, body);
     if (!res.ok) throw new Error(body?.error || `HTTP ${res.status}`);
     return body;
   };
