@@ -584,8 +584,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
           {/* Texto */}
           <div className="flex-1 max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6">
-              Do zero ao check-in —{' '}
+            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
+              Do zero ao check-in{' '}
               <span className="text-emerald-400">tudo em uma plataforma.</span>
             </h1>
 
