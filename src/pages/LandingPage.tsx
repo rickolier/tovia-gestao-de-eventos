@@ -1222,7 +1222,7 @@ export default function LandingPage() {
                 ))}
                 <li className="flex items-center gap-2.5 mt-1">
                   <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
-                  <span className="text-foreground">Suporte: Chat</span>
+                  <span className="text-foreground">Suporte: e-mail</span>
                 </li>
               </ul>
               <Link
@@ -1286,7 +1286,7 @@ export default function LandingPage() {
                 ))}
                 <li className="flex items-center gap-2.5 mt-1">
                   <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></span>
-                  <span className="text-white">Suporte: Chat</span>
+                  <span className="text-white">Suporte: e-mail</span>
                 </li>
               </ul>
 
@@ -1320,23 +1320,52 @@ export default function LandingPage() {
       {/* ── FAQ ── */}
       <FAQ />
 
-      {/* ── CTA Final ── */}
-      <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-24 px-6 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5" />
-        <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5" />
-        <div className="max-w-3xl mx-auto text-center relative">
-          <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-4">
-            Pronto para transformar a gestão dos seus eventos?
+      {/* ── Trial ── */}
+      <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-20 px-6 relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
+        <div className="max-w-4xl mx-auto relative">
+
+          {/* Chip */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-bold px-4 py-2 rounded-full">
+              <Zap className="w-3.5 h-3.5 text-emerald-300" />
+              Trial gratuito de 14 dias — sem cartão de crédito
+            </div>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-4 text-center">
+            Teste o Pro completo por 14 dias,<br className="hidden md:block" /> sem pagar nada agora.
           </h2>
-          <p className="text-white/70 mb-10 text-lg">
-            Crie sua conta agora e organize seu próximo evento em minutos.
+          <p className="text-white/70 text-center text-base mb-10 max-w-2xl mx-auto">
+            Ao criar sua conta, você acessa todas as funcionalidades do plano Pro gratuitamente por 14 dias. Depois do trial, escolha o plano que faz sentido para o seu evento — a partir de <strong className="text-white">R$39/mês</strong>.
           </p>
-          <Link
-            to="/login?cadastro=true"
-            className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
-          >
-            Criar conta grátis <ArrowRight className="w-4 h-4" />
-          </Link>
+
+          {/* Como funciona o trial */}
+          <div className="grid md:grid-cols-3 gap-4 mb-10">
+            {[
+              { step: '1', title: 'Crie sua conta', desc: 'Cadastro em menos de 1 minuto. Sem cartão, sem compromisso.' },
+              { step: '2', title: '14 dias com tudo', desc: 'Acesso completo ao plano Pro: inscrições, financeiro, check-in e equipe.' },
+              { step: '3', title: 'Escolha seu plano', desc: 'Depois do trial, assine o plano certo — Start R$39, Essencial R$99 ou Pro R$249.' },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="bg-white/10 border border-white/15 rounded-2xl p-5">
+                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center mb-3">
+                  <span className="text-sm font-black text-white">{step}</span>
+                </div>
+                <p className="font-black text-white text-sm mb-1">{title}</p>
+                <p className="text-white/60 text-xs leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center">
+            <Link
+              to="/login?cadastro=true"
+              className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
+            >
+              Começar trial gratuito <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
