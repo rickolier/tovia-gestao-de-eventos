@@ -676,28 +676,28 @@ export default function LandingPage() {
           <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
         </svg>
         <div className="bg-[#f0fdf4]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-              <CheckCircle className="w-4 h-4 text-emerald-600" />
+        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-5 h-5 text-emerald-600" />
             </div>
-            <p className="text-sm text-foreground">
-              <span className="font-bold">Já se inscreveu em um evento?</span>
-              <span className="text-muted-foreground ml-1.5 hidden sm:inline">Consulte seus dados, status de pagamento e QR Code de check-in.</span>
-            </p>
+            <div>
+              <p className="font-black text-foreground text-base">Já se inscreveu em um evento?</p>
+              <p className="text-sm text-muted-foreground hidden sm:block">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
+            </div>
           </div>
           <Link
             to="/consultar"
-            className="shrink-0 text-sm font-bold text-primary hover:underline flex items-center gap-1.5 whitespace-nowrap"
+            className="shrink-0 bg-primary text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-2xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex items-center gap-2 whitespace-nowrap"
           >
-            Consultar minha inscrição <ArrowRight className="w-3.5 h-3.5" />
+            Consultar minha inscrição <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         </div>
       </div>
 
       {/* ── Sobre ── */}
-      <section id="para-quem" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
+      <section id="para-quem" className="max-w-6xl mx-auto px-6 pt-10 pb-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Visual */}
           <div className="relative">
