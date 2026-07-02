@@ -49,6 +49,7 @@ import EquipeTab from './tabs/EquipeTab';
 import CheckinTab from './tabs/CheckinTab';
 import { toast } from 'sonner';
 import { getPlanConfig } from '~/utils/plan-limits';
+import OnboardingTour, { TourId, hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
@@ -60,6 +61,7 @@ export default function EventDetail() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
+  const [activeTourId, setActiveTourId] = useState<TourId | null>(null);
   const navigate = useNavigate();
 
   const plan = getPlanConfig(profile?.plano);
@@ -101,7 +103,9 @@ export default function EventDetail() {
   };
 
   useEffect(() => {
-    fetchEventoData();
+    fetchEventoData().then(() => {
+      if (user && !hasTourBeenSeen(user.uid, 'inscricoes')) setActiveTourId('inscricoes');
+    });
   }, [id, navigate]);
 
   useEffect(() => {
@@ -541,6 +545,15 @@ export default function EventDetail() {
           })}
         </nav>
       </div>
+
+      {activeTourId && user && profile?.plano && (
+        <OnboardingTour
+          userId={user.uid}
+          plan={profile.plano}
+          tourId={activeTourId}
+          onClose={() => setActiveTourId(null)}
+        />
+      )}
     </div>
   );
 }

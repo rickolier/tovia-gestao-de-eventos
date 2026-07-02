@@ -79,7 +79,7 @@ export default function Dashboard() {
         }
       };
       fetchData().then(() => {
-        if (user && !hasTourBeenSeen(user.uid, 'inscricoes')) setActiveTourId('inscricoes');
+        if (user && !hasTourBeenSeen(user.uid, 'inicial')) setActiveTourId('inicial');
       });
     } else {
       setLoading(false);

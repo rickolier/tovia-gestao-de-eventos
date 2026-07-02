@@ -12,7 +12,7 @@ import { PlanLevel } from '~/types';
 
 // ─── Tour IDs ────────────────────────────────────────────────────────────────
 
-export type TourId = 'inscricoes' | 'financeiro' | 'gestao';
+export type TourId = 'inicial' | 'inscricoes' | 'financeiro' | 'gestao';
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
 
@@ -21,7 +21,8 @@ const KEY_V2 = (userId: string, tourId: TourId) => `tovia_tour_v2_${tourId}_${us
 const KEY_V1 = (userId: string) => `tovia_tour_v1_${userId}`;
 
 export const hasTourBeenSeen = (userId: string, tourId: TourId): boolean => {
-  if (tourId === 'inscricoes' && localStorage.getItem(KEY_V1(userId)) === 'seen') return true;
+  // Legacy v1 tour covered everything — treat all tours as seen for those users
+  if (localStorage.getItem(KEY_V1(userId)) === 'seen') return true;
   return localStorage.getItem(KEY_V2(userId, tourId)) === 'seen';
 };
 
@@ -41,9 +42,16 @@ export interface TourMeta {
 
 export const TOUR_DEFS: TourMeta[] = [
   {
+    id: 'inicial',
+    label: 'Tutorial Inicial',
+    description: 'Conheça o painel do Tovia: navegação, perfil, agenda e como criar seu primeiro evento.',
+    icon: <Sparkles className="w-4 h-4" />,
+    plans: ['start', 'essencial', 'pro', 'personalizado'],
+  },
+  {
     id: 'inscricoes',
     label: 'Módulo de Inscrições',
-    description: 'Eventos, ingressos, páginas de venda, participantes, cupons e check-in.',
+    description: 'Ingressos, páginas de venda, participantes, cupons e check-in — dentro do seu evento.',
     icon: <Ticket className="w-4 h-4" />,
     plans: ['start', 'essencial', 'pro', 'personalizado'],
   },
@@ -116,7 +124,7 @@ const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
 };
 
 function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
-  if (tourId === 'inscricoes') {
+  if (tourId === 'inicial') {
     return [
       {
         title: 'Bem-vindo ao Tovia!',
@@ -161,9 +169,24 @@ function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
       {
         target: 'criar-evento',
         title: 'Crie seu primeiro evento!',
-        description: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
+        description: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes. Ao entrar no evento, você verá um tutorial de cada módulo!',
         icon: <Plus className="w-4 h-4" />,
         position: 'right',
+      },
+      {
+        title: 'Tovia está pronto para você!',
+        description: 'Navegação conhecida, perfil configurado, primeiro evento a caminho. Cada módulo tem seu próprio tutorial — Inscrições, Financeiro e Gestão — que aparece automaticamente quando você acessar.',
+        icon: <Sparkles className="w-4 h-4" />,
+      },
+    ];
+  }
+
+  if (tourId === 'inscricoes') {
+    return [
+      {
+        title: 'Módulo de Inscrições!',
+        description: 'Aqui dentro do evento você tem tudo para gerenciar os participantes. Vamos conhecer cada funcionalidade!',
+        icon: <Ticket className="w-4 h-4" />,
       },
       {
         title: 'Configure os ingressos!',
