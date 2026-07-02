@@ -1047,7 +1047,13 @@ export default function LandingPage() {
           {/* Partner + payment methods + fees */}
           <div className="grid md:grid-cols-2 gap-6">
             {/* Asaas partner */}
-            <div className="rounded-3xl p-6 text-white" style={{ background: '#0033FF' }}>
+            <a
+              href="https://www.asaas.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-3xl p-6 text-white block hover:opacity-90 transition-opacity cursor-pointer"
+              style={{ background: '#0033FF' }}
+            >
               <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway parceiro</p>
               <div className="mb-4">
                 <svg viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
@@ -1057,7 +1063,7 @@ export default function LandingPage() {
               <p className="text-sm text-white/80 leading-relaxed">
                 O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
               </p>
-            </div>
+            </a>
 
             {/* Payment methods + fees */}
             <div className="rounded-3xl border border-border bg-card p-6">
