@@ -575,7 +575,7 @@ export default function LandingPage() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--sidebar)] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-32 px-6">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--sidebar)] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-16 px-6">
         {/* Decorative circles */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
         <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
@@ -668,17 +668,14 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Bottom wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 62" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
-            <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
-          </svg>
-        </div>
       </section>
 
-
-      {/* ── Box strip: Consultar inscrição ── */}
-      <div className="bg-[#f0fdf4] -mt-px">
+      {/* ── Wave + Box strip: Consultar inscrição ── */}
+      <div className="-mt-16">
+        <svg viewBox="0 0 1440 62" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
+          <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
+        </svg>
+        <div className="bg-[#f0fdf4]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
@@ -695,6 +692,7 @@ export default function LandingPage() {
           >
             Consultar minha inscrição <ArrowRight className="w-3.5 h-3.5" />
           </Link>
+        </div>
         </div>
       </div>
 
