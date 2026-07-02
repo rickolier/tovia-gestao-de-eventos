@@ -35,10 +35,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '~/context/AuthContext';
+import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
 const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
 export default function ManagementTab({ evento, onUpdate }: { evento: Evento, onUpdate?: () => void }) {
+  const { user, profile } = useAuth();
+  const [gestaoTourOpen, setGestaoTourOpen] = useState(false);
   const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
   const [registrations, setRegistrations] = useState<Inscricao[]>([]);
   const [donations, setDonations] = useState<Donation[]>([]);
@@ -75,6 +79,13 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
   useEffect(() => {
     fetchData();
   }, [evento.id]);
+
+  useEffect(() => {
+    if (user && !hasTourBeenSeen(user.uid, 'gestao')) {
+      const timer = setTimeout(() => setGestaoTourOpen(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,6 +166,14 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
 
   return (
     <div className="space-y-8">
+      {gestaoTourOpen && user && profile?.plano && (
+        <OnboardingTour
+          userId={user.uid}
+          plan={profile.plano}
+          tourId="gestao"
+          onClose={() => setGestaoTourOpen(false)}
+        />
+      )}
       <div className="tab-page-header">
         <div><h2>Recursos</h2><p>Controle de saídas e saúde financeira do evento.</p></div>
         <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95">
