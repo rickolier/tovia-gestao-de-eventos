@@ -444,28 +444,36 @@ function AnimDashboard() {
 
 const FAQ_ITEMS = [
   {
-    q: 'O Tovia é gratuito?',
-    a: 'Sim! O plano Start é gratuito para sempre — 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para controle financeiro, mais eventos simultâneos e recursos avançados, os planos Essencial (R$69/mês) e Pro (R$129/mês) são a escolha certa.',
+    q: 'O que é o Tovia?',
+    a: 'O Tovia é uma plataforma de gestão de eventos — você cria páginas de inscrição, gerencia participantes, controla o financeiro, organiza sua equipe e faz o check-in no dia do evento, tudo em um único lugar. Sem precisar de planilhas ou ferramentas separadas.',
+  },
+  {
+    q: 'Para quem é o Tovia?',
+    a: 'Para qualquer organização que realiza eventos com propósito: igrejas, ministérios, retiros, conferências, ONGs, cursos e treinamentos. Se você precisa receber inscrições e organizar pessoas, o Tovia foi feito para você.',
+  },
+  {
+    q: 'Como o participante se inscreve no meu evento?',
+    a: 'Você cria uma página de inscrição pública com link próprio e compartilha onde quiser. O participante acessa o link, preenche o formulário e recebe a confirmação por e-mail com os dados da inscrição e um QR Code para o check-in.',
+  },
+  {
+    q: 'Posso cobrar pelos ingressos?',
+    a: 'Sim. No plano Essencial você define o valor dos ingressos e registra os pagamentos manualmente (Pix, dinheiro, transferência). No plano Pro você conecta seu próprio gateway de pagamento e os participantes pagam online — com PIX, boleto ou cartão.',
   },
   {
     q: 'O dinheiro das inscrições passa pelo Tovia?',
-    a: 'Nunca. O Tovia não processa cobranças nem intermedia pagamentos. No plano Essencial, você recebe pelos seus próprios meios (Pix, dinheiro, transferência) e registra no painel. No plano Pro, você conecta seu próprio gateway (como o Asaas) e os participantes pagam direto na sua conta — o Tovia só organiza as informações.',
+    a: 'Nunca. O Tovia não intermedia pagamentos nem fica com nenhuma parte do valor. No Essencial, você recebe pelos seus próprios meios e registra no painel. No Pro, você conecta seu próprio gateway (como o Asaas) e o dinheiro vai direto para a sua conta.',
   },
   {
-    q: 'Posso criar mais de um evento ao mesmo tempo?',
-    a: 'Sim. Start: 1 evento ativo. Essencial: até 3 simultâneos. Pro: até 10. Personalizado: ilimitado. Eventos encerrados não contam no limite.',
-  },
-  {
-    q: 'O que o módulo financeiro faz?',
-    a: 'Você registra entradas, saídas e doações por categoria e acompanha o saldo do evento em tempo real. As doações podem ser livres (entram no caixa) ou vinculadas a um inscrito — para cobrir o valor da inscrição dele. No plano Pro, você também habilita checkout com PIX, boleto e cartão direto na sua conta.',
+    q: 'O que dá para controlar financeiramente?',
+    a: 'Entradas, saídas e doações por categoria, com saldo atualizado em tempo real. As doações podem ser livres — vão direto para o caixa — ou vinculadas a um inscrito, para cobrir o valor da inscrição dele. Tudo comparado com o custo previsto do evento.',
   },
   {
     q: 'Como funciona o check-in no dia do evento?',
-    a: 'Cada inscrição confirmada recebe um QR Code por e-mail. No dia do evento, abra a tela de Check-in no Tovia em qualquer celular ou tablet e aponte para o código — a presença é confirmada na hora. Também é possível buscar pelo nome do participante se ele não tiver o QR Code em mãos.',
+    a: 'Cada inscrito recebe um QR Code por e-mail na confirmação. Na entrada do evento, abra o Tovia em qualquer celular ou tablet e escaneie o código — a presença é confirmada na hora. Se o participante não tiver o QR Code, é possível buscar pelo nome.',
   },
   {
-    q: 'O que é o plano Personalizado e o que significa os 0,8%?',
-    a: 'É para organizações com múltiplos eventos de grande porte que precisam de limites maiores. O valor é sob consulta. Além da mensalidade, cobramos 0,8% apenas sobre inscrições que geraram pagamento — inscrições gratuitas não geram cobrança variável. Entre em contato para saber mais.',
+    q: 'O Tovia tem período de teste gratuito?',
+    a: 'Sim. Ao criar sua conta, você tem 14 dias de acesso completo com todos os recursos do plano Pro — sem precisar inserir cartão. Após o período de teste, a conta fica suspensa até a escolha de um dos planos.',
   },
 ];
 
