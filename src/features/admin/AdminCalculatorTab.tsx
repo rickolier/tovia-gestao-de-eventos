@@ -147,7 +147,7 @@ function CalculadoraEvento() {
   const [custoPorPessoa, setCustoPorPessoa] = useState(200);
   const [margemPct,      setMargemPct]      = useState(10);
   const [parcelas,       setParcelas]       = useState(6);
-  const [planoTovia,     setPlanoTovia]     = useState(139);
+  const [planoTovia,     setPlanoTovia]     = useState(99);
   const [mixPix,         setMixPix]         = useState(35);
   const [mixBoleto,      setMixBoleto]      = useState(10);
   const [mixCredito,     setMixCredito]     = useState(20);
@@ -451,11 +451,9 @@ function CalculadoraEvento() {
             <SectionTitle>Plano Tovia</SectionTitle>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {[
-                { v: 79,  label: 'Essencial — R$79' },
-                { v: 139, label: 'Pro — R$139' },
-                { v: 299, label: 'Escala S — R$299' },
-                { v: 449, label: 'Escala M — R$449' },
-                { v: 699, label: 'Escala L — R$699' },
+                { v: 39,  label: 'Start — R$39' },
+                { v: 99,  label: 'Essencial — R$99' },
+                { v: 249, label: 'Pro — R$249' },
               ].map(({ v, label }) => (
                 <button key={v} onClick={() => setPlanoTovia(v)} style={{
                   padding: '7px 14px', fontSize: 12, fontWeight: 700, borderRadius: 8, cursor: 'pointer',

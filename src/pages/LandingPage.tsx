@@ -1047,18 +1047,14 @@ export default function LandingPage() {
           {/* Partner + payment methods + fees */}
           <div className="grid md:grid-cols-2 gap-6">
             {/* Asaas partner */}
-            <div className="rounded-3xl border border-border bg-card p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Gateway parceiro</p>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <span className="text-blue-700 font-black text-lg">A</span>
-                </div>
-                <div>
-                  <p className="font-black text-foreground">Asaas</p>
-                  <p className="text-xs text-muted-foreground">Plataforma de pagamentos</p>
-                </div>
+            <div className="rounded-3xl p-6 text-white" style={{ background: '#0033FF' }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway parceiro</p>
+              <div className="mb-4">
+                <svg viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
+                  <text x="0" y="44" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="52" fill="white" letterSpacing="-2">ASAAS</text>
+                </svg>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-white/80 leading-relaxed">
                 O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
               </p>
             </div>
@@ -1153,20 +1149,15 @@ export default function LandingPage() {
               </div>
               <ul className="flex-1 space-y-2.5 text-sm">
                 {[
-                  { ok: true,  label: '1 evento ativo' },
-                  { ok: true,  label: 'Até 100 inscrições por evento' },
-                  { ok: true,  label: 'Inscrições e formulários' },
-                  { ok: true,  label: 'Financeiro básico' },
-                  { ok: true,  label: 'Relatórios básicos' },
-                  { ok: false, label: 'Equipe e check-in' },
-                  { ok: false, label: 'Doações, grupos e tarefas' },
-                ].map((f, i) => (
+                  '1 evento ativo',
+                  'Até 100 inscritos por evento',
+                  '1 página de inscrição pública',
+                  'Financeiro manual',
+                  'Suporte: e-mail',
+                ].map((label, i) => (
                   <li key={i} className="flex items-center gap-2.5">
-                    {f.ok
-                      ? <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
-                      : <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0"><X className="w-3 h-3 text-muted-foreground/40" /></span>
-                    }
-                    <span className={f.ok ? 'text-foreground' : 'text-muted-foreground/50 line-through'}>{f.label}</span>
+                    <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                    <span className="text-foreground">{label}</span>
                   </li>
                 ))}
               </ul>
@@ -1205,21 +1196,34 @@ export default function LandingPage() {
                   </p>
                 )}
               </div>
-              <ul className="flex-1 space-y-2.5 text-sm">
-                {[
-                  { ok: true, label: '3 eventos ativos simultâneos' },
-                  { ok: true, label: 'Até 500 inscrições por evento' },
-                  { ok: true, label: 'Equipe (até 5 membros)' },
-                  { ok: true, label: 'Check-in por QR Code' },
-                  { ok: true, label: 'Doações' },
-                  { ok: true, label: 'Grupos e quartos' },
-                  { ok: true, label: 'Tarefas e exportar dados' },
-                ].map((f, i) => (
+              <ul className="flex-1 space-y-1.5 text-sm">
+                {(['3 eventos ativos', 'Até 400 inscrições por evento', 'Relatórios completos'] as string[]).map((label, i) => (
                   <li key={i} className="flex items-center gap-2.5">
                     <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
-                    <span className="text-foreground">{f.label}</span>
+                    <span className="text-foreground">{label}</span>
                   </li>
                 ))}
+                {[
+                  { mod: 'Inscrições', items: ['Múltiplos ingressos', 'Múltiplas páginas de inscrição'] },
+                  { mod: 'Financeiro', items: ['Pagamento via Asaas', 'Painel de Doações', 'Relatórios financeiros'] },
+                  { mod: 'Gestão', items: ['Check-in', '5 pessoas na Equipe e Tarefas', 'Divisões e Grupos'] },
+                ].map(({ mod, items }) => (
+                  <li key={mod}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1">{mod}</p>
+                    <ul className="space-y-1">
+                      {items.map(item => (
+                        <li key={item} className="flex items-center gap-2.5 pl-1">
+                          <span className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-2.5 h-2.5 text-emerald-600" /></span>
+                          <span className="text-foreground text-xs">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+                <li className="flex items-center gap-2.5 mt-1">
+                  <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                  <span className="text-foreground">Suporte: Chat</span>
+                </li>
               </ul>
               <Link
                 to="/login?cadastro=true"
@@ -1256,23 +1260,34 @@ export default function LandingPage() {
                 )}
               </div>
 
-              <ul className="relative flex-1 space-y-2.5 text-sm">
-                {[
-                  '10 eventos ativos simultâneos',
-                  'Até 1.000 inscrições por evento',
-                  'Equipe (até 10 membros)',
-                  'Check-in por QR Code',
-                  'Financeiro completo',
-                  'Grupos, quartos, doações e tarefas',
-                  'Relatórios completos + exportar',
-                ].map((f, i) => (
+              <ul className="relative flex-1 space-y-1.5 text-sm">
+                {(['10 eventos ativos', 'Até 1.000 inscrições por evento', 'Relatórios completos'] as string[]).map((label, i) => (
                   <li key={i} className="flex items-center gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-white" />
-                    </span>
-                    <span className="text-white">{f}</span>
+                    <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></span>
+                    <span className="text-white">{label}</span>
                   </li>
                 ))}
+                {[
+                  { mod: 'Inscrições', items: ['Múltiplos ingressos', 'Múltiplas páginas de inscrição'] },
+                  { mod: 'Financeiro', items: ['Pagamento via Asaas', 'Painel de Doações', 'Relatórios financeiros'] },
+                  { mod: 'Gestão', items: ['Check-in', '10 pessoas na Equipe e Tarefas', 'Divisões e Grupos'] },
+                ].map(({ mod, items }) => (
+                  <li key={mod}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mt-2 mb-1">{mod}</p>
+                    <ul className="space-y-1">
+                      {items.map(item => (
+                        <li key={item} className="flex items-center gap-2.5 pl-1">
+                          <span className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-2.5 h-2.5 text-white" /></span>
+                          <span className="text-white text-xs">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+                <li className="flex items-center gap-2.5 mt-1">
+                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></span>
+                  <span className="text-white">Suporte: Chat</span>
+                </li>
               </ul>
 
               <Link

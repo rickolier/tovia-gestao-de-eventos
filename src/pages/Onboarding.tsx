@@ -20,7 +20,7 @@ const MODULE_DESCRIPTIONS = [
 
 const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro', 'personalizado'];
 const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
-const PLAN_PRICES: Record<PlanLevel, string> = { start: 'Grátis', essencial: 'R$ 69/mês', pro: 'R$ 129/mês', personalizado: 'R$ 299/mês + 0,8%' };
+const PLAN_PRICES: Record<PlanLevel, string> = { start: 'R$ 39/mês', essencial: 'R$ 99/mês', pro: 'R$ 249/mês', personalizado: 'Personalizado' };
 
 export default function Onboarding() {
   const { user, profile } = useAuth();
