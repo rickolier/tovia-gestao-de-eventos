@@ -445,27 +445,27 @@ function AnimDashboard() {
 const FAQ_ITEMS = [
   {
     q: 'O Tovia é gratuito?',
-    a: 'Sim! O plano Start é gratuito para sempre, com 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para funcionalidades financeiras e mais eventos, os planos Essencial (R$69/mês) e Pro (R$129/mês) são a escolha certa.',
+    a: 'Sim! O plano Start é gratuito para sempre — 1 evento ativo, até 200 vagas e 1 tipo de ingresso. Para controle financeiro, mais eventos simultâneos e recursos avançados, os planos Essencial (R$69/mês) e Pro (R$129/mês) são a escolha certa.',
   },
   {
-    q: 'O Tovia realiza cobranças de ingressos?',
-    a: 'No Essencial, não — você registra os pagamentos manualmente. No plano Pro e Personalizado, você conecta seu próprio gateway de pagamento (Asaas, Pagar.me ou Mercado Pago) e recebe os valores direto na sua conta. O Tovia nunca intermedia seu dinheiro.',
+    q: 'O dinheiro das inscrições passa pelo Tovia?',
+    a: 'Nunca. O Tovia não processa cobranças nem intermedia pagamentos. No plano Essencial, você recebe pelos seus próprios meios (Pix, dinheiro, transferência) e registra no painel. No plano Pro, você conecta seu próprio gateway (como o Asaas) e os participantes pagam direto na sua conta — o Tovia só organiza as informações.',
   },
   {
     q: 'Posso criar mais de um evento ao mesmo tempo?',
-    a: 'Sim. Start: 1 evento. Essencial: até 3 simultâneos. Pro: até 10. Personalizado: ilimitado. Se precisar de mais, entre em contato.',
+    a: 'Sim. Start: 1 evento ativo. Essencial: até 3 simultâneos. Pro: até 10. Personalizado: ilimitado. Eventos encerrados não contam no limite.',
   },
   {
-    q: 'Preciso saber programar para usar o Tovia?',
-    a: 'Não. O Tovia foi feito para qualquer pessoa conseguir usar — crie eventos, gerencie inscrições e acompanhe o financeiro sem nenhum conhecimento técnico.',
+    q: 'O que o módulo financeiro faz?',
+    a: 'Você registra entradas, saídas e doações por categoria e acompanha o saldo do evento em tempo real. As doações podem ser livres (entram no caixa) ou vinculadas a um inscrito — para cobrir o valor da inscrição dele. No plano Pro, você também habilita checkout com PIX, boleto e cartão direto na sua conta.',
   },
   {
-    q: 'Posso cancelar meu plano a qualquer momento?',
-    a: 'Sim. Não há fidelidade ou multa. Cancele ou mude de plano quando quiser, direto pelo painel.',
+    q: 'Como funciona o check-in no dia do evento?',
+    a: 'Cada inscrição confirmada recebe um QR Code por e-mail. No dia do evento, abra a tela de Check-in no Tovia em qualquer celular ou tablet e aponte para o código — a presença é confirmada na hora. Também é possível buscar pelo nome do participante se ele não tiver o QR Code em mãos.',
   },
   {
     q: 'O que é o plano Personalizado e o que significa os 0,8%?',
-    a: 'O plano Personalizado (R$299/mês) é para organizações com múltiplos eventos de grande porte. Além da mensalidade, cobramos 0,8% apenas sobre inscrições que geraram pagamento — inscrições gratuitas não geram cobrança variável.',
+    a: 'É para organizações com múltiplos eventos de grande porte que precisam de limites maiores. O valor é sob consulta. Além da mensalidade, cobramos 0,8% apenas sobre inscrições que geraram pagamento — inscrições gratuitas não geram cobrança variável. Entre em contato para saber mais.',
   },
 ];
 
