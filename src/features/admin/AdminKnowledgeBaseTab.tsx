@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check, ImageIcon } from 'lucide-react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check, ImageIcon, Search, Eye, Tag, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +36,10 @@ const EMPTY_FORM: Omit<ArtigoBC, 'id' | 'criado_em' | 'atualizado_em'> = {
   autor: 'Equipe Tovia',
 };
 
+function normalize(text: string) {
+  return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
 export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?: boolean }) {
   const [artigos, setArtigos] = useState<ArtigoBC[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +51,8 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   const [form, setForm] = useState(EMPTY_FORM);
   const [tagsInput, setTagsInput] = useState('');
   const [confirmSeed, setConfirmSeed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewArtigo, setViewArtigo] = useState<ArtigoBC | null>(null);
 
   // Banner upload states
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -54,6 +60,17 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   const [bannerPreview, setBannerPreview] = useState<string>('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const artigosFiltrados = useMemo(() => {
+    if (!searchQuery.trim()) return artigos;
+    const q = normalize(searchQuery);
+    return artigos.filter(a =>
+      normalize(a.titulo).includes(q) ||
+      normalize(a.resumo).includes(q) ||
+      normalize(a.conteudo).includes(q) ||
+      a.tags.some(t => normalize(t).includes(q))
+    );
+  }, [artigos, searchQuery]);
 
   const load = async () => {
     setLoading(true);
@@ -234,7 +251,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   return (
     <div>
       {/* Top actions */}
-      <div className="flex flex-wrap items-center gap-3 mb-6">
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         {readOnly && <p className="text-xs text-muted-foreground italic">Visualização somente leitura.</p>}
         {!readOnly && <Button onClick={openCreate} className="flex items-center gap-2 h-9 text-sm font-semibold">
           <Plus className="w-4 h-4" />
@@ -283,6 +300,26 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
         </a>
       </div>
 
+      {/* Search bar */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="Buscar em título, conteúdo, tags..."
+          className="w-full h-9 pl-9 pr-4 text-sm border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       {/* Article list */}
       {loading ? (
         <div className="flex justify-center py-12">
@@ -294,9 +331,20 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
           <p className="text-sm font-semibold text-muted-foreground mb-1">Nenhum artigo publicado</p>
           <p className="text-xs text-muted-foreground/60">Clique em "Importar artigos iniciais" para começar com os 20 artigos do tutorial.</p>
         </div>
+      ) : artigosFiltrados.length === 0 ? (
+        <div className="text-center py-12 border border-dashed border-border rounded-2xl">
+          <Search className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm font-semibold text-muted-foreground">Nenhum artigo encontrado para "{searchQuery}"</p>
+          <p className="text-xs text-muted-foreground/60 mt-1">Tente palavras diferentes ou limpe a busca.</p>
+        </div>
       ) : (
         <div className="space-y-2">
-          {artigos.map(artigo => (
+          {searchQuery && (
+            <p className="text-xs text-muted-foreground mb-2">
+              {artigosFiltrados.length} artigo{artigosFiltrados.length !== 1 ? 's' : ''} encontrado{artigosFiltrados.length !== 1 ? 's' : ''}
+            </p>
+          )}
+          {artigosFiltrados.map(artigo => (
             <div
               key={artigo.id}
               className="flex items-center gap-4 bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/30 transition-colors"
@@ -327,27 +375,106 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
                 </div>
               </div>
 
-              {!readOnly && (
               <div className="flex items-center gap-2 shrink-0">
                 <button
-                  onClick={() => openEdit(artigo)}
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  title="Editar"
+                  onClick={() => setViewArtigo(artigo)}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                  title="Ler artigo"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
+                  <Eye className="w-3.5 h-3.5" />
                 </button>
-                <button
-                  onClick={() => handleDelete(artigo.id)}
-                  disabled={deleting === artigo.id}
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors"
-                  title="Excluir"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                {!readOnly && (
+                  <>
+                    <button
+                      onClick={() => openEdit(artigo)}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      title="Editar"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(artigo.id)}
+                      disabled={deleting === artigo.id}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                )}
               </div>
-              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── Article reader modal ── */}
+      {viewArtigo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-background w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-primary" />
+                <span className="text-xs font-black text-primary uppercase tracking-widest">Base de Conhecimento</span>
+              </div>
+              <button onClick={() => setViewArtigo(null)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto">
+              {viewArtigo.banner_url && (
+                <div className="w-full" style={{ aspectRatio: '3/1' }}>
+                  <img src={viewArtigo.banner_url} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="px-6 py-5">
+                <h2 className="text-xl font-black text-foreground leading-tight mb-2">{viewArtigo.titulo}</h2>
+
+                {viewArtigo.tags.length > 0 && (
+                  <div className="flex items-center gap-1.5 flex-wrap mb-4">
+                    <Tag className="w-3 h-3 text-muted-foreground shrink-0" />
+                    {viewArtigo.tags.map(tag => (
+                      <span key={tag} className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5 italic border-l-2 border-primary/30 pl-3">
+                  {viewArtigo.resumo}
+                </p>
+
+                {viewArtigo.video_url && (
+                  <a
+                    href={viewArtigo.video_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 text-sm font-semibold text-primary hover:underline mb-5"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Assistir vídeo
+                  </a>
+                )}
+
+                <div className="space-y-3">
+                  {viewArtigo.conteudo.split(/\n\s*\n/).map((paragrafo, i) => (
+                    <p key={i} className="text-sm text-foreground leading-relaxed">
+                      {paragrafo.trim()}
+                    </p>
+                  ))}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-border flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Calendar className="w-3 h-3" />
+                  Atualizado em {new Date(viewArtigo.atualizado_em).toLocaleDateString('pt-BR')}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
