@@ -671,14 +671,14 @@ export default function LandingPage() {
         {/* Bottom wave */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 62" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
-            <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="white" />
+            <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
           </svg>
         </div>
       </section>
 
 
       {/* ── Box strip: Consultar inscrição ── */}
-      <div className="bg-[#f0fdf4] border-b border-emerald-100">
+      <div className="bg-[#f0fdf4] border-b border-emerald-100 -mt-px">
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
@@ -699,7 +699,7 @@ export default function LandingPage() {
       </div>
 
       {/* ── Sobre ── */}
-      <section id="sobre" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
+      <section id="para-quem" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Visual */}
           <div className="relative">
@@ -766,7 +766,7 @@ export default function LandingPage() {
       {/* ── Como funciona ── */}
       <section id="como-funciona" className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <span className="text-xs font-black uppercase tracking-widest text-primary">Como funciona</span>
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Do cadastro ao evento,<br />em minutos
@@ -853,9 +853,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── Demo mockups ── */}
-      <section className="pt-12 pb-6 px-6 bg-[#f4f7f5]">
+      <section id="funcionalidades" className="pt-8 pb-4 px-6 bg-[#e6f4ec]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Veja na prática</span>
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Funcionalidades que fazem<br />a diferença no dia a dia
@@ -866,7 +866,7 @@ export default function LandingPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex justify-center gap-3 mb-10 flex-wrap">
+          <div className="flex justify-center gap-3 mb-6 flex-wrap">
             {DEMO_TABS.map(tab => {
               const Icon = tab.icon;
               return (
@@ -963,7 +963,7 @@ export default function LandingPage() {
       {/* ── Prova social ── */}
       <section className="py-20 px-6 bg-[#f0f7f3]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Prova social</span>
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Quem organiza com o Tovia
@@ -1015,6 +1015,82 @@ export default function LandingPage() {
         </div>
       </section>
 
+
+      {/* ── Gateway & BYOG ── */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Transparência</span>
+            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+              Seu dinheiro vai direto para você
+            </h2>
+            <p className="text-muted-foreground mt-3 text-sm max-w-xl mx-auto">
+              O Tovia não cobra comissão por ingresso e não intermedia pagamentos. Você conecta seu próprio gateway — o dinheiro das inscrições cai direto na sua conta.
+            </p>
+          </div>
+
+          {/* BYOG visual */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {[
+              { step: '1', title: 'Você cria o evento', desc: 'Configure inscrições, valores e formas de pagamento no Tovia.' },
+              { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no Asaas — sem intermediário.' },
+              { step: '3', title: 'Dinheiro na sua conta', desc: 'O valor cai na sua conta conforme as regras do seu gateway. O Tovia nunca toca no seu dinheiro.' },
+            ].map(item => (
+              <div key={item.step} className="flex gap-4 items-start">
+                <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-black text-sm shrink-0">{item.step}</div>
+                <div>
+                  <p className="font-bold text-foreground text-sm">{item.title}</p>
+                  <p className="text-muted-foreground text-sm mt-1 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Partner + payment methods + fees */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Asaas partner */}
+            <div className="rounded-3xl border border-border bg-card p-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Gateway parceiro</p>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center">
+                  <span className="text-blue-700 font-black text-lg">A</span>
+                </div>
+                <div>
+                  <p className="font-black text-foreground">Asaas</p>
+                  <p className="text-xs text-muted-foreground">Plataforma de pagamentos</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
+              </p>
+            </div>
+
+            {/* Payment methods + fees */}
+            <div className="rounded-3xl border border-border bg-card p-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Formas de pagamento disponíveis</p>
+              <div className="space-y-3">
+                {[
+                  { method: 'PIX',                fee: '0,99% por transação',    color: 'bg-emerald-50 text-emerald-700' },
+                  { method: 'Boleto Bancário',    fee: 'R$2,49 por boleto',       color: 'bg-orange-50 text-orange-700'  },
+                  { method: 'Cartão de crédito',  fee: '2,99% por transação',    color: 'bg-blue-50 text-blue-700'      },
+                  { method: 'Crédito recorrente', fee: '3,49% por cobrança',      color: 'bg-violet-50 text-violet-700'  },
+                ].map(item => (
+                  <div key={item.method} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.color}`}>{item.method}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{item.fee}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
+                Taxas cobradas pelo Asaas diretamente ao organizador. Valores podem variar conforme o plano contratado com o Asaas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Planos ── */}
       <section id="planos" className="py-20 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
@@ -1030,7 +1106,7 @@ export default function LandingPage() {
             {/* Trial callout */}
             <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold px-4 py-2 rounded-full mt-5">
               <Zap className="w-3.5 h-3.5 text-emerald-600" />
-              Trial gratuito de 14 dias com todas as funcionalidades Pro → reverte para o Start automaticamente
+              Trial gratuito de 14 dias com todas as funcionalidades Pro
             </div>
 
             <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-6 ml-0 block">
@@ -1058,8 +1134,8 @@ export default function LandingPage() {
             {/* ── START ── */}
             <div className="rounded-3xl border border-border bg-card p-8 flex flex-col gap-5">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Start</p>
-                <p className="text-3xl font-black text-foreground tracking-tight leading-tight">Para pequenos eventos,<br/>com grandes propósitos!</p>
+                <p className="text-4xl font-black text-foreground tracking-tight">Start</p>
+                <p className="text-sm text-muted-foreground mt-1 font-normal">Para pequenos eventos, com grandes propósitos!</p>
                 <div className="mt-3 h-px bg-border w-full" />
               </div>
               <div className="rounded-2xl bg-muted px-5 py-4">
@@ -1112,8 +1188,8 @@ export default function LandingPage() {
                 </span>
               </div>
               <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-primary mb-2">Essencial</p>
-                <p className="text-3xl font-black text-foreground tracking-tight leading-tight">Para eventos que crescem<br/>a cada edição!</p>
+                <p className="text-4xl font-black text-foreground tracking-tight">Essencial</p>
+                <p className="text-sm text-muted-foreground mt-1 font-normal">Para eventos que crescem a cada edição!</p>
                 <div className="mt-3 h-px bg-primary/20 w-full" />
               </div>
               <div className="rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
@@ -1161,8 +1237,8 @@ export default function LandingPage() {
               <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
 
               <div className="relative">
-                <p className="text-[11px] font-black uppercase tracking-widest text-white/60 mb-2">Pro</p>
-                <p className="text-3xl font-black text-white tracking-tight leading-tight">Para eventos que transformam<br/>muitas vidas!</p>
+                <p className="text-4xl font-black text-white tracking-tight">Pro</p>
+                <p className="text-sm text-white/70 mt-1 font-normal">Para eventos que transformam muitas vidas!</p>
                 <div className="mt-3 h-px bg-white/20 w-full" />
               </div>
 
