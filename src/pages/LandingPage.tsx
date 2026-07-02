@@ -1056,9 +1056,7 @@ export default function LandingPage() {
             >
               <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway parceiro</p>
               <div className="mb-4">
-                <svg viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
-                  <text x="0" y="44" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="52" fill="white" letterSpacing="-2">ASAAS</text>
-                </svg>
+                <img src="/asaas-logo.svg" alt="Asaas" className="h-8 w-auto" />
               </div>
               <p className="text-sm text-white/80 leading-relaxed">
                 O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
