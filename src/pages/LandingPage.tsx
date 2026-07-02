@@ -16,37 +16,37 @@ const FEATURES = [
   {
     icon: TicketIcon,
     title: 'Ingressos & Inscrições',
-    description: 'Crie categorias de ingressos gratuitos ou pagos, configure vagas e gerencie inscrições com formulários personalizados.',
+    description: 'Crie ingressos gratuitos ou pagos, configure vagas e colete os dados que precisar no formulário de inscrição.',
     color: 'bg-emerald-50 text-emerald-600',
   },
   {
     icon: Globe,
     title: 'Páginas de Inscrição',
-    description: 'Crie páginas de inscrição profissionais para seus eventos em minutos, sem precisar de um desenvolvedor.',
+    description: 'Cada evento ganha uma página pública com link próprio, pronta para compartilhar em minutos — sem precisar de desenvolvedor ou ferramenta externa.',
     color: 'bg-blue-50 text-blue-600',
   },
   {
     icon: Users,
     title: 'Gestão de Participantes',
-    description: 'Acompanhe inscrições, status de pagamento e dados dos participantes em tempo real.',
+    description: 'Visualize inscrições em tempo real, filtre por status ou tipo de ingresso, aplique cupons de desconto e faça check-in diretamente pela plataforma.',
     color: 'bg-violet-50 text-violet-600',
   },
   {
     icon: DollarSign,
     title: 'Controle Financeiro',
-    description: 'Registre manualmente pagamentos recebidos e doações, acompanhe o financeiro do evento com clareza. Não realizamos cobranças.',
+    description: 'Registre entradas, saídas e doações por categoria e acompanhe o saldo do evento em tempo real. No plano Pro, conecte seu próprio gateway e receba PIX, boleto e cartão direto na sua conta.',
     color: 'bg-orange-50 text-orange-600',
   },
   {
     icon: Wallet,
     title: 'Gestão do Evento',
-    description: 'Organize recursos, grupos de hospedagem e tarefas da equipe em um só lugar.',
+    description: 'Organize tarefas com responsáveis e prazos, gerencie recursos como quartos e grupos de hospedagem e mantenha sua equipe alinhada em um só lugar.',
     color: 'bg-pink-50 text-pink-600',
   },
   {
     icon: BarChart3,
     title: 'Relatórios',
-    description: 'Tenha visão completa do seu evento com relatórios de inscrições, financeiro e ocupação.',
+    description: 'Acompanhe os principais indicadores do seu evento: total de inscrições, receita, taxa de ocupação, crescimento e distribuição de público, com filtros por evento e período.',
     color: 'bg-amber-50 text-amber-600',
   },
 ];
