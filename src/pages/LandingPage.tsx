@@ -894,12 +894,12 @@ export default function LandingPage() {
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-5">
                     <Globe className="w-6 h-6 text-emerald-600" />
                   </div>
-                  <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Inscrição profissionais</h3>
+                  <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Inscrição prontas para compartilhar</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    Crie páginas de inscrição para cada evento sem precisar de um desenvolvedor. Compartilhe o link e veja as inscrições chegarem em tempo real.
+                    Cada evento ganha uma página pública com link próprio. Configure ingressos gratuitos ou pagos, personalize o formulário e acompanhe as inscrições chegando em tempo real.
                   </p>
                   <ul className="space-y-3">
-                    {['Link único por evento', 'Múltiplos tipos de ingresso', 'Contador de vagas ao vivo', 'Formulários personalizados'].map(item => (
+                    {['Link único por evento', 'Ingressos gratuitos ou pagos', 'Formulários personalizados', 'Contador de vagas ao vivo'].map(item => (
                       <li key={item} className="flex items-center gap-3 text-sm text-foreground">
                         <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                         {item}
@@ -915,10 +915,10 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-2xl font-black text-foreground mb-4">Controle de Doações</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    Registre e acompanhe todas as doações recebidas no seu evento. Veja o total acumulado e o histórico de contribuições — sem intermediários, sem taxas.
+                    Registre doações livres — que entram direto no caixa do evento — ou vincule uma doação a um inscrito para cobrir o valor da inscrição dele. Tudo rastreado, sem intermediários.
                   </p>
                   <ul className="space-y-3">
-                    {['Registro manual de doações', 'Total acumulado em tempo real', 'Histórico de contribuições', 'Nenhuma cobrança realizada pela plataforma'].map(item => (
+                    {['Doações livres ou vinculadas a inscritos', 'Saldo atualizado automaticamente', 'Histórico e status por doação', 'Nenhuma taxa da plataforma'].map(item => (
                       <li key={item} className="flex items-center gap-3 text-sm text-foreground">
                         <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                         {item}
@@ -934,10 +934,10 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-2xl font-black text-foreground mb-4">Gestão de Tarefas da Equipe</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    Distribua tarefas entre os membros da equipe, acompanhe o progresso e garanta que nada fique para trás no dia do evento.
+                    Crie tarefas, atribua responsáveis e acompanhe o progresso de cada etapa do evento. Nada fica esquecido, e toda a equipe sabe o que precisa fazer.
                   </p>
                   <ul className="space-y-3">
-                    {['Tarefas com responsáveis', 'Progresso visual em tempo real', 'Categorias e etiquetas', 'Visão geral da equipe'].map(item => (
+                    {['Tarefas com responsável e prazo', 'Progresso visual em tempo real', 'Prioridades e categorias', 'Visão geral da equipe'].map(item => (
                       <li key={item} className="flex items-center gap-3 text-sm text-foreground">
                         <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                         {item}
