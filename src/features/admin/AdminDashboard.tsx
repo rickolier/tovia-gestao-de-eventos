@@ -21,7 +21,7 @@ import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 type AdminRole = 'criador' | 'suporte';
 
 function getRole(email: string | null | undefined): AdminRole {
-  return email === 'suporte@tovia.app' ? 'suporte' : 'criador';
+  return email === 'suporte@toviaapp.com.br' ? 'suporte' : 'criador';
 }
 
 interface NavSection {

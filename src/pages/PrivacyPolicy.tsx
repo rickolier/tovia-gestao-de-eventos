@@ -34,7 +34,7 @@ export default function PrivacyPolicy() {
           <p>
             A <strong className="font-semibold text-gray-800">Tovia</strong> é uma plataforma de gestão e inscrição em eventos. Somos os controladores dos dados pessoais coletados nesta plataforma, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD).
           </p>
-          <p>Para contato relacionado a dados pessoais: <a href="mailto:privacidade@tovia.app" className="text-primary hover:underline font-semibold">privacidade@tovia.app</a></p>
+          <p>Para contato relacionado a dados pessoais: <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a></p>
         </Section>
 
         <Section title="2. Quais dados coletamos">
@@ -119,7 +119,7 @@ export default function PrivacyPolicy() {
             <li><strong className="font-semibold text-gray-800">Oposição:</strong> opor-se ao tratamento realizado com fundamento em legítimo interesse</li>
           </ul>
           <p>
-            Para exercer seus direitos, entre em contato: <a href="mailto:privacidade@tovia.app" className="text-primary hover:underline font-semibold">privacidade@tovia.app</a>. Responderemos em até 15 dias úteis.
+            Para exercer seus direitos, entre em contato: <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a>. Responderemos em até 15 dias úteis.
           </p>
         </Section>
 
@@ -138,7 +138,7 @@ export default function PrivacyPolicy() {
         <Section title="11. Contato e encarregado (DPO)">
           <p>
             Para questões relacionadas a esta política ou ao tratamento de seus dados pessoais:<br />
-            <a href="mailto:privacidade@tovia.app" className="text-primary hover:underline font-semibold">privacidade@tovia.app</a>
+            <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a>
           </p>
           <p>
             Você também pode registrar reclamações perante a Autoridade Nacional de Proteção de Dados (ANPD): <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">www.gov.br/anpd</a>

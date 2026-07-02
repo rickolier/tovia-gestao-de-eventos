@@ -5,6 +5,7 @@ import { auth } from '~/services/firebase';
 import { getDocument, createDocument, listDocuments, removeDocument } from '~/services/firestore';
 import { notifIfReadOrMissing } from '~/utils/notifications';
 import { UserProfile, PlanLevel, ConvitePendente } from '../types';
+import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
 import { where, doc, getDocFromServer } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 
@@ -100,7 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Usa API route server-side (admin SDK) para contornar regras do Firestore
   const processEquipeJoin = async (eventoId: string): Promise<string | null> => {
     const firebaseUser = auth.currentUser;
-    if (!firebaseUser?.email || firebaseUser.email === 'admin@tovia.app') return null;
+    if (!firebaseUser?.email || isAdminEmail(firebaseUser.email)) return null;
     const idToken = await firebaseUser.getIdToken(true);
     const res = await fetch('/api/equipeJoin', {
       method: 'POST',
@@ -115,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Processa convites pendentes por e-mail — roda uma vez por sessão após login/cadastro
   const processarConvites = async (firebaseUser: User) => {
-    if (!firebaseUser.email || firebaseUser.email === 'admin@tovia.app') return;
+    if (!firebaseUser.email || isAdminEmail(firebaseUser.email)) return;
     if (sessionStorage.getItem('convitesProcessed')) return;
     sessionStorage.setItem('convitesProcessed', '1');
 
@@ -160,14 +161,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           let userProfile = await getDocument<UserProfile>('users', firebaseUser.uid);
 
           if (!userProfile) {
-            const isAdmin = firebaseUser.email === 'admin@tovia.app';
+            const isAdmin = isAdminEmail(firebaseUser.email);
+            const testPlan = getTestPlan(firebaseUser.email);
             userProfile = {
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: isAdmin ? null : 'start',
+              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'start',
             };
             await createDocument('users', firebaseUser.uid, userProfile);
+          } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {
+            // Garante que contas de teste sempre têm o plano correto
+            userProfile = { ...userProfile, plano: getTestPlan(firebaseUser.email) as PlanLevel };
           }
 
           await processarConvites(firebaseUser);

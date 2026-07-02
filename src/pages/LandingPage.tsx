@@ -1315,7 +1315,7 @@ export default function LandingPage() {
               </p>
             </div>
             <a
-              href="mailto:contato@tovia.app"
+              href="mailto:contato@toviaapp.com.br"
               className="shrink-0 bg-white hover:bg-white/90 text-primary text-sm font-black uppercase tracking-widest px-7 py-3.5 rounded-xl transition-all shadow-md whitespace-nowrap"
             >
               Fale com a gente →

@@ -23,7 +23,7 @@ import CheckinPage from './pages/CheckinPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
-const ADMIN_EMAIL = 'admin@tovia.app';
+import { isAdminEmail } from '~/utils/admin-config';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, isAuthReady } = useAuth();
@@ -40,7 +40,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   if (!user) return <Navigate to="/login" replace />;
 
   // Admin nunca vai para onboarding
-  if (user.email === ADMIN_EMAIL) return <Navigate to="/admin" replace />;
+  if (isAdminEmail(user.email)) return <Navigate to="/admin" replace />;
 
   // Conta desativada
   if (profile?.desativado) {
@@ -58,7 +58,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
           </p>
         </div>
         <a
-          href="mailto:suporte@tovia.app"
+          href="mailto:suporte@toviaapp.com.br"
           className="bg-primary text-white rounded-2xl px-8 py-3 font-bold text-sm"
         >
           Contatar suporte
@@ -77,7 +77,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isAuthReady } = useAuth();
   if (!isAuthReady) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.email !== ADMIN_EMAIL) return <Navigate to="/dashboard" replace />;
+  if (!isAdminEmail(user.email)) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 

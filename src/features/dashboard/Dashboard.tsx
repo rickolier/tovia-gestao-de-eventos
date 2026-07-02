@@ -128,7 +128,7 @@ export default function Dashboard() {
     navigate('/login');
   };
 
-  const isAdmin = user?.email === 'admin@tovia.app';
+  const isAdmin = user?.email === 'admin@toviaapp.com.br';
   const plan = getPlanConfig(profile?.plano);
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [
