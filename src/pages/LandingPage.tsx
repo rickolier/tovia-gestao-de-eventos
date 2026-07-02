@@ -678,7 +678,7 @@ export default function LandingPage() {
 
 
       {/* ── Box strip: Consultar inscrição ── */}
-      <div className="bg-[#f0fdf4] border-b border-emerald-100 -mt-px">
+      <div className="bg-[#f0fdf4] -mt-px">
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
