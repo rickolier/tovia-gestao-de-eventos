@@ -4,9 +4,10 @@ import { TicketIcon, DollarSign, Wallet, CheckCircle, ArrowRight, Menu, X, Users
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
+  { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'Para quem é', href: '#para-quem' },
   { label: 'Funcionalidades', href: '#funcionalidades' },
   { label: 'Planos', href: '#planos' },
-  { label: 'Sobre', href: '#sobre' },
 ];
 
 const NAV_ROUTE_LINKS: { label: string; to: string }[] = [];
@@ -538,14 +539,11 @@ export default function LandingPage() {
 
           {/* CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/consultar" className="text-sm font-semibold text-muted-foreground hover:text-primary border border-border rounded-xl px-4 py-2 transition-colors">
-              Consultar inscrição
-            </Link>
             <Link to="/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
               Entrar
             </Link>
             <Link to="/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
-              Criar conta grátis
+              Criar meu evento
             </Link>
           </div>
 
@@ -569,9 +567,8 @@ export default function LandingPage() {
               </Link>
             ))}
             <div className="pt-2 flex flex-col gap-3">
-              <Link to="/consultar" onClick={() => setMobileMenuOpen(false)} className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Consultar inscrição</Link>
               <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
-              <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar conta grátis</Link>
+              <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
             </div>
           </div>
         )}
@@ -587,13 +584,13 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
           {/* Texto */}
           <div className="flex-1 max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
-              Gestão de eventos para quem{' '}
-              <span className="text-emerald-400">transforma vidas</span>
+            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6">
+              Do zero ao check-in —{' '}
+              <span className="text-emerald-400">tudo em uma plataforma.</span>
             </h1>
 
             <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
-              Organize inscrições, pagamentos e equipes em um só lugar. Gestão de eventos para igrejas, conferências e ministérios que transformam vidas.
+              Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar. Feito para igrejas, conferências, retiros e quem organiza com propósito.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -601,13 +598,13 @@ export default function LandingPage() {
                 to="/login?cadastro=true"
                 className="inline-flex items-center justify-center gap-2 bg-white text-primary font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
               >
-                Começar grátis <ArrowRight className="w-4 h-4" />
+                Criar meu evento <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="#funcionalidades"
+                href="#como-funciona"
                 className="inline-flex items-center justify-center gap-2 border border-white/30 text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/10 transition-all text-sm"
               >
-                Ver funcionalidades <ChevronDown className="w-4 h-4" />
+                Ver como funciona <ChevronDown className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -680,6 +677,27 @@ export default function LandingPage() {
       </section>
 
 
+      {/* ── Box strip: Consultar inscrição ── */}
+      <div className="bg-[#f0fdf4] border-b border-emerald-100">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
+            </div>
+            <p className="text-sm text-foreground">
+              <span className="font-bold">Já se inscreveu em um evento?</span>
+              <span className="text-muted-foreground ml-1.5 hidden sm:inline">Consulte seus dados, status de pagamento e QR Code de check-in.</span>
+            </p>
+          </div>
+          <Link
+            to="/consultar"
+            className="shrink-0 text-sm font-bold text-primary hover:underline flex items-center gap-1.5 whitespace-nowrap"
+          >
+            Consultar minha inscrição <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </div>
+
       {/* ── Sobre ── */}
       <section id="sobre" className="max-w-6xl mx-auto px-6 pt-20 pb-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -746,7 +764,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Como funciona ── */}
-      <section className="py-16 px-6 bg-white">
+      <section id="como-funciona" className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-black uppercase tracking-widest text-primary">Como funciona</span>
@@ -997,7 +1015,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Planos + Comparativo unificados ── */}
+      {/* ── Planos ── */}
       <section id="planos" className="py-20 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
 
@@ -1007,22 +1025,30 @@ export default function LandingPage() {
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Escolha o plano ideal<br />para o seu evento
             </h2>
-            <p className="text-muted-foreground mt-3 text-sm">Comece grátis e escale conforme sua necessidade.</p>
+            <p className="text-muted-foreground mt-3 text-sm">14 dias testando o Pro completo, sem custo. Depois escolha o plano certo para você.</p>
 
-            <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-8">
-              <button
-                onClick={() => setBilling('mensal')}
-                className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all',
-                  billing === 'mensal' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
-              >Mensal</button>
-              <button
-                onClick={() => setBilling('anual')}
-                className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
-                  billing === 'anual' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
-              >
-                Anual
-                <span className="text-[10px] font-black bg-primary text-white px-2 py-0.5 rounded-full">2 meses grátis</span>
-              </button>
+            {/* Trial callout */}
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold px-4 py-2 rounded-full mt-5">
+              <Zap className="w-3.5 h-3.5 text-emerald-600" />
+              Trial gratuito de 14 dias com todas as funcionalidades Pro → reverte para o Start automaticamente
+            </div>
+
+            <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-6 ml-0 block">
+              <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1">
+                <button
+                  onClick={() => setBilling('mensal')}
+                  className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all',
+                    billing === 'mensal' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
+                >Mensal</button>
+                <button
+                  onClick={() => setBilling('anual')}
+                  className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
+                    billing === 'anual' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
+                >
+                  Anual
+                  <span className="text-[10px] font-black bg-primary text-white px-2 py-0.5 rounded-full">2 meses grátis</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1032,72 +1058,34 @@ export default function LandingPage() {
             {/* ── START ── */}
             <div className="rounded-3xl border border-border bg-card p-8 flex flex-col gap-5">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Plano</p>
-                <p className="text-4xl font-black text-foreground tracking-tight">Start</p>
-                <p className="text-sm text-muted-foreground mt-1">Para quem está começando</p>
+                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Start</p>
+                <p className="text-3xl font-black text-foreground tracking-tight leading-tight">Para pequenos eventos,<br/>com grandes propósitos!</p>
+                <div className="mt-3 h-px bg-border w-full" />
               </div>
-              <div className="rounded-2xl bg-muted px-5 py-4 flex items-end gap-1">
-                <span className="text-3xl font-black text-foreground">Grátis</span>
-                <span className="text-muted-foreground text-sm mb-0.5">para sempre</span>
-              </div>
-              <ul className="flex-1 space-y-2.5 text-sm">
-                {[
-                  { ok: true,  label: '1 evento ativo' },
-                  { ok: true,  label: 'Até 200 vagas por evento' },
-                  { ok: true,  label: 'Formulários personalizados' },
-                  { ok: true,  label: 'Inscrições gratuitas' },
-                  { ok: true,  label: 'Consulta de inscrição por CPF' },
-                  { ok: false, label: 'Ingressos pagos' },
-                  { ok: false, label: 'Relatórios financeiros' },
-                ].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2.5">
-                    {f.ok
-                      ? <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
-                      : <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0"><X className="w-3 h-3 text-muted-foreground/40" /></span>
-                    }
-                    <span className={f.ok ? 'text-foreground' : 'text-muted-foreground/50 line-through'}>{f.label}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/login?cadastro=true"
-                className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
-              >
-                Começar grátis
-              </Link>
-            </div>
-
-            {/* ── ESSENCIAL ── */}
-            <div className="rounded-3xl border border-border bg-card p-8 flex flex-col gap-5">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-2">Plano</p>
-                <p className="text-4xl font-black text-foreground tracking-tight">Essencial</p>
-                <p className="text-sm text-muted-foreground mt-1">Para eventos recorrentes</p>
-              </div>
-              <div className="rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
+              <div className="rounded-2xl bg-muted px-5 py-4">
                 <div className="flex items-end gap-1">
-                  <span className="text-3xl font-black text-primary">
-                    {billing === 'mensal' ? 'R$69' : 'R$57,50'}
+                  <span className="text-3xl font-black text-foreground">
+                    {billing === 'mensal' ? 'R$39' : 'R$32,50'}
                   </span>
                   <span className="text-muted-foreground text-sm mb-0.5">/mês</span>
                 </div>
                 {billing === 'anual' && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    <span className="line-through">R$828</span>
+                    <span className="line-through">R$468</span>
                     {' → '}
-                    <span className="font-bold text-primary">R$690/ano</span>
+                    <span className="font-bold text-foreground">R$390/ano</span>
                   </p>
                 )}
               </div>
               <ul className="flex-1 space-y-2.5 text-sm">
                 {[
-                  { ok: true,  label: '3 eventos ativos simultâneos' },
-                  { ok: true,  label: 'Até 500 vagas por evento' },
-                  { ok: true,  label: 'Ingressos com valores (pagos)' },
-                  { ok: true,  label: 'Registro manual de pagamentos' },
-                  { ok: true,  label: 'Relatórios financeiros' },
-                  { ok: false, label: 'Gateway próprio (PIX automático)' },
-                  { ok: false, label: 'Gestão de grupos e equipes' },
+                  { ok: true,  label: '1 evento ativo' },
+                  { ok: true,  label: 'Até 100 inscrições por evento' },
+                  { ok: true,  label: 'Inscrições e formulários' },
+                  { ok: true,  label: 'Financeiro básico' },
+                  { ok: true,  label: 'Relatórios básicos' },
+                  { ok: false, label: 'Equipe e check-in' },
+                  { ok: false, label: 'Doações, grupos e tarefas' },
                 ].map((f, i) => (
                   <li key={i} className="flex items-center gap-2.5">
                     {f.ok
@@ -1112,39 +1100,84 @@ export default function LandingPage() {
                 to="/login?cadastro=true"
                 className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
               >
+                Começar com o Start
+              </Link>
+            </div>
+
+            {/* ── ESSENCIAL ── */}
+            <div className="rounded-3xl border-2 border-primary/30 bg-card p-8 flex flex-col gap-5 relative">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                <span className="bg-primary text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
+                  <Star className="w-3 h-3 fill-white" /> Mais escolhido
+                </span>
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-primary mb-2">Essencial</p>
+                <p className="text-3xl font-black text-foreground tracking-tight leading-tight">Para eventos que crescem<br/>a cada edição!</p>
+                <div className="mt-3 h-px bg-primary/20 w-full" />
+              </div>
+              <div className="rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-black text-primary">
+                    {billing === 'mensal' ? 'R$99' : 'R$82,50'}
+                  </span>
+                  <span className="text-muted-foreground text-sm mb-0.5">/mês</span>
+                </div>
+                {billing === 'anual' && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    <span className="line-through">R$1.188</span>
+                    {' → '}
+                    <span className="font-bold text-primary">R$990/ano</span>
+                  </p>
+                )}
+              </div>
+              <ul className="flex-1 space-y-2.5 text-sm">
+                {[
+                  { ok: true, label: '3 eventos ativos simultâneos' },
+                  { ok: true, label: 'Até 500 inscrições por evento' },
+                  { ok: true, label: 'Equipe (até 5 membros)' },
+                  { ok: true, label: 'Check-in por QR Code' },
+                  { ok: true, label: 'Doações' },
+                  { ok: true, label: 'Grupos e quartos' },
+                  { ok: true, label: 'Tarefas e exportar dados' },
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                    <span className="text-foreground">{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/login?cadastro=true"
+                className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-primary hover:bg-primary/90 text-white transition-all shadow-md shadow-primary/20"
+              >
                 Assinar Essencial
               </Link>
             </div>
 
-            {/* ── PRO ── destaque */}
+            {/* ── PRO ── */}
             <div className="rounded-3xl bg-primary p-8 flex flex-col gap-5 shadow-2xl shadow-primary/30 relative overflow-hidden">
-              {/* glow decoration */}
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
               <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
 
-              {/* Recomendado badge */}
-              <div className="absolute top-5 right-5 bg-white/20 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
-                <Star className="w-3 h-3 fill-white" /> Recomendado
-              </div>
-
               <div className="relative">
-                <p className="text-[11px] font-black uppercase tracking-widest text-white/60 mb-2">Plano</p>
-                <p className="text-4xl font-black text-white tracking-tight">Pro</p>
-                <p className="text-sm text-white/70 mt-1">Para quem leva a sério</p>
+                <p className="text-[11px] font-black uppercase tracking-widest text-white/60 mb-2">Pro</p>
+                <p className="text-3xl font-black text-white tracking-tight leading-tight">Para eventos que transformam<br/>muitas vidas!</p>
+                <div className="mt-3 h-px bg-white/20 w-full" />
               </div>
 
               <div className="relative rounded-2xl bg-white/15 border border-white/20 px-5 py-4">
                 <div className="flex items-end gap-1">
                   <span className="text-3xl font-black text-white">
-                    {billing === 'mensal' ? 'R$129' : 'R$107,50'}
+                    {billing === 'mensal' ? 'R$249' : 'R$207,50'}
                   </span>
                   <span className="text-white/70 text-sm mb-0.5">/mês</span>
                 </div>
                 {billing === 'anual' && (
                   <p className="text-xs text-white/60 mt-1">
-                    <span className="line-through">R$1.548</span>
+                    <span className="line-through">R$2.988</span>
                     {' → '}
-                    <span className="font-bold text-white">R$1.290/ano</span>
+                    <span className="font-bold text-white">R$2.490/ano</span>
                   </p>
                 )}
               </div>
@@ -1152,12 +1185,12 @@ export default function LandingPage() {
               <ul className="relative flex-1 space-y-2.5 text-sm">
                 {[
                   '10 eventos ativos simultâneos',
-                  'Até 1.000 vagas por evento',
-                  'Gateway próprio (BYOG)',
-                  'PIX, Boleto e Cartão automáticos',
-                  'Grupos, quartos e mesas',
-                  'Gestão de equipe e tarefas',
-                  'Relatórios completos',
+                  'Até 1.000 inscrições por evento',
+                  'Equipe (até 10 membros)',
+                  'Check-in por QR Code',
+                  'Financeiro completo',
+                  'Grupos, quartos, doações e tarefas',
+                  'Relatórios completos + exportar',
                 ].map((f, i) => (
                   <li key={i} className="flex items-center gap-2.5">
                     <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
@@ -1177,17 +1210,19 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Box Personalizado */}
-          <div className="mt-6 rounded-2xl border border-border bg-card px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          {/* Box Plano Personalizado — proeminente */}
+          <div className="mt-8 rounded-2xl bg-[var(--sidebar)] px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
             <div>
-              <p className="text-base font-black text-foreground">Precisa de um plano personalizado para o seu evento?</p>
-              <p className="text-sm text-muted-foreground mt-1">Volumes maiores, eventos ilimitados, suporte dedicado e condições especiais.</p>
+              <p className="text-lg font-black text-white">🏢 Precisa de algo além do Pro?</p>
+              <p className="text-sm text-white/70 mt-1.5 max-w-lg">
+                Grandes conferências, múltiplas organizações, integrações específicas ou volume acima do padrão — se o Pro não for suficiente para o seu contexto, a gente conversa e monta algo sob medida para você.
+              </p>
             </div>
             <a
               href="mailto:contato@tovia.app"
-              className="shrink-0 bg-primary hover:bg-primary/90 text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all shadow-md shadow-primary/20 whitespace-nowrap"
+              className="shrink-0 bg-white hover:bg-white/90 text-primary text-sm font-black uppercase tracking-widest px-7 py-3.5 rounded-xl transition-all shadow-md whitespace-nowrap"
             >
-              Entre em contato
+              Fale com a gente →
             </a>
           </div>
         </div>

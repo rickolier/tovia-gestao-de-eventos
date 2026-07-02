@@ -4,7 +4,7 @@ import { UserProfile } from '~/types';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const PLAN_PRICES: Record<string, number> = { start: 0, essencial: 39.90, pro: 99.00 };
+const PLAN_PRICES: Record<string, number> = { start: 39, essencial: 99, pro: 249 };
 const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
 const PLAN_COLORS: Record<string, string> = {
   start: 'bg-gray-100 text-gray-600',
@@ -38,7 +38,7 @@ export default function AdminOverviewTab() {
     }
   });
 
-  const paying = byPlan.essencial + byPlan.pro;
+  const paying = byPlan.start + byPlan.essencial + byPlan.pro;
 
   const statCards = [
     {
@@ -66,12 +66,12 @@ export default function AdminOverviewTab() {
       sub: 'Aguardando confirmação',
     },
     {
-      label: 'Plano Start (grátis)',
+      label: 'Plano Start',
       value: byPlan.start,
       icon: CheckCircle2,
       color: 'text-gray-500',
       bg: 'bg-gray-100',
-      sub: 'Potencial de conversão',
+      sub: `${byPlan.start} usuários ativos`,
     },
   ];
 
@@ -145,7 +145,7 @@ export default function AdminOverviewTab() {
           <CardContent className="p-6 pt-2 space-y-4">
             {[
               { label: 'Ativos (pagos)', value: paying, color: 'text-green-600', dot: 'bg-green-500' },
-              { label: 'Plano gratuito', value: byPlan.start, color: 'text-gray-500', dot: 'bg-gray-400' },
+              { label: 'Plano Start', value: byPlan.start, color: 'text-gray-500', dot: 'bg-gray-400' },
               { label: 'Pendente pagamento', value: pending, color: 'text-yellow-600', dot: 'bg-yellow-400' },
               { label: 'Sem plano', value: byPlan.none, color: 'text-red-500', dot: 'bg-red-400' },
             ].map(item => (

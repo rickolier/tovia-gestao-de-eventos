@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 
-const PLAN_PRICES: Record<string, number> = { start: 0, essencial: 39.90, pro: 99.00 };
+const PLAN_PRICES: Record<string, number> = { start: 39, essencial: 99, pro: 249 };
 const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
 const PLAN_COLORS_HEX: Record<string, string> = { start: '#9ca3af', essencial: '#3b82f6', pro: '#16a34a' };
 
@@ -113,8 +113,9 @@ export default function AdminFinancialTab() {
 
   const mrr = useMemo(() => planStats.reduce((s, p) => s + p.revenue, 0), [planStats]);
   const arr = mrr * 12;
-  const payingUsers = useMemo(() => planStats.filter(p => p.plan !== 'start').reduce((s, p) => s + p.count, 0), [planStats]);
-  const conversionRate = activeUsers.length > 0 ? ((payingUsers / activeUsers.length) * 100).toFixed(1) : '0';
+  const payingUsers = useMemo(() => planStats.reduce((s, p) => s + p.count, 0), [planStats]);
+  const upgradedUsers = useMemo(() => planStats.filter(p => p.plan !== 'start').reduce((s, p) => s + p.count, 0), [planStats]);
+  const conversionRate = payingUsers > 0 ? ((upgradedUsers / payingUsers) * 100).toFixed(1) : '0';
 
   // Events in period (by data_inicio as proxy)
   const eventosInPeriod = useMemo(
@@ -244,7 +245,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Assinantes pagos',
             value: payingUsers,
-            sub: 'Essencial + Pro ativos',
+            sub: 'Start + Essencial + Pro ativos',
             icon: Users,
             color: 'text-violet-600',
             bg: 'bg-violet-50',
@@ -252,7 +253,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Conversão',
             value: `${conversionRate}%`,
-            sub: 'Start → plano pago',
+            sub: 'Start → Essencial/Pro',
             icon: Percent,
             color: 'text-orange-600',
             bg: 'bg-orange-50',

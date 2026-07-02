@@ -4,43 +4,96 @@ import { useAuth } from '~/context/AuthContext';
 import Logo from '~/components/Logo';
 import { cn } from '@/lib/utils';
 import {
-  LayoutDashboard, Users, CreditCard, TrendingUp, LogOut,
-  ShieldCheck, Menu, X, Palette, BookOpen, Calculator, Wifi,
+  LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
+  Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
-import AdminSubscriptionsTab from './AdminSubscriptionsTab';
-import AdminUsersTab from './AdminUsersTab';
 import AdminFinancialTab from './AdminFinancialTab';
+import AdminClientesTab from './AdminClientesTab';
 import AdminKnowledgeBaseTab from './AdminKnowledgeBaseTab';
 import AdminCalculatorTab from './AdminCalculatorTab';
 import AdminGatewayTab from './AdminGatewayTab';
+import AdminTicketsTab from './AdminTicketsTab';
+import AdminCSPanelTab from './AdminCSPanelTab';
+import AdminComunicadosTab from './AdminComunicadosTab';
 import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 
-const TABS = [
-  { id: 'overview',        label: 'Visão Geral',        icon: LayoutDashboard },
-  { id: 'subscriptions',   label: 'Assinaturas',         icon: CreditCard },
-  { id: 'financial',       label: 'Financeiro',           icon: TrendingUp },
-  { id: 'users',           label: 'Usuários',             icon: Users },
-  { id: 'gateway',          label: 'Monitor Gateway',       icon: Wifi },
-  { id: 'knowledge-base',  label: 'Base de Conhecimento', icon: BookOpen },
-  { id: 'calculator',      label: 'Calculadora',          icon: Calculator },
-  { id: 'design-system',   label: 'Design System',        icon: Palette },
+type AdminRole = 'criador' | 'suporte';
+
+function getRole(email: string | null | undefined): AdminRole {
+  return email === 'suporte@tovia.app' ? 'suporte' : 'criador';
+}
+
+interface NavSection {
+  type: 'section';
+  label: string;
+  roles: AdminRole[];
+}
+interface NavItem {
+  type: 'item';
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  roles: AdminRole[];
+}
+type NavEntry = NavSection | NavItem;
+
+const NAV: NavEntry[] = [
+  { type: 'section', label: 'Geral',      roles: ['criador'] },
+  { type: 'item', id: 'overview',      label: 'Visão Geral',          icon: LayoutDashboard, roles: ['criador'] },
+  { type: 'item', id: 'relatorios',    label: 'Relatórios',            icon: TrendingUp,      roles: ['criador'] },
+
+  { type: 'section', label: 'Clientes',   roles: ['criador'] },
+  { type: 'item', id: 'clientes',      label: 'Clientes',              icon: Users,           roles: ['criador'] },
+
+  { type: 'section', label: 'Suporte',    roles: ['criador', 'suporte'] },
+  { type: 'item', id: 'tickets',       label: 'Tickets',               icon: LifeBuoy,        roles: ['criador', 'suporte'] },
+  { type: 'item', id: 'cs-panel',      label: 'Painel CS',             icon: Headphones,      roles: ['criador', 'suporte'] },
+  // Base de Conhecimento (leitura) — visível apenas para suporte nesta seção
+  { type: 'item', id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,        roles: ['suporte'] },
+
+  { type: 'section', label: 'Tecnologia', roles: ['criador'] },
+  { type: 'item', id: 'gateway',       label: 'Monitor Gateway',        icon: Wifi,            roles: ['criador'] },
+
+  { type: 'section', label: 'Marketing',  roles: ['criador'] },
+  // Base de Conhecimento (CRUD) — visível para criador nesta seção
+  { type: 'item', id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,        roles: ['criador'] },
+  { type: 'item', id: 'design-system', label: 'Design System',          icon: Palette,         roles: ['criador'] },
+  { type: 'item', id: 'calculator',    label: 'Calculadora',            icon: Calculator,      roles: ['criador'] },
+  { type: 'item', id: 'comunicados',   label: 'Comunicados',            icon: Megaphone,       roles: ['criador'] },
 ];
+
+const TAB_TITLES: Record<string, string> = {
+  overview:        'Visão Geral',
+  relatorios:      'Relatórios',
+  clientes:        'Clientes',
+  tickets:         'Tickets',
+  'cs-panel':      'Painel CS',
+  'knowledge-base': 'Base de Conhecimento',
+  gateway:         'Monitor Gateway',
+  'design-system': 'Design System',
+  calculator:      'Calculadora',
+  comunicados:     'Comunicados',
+};
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const role = getRole(user?.email);
+  const [activeTab, setActiveTab] = useState(role === 'suporte' ? 'tickets' : 'overview');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => { await logout(); navigate('/'); };
+
+  // Deduplicate nav entries — same id can appear in multiple sections
+  // but we show each section+item pair; active highlight applies to the id
+  const visibleNav = NAV.filter(e => e.roles.includes(role));
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <aside className={cn(
-        'fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-200',
-        'bg-black',
+        'fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-200 bg-black',
         'md:translate-x-0',
         mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       )}>
@@ -66,14 +119,21 @@ export default function AdminDashboard() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {TABS.map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          {visibleNav.map((entry, i) => {
+            if (entry.type === 'section') {
+              return (
+                <p key={`s-${i}`} className="px-3 pt-4 pb-1 text-[9px] font-black uppercase tracking-widest text-white/30 first:pt-0">
+                  {entry.label}
+                </p>
+              );
+            }
+            const Icon = entry.icon;
+            const isActive = activeTab === entry.id;
             return (
               <button
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setMobileOpen(false); }}
+                key={`${entry.id}-${i}`}
+                onClick={() => { setActiveTab(entry.id); setMobileOpen(false); }}
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all',
                   isActive
@@ -82,7 +142,7 @@ export default function AdminDashboard() {
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0" />
-                {tab.label}
+                {entry.label}
               </button>
             );
           })}
@@ -107,7 +167,7 @@ export default function AdminDashboard() {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
-        {/* Top bar mobile */}
+        {/* Mobile top bar */}
         <header className="md:hidden sticky top-0 z-20 bg-background border-b border-border h-14 flex items-center px-4 gap-3">
           <button onClick={() => setMobileOpen(true)} className="text-foreground">
             <Menu className="w-5 h-5" />
@@ -116,24 +176,23 @@ export default function AdminDashboard() {
         </header>
 
         <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
-          {/* Page title */}
           <div className="mb-8">
             <h1 className="text-2xl font-black text-foreground tracking-tight">
-              {TABS.find(t => t.id === activeTab)?.label}
+              {TAB_TITLES[activeTab] ?? activeTab}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Central Tovia
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">Central Tovia</p>
           </div>
 
-          {activeTab === 'overview'       && <AdminOverviewTab />}
-          {activeTab === 'subscriptions'  && <AdminSubscriptionsTab />}
-          {activeTab === 'financial'      && <AdminFinancialTab />}
-          {activeTab === 'users'          && <AdminUsersTab />}
-          {activeTab === 'gateway'        && <AdminGatewayTab />}
-          {activeTab === 'knowledge-base' && <AdminKnowledgeBaseTab />}
-          {activeTab === 'calculator'     && <AdminCalculatorTab />}
-          {activeTab === 'design-system'  && <DesignSystemTab />}
+          {activeTab === 'overview'        && <AdminOverviewTab />}
+          {activeTab === 'relatorios'      && <AdminFinancialTab />}
+          {activeTab === 'clientes'        && <AdminClientesTab />}
+          {activeTab === 'tickets'         && <AdminTicketsTab />}
+          {activeTab === 'cs-panel'        && <AdminCSPanelTab />}
+          {activeTab === 'knowledge-base'  && <AdminKnowledgeBaseTab readOnly={role === 'suporte'} />}
+          {activeTab === 'gateway'         && <AdminGatewayTab />}
+          {activeTab === 'design-system'   && <DesignSystemTab />}
+          {activeTab === 'calculator'      && <AdminCalculatorTab />}
+          {activeTab === 'comunicados'     && <AdminComunicadosTab />}
         </main>
       </div>
     </div>

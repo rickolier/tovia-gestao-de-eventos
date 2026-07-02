@@ -36,7 +36,7 @@ const EMPTY_FORM: Omit<ArtigoBC, 'id' | 'criado_em' | 'atualizado_em'> = {
   autor: 'Equipe Tovia',
 };
 
-export default function AdminKnowledgeBaseTab() {
+export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?: boolean }) {
   const [artigos, setArtigos] = useState<ArtigoBC[]>([]);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
@@ -235,12 +235,13 @@ export default function AdminKnowledgeBaseTab() {
     <div>
       {/* Top actions */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <Button onClick={openCreate} className="flex items-center gap-2 h-9 text-sm font-semibold">
+        {readOnly && <p className="text-xs text-muted-foreground italic">Visualização somente leitura.</p>}
+        {!readOnly && <Button onClick={openCreate} className="flex items-center gap-2 h-9 text-sm font-semibold">
           <Plus className="w-4 h-4" />
           Novo artigo
-        </Button>
+        </Button>}
 
-        {!confirmSeed ? (
+        {!readOnly && (!confirmSeed ? (
           <Button
             variant="outline"
             onClick={() => setConfirmSeed(true)}
@@ -269,7 +270,7 @@ export default function AdminKnowledgeBaseTab() {
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
-        )}
+        ))}
 
         <a
           href="/base-de-conhecimento"
@@ -326,6 +327,7 @@ export default function AdminKnowledgeBaseTab() {
                 </div>
               </div>
 
+              {!readOnly && (
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => openEdit(artigo)}
@@ -343,6 +345,7 @@ export default function AdminKnowledgeBaseTab() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
+              )}
             </div>
           ))}
         </div>
