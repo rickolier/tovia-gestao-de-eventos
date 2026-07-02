@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@tovia.app>';
+const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
 const PLAN_NAMES: Record<string, string> = {
   essencial: 'Essencial',

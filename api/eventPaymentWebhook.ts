@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import { db } from './_firebase';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@tovia.app>';
+const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
 async function sendEmail(to: string, subject: string, html: string) {
   if (!RESEND_API_KEY) return;

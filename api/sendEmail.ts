@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { verifyAuth } from './_firebase';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@tovia.app>';
+const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
