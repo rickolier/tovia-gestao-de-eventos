@@ -786,7 +786,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
       {/* Allocation Dialog */}
       <Dialog open={isAllocationOpen} onOpenChange={setIsAllocationOpen}>
-        <DialogContent className="rounded-[2.5rem] max-w-lg border-none shadow-2xl p-8 bg-card transition-colors">
+        <DialogContent className="rounded-[2.5rem] max-w-lg border-none shadow-2xl p-8 bg-card transition-colors max-h-[90vh] overflow-y-auto scrollbar-hide">
           <DialogHeader className="mb-4">
             <DialogTitle className="flex items-center gap-3 text-2xl font-black text-foreground tracking-tight">
               <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
