@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
-  Plus, Link2, Copy, Trash2, ExternalLink, Globe, GlobeLock,
+  Plus, Copy, Trash2, ExternalLink, Globe, GlobeLock,
   Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft, FileDown, Loader2,
 } from 'lucide-react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '~/services/firestore';
@@ -366,20 +366,6 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                       onChange={e => setForm(prev => ({ ...prev, nome: e.target.value, slug: slugify(e.target.value) }))}
                       className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"
                     />
-                  </div>
-                  <div className="space-y-2 col-span-2">
-                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-                      <Link2 className="w-3 h-3" /> Slug (URL)
-                    </Label>
-                    <div className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 h-12 border border-border/0">
-                      <span className="text-xs text-muted-foreground font-mono shrink-0">/e/.../</span>
-                      <Input
-                        value={form.slug}
-                        onChange={e => setForm(prev => ({ ...prev, slug: slugify(e.target.value) }))}
-                        className="border-none bg-transparent shadow-none h-full p-0 font-mono text-sm font-semibold"
-                        placeholder="nome-da-pagina"
-                      />
-                    </div>
                   </div>
                 </div>
 
