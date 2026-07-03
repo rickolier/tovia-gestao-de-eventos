@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { toast } from 'sonner';
 import {
   Calendar, Users, Bell, Settings, Search, Plus, Trash2, Edit3, Eye,
   Download, Upload, LogOut, Home, BarChart3, CreditCard, Star, Heart,
@@ -59,62 +58,6 @@ function IconItem({ icon: Icon, name }: { icon: React.ComponentType<any>; name: 
     </div>
   );
 }
-
-/* ─────────────────────────────────────────
-   Email Icons Data
-───────────────────────────────────────── */
-const EMAIL_ICONS: { name: string; email: string; desc: string; svg: string }[] = [
-  {
-    name: 'Noreply',
-    email: 'noreply@tovia.app',
-    desc: 'Notificações automáticas',
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <rect width="200" height="200" rx="44" fill="#1a7a45"/>
-  <rect x="28" y="72" width="132" height="90" rx="10" fill="none" stroke="white" stroke-width="6"/>
-  <polyline points="28,72 94,116 160,72" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="150" cy="58" r="24" fill="#ef4444"/>
-  <line x1="141" y1="49" x2="159" y2="67" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="159" y1="49" x2="141" y2="67" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-</svg>`,
-  },
-  {
-    name: 'Suporte',
-    email: 'suporte@tovia.app',
-    desc: 'Atendimento e ajuda',
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <rect width="200" height="200" rx="44" fill="#162d20"/>
-  <path d="M48,116 a52,52 0 0,1 104,0" fill="none" stroke="white" stroke-width="7" stroke-linecap="round"/>
-  <rect x="24" y="108" width="34" height="48" rx="12" fill="none" stroke="white" stroke-width="6"/>
-  <rect x="142" y="108" width="34" height="48" rx="12" fill="none" stroke="white" stroke-width="6"/>
-  <path d="M41,154 Q26,178 60,182" fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round"/>
-  <circle cx="60" cy="182" r="7" fill="white"/>
-</svg>`,
-  },
-  {
-    name: 'Admin',
-    email: 'admin@tovia.app',
-    desc: 'Comunicados internos',
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <rect width="200" height="200" rx="44" fill="#162d20"/>
-  <path d="M38,158 L38,116 L66,68 L84,100 L100,52 L116,100 L134,68 L162,116 L162,158 Z" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
-  <line x1="38" y1="158" x2="162" y2="158" stroke="white" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="66" cy="68" r="7" fill="white"/>
-  <circle cx="100" cy="52" r="9" fill="white"/>
-  <circle cx="134" cy="68" r="7" fill="white"/>
-</svg>`,
-  },
-  {
-    name: 'Financeiro',
-    email: 'financeiro@tovia.app',
-    desc: 'Cobranças e pagamentos',
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <rect width="200" height="200" rx="44" fill="#1a7a45"/>
-  <circle cx="100" cy="100" r="64" fill="none" stroke="white" stroke-width="6"/>
-  <circle cx="100" cy="100" r="52" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="2" stroke-dasharray="5,4"/>
-  <text x="100" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="46" fill="white">R$</text>
-</svg>`,
-  },
-];
 
 /* ─────────────────────────────────────────
    Main Component
@@ -670,54 +613,6 @@ export default function DesignSystemTab() {
               <p className="text-xs text-muted-foreground mt-1">{desc}</p>
             </div>
           ))}
-        </div>
-      </Section>
-
-      {/* ──────────────────────────────────────
-          13. ÍCONES DE EMAIL
-      ────────────────────────────────────── */}
-      <Section title="13. Ícones de Email" subtitle="Avatares de remetente para as caixas de email Tovia — SVG 200×200px">
-        <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-            {EMAIL_ICONS.map(({ name, email, desc, svg }) => (
-              <div key={name} className="flex flex-col items-center gap-3">
-                <div
-                  className="w-32 h-32 rounded-3xl overflow-hidden shadow-lg ring-1 ring-border"
-                  dangerouslySetInnerHTML={{ __html: svg }}
-                />
-                <div className="text-center space-y-0.5">
-                  <p className="text-sm font-black text-foreground">{name}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{email}</p>
-                  <p className="text-[10px] text-muted-foreground/60 leading-snug">{desc}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => { navigator.clipboard.writeText(svg); toast.success('SVG copiado!'); }}
-                    className="flex items-center gap-1 text-[10px] font-bold text-primary hover:text-primary/80 bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors"
-                  >
-                    <Copy className="w-3 h-3" /> Copiar
-                  </button>
-                  <button
-                    onClick={() => {
-                      const blob = new Blob([svg], { type: 'image/svg+xml' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url; a.download = `tovia-${name.toLowerCase()}.svg`; a.click();
-                      URL.revokeObjectURL(url);
-                    }}
-                    className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted px-2.5 py-1.5 rounded-lg transition-colors"
-                  >
-                    <Download className="w-3 h-3" /> SVG
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 pt-4 border-t border-border text-[11px] text-muted-foreground space-y-1">
-            <p><strong className="text-foreground">Formato:</strong> SVG 200×200px · <code className="bg-muted px-1 rounded">rx=44</code> · traço estilo Lucide (round caps, round joins, sw=6)</p>
-            <p><strong className="text-foreground">Paleta:</strong> Verde primário <code className="bg-muted px-1 rounded">#1a7a45</code> · Verde escuro <code className="bg-muted px-1 rounded">#162d20</code> · Badge de alerta <code className="bg-muted px-1 rounded">#ef4444</code></p>
-            <p><strong className="text-foreground">Uso em email:</strong> Cole o SVG inline no header do template ou exporte como PNG 200×200 para usar como avatar de remetente.</p>
-          </div>
         </div>
       </Section>
 
