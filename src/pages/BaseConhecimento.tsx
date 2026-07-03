@@ -6,6 +6,8 @@ import { listDocuments } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
 import { orderBy, addDoc, collection } from 'firebase/firestore';
 import { db } from '~/services/firebase';
+import { createDocument } from '~/services/firestore';
+import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
 
 // ── Badge config ────────────────────────────────────────────────────────────
@@ -103,6 +105,19 @@ export default function BaseConhecimento() {
       setTicketTitulo('');
       setTicketDesc('');
       setTicketCategoria('duvida');
+
+      // Notificação de confirmação
+      const notifId = uuidv4();
+      await createDocument('notificacoes', notifId, {
+        id: notifId,
+        userId: user.uid,
+        tipo: 'ticket_criado',
+        titulo: 'Ticket aberto com sucesso',
+        mensagem: `Recebemos sua solicitação "${ticketTitulo.trim()}". Nossa equipe vai analisar e responder em breve.`,
+        data: new Date().toISOString(),
+        lida: false,
+        acao_requirida: false,
+      });
     } finally {
       setTicketSending(false);
     }

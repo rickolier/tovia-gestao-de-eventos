@@ -258,7 +258,7 @@ export interface Quarto {
 
 export interface AppNotification {
   id: string;
-  tipo: 'doacao_direcionada' | 'doacao_livre' | 'resumo_diario' | 'tarefa' | 'alerta' | 'doacao_pendente' | 'primeira_inscricao' | 'meta_inscricoes' | 'equipe_novo_membro' | 'perfil_incompleto' | 'plano_atualizado';
+  tipo: 'doacao_direcionada' | 'doacao_livre' | 'resumo_diario' | 'tarefa' | 'alerta' | 'doacao_pendente' | 'primeira_inscricao' | 'meta_inscricoes' | 'equipe_novo_membro' | 'perfil_incompleto' | 'plano_atualizado' | 'ticket_criado' | 'ticket_respondido' | 'ticket_finalizado';
   titulo: string;
   mensagem: string;
   data: string;
