@@ -1267,9 +1267,9 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           <Table className="table-fixed w-full">
             <TableHeader className="bg-muted/50 border-b border-border/50 hover:bg-muted/50">
               <TableRow className="hover:bg-transparent">
-                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-4 w-[28%] group">
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-4 w-[22%] group">
                   <div className="flex items-center">
-                    <button 
+                    <button
                       onClick={() => requestSort('nome')}
                       className="flex items-center hover:text-primary transition-colors focus:outline-none"
                     >
@@ -1287,9 +1287,9 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                           <div className="flex items-center justify-between">
                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar Nome</p>
                             {columnFilters.nome && (
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
+                              <Button
+                                variant="ghost"
+                                size="icon"
                                 className="h-5 w-5 text-destructive"
                                 onClick={() => setColumnFilters(prev => ({ ...prev, nome: '' }))}
                               >
@@ -1297,7 +1297,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                               </Button>
                             )}
                           </div>
-                          <Input 
+                          <Input
                             placeholder="Filtrar por nome..."
                             value={columnFilters.nome}
                             onChange={e => setColumnFilters(prev => ({ ...prev, nome: e.target.value }))}
@@ -1309,12 +1309,12 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                     </Popover>
                   </div>
                 </TableHead>
-                <FilterHeader label="Lote / Ingresso" filterKey="ticket" columnKey="ticket" />
-                <FilterHeader label="Status" filterKey="status" columnKey="status" />
-                <FilterHeader label="Financeiro" filterKey="financeiro" columnKey="financeiro" />
-                <FilterHeader label="Método" filterKey="metodo" columnKey="metodo" />
-                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 w-[10%]">Resp.</TableHead>
-                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-3 w-[12%]">Gerenciar</TableHead>
+                <FilterHeader label="Lote / Ingresso" filterKey="ticket" columnKey="ticket" className="w-[13%]" />
+                <FilterHeader label="Status" filterKey="status" columnKey="status" className="w-[18%]" />
+                <FilterHeader label="Financeiro" filterKey="financeiro" columnKey="financeiro" className="w-[13%]" />
+                <FilterHeader label="Método" filterKey="metodo" columnKey="metodo" className="w-[10%]" />
+                <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 w-[9%]">Resp.</TableHead>
+                <TableHead className="text-right font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-3 w-[15%]">Gerenciar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
