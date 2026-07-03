@@ -1,11 +1,11 @@
-const CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+import { nanoid } from 'nanoid';
 
-/** Código numérico de 4 dígitos para identificar o produtor (ex: 3554) */
+/** Código curto do produtor — 6 chars URL-safe (ex: V4UM9x) */
 export function gerarCodigoProdutor(): string {
-  return String(Math.floor(1000 + Math.random() * 9000));
+  return nanoid(6);
 }
 
-/** Código alfanumérico de 10 chars para identificar o evento (ex: 82shyt6238) */
+/** Código do evento — 10 chars URL-safe (ex: IRpjDZNTb3) */
 export function gerarCodigoEvento(): string {
-  return Array.from({ length: 10 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+  return nanoid(10);
 }

@@ -13,7 +13,7 @@ import AdminDashboard from '~/features/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import PublicRegistration, { PublicRegistrationByCodigo } from '~/features/public-pages/PublicRegistration';
 import PublicSalesPage from '~/features/public-pages/PublicSalesPage';
-import PublicOrganizerProfile from '~/features/public-pages/PublicOrganizerProfile';
+import PublicOrganizerProfile, { PublicOrganizerProfileByCodigo } from '~/features/public-pages/PublicOrganizerProfile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermosDeUso from './pages/TermosDeUso';
 import BaseConhecimento from './pages/BaseConhecimento';
@@ -144,6 +144,7 @@ export default function App() {
             <Route path="/:orgCodigo/:eventoCodigo" element={<PublicRegistrationByCodigo />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
+            <Route path="/:orgCodigo" element={<PublicOrganizerProfileByCodigo />} />
             <Route path="/consultar" element={<ConsultarInscricao />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos-de-uso" element={<TermosDeUso />} />

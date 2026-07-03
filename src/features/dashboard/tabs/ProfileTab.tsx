@@ -112,7 +112,9 @@ export default function ProfileTab() {
   const [publicPageLoading, setPublicPageLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const publicPageUrl = user ? `${window.location.origin}/o/${user.uid}` : '';
+  const publicPageUrl = profile?.codigo
+    ? `${window.location.origin}/${profile.codigo}`
+    : user ? `${window.location.origin}/o/${user.uid}` : '';
 
   const handleTogglePublicPage = async () => {
     if (!user) return;
@@ -473,7 +475,9 @@ export default function ProfileTab() {
                       {publicPageEnabled ? 'Ativa' : 'Inativa'}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">/o/{user?.uid?.slice(0, 12)}...</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">
+                    {profile?.codigo ? `/${profile.codigo}` : `/o/${user?.uid?.slice(0, 12)}...`}
+                  </p>
                 </div>
                 <button
                   type="button"

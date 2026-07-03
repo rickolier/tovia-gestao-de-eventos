@@ -148,9 +148,54 @@ function EventPagesModal({
   );
 }
 
+// ─── Wrapper por código do produtor ──────────────────────────────────────────
+export function PublicOrganizerProfileByCodigo() {
+  const { orgCodigo } = useParams<{ orgCodigo: string }>();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!orgCodigo) { setNotFound(true); return; }
+    import('~/services/firestore').then(({ listDocuments }) =>
+      import('firebase/firestore').then(({ where }) =>
+        listDocuments<UserProfile>('users', [where('codigo', '==', orgCodigo)])
+      )
+    ).then(results => {
+      if (results.length === 0) setNotFound(true);
+      else setUserId(results[0].uid);
+    }).catch(() => setNotFound(true));
+  }, [orgCodigo]);
+
+  if (notFound) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 gap-4 text-center px-6">
+        <GlobeLock className="w-12 h-12 text-gray-300" />
+        <h1 className="text-xl font-black text-gray-800">Produtor não encontrado</h1>
+        <p className="text-sm text-gray-500">O código <span className="font-mono font-bold">{orgCodigo}</span> não corresponde a nenhum perfil.</p>
+        <a href="/" className="text-sm font-bold text-primary hover:underline mt-2">Voltar ao início →</a>
+      </div>
+    );
+  }
+
+  if (!userId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  return <PublicOrganizerProfileWithUserId userId={userId} />;
+}
+
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function PublicOrganizerProfile() {
   const { userId } = useParams<{ userId: string }>();
+  if (!userId) return null;
+  return <PublicOrganizerProfileWithUserId userId={userId} />;
+}
+
+function PublicOrganizerProfileWithUserId({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(true);
   const [organizador, setOrganizador] = useState<UserProfile | null>(null);
   const [eventos, setEventos] = useState<Evento[]>([]);
