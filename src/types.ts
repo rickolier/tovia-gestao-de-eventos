@@ -283,6 +283,7 @@ export interface PaginaVenda {
   eventoId: string;
   nome: string;
   slug: string;
+  codigo?: string;
   ativa: boolean;
   descricao?: string;
   ticketIds: string[];

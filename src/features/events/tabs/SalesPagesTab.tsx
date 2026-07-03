@@ -21,6 +21,7 @@ import { PaginaVenda, CampoFormulario, Ticket, Evento, UserProfile } from '~/typ
 import SalesPageContent from '~/features/public-pages/SalesPageContent';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
+import { gerarCodigoPagina } from '~/utils/codigos';
 
 // ─── Campos pré-definidos do formulário ─────────────────────────────────────
 const CAMPOS_PADRAO: Omit<CampoFormulario, 'id'>[] = [
@@ -137,7 +138,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
         toast.success('Página atualizada!');
       } else {
         const id = uuidv4();
-        const nova: PaginaVenda = { id, eventoId, ...form, slug, criado_em: new Date().toISOString() };
+        const nova: PaginaVenda = { id, eventoId, ...form, slug, codigo: gerarCodigoPagina(), criado_em: new Date().toISOString() };
         await createDocument(`eventos/${eventoId}/paginas_venda`, id, nova as any);
         setPaginas(prev => [...prev, nova]);
         toast.success('Página de vendas criada!');
@@ -168,9 +169,13 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
     } catch { toast.error('Erro ao excluir'); }
   };
 
-  const copyLink = (slug: string) => {
-    const url = `${baseUrl}/e/${eventoId}/${slug}`;
-    navigator.clipboard.writeText(url).then(() => toast.success('Link copiado!'));
+  const getPageUrl = (p: PaginaVenda) =>
+    organizerProfile?.codigo && evento?.codigo && p.codigo
+      ? `${baseUrl}/${organizerProfile.codigo}/${evento.codigo}/${p.codigo}`
+      : `${baseUrl}/e/${eventoId}/${p.slug}`;
+
+  const copyLink = (p: PaginaVenda) => {
+    navigator.clipboard.writeText(getPageUrl(p)).then(() => toast.success('Link copiado!'));
   };
 
   const exportarFicha = async (pagina: PaginaVenda) => {
@@ -251,7 +256,8 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {paginas.map(p => {
-            const url = `${baseUrl}/e/${eventoId}/${p.slug}`;
+            const url = getPageUrl(p);
+            const urlDisplay = url.replace(/^https?:\/\/[^/]+/, '');
             const ticketsNomes = tickets.filter(t => p.ticketIds.includes(t.id)).map(t => t.nome);
             return (
               <Card key={p.id} className="border border-border rounded-2xl bg-card shadow-sm hover:shadow-md transition-all card-flat">
@@ -265,7 +271,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                           {p.ativa ? 'Ativa' : 'Inativa'}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">/e/{eventoId.slice(0,8)}.../{p.slug}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">{urlDisplay}</p>
                     </div>
                     <Switch checked={p.ativa} onCheckedChange={() => toggleAtiva(p)} />
                   </div>
@@ -284,7 +290,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                   <p className="text-xs text-muted-foreground">{p.campos_formulario.length} campo(s) no formulário</p>
                   {/* Actions */}
                   <div className="flex gap-2 pt-1 border-t border-border/50">
-                    <button onClick={() => copyLink(p.slug)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
+                    <button onClick={() => copyLink(p)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                       <Copy className="w-3.5 h-3.5" /> Copiar link
                     </button>
                     <button
@@ -567,8 +573,8 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
             <div className="w-px h-4 bg-border" />
             <span className="text-xs font-black uppercase tracking-widest text-primary">{previewPagina.nome}</span>
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-[10px] text-muted-foreground font-mono bg-muted px-2 py-1 rounded-md">/e/{eventoId.slice(0,8)}.../{previewPagina.slug}</span>
-              <button onClick={() => copyLink(previewPagina.slug)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
+              <span className="text-[10px] text-muted-foreground font-mono bg-muted px-2 py-1 rounded-md">{getPageUrl(previewPagina).replace(/^https?:\/\/[^/]+/, '')}</span>
+              <button onClick={() => copyLink(previewPagina)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                 <Copy className="w-3.5 h-3.5" /> Copiar link
               </button>
             </div>
