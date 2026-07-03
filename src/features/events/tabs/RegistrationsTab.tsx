@@ -724,7 +724,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   };
 
   const SortIcon = ({ columnKey }: { columnKey: string }) => {
-    if (sortConfig?.key !== columnKey) return <ArrowUpAZ className="w-3 h-3 ml-2 opacity-20 group-hover:opacity-100 transition-opacity" />;
+    if (sortConfig?.key !== columnKey) return <ArrowUpAZ className="w-3 h-3 ml-2 opacity-30 transition-opacity" />;
     return sortConfig.direction === 'asc' 
       ? <ArrowUp className="w-3 h-3 ml-2 text-primary" /> 
       : <ArrowDown className="w-3 h-3 ml-2 text-primary" />;
@@ -750,7 +750,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
         </button>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
+            <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-30 hover:opacity-100'}`}>
               <Filter className="w-3 h-3" />
             </Button>
           </PopoverTrigger>
@@ -1384,7 +1384,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       )}
                     </TableCell>
                     <TableCell className="text-right px-3">
-                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                      <div className="flex justify-end gap-2">
                         {reg.status === 'pago' && (
                           <Button variant="ghost" size="icon" onClick={() => setQrInscricao(reg)} className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all" title="Ver QR Code">
                             <QrCode className="w-4 h-4" />
