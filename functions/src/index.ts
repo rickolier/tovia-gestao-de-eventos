@@ -555,6 +555,50 @@ export const uploadEventCover = functions.onCall(
   }
 );
 
+// ─── Validar chave de billing da plataforma Tovia ────────────────────────────
+export const validateBillingKey = functions.onCall(
+  { region: "us-central1" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+
+    const callerEmail = request.auth.token.email;
+    const isToviaMaster =
+      callerEmail === "admin@tovia.app" ||
+      callerEmail === "admin@toviaapp.com.br";
+    if (!isToviaMaster) {
+      const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
+      if (!adminDoc.exists) {
+        throw new functions.HttpsError("permission-denied", "Acesso negado.");
+      }
+    }
+
+    const configDoc = await db.collection("config").doc("billing").get();
+    if (!configDoc.exists) {
+      throw new functions.HttpsError("not-found", "Nenhuma chave configurada.");
+    }
+
+    const { asaas_api_key: apiKey, sandbox } = configDoc.data() as {
+      asaas_api_key: string;
+      sandbox: boolean;
+    };
+
+    if (!apiKey) {
+      throw new functions.HttpsError("not-found", "Chave API não definida.");
+    }
+
+    const valid = await testAsaasApiKey(apiKey, sandbox ?? true);
+
+    await db.collection("config").doc("billing").update({
+      is_valid: valid,
+      last_validated_at: new Date().toISOString(),
+    });
+
+    return { valid };
+  }
+);
+
 // ─── LGPD Art. 18 — Solicitação de exclusão de dados pessoais ────────────────
 // Anonimiza os dados imediatamente e marca a conta para exclusão completa.
 // A deleção definitiva das subcoleções ocorre de forma assíncrona (batch).
