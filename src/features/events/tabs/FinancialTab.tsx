@@ -54,7 +54,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     status: 'pago' as const,
     data_vencimento: new Date().toISOString().split('T')[0],
     data_pagamento: new Date().toISOString().split('T')[0],
-    comprovante_url: ''
   });
 
   const fetchData = async () => {
@@ -121,7 +120,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
           metodo: formData.metodo,
           status: formData.status,
           data_pagamento: formData.status === 'pago' ? new Date(formData.data_pagamento).toISOString() : undefined,
-          comprovante_url: formData.comprovante_url
         });
 
         // Re-calculate valor_pago and status for registration
@@ -183,7 +181,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
       setIsPayDialogOpen(false);
       setEditingPaymentId(null);
       fetchData();
-      setFormData({ ...formData, valor: 0, inscricaoId: '', comprovante_url: '' });
+      setFormData({ ...formData, valor: 0, inscricaoId: '' });
     } catch (error) {
       console.error(error);
       toast.error('Erro ao processar pagamento.');
@@ -198,7 +196,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
       status: pay.status as any,
       data_vencimento: pay.data_vencimento,
       data_pagamento: pay.data_pagamento ? pay.data_pagamento.split('T')[0] : new Date().toISOString().split('T')[0],
-      comprovante_url: pay.comprovante_url || ''
     });
     setEditingPaymentId(pay.id);
     setIsHistoryDialogOpen(false); // Close history to open pay dialog
