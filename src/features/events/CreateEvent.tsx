@@ -87,6 +87,7 @@ export default function CreateEvent() {
   const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImagemErro(null);
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
 
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
@@ -94,7 +95,6 @@ export default function CreateEvent() {
       return;
     }
 
-    // Abre o cropper em vez de validar dimensão
     const url = URL.createObjectURL(file);
     setCropSrc(url);
   };
@@ -120,7 +120,8 @@ export default function CreateEvent() {
     const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
     const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
     setUploadProgresso(100);
-    return result.data.downloadUrl;
+    const url = result.data.downloadUrl;
+    return url.includes('?t=') ? url : `${url}?t=${Date.now()}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -404,6 +405,7 @@ export default function CreateEvent() {
                   ) : (
                     <div className="relative rounded-2xl overflow-hidden border border-border">
                       <img
+                        key={imagemPreview ?? 'empty'}
                         src={imagemPreview}
                         alt="Preview da capa"
                         className="w-full object-cover"

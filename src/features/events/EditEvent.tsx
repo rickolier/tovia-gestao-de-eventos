@@ -121,6 +121,7 @@ export default function EditEvent() {
 
   const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
       toast.error('Formato inválido. Use PNG, JPEG ou WebP.');
@@ -149,7 +150,9 @@ export default function EditEvent() {
     const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
     const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
     setUploadProgresso(100);
-    return result.data.downloadUrl;
+    // Cache bust client-side: garante URL única mesmo antes do redeploy das Functions
+    const url = result.data.downloadUrl;
+    return url.includes('?t=') ? url : `${url}?t=${Date.now()}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -316,6 +319,7 @@ export default function EditEvent() {
                   ) : (
                     <div className="relative rounded-2xl overflow-hidden border border-border">
                       <img
+                        key={imagemPreview ?? 'empty'}
                         src={imagemPreview}
                         alt="Preview da capa"
                         className="w-full object-cover"
