@@ -657,7 +657,10 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
               ) : (
                 <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
-                    <SelectValue placeholder="Selecione o inscrito" />
+                    {formData.inscricaoId
+                      ? <span className="truncate">{(() => { const r = registrations.find(r => r.id === formData.inscricaoId); return r ? getInscritoNome(r) : 'Selecione o inscrito'; })()}</span>
+                      : <span className="text-muted-foreground font-normal">Selecione o inscrito</span>
+                    }
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-none shadow-2xl">
                     {registrations.map(r => (
