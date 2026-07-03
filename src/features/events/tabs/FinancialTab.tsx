@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { listDocuments, createDocument, updateDocument } from '~/services/firestore';
+import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
 import { Pagamento, Inscricao, Pessoa, Ticket } from '~/types';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X, PlugZap, AlertCircle } from 'lucide-react';
+import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Trash2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X, PlugZap, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
@@ -21,7 +21,7 @@ import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/Onboarding
 
 import { Progress } from '@/components/ui/progress';
 
-export default function FinancialTab({ eventoId }: { eventoId: string }) {
+export default function FinancialTab({ eventoId, isActive }: { eventoId: string; isActive?: boolean }) {
   const { user, profile } = useAuth();
   const [financialTourOpen, setFinancialTourOpen] = useState(false);
   const [payments, setPayments] = useState<Pagamento[]>([]);
@@ -89,6 +89,10 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   useEffect(() => {
     fetchData();
   }, [eventoId]);
+
+  useEffect(() => {
+    if (isActive) fetchData();
+  }, [isActive]);
 
   useEffect(() => {
     if (user && !hasTourBeenSeen(user.uid, 'financeiro')) {
@@ -200,6 +204,39 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     setEditingPaymentId(pay.id);
     setIsHistoryDialogOpen(false); // Close history to open pay dialog
     setIsPayDialogOpen(true);
+  };
+
+  const handleDeletePayment = async (pay: Pagamento) => {
+    if (!confirm(`Excluir pagamento de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(pay.valor)}? Essa ação não pode ser desfeita.`)) return;
+
+    try {
+      await removeDocument(`eventos/${eventoId}/pagamentos`, pay.id);
+
+      const reg = registrations.find(r => r.id === pay.inscricaoId);
+      if (reg) {
+        const remaining = payments.filter(p => p.id !== pay.id && p.inscricaoId === reg.id);
+        const newValorPago = remaining.filter(p => p.status === 'pago').reduce((sum, p) => sum + p.valor, 0);
+
+        let newStatus: Inscricao['status'] = 'pendente';
+        if (reg.precisa_ajuda) {
+          newStatus = 'ajuda_solicitada';
+        } else if (newValorPago >= reg.valor_total) {
+          newStatus = 'pago';
+        } else if (newValorPago > 0) {
+          newStatus = 'pagamento_iniciado';
+        }
+
+        await updateDocument(`eventos/${eventoId}/inscricoes`, reg.id, {
+          valor_pago: newValorPago,
+          status: newStatus,
+        });
+      }
+
+      toast.success('Pagamento excluído.');
+      fetchData();
+    } catch {
+      toast.error('Erro ao excluir pagamento.');
+    }
   };
 
   const getInscritoNome = (r: Inscricao & { pessoa?: Pessoa }): string => {
@@ -767,9 +804,14 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                         </TableCell>
                         <TableCell className="px-6 text-right">
                           {pay.origem === 'manual' && (
-                            <Button variant="ghost" size="icon" onClick={() => handleEditPayment(pay)} className="h-8 w-8 hover:bg-primary/10 text-primary rounded-lg">
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
+                            <div className="flex items-center justify-end gap-1">
+                              <Button variant="ghost" size="icon" onClick={() => handleEditPayment(pay)} className="h-8 w-8 hover:bg-primary/10 text-primary rounded-lg">
+                                <Edit2 className="w-4 h-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleDeletePayment(pay)} className="h-8 w-8 hover:bg-red-50 text-muted-foreground hover:text-red-500 rounded-lg">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           )}
                         </TableCell>
                       </TableRow>

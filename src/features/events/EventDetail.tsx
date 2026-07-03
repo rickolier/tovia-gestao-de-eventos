@@ -428,7 +428,7 @@ export default function EventDetail() {
               <CheckinTab eventoId={evento.id} />
             </TabsContent>
             <TabsContent value="financial" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <FinancialTab eventoId={evento.id} />
+              <FinancialTab eventoId={evento.id} isActive={activeTab === 'financial'} />
             </TabsContent>
             <TabsContent value="calculadora" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <CalculatorTab evento={evento} onUpdate={fetchEventoData} />
