@@ -6,6 +6,7 @@ import { getDocument, createDocument, listDocuments, removeDocument } from '~/se
 import { notifIfReadOrMissing } from '~/utils/notifications';
 import { UserProfile, PlanLevel, ConvitePendente } from '../types';
 import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
+import { gerarCodigoProdutor } from '~/utils/codigos';
 import { where, doc, getDocFromServer } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 
@@ -167,6 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
               plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? null,
+              codigo: isAdmin ? undefined : gerarCodigoProdutor(),
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {

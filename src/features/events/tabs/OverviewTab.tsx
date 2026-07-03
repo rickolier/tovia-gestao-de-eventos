@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Evento, Inscricao, Ticket } from '~/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Users, Building, Info, CheckCircle, Share2, Copy, Check, TrendingUp, DollarSign, Edit2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Info, Copy, Check, TrendingUp, DollarSign, Edit2, Link2 } from 'lucide-react';
 import { listDocuments } from '~/services/firestore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useAuth } from '~/context/AuthContext';
 
 export default function OverviewTab({ evento }: { evento: Evento }) {
+  const { profile } = useAuth();
   const [occupiedSlots, setOccupiedSlots] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -33,9 +35,12 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
     fetchData();
   }, [evento.id]);
 
+  const registrationUrl = profile?.codigo && evento.codigo
+    ? `${window.location.origin}/${profile.codigo}/${evento.codigo}`
+    : `${window.location.origin}/inscricao/${evento.id}`;
+
   const copyRegistrationLink = () => {
-    const url = `${window.location.origin}/inscricao/${evento.id}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(registrationUrl);
     setCopied(true);
     toast.success('Link de inscrição copiado!');
     setTimeout(() => setCopied(false), 2000);
@@ -174,6 +179,31 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
       </div>
 
       <div className="space-y-6">
+        {/* Link de inscrição */}
+        <Card className="border-none shadow-sm rounded-2xl bg-card">
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <Link2 className="w-4 h-4 text-primary shrink-0" />
+              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Link de Inscrição</p>
+            </div>
+            <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2.5">
+              <p className="text-xs font-mono text-foreground flex-1 truncate">{registrationUrl.replace(/^https?:\/\//, '')}</p>
+              <button
+                onClick={copyRegistrationLink}
+                className="shrink-0 text-muted-foreground hover:text-primary transition-colors"
+              >
+                {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            {profile?.codigo && evento.codigo && (
+              <p className="text-[10px] text-muted-foreground">
+                Produtor <span className="font-black text-foreground">{profile.codigo}</span>
+                {' · '}Evento <span className="font-black text-foreground">{evento.codigo}</span>
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-none shadow-xl rounded-3xl bg-primary text-primary-foreground">
           <CardHeader profile="p-8">
             <CardTitle className="text-xl font-black">Resumo de Vagas</CardTitle>

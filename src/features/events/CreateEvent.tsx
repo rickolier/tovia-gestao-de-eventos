@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ImageCropper from '~/components/ImageCropper';
 import { useAuth } from '~/context/AuthContext';
 import { createDocument, updateDocument, listDocuments } from '~/services/firestore';
+import { gerarCodigoEvento } from '~/utils/codigos';
 import { Email } from '~/services/email';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -169,6 +170,7 @@ export default function CreateEvent() {
       }
 
       const dadosEvento = {
+        codigo: gerarCodigoEvento(),
         nome: dadosFormulario.nome,
         data_inicio: dataInicioISO,
         data_fim: dataFimISO,

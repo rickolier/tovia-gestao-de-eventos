@@ -1032,3 +1032,36 @@ export default function PublicRegistration() {
   const { id } = useParams<{ id: string }>();
   return <RegistrationFlow eventoId={id} />;
 }
+
+export function PublicRegistrationByCodigo() {
+  const { eventoCodigo } = useParams<{ orgCodigo: string; eventoCodigo: string }>();
+  const [eventoId, setEventoId] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!eventoCodigo) { setNotFound(true); return; }
+    import('~/services/firestore').then(({ listDocuments }) =>
+      import('firebase/firestore').then(({ where }) =>
+        listDocuments<{ id: string }>('eventos', [where('codigo', '==', eventoCodigo)])
+      )
+    ).then(results => {
+      if (results.length === 0) setNotFound(true);
+      else setEventoId(results[0].id);
+    }).catch(() => setNotFound(true));
+  }, [eventoCodigo]);
+
+  if (notFound) return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center space-y-2">
+        <p className="text-2xl font-black text-foreground">Evento não encontrado</p>
+        <p className="text-sm text-muted-foreground">Verifique o link e tente novamente.</p>
+      </div>
+    </div>
+  );
+  if (!eventoId) return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+  return <RegistrationFlow eventoId={eventoId} />;
+}

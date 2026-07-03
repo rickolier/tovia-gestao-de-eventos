@@ -222,9 +222,17 @@ export default function ProfileTab() {
           onCancel={() => setCropSrc(null)}
         />
       )}
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-black tracking-tight text-foreground">Perfil</h2>
-        <p className="text-sm text-muted-foreground">Configure as informações públicas da sua instituição e perfil de produtor.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Perfil</h2>
+          <p className="text-sm text-muted-foreground">Configure as informações públicas da sua instituição e perfil de produtor.</p>
+        </div>
+        {profile?.codigo && (
+          <div className="shrink-0 flex flex-col items-end gap-0.5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Código do produtor</p>
+            <p className="text-2xl font-black text-primary tracking-widest">{profile.codigo}</p>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

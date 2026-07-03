@@ -48,6 +48,7 @@ export interface UserProfile {
   site?: string;
   telefone?: string;
   imagem_url?: string;
+  codigo?: string;
   plano: PlanLevel | null;
   planoPendente?: string | null;
   asaasCustomerId?: string | null;
@@ -98,6 +99,7 @@ export interface EquipeMembro {
 
 export interface Evento {
   id: string;
+  codigo?: string;
   nome: string;
   data_inicio: string;
   data_fim: string;

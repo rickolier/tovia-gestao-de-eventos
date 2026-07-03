@@ -11,7 +11,7 @@ import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
-import PublicRegistration from '~/features/public-pages/PublicRegistration';
+import PublicRegistration, { PublicRegistrationByCodigo } from '~/features/public-pages/PublicRegistration';
 import PublicSalesPage from '~/features/public-pages/PublicSalesPage';
 import PublicOrganizerProfile from '~/features/public-pages/PublicOrganizerProfile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -141,6 +141,7 @@ export default function App() {
             />
             <Route path="/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/inscricao/:id" element={<PublicRegistration />} />
+            <Route path="/:orgCodigo/:eventoCodigo" element={<PublicRegistrationByCodigo />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
             <Route path="/consultar" element={<ConsultarInscricao />} />
