@@ -122,7 +122,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     setUploadingReceipt(true);
     try {
       const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
-      const fileRef = ref(storage, `eventos/${eventoId}/comprovantes/${uuidv4()}.${ext}`);
+      const fileRef = ref(storage, `eventos/${eventoId}/comprovantes/${user!.uid}/${uuidv4()}.${ext}`);
       await uploadBytes(fileRef, file);
       const url = await getDownloadURL(fileRef);
       setFormData(prev => ({ ...prev, comprovante_url: url }));

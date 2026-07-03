@@ -10,6 +10,16 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/.*');
     }
 
+    // Comprovantes de pagamento — escrita pelo organizador autenticado.
+    match /eventos/{eventoId}/comprovantes/{userId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024
+                   && (request.resource.contentType.matches('image/.*')
+                       || request.resource.contentType == 'application/pdf');
+    }
+
     // Capas de eventos — leitura pública, escrita APENAS via Cloud Function (Admin SDK).
     // O upload direto do client SDK está bloqueado; a função uploadEventCover
     // verifica ownership antes de gravar.
