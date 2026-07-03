@@ -1193,7 +1193,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="idade" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Idade</Label>
-                      <Input id="idade" type="number" value={formData.idade} onChange={e => setFormData({...formData, idade: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
+                      <Input id="idade" type="number" value={formData.idade || ''} onFocus={e => e.target.select()} onChange={e => setFormData({...formData, idade: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Gênero</Label>

@@ -259,6 +259,7 @@ export default function CuponsTab({ eventoId }: Props) {
                   min={0}
                   max={form.tipo === 'porcentagem' ? 100 : undefined}
                   value={form.valor}
+                  onFocus={e => e.target.select()}
                   onChange={e => setForm(f => ({ ...f, valor: e.target.value }))}
                   className="rounded-xl h-11"
                 />
@@ -274,6 +275,7 @@ export default function CuponsTab({ eventoId }: Props) {
                   placeholder="Ilimitado"
                   min={1}
                   value={form.limite_usos}
+                  onFocus={e => e.target.select()}
                   onChange={e => setForm(f => ({ ...f, limite_usos: e.target.value }))}
                   className="rounded-xl h-11"
                 />

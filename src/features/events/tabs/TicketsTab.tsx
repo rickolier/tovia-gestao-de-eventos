@@ -311,6 +311,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       min={0}
                       max={100000}
                       value={formData.limite_vagas || ''}
+                      onFocus={e => e.target.select()}
                       onChange={e => setFormData({...formData, limite_vagas: Number(e.target.value)})}
                       className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors"
                       placeholder="0 = Ilimitado"

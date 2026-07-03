@@ -579,7 +579,8 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
               <Input
                 type="number" min={1}
                 placeholder="Ex: 10"
-                value={form.vagas}
+                value={form.vagas || ''}
+                onFocus={e => e.target.select()}
                 onChange={e => setForm({ ...form, vagas: Number(e.target.value) })}
                 className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary shadow-sm"
               />
@@ -728,11 +729,11 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Qtd {label.plural}</Label>
-                <Input type="number" value={autoConfig.quantidade} onChange={e => setAutoConfig({ ...autoConfig, quantidade: Number(e.target.value) })} className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm" />
+                <Input type="number" value={autoConfig.quantidade || ''} onFocus={e => e.target.select()} onChange={e => setAutoConfig({ ...autoConfig, quantidade: Number(e.target.value) })} className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm" />
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Vagas / {label.singular}</Label>
-                <Input type="number" value={autoConfig.vagas} onChange={e => setAutoConfig({ ...autoConfig, vagas: Number(e.target.value) })} className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm" />
+                <Input type="number" value={autoConfig.vagas || ''} onFocus={e => e.target.select()} onChange={e => setAutoConfig({ ...autoConfig, vagas: Number(e.target.value) })} className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm" />
               </div>
             </div>
             <div className="space-y-2">

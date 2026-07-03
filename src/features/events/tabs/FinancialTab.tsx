@@ -636,7 +636,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="valor_pay" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor (R$)</Label>
-                <Input id="valor_pay" type="number" step="0.01" value={formData.valor} onChange={e => setFormData({...formData, valor: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
+                <Input id="valor_pay" type="number" step="0.01" value={formData.valor || ''} onFocus={e => e.target.select()} onChange={e => setFormData({...formData, valor: Number(e.target.value)})} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors" />
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Método</Label>
