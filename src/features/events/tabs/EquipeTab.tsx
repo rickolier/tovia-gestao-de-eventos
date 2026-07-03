@@ -188,7 +188,7 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         </button>
       </div>
 
-      {subTab === 'tarefas' && <TasksTab eventoId={evento.id} />}
+      {subTab === 'tarefas' && <TasksTab eventoId={evento.id} equipe={equipe} />}
 
       {subTab === 'membros' && isOwner && (
         <div className="max-w-2xl mx-auto space-y-8">

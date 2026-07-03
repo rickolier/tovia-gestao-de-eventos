@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
-import { Task, AppNotification } from '~/types';
+import { Task, AppNotification, EquipeMembro } from '~/types';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -46,8 +46,8 @@ const STATUS_LIST = [
   { value: 'atrasada', label: 'Atrasado', color: 'bg-red-100 text-red-700' }
 ];
 
-export default function TasksTab({ eventoId }: { eventoId: string }) {
-  const { user } = useAuth();
+export default function TasksTab({ eventoId, equipe = [] }: { eventoId: string; equipe?: EquipeMembro[] }) {
+  const { user, profile } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,6 +62,11 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
     dataLimite: new Date().toISOString().split('T')[0],
     prioridade: 'media' as 'baixa' | 'media' | 'alta'
   });
+
+  const memberOptions: string[] = [
+    ...(profile?.nome ? [profile.nome] : []),
+    ...equipe.filter(m => m.userId !== user?.uid && m.nome).map(m => m.nome),
+  ];
 
   const fetchData = async () => {
     setLoading(true);
@@ -457,13 +462,26 @@ export default function TasksTab({ eventoId }: { eventoId: string }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Responsável</Label>
-                <Input 
-                  value={formData.responsavel} 
-                  onChange={e => setFormData({...formData, responsavel: e.target.value})} 
-                  placeholder="Nome da pessoa"
-                  className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"
-                  required
-                />
+                {memberOptions.length > 0 ? (
+                  <Select value={formData.responsavel} onValueChange={v => setFormData({...formData, responsavel: v})}>
+                    <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
+                      <span>{formData.responsavel || <span className="text-muted-foreground font-normal">Selecione</span>}</span>
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-none shadow-2xl">
+                      {memberOptions.map(nome => (
+                        <SelectItem key={nome} value={nome} className="font-medium">{nome}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input
+                    value={formData.responsavel}
+                    onChange={e => setFormData({...formData, responsavel: e.target.value})}
+                    placeholder="Nome da pessoa"
+                    className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Data Limite</Label>
