@@ -47,8 +47,9 @@ async function checkRateLimit(uid: string, action: string, maxPerHour = 20): Pro
 }
 
 const PLAN_PRICES: Record<string, number> = {
-  essencial: 39.90,
-  pro: 99.00,
+  start: 39,
+  essencial: 99,
+  pro: 249,
 };
 
 // ─── Criar checkout de assinatura ─────────────────────────────────────────────

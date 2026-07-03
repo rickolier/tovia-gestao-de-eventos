@@ -5,18 +5,53 @@ import { db, verifyAuth } from './_firebase';
 
 const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
 
-const PLAN_PRICES: Record<string, number> = {
-  essencial: 39.90,
-  pro: 99.00,
+const MONTHLY_PRICES: Record<string, number> = {
+  start: 39,
+  essencial: 99,
+  pro: 249,
+};
+
+const ANNUAL_PRICES: Record<string, number> = {
+  start: 390,
+  essencial: 990,
+  pro: 2490,
+};
+
+const PLAN_LABEL: Record<string, string> = {
+  start: 'Start',
+  essencial: 'Essencial',
+  pro: 'Pro',
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { planLevel, userId, userName, userEmail, userCpfCnpj, userPhone, userCep, userEndereco, userNumero, userComplemento, userBairro } = req.body || {};
+  const {
+    planLevel,
+    period = 'monthly',
+    paymentMethod = 'credit_card',
+    userId,
+    userName,
+    userEmail,
+    userCpfCnpj,
+    userPhone,
+    userCep,
+    userEndereco,
+    userNumero,
+    userComplemento,
+    userBairro,
+  } = req.body || {};
 
   if (!planLevel || !userId || !userEmail) {
     return res.status(400).json({ error: 'Dados incompletos.' });
+  }
+
+  if (!['start', 'essencial', 'pro'].includes(planLevel)) {
+    return res.status(400).json({ error: 'Plano inválido.' });
+  }
+
+  if (!['monthly', 'annual'].includes(period)) {
+    return res.status(400).json({ error: 'Período inválido.' });
   }
 
   try {
@@ -25,17 +60,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(e.status ?? 401).json({ error: e.message });
   }
 
-  // Plano gratuito — ativa direto no Firestore
-  if (planLevel === 'start') {
-    await db.collection('users').doc(userId).set(
-      { plano: 'start', asaasSubscriptionId: null, planoPendente: null },
-      { merge: true }
-    );
-    return res.json({ success: true, free: true });
-  }
-
-  const price = PLAN_PRICES[planLevel];
-  if (!price) return res.status(400).json({ error: 'Plano inválido.' });
+  const price = period === 'annual' ? ANNUAL_PRICES[planLevel] : MONTHLY_PRICES[planLevel];
+  if (!price) return res.status(400).json({ error: 'Preço não encontrado.' });
 
   const apiKey = process.env.ASAAS_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'Configuração de pagamento ausente.' });
@@ -63,13 +89,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (userData.asaasCustomerId) {
       customerId = userData.asaasCustomerId;
-      // Tenta atualizar o cliente com CPF/CNPJ
       if (userCpfCnpj) {
         try {
           await axios.put(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers });
-        } catch (updateErr: any) {
-          console.error('Erro ao atualizar cliente no Asaas, criando novo.', updateErr?.response?.status);
-          // Se falhar, cria novo cliente e sobrescreve o ID
+        } catch {
           const newCustomerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
           customerId = newCustomerRes.data.id;
           await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
@@ -78,61 +101,111 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } else {
       const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
       customerId = customerRes.data.id;
+      await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
+    }
+
+    const description = `Tovia - Plano ${PLAN_LABEL[planLevel]} ${period === 'annual' ? 'Anual' : 'Mensal'}`;
+
+    if (period === 'monthly') {
+      // Assinatura recorrente mensal com cartão de crédito
+      let subscriptionId: string;
+      try {
+        const subscriptionRes = await axios.post(
+          `${ASAAS_BASE_URL}/subscriptions`,
+          {
+            customer: customerId,
+            billingType: 'CREDIT_CARD',
+            value: price,
+            nextDueDate: new Date().toISOString().split('T')[0],
+            cycle: 'MONTHLY',
+            description,
+            externalReference: `${userId}:${planLevel}:monthly`,
+          },
+          { headers }
+        );
+        subscriptionId = subscriptionRes.data.id;
+      } catch (subErr: any) {
+        console.error('Erro ao criar assinatura no Asaas.', subErr?.response?.status);
+        return res.status(500).json({ error: 'Erro ao criar assinatura no Asaas.' });
+      }
+
+      // Buscar link da primeira cobrança
+      let paymentUrl: string | null = null;
+      try {
+        const paymentsRes = await axios.get(
+          `${ASAAS_BASE_URL}/subscriptions/${subscriptionId}/payments`,
+          { headers }
+        );
+        const firstPayment = paymentsRes.data.data?.[0];
+        paymentUrl = firstPayment?.invoiceUrl || firstPayment?.bankSlipUrl || null;
+      } catch {
+        // Assinatura criada, link indisponível
+      }
+
       await db.collection('users').doc(userId).set(
-        { asaasCustomerId: customerId },
+        {
+          asaasSubscriptionId: subscriptionId,
+          planoPendente: planLevel,
+          subscriptionPeriod: 'monthly',
+        },
         { merge: true }
       );
+
+      if (!paymentUrl) {
+        return res.status(500).json({ error: 'Assinatura criada, mas link de pagamento indisponível. Tente novamente em instantes.' });
+      }
+
+      return res.json({ paymentUrl, subscriptionId });
     }
 
-    // 2. Criar assinatura recorrente mensal
-    let subscriptionId: string;
-    try {
-      const subscriptionRes = await axios.post(
-        `${ASAAS_BASE_URL}/subscriptions`,
-        {
-          customer: customerId,
-          billingType: 'UNDEFINED',
-          value: price,
-          nextDueDate: new Date().toISOString().split('T')[0],
-          cycle: 'MONTHLY',
-          description: `Tovia - Plano ${planLevel.charAt(0).toUpperCase() + planLevel.slice(1)}`,
-          externalReference: `${userId}:${planLevel}`,
-        },
-        { headers }
-      );
-      subscriptionId = subscriptionRes.data.id;
-    } catch (subErr: any) {
-      console.error('Erro ao criar assinatura no Asaas.', subErr?.response?.status);
-      return res.status(500).json({ error: 'Erro ao criar assinatura no Asaas.' });
-    }
+    // Plano anual — pagamento único (cartão 12x ou PIX à vista)
+    const effectivePaymentMethod = paymentMethod === 'pix' ? 'pix' : 'credit_card';
+    const billingType = effectivePaymentMethod === 'pix' ? 'PIX' : 'CREDIT_CARD';
 
-    // 3. Buscar link de pagamento da primeira cobrança
+    let paymentId: string;
     let paymentUrl: string | null = null;
     try {
-      const paymentsRes = await axios.get(
-        `${ASAAS_BASE_URL}/subscriptions/${subscriptionId}/payments`,
-        { headers }
-      );
-      const firstPayment = paymentsRes.data.data?.[0];
-      paymentUrl = firstPayment?.invoiceUrl || firstPayment?.bankSlipUrl || null;
+      const paymentPayload: any = {
+        customer: customerId,
+        billingType,
+        value: price,
+        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        description,
+        externalReference: `${userId}:${planLevel}:annual:${effectivePaymentMethod}`,
+      };
+
+      if (effectivePaymentMethod === 'credit_card') {
+        paymentPayload.installmentCount = 12;
+        paymentPayload.installmentValue = +(price / 12).toFixed(2);
+      }
+
+      const paymentRes = await axios.post(`${ASAAS_BASE_URL}/payments`, paymentPayload, { headers });
+      paymentId = paymentRes.data.id;
+      paymentUrl = paymentRes.data.invoiceUrl || paymentRes.data.bankSlipUrl || null;
     } catch (payErr: any) {
-      console.error('Erro ao buscar pagamento no Asaas.', payErr?.response?.status);
-      // Assinatura criada mas link indisponível — salva mesmo assim para não perder o subscriptionId
+      console.error('Erro ao criar pagamento anual no Asaas.', payErr?.response?.status);
+      return res.status(500).json({ error: 'Erro ao criar pagamento no Asaas.' });
     }
 
-    // 4. Salvar no Firestore (sempre, mesmo sem paymentUrl)
+    const annualExpiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+
     await db.collection('users').doc(userId).set(
-      { asaasSubscriptionId: subscriptionId, planoPendente: planLevel },
+      {
+        planoPendente: planLevel,
+        subscriptionPeriod: 'annual',
+        subscriptionExpiresAt: annualExpiresAt,
+        asaasSubscriptionId: paymentId,
+      },
       { merge: true }
     );
 
     if (!paymentUrl) {
-      return res.status(500).json({ error: 'Assinatura criada, mas link de pagamento indisponível. Tente novamente em instantes.' });
+      return res.status(500).json({ error: 'Pagamento criado, mas link indisponível. Tente novamente em instantes.' });
     }
 
-    return res.json({ paymentUrl, subscriptionId });
+    return res.json({ paymentUrl, paymentId });
   } catch (err: any) {
     console.error('Asaas error.', err?.response?.status);
-    return res.status(500).json({ error: 'Erro ao processar assinatura. Tente novamente.' });
+    return res.status(500).json({ error: 'Erro ao processar pagamento. Tente novamente.' });
   }
 }

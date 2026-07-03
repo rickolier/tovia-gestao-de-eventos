@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { PlanLevel } from '~/types';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2, ExternalLink, AlertTriangle } from 'lucide-react';
+import {
+  Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2,
+  ExternalLink, AlertTriangle, CreditCard, QrCode, AlertCircle,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -20,30 +23,49 @@ const MODULE_DESCRIPTIONS = [
 
 const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro', 'personalizado'];
 const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
-const PLAN_PRICES: Record<PlanLevel, string> = { start: 'R$ 39/mês', essencial: 'R$ 99/mês', pro: 'R$ 249/mês', personalizado: 'Personalizado' };
+
+const MONTHLY_PRICES: Record<PlanLevel, string> = {
+  start: 'R$ 39/mês', essencial: 'R$ 99/mês', pro: 'R$ 249/mês', personalizado: 'Sob consulta',
+};
+const ANNUAL_PRICES: Record<PlanLevel, string> = {
+  start: 'R$ 32,50/mês', essencial: 'R$ 82,50/mês', pro: 'R$ 207,50/mês', personalizado: 'Sob consulta',
+};
+const ANNUAL_TOTALS: Record<PlanLevel, string> = {
+  start: 'R$ 390/ano', essencial: 'R$ 990/ano', pro: 'R$ 2.490/ano', personalizado: '',
+};
 const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2, personalizado: 3 };
+
+type Period = 'monthly' | 'annual';
+type PaymentMethod = 'credit_card' | 'pix';
 
 export default function Plans() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const trialExpired = (location.state as any)?.trialExpired ?? false;
+
   const [selected, setSelected] = useState<PlanLevel | null>(null);
+  const [period, setPeriod] = useState<Period>('monthly');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
   const [saving, setSaving] = useState(false);
+  const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
 
   const currentPlan = profile?.plano;
   const activeSelection = selected ?? currentPlan ?? null;
-  const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
 
   const executePlanChange = async () => {
-    if (!selected || !user) return;
+    if (!selected || !user || selected === 'personalizado') return;
     setShowDowngradeWarning(false);
     setSaving(true);
     try {
       const idToken = await user.getIdToken();
       const response = await fetch('/api/createCheckout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
         body: JSON.stringify({
           planLevel: selected,
+          period,
+          paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
           userId: user.uid,
           userName: profile?.nome || user.displayName || '',
           userEmail: user.email || '',
@@ -58,16 +80,12 @@ export default function Plans() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-      if (data.free) {
-        toast.success('Plano Start ativado!');
-        navigate('/dashboard');
-      } else if (data.paymentUrl) {
+      if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
         navigate('/planos/aguardando');
       }
     } catch (err: any) {
-      console.error(err);
       toast.error(err?.message || 'Erro ao processar. Tente novamente.');
     } finally {
       setSaving(false);
@@ -75,13 +93,15 @@ export default function Plans() {
   };
 
   const handleConfirm = async () => {
-    if (!selected || !user || selected === currentPlan) return;
+    if (!selected || !user || selected === currentPlan || selected === 'personalizado') return;
     if (currentPlan && PLAN_RANK[selected] < PLAN_RANK[currentPlan]) {
       setShowDowngradeWarning(true);
       return;
     }
     await executePlanChange();
   };
+
+  const displayPrice = period === 'monthly' ? MONTHLY_PRICES : ANNUAL_PRICES;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start p-6">
@@ -100,12 +120,27 @@ export default function Plans() {
           <div className="w-16" />
         </div>
 
+        {/* Trial expired banner */}
+        {trialExpired && (
+          <div className="bg-amber-500/20 border border-amber-400/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-amber-400/20 flex items-center justify-center shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5 text-amber-300" />
+            </div>
+            <div>
+              <p className="text-white font-black text-sm">Seu trial de 14 dias expirou</p>
+              <p className="text-white/60 text-sm mt-1">
+                Escolha um plano para continuar acessando o Tovia.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Title */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-2xl font-black text-white tracking-tight">Escolha seu plano</h1>
           <p className="text-white/60 text-sm mt-2">
             Selecione os módulos que melhor se encaixam na sua necessidade.
-            {currentPlan && (
+            {currentPlan && !trialExpired && (
               <span className="ml-1 text-white/40">
                 (Plano atual: <span className="text-white/70 font-semibold">{PLAN_CONFIGS[currentPlan].name}</span>)
               </span>
@@ -113,8 +148,38 @@ export default function Plans() {
           </p>
         </div>
 
+        {/* Period toggle */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-white/10 rounded-2xl p-1 flex gap-1">
+            <button
+              onClick={() => setPeriod('monthly')}
+              className={cn(
+                'px-5 py-2 rounded-xl text-sm font-bold transition-all',
+                period === 'monthly' ? 'bg-white text-primary shadow' : 'text-white/70 hover:text-white',
+              )}
+            >
+              Mensal
+            </button>
+            <button
+              onClick={() => setPeriod('annual')}
+              className={cn(
+                'px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
+                period === 'annual' ? 'bg-white text-primary shadow' : 'text-white/70 hover:text-white',
+              )}
+            >
+              Anual
+              <span className={cn(
+                'text-[10px] font-black px-2 py-0.5 rounded-full',
+                period === 'annual' ? 'bg-primary text-white' : 'bg-white/20 text-white',
+              )}>
+                2 meses grátis
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
           {PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
             const moduleCount = PLAN_MODULES_COUNT[level];
@@ -129,22 +194,21 @@ export default function Plans() {
                   'relative flex flex-col gap-5 p-7 rounded-3xl text-left transition-all duration-200 border-2',
                   isSelected
                     ? 'bg-white border-white shadow-2xl scale-[1.02]'
-                    : 'bg-white/10 border-white/20 hover:bg-white/20 hover:border-white/40'
+                    : 'bg-white/10 border-white/20 hover:bg-white/20 hover:border-white/40',
                 )}
               >
-                {/* Badges */}
                 <div className="flex items-center justify-between">
                   <span className={cn(
                     'text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full',
-                    isSelected ? 'bg-primary text-white' : 'bg-white/20 text-white'
+                    isSelected ? 'bg-primary text-white' : 'bg-white/20 text-white',
                   )}>
                     {config.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    {isCurrent && (
+                    {isCurrent && !trialExpired && (
                       <span className={cn(
                         'text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full',
-                        isSelected ? 'bg-primary/10 text-primary' : 'bg-white/20 text-white/70'
+                        isSelected ? 'bg-primary/10 text-primary' : 'bg-white/20 text-white/70',
                       )}>
                         Atual
                       </span>
@@ -157,51 +221,37 @@ export default function Plans() {
                   </div>
                 </div>
 
-                {/* Label + description */}
                 <div>
-                  <h3 className={cn(
-                    'text-xl font-black leading-tight',
-                    isSelected ? 'text-foreground' : 'text-white'
-                  )}>
+                  <h3 className={cn('text-xl font-black leading-tight', isSelected ? 'text-foreground' : 'text-white')}>
                     {config.label}
                   </h3>
-                  <p className={cn(
-                    'text-sm mt-1',
-                    isSelected ? 'text-muted-foreground' : 'text-white/60'
-                  )}>
+                  <p className={cn('text-sm mt-1', isSelected ? 'text-muted-foreground' : 'text-white/60')}>
                     {config.description}
                   </p>
                 </div>
 
-                {/* Price */}
                 <div>
-                  <span className={cn(
-                    'text-2xl font-black',
-                    isSelected ? 'text-primary' : 'text-white'
-                  )}>
-                    {PLAN_PRICES[level]}
+                  <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
+                    {displayPrice[level]}
                   </span>
+                  {period === 'annual' && level !== 'personalizado' && (
+                    <p className={cn('text-xs mt-1', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
+                      {ANNUAL_TOTALS[level]} · 2 meses grátis
+                    </p>
+                  )}
                 </div>
 
-                {/* Modules */}
                 <div className="flex flex-col gap-3">
                   {MODULE_LABELS.slice(0, moduleCount).map((mod, i) => {
                     const Icon = MODULE_ICONS[i];
                     return (
                       <div key={mod} className="flex items-start gap-3">
-                        <div className={cn(
-                          'w-8 h-8 rounded-xl flex items-center justify-center shrink-0',
-                          isSelected ? 'bg-primary/10' : 'bg-white/10'
-                        )}>
+                        <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center shrink-0', isSelected ? 'bg-primary/10' : 'bg-white/10')}>
                           <Icon className={cn('w-4 h-4', isSelected ? 'text-primary' : 'text-white')} />
                         </div>
                         <div>
-                          <p className={cn('text-sm font-bold', isSelected ? 'text-foreground' : 'text-white')}>
-                            {mod}
-                          </p>
-                          <p className={cn('text-xs', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
-                            {MODULE_DESCRIPTIONS[i]}
-                          </p>
+                          <p className={cn('text-sm font-bold', isSelected ? 'text-foreground' : 'text-white')}>{mod}</p>
+                          <p className={cn('text-xs', isSelected ? 'text-muted-foreground' : 'text-white/50')}>{MODULE_DESCRIPTIONS[i]}</p>
                         </div>
                       </div>
                     );
@@ -220,7 +270,42 @@ export default function Plans() {
           })}
         </div>
 
-        {/* Dialog de aviso de downgrade */}
+        {/* Annual payment method selector */}
+        {period === 'annual' && selected && selected !== 'personalizado' && (
+          <div className="bg-white/10 rounded-2xl p-5 mb-6">
+            <p className="text-white/70 text-sm font-semibold mb-3">Forma de pagamento para o plano anual:</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPaymentMethod('credit_card')}
+                className={cn(
+                  'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
+                  paymentMethod === 'credit_card' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
+                )}
+              >
+                <CreditCard className={cn('w-5 h-5 shrink-0', paymentMethod === 'credit_card' ? 'text-primary' : 'text-white')} />
+                <div className="text-left">
+                  <p className={cn('text-sm font-bold', paymentMethod === 'credit_card' ? 'text-foreground' : 'text-white')}>Cartão de crédito</p>
+                  <p className={cn('text-xs', paymentMethod === 'credit_card' ? 'text-muted-foreground' : 'text-white/60')}>12x sem juros</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setPaymentMethod('pix')}
+                className={cn(
+                  'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
+                  paymentMethod === 'pix' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
+                )}
+              >
+                <QrCode className={cn('w-5 h-5 shrink-0', paymentMethod === 'pix' ? 'text-primary' : 'text-white')} />
+                <div className="text-left">
+                  <p className={cn('text-sm font-bold', paymentMethod === 'pix' ? 'text-foreground' : 'text-white')}>PIX</p>
+                  <p className={cn('text-xs', paymentMethod === 'pix' ? 'text-muted-foreground' : 'text-white/60')}>À vista</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Downgrade warning dialog */}
         <Dialog open={showDowngradeWarning} onOpenChange={setShowDowngradeWarning}>
           <DialogContent className="max-w-sm rounded-3xl">
             <DialogHeader>
@@ -231,24 +316,16 @@ export default function Plans() {
             </DialogHeader>
             <div className="space-y-4 pt-1">
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Ao mudar para o plano <strong className="text-foreground">{selected ? PLAN_PRICES[selected].split('/')[0] : ''} ({selected && selected.charAt(0).toUpperCase() + selected.slice(1)})</strong>, você perderá acesso aos módulos que não fazem parte do novo plano.
+                Ao mudar para o plano <strong className="text-foreground">{selected && PLAN_CONFIGS[selected]?.name}</strong>, você perderá acesso aos módulos que não fazem parte do novo plano.
               </p>
               <p className="text-sm text-muted-foreground">
                 Seus dados e eventos já criados permanecem salvos.
               </p>
               <div className="flex gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  className="flex-1 rounded-xl"
-                  onClick={() => setShowDowngradeWarning(false)}
-                >
+                <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowDowngradeWarning(false)}>
                   Cancelar
                 </Button>
-                <Button
-                  className="flex-1 rounded-xl bg-primary text-white font-bold"
-                  onClick={executePlanChange}
-                  disabled={saving}
-                >
+                <Button className="flex-1 rounded-xl bg-primary text-white font-bold" onClick={executePlanChange} disabled={saving}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Confirmar mudança'}
                 </Button>
               </div>
@@ -258,21 +335,28 @@ export default function Plans() {
 
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pb-10">
-          <Button
-            onClick={handleConfirm}
-            disabled={!selected || selected === currentPlan || saving}
-            className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
-          >
-            {saving ? (
-              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
-            ) : selected === currentPlan ? (
-              <><CheckCircle2 className="w-5 h-5 mr-2" /> Plano atual</>
-            ) : selected === 'start' ? (
-              <>Ativar gratuitamente</>
-            ) : (
-              <><ExternalLink className="w-5 h-5 mr-2" /> Ir para o pagamento</>
-            )}
-          </Button>
+          {selected === 'personalizado' ? (
+            <a
+              href="mailto:contato@toviaapp.com.br"
+              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all flex items-center gap-2"
+            >
+              Falar com a equipe <ExternalLink className="w-5 h-5" />
+            </a>
+          ) : (
+            <Button
+              onClick={handleConfirm}
+              disabled={!selected || (selected === currentPlan && !trialExpired) || saving}
+              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
+            >
+              {saving ? (
+                <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
+              ) : selected && selected === currentPlan && !trialExpired ? (
+                <><CheckCircle2 className="w-5 h-5 mr-2" /> Plano atual</>
+              ) : (
+                <><ExternalLink className="w-5 h-5 mr-2" /> Ir para o pagamento</>
+              )}
+            </Button>
+          )}
           <p className="text-white/40 text-xs">Você pode alterar o plano a qualquer momento.</p>
         </div>
       </div>

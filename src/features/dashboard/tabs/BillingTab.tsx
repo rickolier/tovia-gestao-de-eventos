@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard, Calendar, CheckCircle2, Clock, AlertCircle,
-  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt, AlertTriangle, Trash2,
+  ExternalLink, RefreshCw, ArrowUpCircle, User, Receipt, AlertTriangle, Trash2, Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
@@ -243,35 +243,74 @@ export default function BillingTab() {
     </div>
   );
 
-  // ── Sem assinatura (plano gratuito) ──────────────────────────────────────────
-  if (!data?.hasSubscription) return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-black tracking-tight text-foreground">Faturamento</h2>
-        <p className="text-sm text-muted-foreground">Gerencie sua assinatura e histórico de pagamentos.</p>
+  // ── Sem assinatura ───────────────────────────────────────────────────────────
+  if (!data?.hasSubscription) {
+    const trialEndsAt = profile?.trialEndsAt;
+    const isInTrial = trialEndsAt && !profile?.asaasSubscriptionId;
+    const trialDaysLeft = isInTrial
+      ? Math.max(0, Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+      : 0;
+
+    return (
+      <div className="max-w-3xl mx-auto space-y-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-black tracking-tight text-foreground">Faturamento</h2>
+          <p className="text-sm text-muted-foreground">Gerencie sua assinatura e histórico de pagamentos.</p>
+        </div>
+        <Card className="border-none shadow-sm rounded-3xl bg-card overflow-hidden">
+          <CardContent className="p-10 flex flex-col items-center text-center gap-5">
+            {isInTrial ? (
+              <>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Sparkles className="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                  <span className="bg-primary text-white text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                    Trial Pro ativo
+                  </span>
+                  <p className="text-lg font-black text-foreground mt-3">
+                    {trialDaysLeft > 0
+                      ? `${trialDaysLeft} dia${trialDaysLeft !== 1 ? 's' : ''} restante${trialDaysLeft !== 1 ? 's' : ''} no trial`
+                      : 'Seu trial expirou'}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {trialDaysLeft > 0
+                      ? 'Você tem acesso completo ao plano Pro. Escolha um plano para continuar após o trial.'
+                      : 'Escolha um plano para continuar usando o Tovia.'}
+                  </p>
+                </div>
+                <Button
+                  onClick={() => navigate('/planos')}
+                  className="bg-primary text-white rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-sm gap-2"
+                >
+                  <ArrowUpCircle className="w-5 h-5" /> Contratar agora
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                  <CreditCard className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-lg font-black text-foreground">Nenhuma assinatura ativa</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Escolha um plano para continuar usando o Tovia.
+                  </p>
+                </div>
+                <Button
+                  onClick={() => navigate('/planos')}
+                  className="bg-primary text-white rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-sm gap-2"
+                >
+                  <ArrowUpCircle className="w-5 h-5" /> Ver planos
+                </Button>
+              </>
+            )}
+          </CardContent>
+        </Card>
+        {zonaDePerigo}
       </div>
-      <Card className="border-none shadow-sm rounded-3xl bg-card">
-        <CardContent className="p-10 flex flex-col items-center text-center gap-5">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-            <CreditCard className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <div>
-            <p className="text-lg font-black text-foreground">Você está no plano gratuito</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Faça upgrade para um plano pago e acesse mais recursos.
-            </p>
-          </div>
-          <Button
-            onClick={() => navigate('/planos')}
-            className="bg-primary text-white rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-sm gap-2"
-          >
-            <ArrowUpCircle className="w-5 h-5" /> Ver planos
-          </Button>
-        </CardContent>
-      </Card>
-      {zonaDePerigo}
-    </div>
-  );
+    );
+  }
 
   const { subscription, customer, creditCard, payments = [] } = data;
   const paidCount = payments.filter(p => p.status === 'RECEIVED' || p.status === 'CONFIRMED').length;

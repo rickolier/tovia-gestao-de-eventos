@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'start',
+              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? null,
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {
