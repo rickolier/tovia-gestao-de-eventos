@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAuth } from '~/context/AuthContext';
 import { listDocuments } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
-import { orderBy } from 'firebase/firestore';
+import { orderBy, addDoc, collection } from 'firebase/firestore';
+import { db } from '~/services/firebase';
 import { cn } from '@/lib/utils';
 
 // ── Badge config ────────────────────────────────────────────────────────────
@@ -57,13 +58,55 @@ function articleMatchesPlan(tags: string[], plan: PlanKey): boolean {
   return badges.includes(plan);
 }
 
+type Categoria = 'problema' | 'duvida' | 'sugestao' | 'outro';
+
+const CATEGORIAS: { value: Categoria; label: string }[] = [
+  { value: 'problema',  label: 'Problema técnico' },
+  { value: 'duvida',    label: 'Dúvida'           },
+  { value: 'sugestao',  label: 'Sugestão'         },
+  { value: 'outro',     label: 'Outro'            },
+];
+
 export default function BaseConhecimento() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [artigos, setArtigos]     = useState<ArtigoBC[]>([]);
   const [loading, setLoading]     = useState(true);
   const [busca, setBusca]         = useState('');
   const [planFiltro, setPlanFiltro] = useState<PlanKey | null>(null);
   const [tagFiltro, setTagFiltro]   = useState<string | null>(null);
+
+  // Ticket form
+  const [ticketOpen, setTicketOpen]       = useState(false);
+  const [ticketTitulo, setTicketTitulo]   = useState('');
+  const [ticketCategoria, setTicketCategoria] = useState<Categoria>('duvida');
+  const [ticketDesc, setTicketDesc]       = useState('');
+  const [ticketSending, setTicketSending] = useState(false);
+  const [ticketSent, setTicketSent]       = useState(false);
+
+  async function handleTicketSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user || !ticketTitulo.trim() || !ticketDesc.trim()) return;
+    setTicketSending(true);
+    try {
+      await addDoc(collection(db, 'tickets'), {
+        titulo:       ticketTitulo.trim(),
+        descricao:    ticketDesc.trim(),
+        categoria:    ticketCategoria,
+        status:       'aberto',
+        prioridade:   'media',
+        cliente_email: user.email ?? '',
+        userId:       user.uid,
+        nome:         profile?.nome ?? '',
+        criado_em:    new Date().toISOString(),
+      });
+      setTicketSent(true);
+      setTicketTitulo('');
+      setTicketDesc('');
+      setTicketCategoria('duvida');
+    } finally {
+      setTicketSending(false);
+    }
+  }
 
   useEffect(() => {
     listDocuments<ArtigoBC>('base_conhecimento', [orderBy('ordem')])
@@ -337,6 +380,114 @@ export default function BaseConhecimento() {
           </>
         )}
       </main>
+
+      {/* ── Ticket de suporte (só logados) ── */}
+      {user && (
+        <section className="max-w-5xl mx-auto px-6 pb-12">
+          <div className="rounded-2xl border border-border bg-muted/30 overflow-hidden">
+            {/* Header clicável */}
+            <button
+              onClick={() => { setTicketOpen(v => !v); setTicketSent(false); }}
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <LifeBuoy className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground">Não encontrou o que procurava?</p>
+                  <p className="text-xs text-muted-foreground">Abra um ticket e o suporte Tovia te responde em breve.</p>
+                </div>
+              </div>
+              <span className={cn(
+                'text-xs font-bold px-3 py-1.5 rounded-full border transition-colors shrink-0',
+                ticketOpen
+                  ? 'bg-muted text-muted-foreground border-border'
+                  : 'bg-primary text-white border-primary'
+              )}>
+                {ticketOpen ? 'Fechar' : 'Abrir ticket'}
+              </span>
+            </button>
+
+            {/* Formulário */}
+            {ticketOpen && (
+              <div className="border-t border-border px-6 py-6">
+                {ticketSent ? (
+                  <div className="flex flex-col items-center gap-3 py-6 text-center">
+                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                      <CheckCircle2 className="w-6 h-6 text-green-600" />
+                    </div>
+                    <p className="text-sm font-bold text-foreground">Ticket enviado!</p>
+                    <p className="text-xs text-muted-foreground">Nossa equipe vai analisar e responder em breve.</p>
+                    <button
+                      onClick={() => setTicketSent(false)}
+                      className="text-xs font-semibold text-primary hover:underline mt-1"
+                    >
+                      Abrir outro ticket
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleTicketSubmit} className="space-y-4 max-w-2xl">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="sm:col-span-2">
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                          Assunto
+                        </label>
+                        <input
+                          type="text"
+                          value={ticketTitulo}
+                          onChange={e => setTicketTitulo(e.target.value)}
+                          placeholder="Descreva brevemente o problema ou dúvida"
+                          required
+                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                          Categoria
+                        </label>
+                        <select
+                          value={ticketCategoria}
+                          onChange={e => setTicketCategoria(e.target.value as Categoria)}
+                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        >
+                          {CATEGORIAS.map(c => (
+                            <option key={c.value} value={c.value}>{c.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                          Descrição
+                        </label>
+                        <textarea
+                          value={ticketDesc}
+                          onChange={e => setTicketDesc(e.target.value)}
+                          placeholder="Explique com detalhes — quanto mais informação, mais rápido te ajudamos."
+                          required
+                          rows={4}
+                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="submit"
+                        disabled={ticketSending || !ticketTitulo.trim() || !ticketDesc.trim()}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold disabled:opacity-50 hover:bg-primary/90 transition-colors"
+                      >
+                        {ticketSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <LifeBuoy className="w-4 h-4" />}
+                        Enviar ticket
+                      </button>
+                      <p className="text-xs text-muted-foreground">Respondemos em até 1 dia útil.</p>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ── Footer ── */}
       <footer className="border-t border-border py-8 px-6">

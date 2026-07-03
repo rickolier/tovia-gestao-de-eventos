@@ -244,6 +244,16 @@ service cloud.firestore {
     }
 
     // ===============================================================
+    // Tickets de suporte — usuário cria e lê os próprios; admin lê tudo
+    // ===============================================================
+    match /tickets/{ticketId} {
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow get:    if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list:   if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // ===============================================================
     // Collection Groups — admin pode listar subcoleções de todos os eventos
     // Necessário para collectionGroup() no painel admin
     // ===============================================================
