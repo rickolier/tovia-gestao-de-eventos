@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
   Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
+  ChevronDown,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminFinancialTab from './AdminFinancialTab';
@@ -25,44 +26,50 @@ function getRole(email: string | null | undefined): AdminRole {
   return email === 'suporte@toviaapp.com.br' ? 'suporte' : 'criador';
 }
 
-interface NavSection {
-  type: 'section';
-  label: string;
-  roles: AdminRole[];
-}
 interface NavItem {
-  type: 'item';
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   roles: AdminRole[];
 }
-type NavEntry = NavSection | NavItem;
+interface NavGroup {
+  section: string;
+  roles: AdminRole[];
+  items: NavItem[];
+}
 
-const NAV: NavEntry[] = [
-  { type: 'section', label: 'Geral',      roles: ['criador'] },
-  { type: 'item', id: 'overview',      label: 'Visão Geral',          icon: LayoutDashboard, roles: ['criador'] },
-  { type: 'item', id: 'relatorios',    label: 'Relatórios',            icon: TrendingUp,      roles: ['criador'] },
-
-  { type: 'section', label: 'Clientes',   roles: ['criador'] },
-  { type: 'item', id: 'clientes',      label: 'Clientes',              icon: Users,           roles: ['criador'] },
-
-  { type: 'section', label: 'Suporte',    roles: ['criador', 'suporte'] },
-  { type: 'item', id: 'tickets',       label: 'Tickets',               icon: LifeBuoy,        roles: ['criador', 'suporte'] },
-  { type: 'item', id: 'cs-panel',      label: 'Painel CS',             icon: Headphones,      roles: ['criador', 'suporte'] },
-  // Base de Conhecimento (leitura) — visível apenas para suporte nesta seção
-  { type: 'item', id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,        roles: ['suporte'] },
-
-  { type: 'section', label: 'Tecnologia', roles: ['criador'] },
-  { type: 'item', id: 'gateway',       label: 'Monitor Gateway',        icon: Wifi,            roles: ['criador'] },
-  { type: 'item', id: 'billing-key',   label: 'Configuração de API',     icon: KeyRound,        roles: ['criador'] },
-
-  { type: 'section', label: 'Marketing',  roles: ['criador'] },
-  // Base de Conhecimento (CRUD) — visível para criador nesta seção
-  { type: 'item', id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,        roles: ['criador'] },
-  { type: 'item', id: 'design-system', label: 'Design System',          icon: Palette,         roles: ['criador'] },
-  { type: 'item', id: 'calculator',    label: 'Calculadora',            icon: Calculator,      roles: ['criador'] },
-  { type: 'item', id: 'comunicados',   label: 'Comunicados',            icon: Megaphone,       roles: ['criador'] },
+const NAV: NavGroup[] = [
+  {
+    section: 'Geral', roles: ['criador'],
+    items: [
+      { id: 'overview',   label: 'Visão Geral', icon: LayoutDashboard, roles: ['criador'] },
+      { id: 'relatorios', label: 'Relatórios',  icon: TrendingUp,      roles: ['criador'] },
+    ],
+  },
+  {
+    section: 'Clientes', roles: ['criador', 'suporte'],
+    items: [
+      { id: 'clientes',       label: 'Clientes',              icon: Users,       roles: ['criador'] },
+      { id: 'tickets',        label: 'Tickets',               icon: LifeBuoy,    roles: ['criador', 'suporte'] },
+      { id: 'cs-panel',       label: 'Painel CS',             icon: Headphones,  roles: ['criador', 'suporte'] },
+      { id: 'knowledge-base', label: 'Base de Conhecimento',  icon: BookOpen,    roles: ['criador', 'suporte'] },
+    ],
+  },
+  {
+    section: 'Tecnologia', roles: ['criador'],
+    items: [
+      { id: 'gateway',     label: 'Monitor Gateway',   icon: Wifi,     roles: ['criador'] },
+      { id: 'billing-key', label: 'Configuração de API', icon: KeyRound, roles: ['criador'] },
+    ],
+  },
+  {
+    section: 'Marketing', roles: ['criador'],
+    items: [
+      { id: 'design-system', label: 'Design System',         icon: Palette,    roles: ['criador'] },
+      { id: 'calculator',    label: 'Calculadora',           icon: Calculator, roles: ['criador'] },
+      { id: 'comunicados',   label: 'Comunicados',           icon: Megaphone,  roles: ['criador'] },
+    ],
+  },
 ];
 
 const TAB_TITLES: Record<string, string> = {
@@ -85,12 +92,21 @@ export default function AdminDashboard() {
   const role = getRole(user?.email);
   const [activeTab, setActiveTab] = useState(role === 'suporte' ? 'tickets' : 'overview');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   const handleLogout = async () => { await logout(); navigate('/'); };
 
-  // Deduplicate nav entries — same id can appear in multiple sections
-  // but we show each section+item pair; active highlight applies to the id
-  const visibleNav = NAV.filter(e => e.roles.includes(role));
+  const toggleSection = (section: string) =>
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      next.has(section) ? next.delete(section) : next.add(section);
+      return next;
+    });
+
+  const visibleGroups = NAV
+    .filter(g => g.roles.includes(role))
+    .map(g => ({ ...g, items: g.items.filter(i => i.roles.includes(role)) }))
+    .filter(g => g.items.length > 0);
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -122,26 +138,41 @@ export default function AdminDashboard() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {visibleNav.map((entry, i) => {
-            if (entry.type === 'section') {
-              return (
-                <p key={`s-${i}`} className="px-3 pt-4 pb-1 text-[9px] font-black uppercase tracking-widest text-white/40 first:pt-0">
-                  {entry.label}
-                </p>
-              );
-            }
-            const Icon = entry.icon;
-            const isActive = activeTab === entry.id;
+        <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-1">
+          {visibleGroups.map((group, gi) => {
+            const isCollapsed = collapsed.has(group.section);
             return (
-              <button
-                key={`${entry.id}-${i}`}
-                onClick={() => { setActiveTab(entry.id); setMobileOpen(false); }}
-                className={cn('sidebar-nav-item', isActive && 'active')}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                {entry.label}
-              </button>
+              <div key={group.section}>
+                <button
+                  onClick={() => toggleSection(group.section)}
+                  className={cn(
+                    'w-full flex items-center justify-between px-3 py-1.5 rounded-lg transition-colors',
+                    gi === 0 ? 'mt-0' : 'mt-3',
+                    'text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white/60',
+                  )}
+                >
+                  {group.section}
+                  <ChevronDown className={cn('w-3 h-3 transition-transform duration-200', isCollapsed && '-rotate-90')} />
+                </button>
+                {!isCollapsed && (
+                  <div className="space-y-0.5 mt-0.5">
+                    {group.items.map(item => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => { setActiveTab(item.id); setMobileOpen(false); }}
+                          className={cn('sidebar-nav-item', isActive && 'active')}
+                        >
+                          <Icon className="w-4 h-4 shrink-0" />
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
