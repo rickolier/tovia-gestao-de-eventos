@@ -370,11 +370,16 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
+                    <span className={`text-[10px] font-semibold tabular-nums ${form.descricao.length > 400 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      {form.descricao.length}/500
+                    </span>
+                  </div>
                   <Textarea
                     placeholder="Uma breve descrição que aparecerá na página pública..."
                     value={form.descricao}
-                    onChange={e => setForm(prev => ({ ...prev, descricao: e.target.value }))}
+                    onChange={e => { if (e.target.value.length <= 500) setForm(prev => ({ ...prev, descricao: e.target.value })); }}
                     className="rounded-xl border-none bg-muted/50 resize-none"
                     rows={3}
                   />
