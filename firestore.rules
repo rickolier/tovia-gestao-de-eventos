@@ -165,7 +165,8 @@ service cloud.firestore {
 
       match /doacoes/{doacaoId} {
         allow read: if isEventOwner(eventoId);
-        allow create: if isValidDoacao(incoming()) && incoming().eventoId == eventoId;
+        // Dono do evento pode criar com qualquer status (registro manual); público só pode criar como pendente
+        allow create: if isEventOwner(eventoId) || (isValidDoacao(incoming()) && incoming().eventoId == eventoId);
         allow update, delete: if isEventOwner(eventoId);
       }
 
