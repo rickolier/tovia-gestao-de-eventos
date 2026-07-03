@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ImageCropper from '~/components/ImageCropper';
 import { useAuth } from '~/context/AuthContext';
-import { createDocument, listDocuments } from '~/services/firestore';
+import { createDocument, updateDocument, listDocuments } from '~/services/firestore';
 import { Email } from '~/services/email';
 import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -167,14 +167,6 @@ export default function CreateEvent() {
         corFinal = CORES_EVENTO[Math.floor(Math.random() * CORES_EVENTO.length)];
       }
 
-      let imagemUrl = '';
-      try {
-        imagemUrl = await uploadImagem(id);
-      } catch (uploadErr) {
-        console.warn('Upload de imagem falhou, criando evento sem imagem:', uploadErr);
-        toast.warning('Imagem não foi enviada, mas o evento será criado.');
-      }
-
       const dadosEvento = {
         nome: dadosFormulario.nome,
         data_inicio: dataInicioISO,
@@ -183,7 +175,7 @@ export default function CreateEvent() {
         instituicao: dadosFormulario.instituicao || '',
         descricao: dadosFormulario.descricao || '',
         vagas_totais: Number(dadosFormulario.vagas_totais),
-        imagem_url: imagemUrl,
+        imagem_url: '',
         cor_tema: corFinal,
         criado_por: usuario.uid,
         ativo: true,
@@ -218,7 +210,21 @@ export default function CreateEvent() {
           : 0,
       };
 
+      // Cria o documento primeiro para que uploadEventCover possa verificar a propriedade
       await createDocument('eventos', id, dadosEvento);
+
+      // Upload da imagem (agora o documento já existe no Firestore)
+      if (imagemFile) {
+        try {
+          const imagemUrl = await uploadImagem(id);
+          if (imagemUrl) {
+            await updateDocument('eventos', id, { imagem_url: imagemUrl });
+          }
+        } catch (uploadErr) {
+          console.warn('Upload de imagem falhou:', uploadErr);
+          toast.warning('Evento criado, mas a imagem não foi enviada. Você pode adicioná-la na edição.');
+        }
+      }
 
       // E-mail: primeiro evento
       const eventosAnteriores = await listDocuments<Evento>('eventos', [where('criado_por', '==', usuario.uid)]);

@@ -545,7 +545,7 @@ export const uploadEventCover = functions.onCall(
     await file.save(buffer, { contentType, resumable: false });
     await file.makePublic();
 
-    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}`;
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}?t=${Date.now()}`;
 
     // Atualiza o evento com a nova URL
     await db.collection("eventos").doc(eventoId).update({ imagem_url: downloadUrl });
