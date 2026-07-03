@@ -35,6 +35,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
   const [selectedRegId, setSelectedRegId] = useState<string | null>(null);
+  const [lockedInscricaoId, setLockedInscricaoId] = useState<string | null>(null);
   const [uploadingReceipt, setUploadingReceipt] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -240,6 +241,18 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     setIsPayDialogOpen(true);
   };
 
+  const getInscritoNome = (r: Inscricao & { pessoa?: Pessoa }): string => {
+    if (r.pessoa?.nome?.trim()) return r.pessoa.nome.trim();
+    if (r.nome?.trim()) return r.nome.trim();
+    if (r.email?.trim()) return r.email.trim();
+    const respostas = r.respostas_formulario;
+    if (respostas) {
+      const entry = Object.entries(respostas).find(([k]) => k.toLowerCase().includes('nome') || k.toLowerCase().includes('name'));
+      if (entry && typeof entry[1] === 'string' && entry[1].trim()) return entry[1].trim();
+    }
+    return `Participante #${r.id.slice(0, 8)}`;
+  };
+
   const getMethodIcon = (metodo: string) => {
     switch (metodo) {
       case 'pix': return <QrCode className="w-4 h-4 mr-2 text-primary" />;
@@ -413,7 +426,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
         <div className="flex flex-wrap gap-3">
           {(!isAutoPay || !gatewayConnected) && (
             <Button
-              onClick={() => setIsPayDialogOpen(true)}
+              onClick={() => { setLockedInscricaoId(null); setFormData(f => ({ ...f, inscricaoId: '' })); setIsPayDialogOpen(true); }}
               className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 flex-none transition-all active:scale-95 text-sm"
             >
               <Plus className="w-4 h-4 shrink-0" />
@@ -620,7 +633,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
       </Card>
 
       {/* Dialog para Novo Pagamento */}
-      <Dialog open={isPayDialogOpen} onOpenChange={setIsPayDialogOpen}>
+      <Dialog open={isPayDialogOpen} onOpenChange={v => { setIsPayDialogOpen(v); if (!v) setLockedInscricaoId(null); }}>
         <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
@@ -632,19 +645,29 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Selecione o Inscrito</Label>
-              <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v})}>
-                <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
-                  <SelectValue placeholder="Selecione o inscrito" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-none shadow-2xl">
-                  {registrations.map(r => (
-                    <SelectItem key={r.id} value={r.id} className="font-medium">
-                      {r.pessoa?.nome || r.nome || r.email || r.id} (Faltam {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(r.valor_total - r.valor_pago)})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Inscrito</Label>
+              {lockedInscricaoId ? (
+                <div className="flex items-center gap-3 rounded-xl bg-primary/8 border border-primary/20 h-12 px-4">
+                  <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                  <span className="font-bold text-foreground flex-1 truncate">
+                    {(() => { const r = registrations.find(r => r.id === lockedInscricaoId); return r ? getInscritoNome(r) : '—'; })()}
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md shrink-0">Fixado</span>
+                </div>
+              ) : (
+                <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v})}>
+                  <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
+                    <SelectValue placeholder="Selecione o inscrito" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    {registrations.map(r => (
+                      <SelectItem key={r.id} value={r.id} className="font-medium">
+                        {getInscritoNome(r)}{r.valor_total > r.valor_pago ? ` — faltam ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(r.valor_total - r.valor_pago)}` : ' ✓ quitado'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -813,7 +836,8 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
               <Button variant="ghost" onClick={() => setIsHistoryDialogOpen(false)} className="rounded-2xl h-12 px-8 font-black text-muted-foreground hover:bg-muted">Ver Mais Tarde</Button>
               <Button 
                 onClick={() => {
-                  setFormData({ ...formData, inscricaoId: selectedRegId || '' });
+                  setLockedInscricaoId(selectedRegId);
+                  setFormData(f => ({ ...f, inscricaoId: selectedRegId || '' }));
                   setIsHistoryDialogOpen(false);
                   setIsPayDialogOpen(true);
                 }}
