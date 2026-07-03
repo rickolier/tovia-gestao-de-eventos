@@ -14,8 +14,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '~/services/firebase';
 import { useAuth } from '~/context/AuthContext';
 import { getPlanConfig } from '~/utils/plan-limits';
 import { FinancialTransaction } from '~/types';
@@ -36,7 +34,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
   const [selectedRegId, setSelectedRegId] = useState<string | null>(null);
   const [lockedInscricaoId, setLockedInscricaoId] = useState<string | null>(null);
-  const [uploadingReceipt, setUploadingReceipt] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
   // Sorting and Filtering State
@@ -101,39 +98,6 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
     }
   }, [user]);
 
-  const ALLOWED_RECEIPT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-  const MAX_RECEIPT_SIZE = 5 * 1024 * 1024; // 5MB
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!ALLOWED_RECEIPT_TYPES.includes(file.type)) {
-      toast.error('Formato inválido. Use JPEG, PNG, WebP ou PDF.');
-      e.target.value = '';
-      return;
-    }
-    if (file.size > MAX_RECEIPT_SIZE) {
-      toast.error('Arquivo muito grande. Máximo permitido: 5MB.');
-      e.target.value = '';
-      return;
-    }
-
-    setUploadingReceipt(true);
-    try {
-      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
-      const fileRef = ref(storage, `eventos/${eventoId}/comprovantes/${user!.uid}/${uuidv4()}.${ext}`);
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      setFormData(prev => ({ ...prev, comprovante_url: url }));
-      toast.success('Comprovante anexado com sucesso!');
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao fazer upload do comprovante.');
-    } finally {
-      setUploadingReceipt(false);
-    }
-  };
 
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
 
@@ -718,24 +682,7 @@ export default function FinancialTab({ eventoId }: { eventoId: string }) {
                 </div>
               )}
             </div>
-            {formData.status === 'pago' && (
-              <div className="space-y-2">
-                <Label htmlFor="comprovante" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Anexar Comprovante (Opcional)</Label>
-                <div className="flex items-center gap-3">
-                  <Input 
-                    id="comprovante" 
-                    type="file" 
-                    accept="image/*,.pdf"
-                    onChange={handleFileUpload} 
-                    className="rounded-xl bg-muted/50 border-none h-12 flex-1 font-medium file:font-black file:text-xs file:bg-primary/10 file:text-primary file:border-none file:rounded-lg file:px-3 file:mr-3" 
-                    disabled={uploadingReceipt}
-                  />
-                  {uploadingReceipt && <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
-                  {formData.comprovante_url && !uploadingReceipt && <CheckCircle className="w-6 h-6 text-primary shrink-0" />}
-                </div>
-              </div>
-            )}
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4" disabled={uploadingReceipt}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-4">
               <CheckCircle className="w-5 h-5" />
               Confirmar Pagamento
             </Button>
