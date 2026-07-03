@@ -13,12 +13,11 @@ import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '~/context/AuthContext';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter,
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog';
 
@@ -609,24 +608,24 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             )}
             </div>
 
-            <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
-              <Button 
-                type="button" 
-                variant="ghost" 
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-6">
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => { setIsDonationDialogOpen(false); setEditingId(null); resetForm(); }}
                 className="rounded-2xl h-12 px-8 font-black text-muted-foreground hover:bg-muted"
                 disabled={isSubmitting}
               >
                 Cancelar
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isSubmitting}
                 className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 transition-all active:scale-95 flex-1"
               >
                 {isSubmitting ? 'Processando...' : (editingId ? 'Salvar Alterações' : 'Confirmar Doação')}
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
@@ -786,7 +785,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
       {/* Allocation Dialog */}
       <Dialog open={isAllocationOpen} onOpenChange={setIsAllocationOpen}>
-        <DialogContent className="rounded-[2.5rem] max-w-lg border-none shadow-2xl p-8 bg-card transition-colors max-h-[90vh] overflow-y-auto scrollbar-hide">
+        <DialogContent className="rounded-[2.5rem] max-w-lg border-none shadow-2xl p-8 bg-card transition-colors">
           <DialogHeader className="mb-4">
             <DialogTitle className="flex items-center gap-3 text-2xl font-black text-foreground tracking-tight">
               <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
@@ -871,14 +870,14 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               )}
             </div>
 
-            <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-6">
               <Button type="button" variant="ghost" onClick={() => setIsAllocationOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">
                 Cancelar
               </Button>
               <Button type="submit" disabled={!allocationForm.doacaoId || !allocationForm.inscritoId || allocationForm.valor <= 0} className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-12 h-12 font-black shadow-xl shadow-primary/20 transition-all active:scale-95">
                 Confirmar Destinação
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
@@ -897,22 +896,22 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               Esta ação não pode ser desfeita. A doação será removida permanentemente do histórico.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="pt-6 flex flex-col md:flex-row gap-3">
-            <Button 
-              type="button" 
-              variant="ghost" 
-              onClick={() => setDeleteConfirmOpen(false)} 
+          <div className="flex flex-col md:flex-row justify-end gap-3 pt-6">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setDeleteConfirmOpen(false)}
               className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted"
             >
               Cancelar
             </Button>
-            <Button 
+            <Button
               onClick={handleDelete}
               className="bg-destructive hover:bg-destructive/90 text-white rounded-2xl px-8 h-12 font-black shadow-xl shadow-destructive/20 transition-all active:scale-95 flex-1"
             >
               Excluir permanentemente
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
