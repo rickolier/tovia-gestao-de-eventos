@@ -381,7 +381,7 @@ export default function EventDetail() {
 
           {/* Event Header Banner */}
           <div className={`relative ${activeTab === 'overview' ? 'h-40 md:h-48' : 'h-20 md:h-24'} w-full overflow-hidden bg-muted shrink-0 transition-all duration-300`}>
-            <div className={`absolute inset-0 z-10 transition-opacity duration-300 ${activeTab === 'overview' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className="absolute inset-0 z-10">
               {evento.imagem_url ? (
                 <img src={evento.imagem_url} alt={evento.nome} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               ) : (
