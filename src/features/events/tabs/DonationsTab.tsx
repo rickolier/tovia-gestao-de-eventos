@@ -804,7 +804,10 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Escolher Doação Disponível</Label>
               <Select value={allocationForm.doacaoId} onValueChange={v => setAllocationForm({...allocationForm, doacaoId: v})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
-                  <SelectValue placeholder="Selecione uma doação com saldo" />
+                  {allocationForm.doacaoId
+                    ? <span className="truncate">{(() => { const d = donations.find(d => d.id === allocationForm.doacaoId); return d ? `${d.doadorNome || 'Anônima'} — ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorRestante)} (Disp.)` : 'Selecione uma doação com saldo'; })()}</span>
+                    : <span className="text-muted-foreground font-normal">Selecione uma doação com saldo</span>
+                  }
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-none shadow-2xl">
                   {donations
@@ -826,7 +829,10 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Inscrito Destinatário</Label>
               <Select value={allocationForm.inscritoId} onValueChange={v => setAllocationForm({...allocationForm, inscritoId: v})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
-                  <SelectValue placeholder="Selecione o inscrito" />
+                  {allocationForm.inscritoId
+                    ? <span className="truncate">{(() => { const r = registrations.find(r => r.id === allocationForm.inscritoId); return r ? `${r.pessoa?.nome || ''}${r.pessoa?.sobrenome ? ' ' + r.pessoa.sobrenome : ''}`.trim() || 'Inscrito' : 'Selecione o inscrito'; })()}</span>
+                    : <span className="text-muted-foreground font-normal">Selecione o inscrito</span>
+                  }
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-none shadow-2xl">
                   {registrations
@@ -847,13 +853,14 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             <div className="space-y-2">
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor a Destinar (R$)</Label>
               <div className="relative">
-                <Input 
-                  type="number" 
-                  step="0.01" 
-                  value={allocationForm.valor || ''} 
-                  onChange={e => setAllocationForm({...allocationForm, valor: Number(e.target.value)})} 
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={allocationForm.valor || ''}
+                  onFocus={e => e.target.select()}
+                  onChange={e => setAllocationForm({...allocationForm, valor: Number(e.target.value)})}
                   placeholder="Ex: 50.00"
-                  className="rounded-xl border-none bg-muted/50 h-14 font-black shadow-sm pl-10 text-xl"
+                  className="rounded-xl border-none bg-muted/50 h-12 font-black shadow-sm pl-10"
                 />
                 <DollarSign className="w-5 h-5 text-primary absolute left-3.5 top-1/2 -translate-y-1/2" />
               </div>
