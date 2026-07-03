@@ -87,13 +87,11 @@ export default function AdminBillingKeyTab() {
     if (!draftKey.trim()) return;
     setSaving(true);
     try {
-      const data: BillingConfig = {
+      const data: Omit<BillingConfig, 'is_valid' | 'last_validated_at'> = {
         asaas_api_key: draftKey.trim(),
         sandbox: draftSandbox,
         updated_at: new Date().toISOString(),
         updated_by: 'admin',
-        is_valid: undefined,
-        last_validated_at: undefined,
       };
       if (config) {
         await updateDocument(CONFIG_COLLECTION, CONFIG_DOC_ID, data);
