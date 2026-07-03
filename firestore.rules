@@ -20,6 +20,7 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && (
         request.auth.token.email == "admin@tovia.app" ||
+        request.auth.token.email == "admin@toviaapp.com.br" ||
         (request.auth.token.email_verified == true &&
          exists(/databases/$(database)/documents/admins/$(request.auth.uid)))
       );
@@ -233,6 +234,13 @@ service cloud.firestore {
     match /base_conhecimento/{artigoId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // Config da plataforma — somente admin
+    // ===============================================================
+    match /config/{docId} {
+      allow read, write: if isAdmin();
     }
 
     // ===============================================================

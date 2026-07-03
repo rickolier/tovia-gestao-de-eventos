@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { KeyRound, Eye, EyeOff, Save, CheckCircle2, AlertCircle, Loader2, RefreshCw } from 'lucide-react';
+import { KeyRound, Eye, EyeOff, Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { getDocument, updateDocument, createDocument } from '~/services/firestore';
 
 const CONFIG_COLLECTION = 'config';
@@ -18,20 +18,16 @@ function maskKey(key: string): string {
 }
 
 export default function AdminBillingKeyTab() {
-  const [config, setConfig]         = useState<BillingConfig | null>(null);
-  const [loading, setLoading]       = useState(true);
-  const [editing, setEditing]       = useState(false);
-  const [draftKey, setDraftKey]     = useState('');
-  const [draftSandbox, setDraftSandbox] = useState(false);
-  const [showKey, setShowKey]       = useState(false);
-  const [saving, setSaving]         = useState(false);
-  const [testing, setTesting]       = useState(false);
-  const [testResult, setTestResult] = useState<{ ok: boolean; msg: string } | null>(null);
-  const [saved, setSaved]           = useState(false);
+  const [config, setConfig]             = useState<BillingConfig | null>(null);
+  const [loading, setLoading]           = useState(true);
+  const [editing, setEditing]           = useState(false);
+  const [draftKey, setDraftKey]         = useState('');
+  const [draftSandbox, setDraftSandbox] = useState(true);
+  const [showKey, setShowKey]           = useState(false);
+  const [saving, setSaving]             = useState(false);
+  const [saved, setSaved]               = useState(false);
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   async function load() {
     setLoading(true);
@@ -50,7 +46,6 @@ export default function AdminBillingKeyTab() {
   async function handleSave() {
     if (!draftKey.trim()) return;
     setSaving(true);
-    setTestResult(null);
     try {
       const data: BillingConfig = {
         asaas_api_key: draftKey.trim(),
@@ -73,44 +68,16 @@ export default function AdminBillingKeyTab() {
     }
   }
 
-  async function handleTest() {
-    const key = editing ? draftKey.trim() : config?.asaas_api_key ?? '';
-    const sandbox = editing ? draftSandbox : config?.sandbox ?? true;
-    if (!key) return;
-    setTesting(true);
-    setTestResult(null);
-    try {
-      const base = sandbox
-        ? 'https://sandbox.asaas.com/api/v3'
-        : 'https://api.asaas.com/api/v3';
-      const res = await fetch(`${base}/myAccount`, {
-        headers: { access_token: key },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setTestResult({ ok: true, msg: `Conectado: ${data.name ?? data.email ?? 'conta verificada'}` });
-      } else {
-        setTestResult({ ok: false, msg: `Erro ${res.status}: chave inválida ou sem permissão.` });
-      }
-    } catch {
-      setTestResult({ ok: false, msg: 'Não foi possível conectar ao Asaas. Verifique a chave e tente novamente.' });
-    } finally {
-      setTesting(false);
-    }
-  }
-
   function handleEdit() {
     setDraftKey(config?.asaas_api_key ?? '');
     setDraftSandbox(config?.sandbox ?? true);
     setEditing(true);
     setShowKey(true);
-    setTestResult(null);
   }
 
   function handleCancel() {
     setEditing(false);
     setShowKey(false);
-    setTestResult(null);
   }
 
   if (loading) {
@@ -142,7 +109,7 @@ export default function AdminBillingKeyTab() {
         </div>
       </div>
 
-      {/* Status card */}
+      {/* Main card */}
       <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
 
         {/* Environment badge */}
@@ -166,7 +133,7 @@ export default function AdminBillingKeyTab() {
           {editing ? (
             <div className="space-y-3">
               {/* Environment toggle */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setDraftSandbox(true)}
@@ -240,21 +207,7 @@ export default function AdminBillingKeyTab() {
           </p>
         )}
 
-        {/* Test result */}
-        {testResult && (
-          <div className={`flex items-start gap-2 rounded-xl px-4 py-3 text-sm ${
-            testResult.ok
-              ? 'bg-green-50 text-green-700 border border-green-200'
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
-            {testResult.ok
-              ? <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-              : <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            }
-            <span>{testResult.msg}</span>
-          </div>
-        )}
-
+        {/* Save confirmation */}
         {saved && (
           <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm bg-green-50 text-green-700 border border-green-200">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -275,14 +228,6 @@ export default function AdminBillingKeyTab() {
                 Salvar
               </button>
               <button
-                onClick={handleTest}
-                disabled={!draftKey.trim() || testing}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-muted/50 text-sm font-bold text-foreground disabled:opacity-50 hover:bg-muted transition-colors"
-              >
-                {testing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-                Testar conexão
-              </button>
-              <button
                 onClick={handleCancel}
                 className="px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
               >
@@ -290,25 +235,13 @@ export default function AdminBillingKeyTab() {
               </button>
             </>
           ) : (
-            <>
-              <button
-                onClick={handleEdit}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors"
-              >
-                <KeyRound className="w-4 h-4" />
-                {currentKey ? 'Alterar chave' : 'Configurar chave'}
-              </button>
-              {currentKey && (
-                <button
-                  onClick={handleTest}
-                  disabled={testing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-muted/50 text-sm font-bold text-foreground disabled:opacity-50 hover:bg-muted transition-colors"
-                >
-                  {testing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-                  Testar conexão
-                </button>
-              )}
-            </>
+            <button
+              onClick={handleEdit}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors"
+            >
+              <KeyRound className="w-4 h-4" />
+              {currentKey ? 'Alterar chave' : 'Configurar chave'}
+            </button>
           )}
         </div>
       </div>
