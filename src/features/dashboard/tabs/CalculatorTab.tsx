@@ -24,8 +24,8 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
   const [taxaAbsorbida, setTaxaAbsorbida] = useState<'pagador' | 'margem'>('pagador');
 
   // Taxas Asaas — defaults públicos do site deles
-  const [pixFee, setPixFee] = useState<number>(0.99);         // % sobre o valor
-  const [boletoFee, setBoletoFee] = useState<number>(3.49);   // R$ fixo por boleto
+  const [pixFee, setPixFee] = useState<number>(1.99);         // R$ fixo por transação
+  const [boletoFee, setBoletoFee] = useState<number>(1.99);   // R$ fixo por boleto
   const [creditFee, setCreditFee] = useState<number>(2.99);   // % à vista
   const [recurringFee, setRecurringFee] = useState<number>(2.49); // % por parcela recorrente
 
@@ -78,7 +78,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
       totalVenueCost,
       costPerPersonMin,
       costPerPersonMax,
-      suggestedPricePix: calcPct(pixFee),
+      suggestedPricePix: calcFixed(pixFee),
       suggestedPriceBoleto: calcFixed(boletoFee),
       suggestedPriceCredit: calcPct(creditFee),
       suggestedPriceRecurring: calcPct(recurringFee),
@@ -294,7 +294,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PIX (%)</Label>
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PIX (R$ fixo)</Label>
                     <Input
                       type="number" step="0.01"
                       className="h-10 rounded-xl bg-muted/20 font-bold text-center"
@@ -384,7 +384,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                 </h4>
                 <div className="space-y-2">
                   {[
-                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `${pixFee}%`,         color: 'bg-emerald-500/10 text-emerald-600' },
+                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `R$ ${pixFee.toFixed(2)}`,  color: 'bg-emerald-500/10 text-emerald-600' },
                     { label: 'Boleto',     price: results.suggestedPriceBoleto,    fee: fmt(boletoFee),       color: 'bg-amber-500/10 text-amber-600' },
                     { label: 'Crédito',    price: results.suggestedPriceCredit,    fee: `${creditFee}%`,      color: 'bg-primary text-white', highlight: true },
                     { label: 'Recorrente', price: results.suggestedPriceRecurring, fee: `${recurringFee}%`,   color: 'bg-purple-500/10 text-purple-600' },
@@ -442,7 +442,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
 
       <div className="bg-muted/30 px-5 py-4 rounded-xl border border-border/50 text-center">
         <p className="text-xs text-muted-foreground font-medium max-w-2xl mx-auto">
-          Taxas padrão do Asaas: PIX 0,99% · Boleto R$3,49 · Crédito 2,99% · Recorrente 2,49%.
+          Taxas padrão do Asaas: PIX R$ 1,99 fixo · Boleto R$ 1,99 fixo · Crédito 2,99% + R$ 0,49 · Recorrente 2,49%.
           Esses valores podem variar conforme seu plano contratado. Consulte seu painel Asaas para confirmar.
         </p>
       </div>

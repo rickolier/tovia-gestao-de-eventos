@@ -153,7 +153,7 @@ function CalculadoraEvento() {
   const [mixCredito,     setMixCredito]     = useState(20);
   const [mixParcelado,   setMixParcelado]   = useState(35);
   const [fees,           setFees]           = useState<Fees>({
-    pixPct: 0.99, pixFixed: 0,
+    pixPct: 0, pixFixed: 1.99,
     boletoFixed: 1.99,
     creditPct: 2.99, creditFixed: 0.49,
     parcelPct: 3.49, parcelFixed: 0.49,
@@ -360,7 +360,7 @@ function CalculadoraEvento() {
               {!showFees ? (
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {[
-                    { l: 'PIX',      v: `${fees.pixPct}%` },
+                    { l: 'PIX',      v: `R$ ${fees.pixFixed.toFixed(2)}` },
                     { l: 'Boleto',   v: brl(fees.boletoFixed) },
                     { l: 'Crédito',  v: `${fees.creditPct}% + ${brl(fees.creditFixed)}` },
                     { l: 'Parcelado', v: `${fees.parcelPct}%/parc. + ${brl(fees.parcelFixed)}` },
@@ -374,7 +374,7 @@ function CalculadoraEvento() {
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   {([
-                    { label: 'PIX (%)',               key: 'pixPct' },
+                    { label: 'PIX (R$ fixo)',          key: 'pixFixed' },
                     { label: 'Boleto (R$ fixo)',       key: 'boletoFixed' },
                     { label: 'Crédito (%)',            key: 'creditPct' },
                     { label: 'Crédito (R$ fixo)',      key: 'creditFixed' },

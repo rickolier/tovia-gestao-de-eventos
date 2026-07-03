@@ -469,7 +469,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                             <div className="flex justify-between items-start">
                               <div className="space-y-1">
                                 <p className="font-bold text-foreground leading-tight">{ticket.nome}</p>
-                                <p className="text-sm font-bold text-foreground">R$ {ticket.valor.toFixed(2)} <span className="text-xs font-normal text-muted-foreground/70">(+R$ {(ticket.valor * 0.1).toFixed(2)} taxa)</span></p>
+                                <p className="text-sm font-bold text-foreground">R$ {ticket.valor.toFixed(2)} <span className="text-xs font-normal text-muted-foreground/70">(+ taxa de gateway)</span></p>
                                 {ticket.permite_parcelamento && (
                                   <div className="inline-block bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
                                     em até {evento.config_pagamento?.installmentLogic === 'free' ? '12x' : `${maxInstallments}x`}

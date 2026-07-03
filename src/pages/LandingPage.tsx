@@ -1079,10 +1079,10 @@ export default function LandingPage() {
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Formas de pagamento disponíveis</p>
               <div className="space-y-3">
                 {[
-                  { method: 'PIX',                fee: '0,99% por transação',    color: 'bg-emerald-50 text-emerald-700' },
-                  { method: 'Boleto Bancário',    fee: 'R$2,49 por boleto',       color: 'bg-orange-50 text-orange-700'  },
-                  { method: 'Cartão de crédito',  fee: '2,99% por transação',    color: 'bg-blue-50 text-blue-700'      },
-                  { method: 'Crédito recorrente', fee: '3,49% por cobrança',      color: 'bg-violet-50 text-violet-700'  },
+                  { method: 'PIX',                fee: 'R$ 1,99 por transação',   color: 'bg-emerald-50 text-emerald-700' },
+                  { method: 'Boleto Bancário',    fee: 'R$ 1,99 por boleto',      color: 'bg-orange-50 text-orange-700'  },
+                  { method: 'Cartão de crédito',  fee: '2,99% + R$ 0,49',        color: 'bg-blue-50 text-blue-700'      },
+                  { method: 'Parcelado',          fee: '3,49% + R$ 0,49/parc.',  color: 'bg-violet-50 text-violet-700'  },
                 ].map(item => (
                   <div key={item.method} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
