@@ -5,7 +5,7 @@ import Logo from '~/components/Logo';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
-  Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone,
+  Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminFinancialTab from './AdminFinancialTab';
@@ -16,6 +16,7 @@ import AdminGatewayTab from './AdminGatewayTab';
 import AdminTicketsTab from './AdminTicketsTab';
 import AdminCSPanelTab from './AdminCSPanelTab';
 import AdminComunicadosTab from './AdminComunicadosTab';
+import AdminBillingKeyTab from './AdminBillingKeyTab';
 import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 
 type AdminRole = 'criador' | 'suporte';
@@ -54,6 +55,7 @@ const NAV: NavEntry[] = [
 
   { type: 'section', label: 'Tecnologia', roles: ['criador'] },
   { type: 'item', id: 'gateway',       label: 'Monitor Gateway',        icon: Wifi,            roles: ['criador'] },
+  { type: 'item', id: 'billing-key',   label: 'Configuração de API',     icon: KeyRound,        roles: ['criador'] },
 
   { type: 'section', label: 'Marketing',  roles: ['criador'] },
   // Base de Conhecimento (CRUD) — visível para criador nesta seção
@@ -71,6 +73,7 @@ const TAB_TITLES: Record<string, string> = {
   'cs-panel':      'Painel CS',
   'knowledge-base': 'Base de Conhecimento',
   gateway:         'Monitor Gateway',
+  'billing-key':   'Configuração de API',
   'design-system': 'Design System',
   calculator:      'Calculadora',
   comunicados:     'Comunicados',
@@ -98,22 +101,22 @@ export default function AdminDashboard() {
         mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       )}>
         {/* Logo */}
-        <div className="h-16 px-5 flex items-center justify-between border-b border-white/10 shrink-0">
+        <div className="h-16 px-5 flex items-center justify-between border-b border-[var(--sidebar-border)] shrink-0">
           <Logo variant="white" />
-          <button onClick={() => setMobileOpen(false)} className="md:hidden text-white/50 hover:text-white">
+          <button onClick={() => setMobileOpen(false)} className="md:hidden text-white/60 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Admin badge */}
-        <div className="px-5 py-4 border-b border-white/10">
+        <div className="px-5 py-4 border-b border-[var(--sidebar-border)]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-primary" />
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4 text-white" />
             </div>
             <div>
               <p className="text-xs font-black text-white uppercase tracking-widest">Central Tovia</p>
-              <p className="text-[10px] text-white/40 truncate max-w-[140px]">{user?.email}</p>
+              <p className="text-[10px] text-white/50 truncate max-w-[140px]">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -123,7 +126,7 @@ export default function AdminDashboard() {
           {visibleNav.map((entry, i) => {
             if (entry.type === 'section') {
               return (
-                <p key={`s-${i}`} className="px-3 pt-4 pb-1 text-[9px] font-black uppercase tracking-widest text-white/30 first:pt-0">
+                <p key={`s-${i}`} className="px-3 pt-4 pb-1 text-[9px] font-black uppercase tracking-widest text-white/40 first:pt-0">
                   {entry.label}
                 </p>
               );
@@ -134,12 +137,7 @@ export default function AdminDashboard() {
               <button
                 key={`${entry.id}-${i}`}
                 onClick={() => { setActiveTab(entry.id); setMobileOpen(false); }}
-                className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all',
-                  isActive
-                    ? 'bg-white/15 text-white'
-                    : 'text-white/50 hover:text-white hover:bg-white/10'
-                )}
+                className={cn('sidebar-nav-item', isActive && 'active')}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 {entry.label}
@@ -149,10 +147,10 @@ export default function AdminDashboard() {
         </nav>
 
         {/* Logout */}
-        <div className="px-3 py-4 border-t border-white/10">
+        <div className="px-3 py-4 border-t border-[var(--sidebar-border)]">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
+            className="sidebar-nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10"
           >
             <LogOut className="w-4 h-4" />
             Sair
@@ -190,6 +188,7 @@ export default function AdminDashboard() {
           {activeTab === 'cs-panel'        && <AdminCSPanelTab />}
           {activeTab === 'knowledge-base'  && <AdminKnowledgeBaseTab readOnly={role === 'suporte'} />}
           {activeTab === 'gateway'         && <AdminGatewayTab />}
+          {activeTab === 'billing-key'     && <AdminBillingKeyTab />}
           {activeTab === 'design-system'   && <DesignSystemTab />}
           {activeTab === 'calculator'      && <AdminCalculatorTab />}
           {activeTab === 'comunicados'     && <AdminComunicadosTab />}
