@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Evento, Inscricao, Ticket } from '~/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Users, Info, Copy, Check, TrendingUp, DollarSign, Edit2, Link2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Info, TrendingUp, DollarSign, Edit2 } from 'lucide-react';
 import { listDocuments } from '~/services/firestore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useAuth } from '~/context/AuthContext';
 
 export default function OverviewTab({ evento }: { evento: Evento }) {
-  const { profile } = useAuth();
   const [occupiedSlots, setOccupiedSlots] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     const fetchData = async () => {
       const [regs, tickets] = await Promise.all([
@@ -35,72 +30,59 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
     fetchData();
   }, [evento.id]);
 
-  const registrationUrl = profile?.codigo && evento.codigo
-    ? `${window.location.origin}/${profile.codigo}/${evento.codigo}`
-    : `${window.location.origin}/inscricao/${evento.id}`;
-
-  const copyRegistrationLink = () => {
-    navigator.clipboard.writeText(registrationUrl);
-    setCopied(true);
-    toast.success('Link de inscrição copiado!');
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-6">
+    <div className="space-y-6">
+      {/* Informações do Evento — full width, 3 itens lado a lado */}
+      <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+            <Info className="w-5 h-5 text-primary" />
+            Informações do Evento
+          </CardTitle>
+          <Link to={`/eventos/${evento.id}/editar`}>
+            <Button variant="outline" size="sm" className="rounded-xl border-border text-muted-foreground hover:bg-accent hover:text-foreground">
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar Evento
+            </Button>
+          </Link>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 bg-muted rounded-xl transition-colors">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Data e Hora</p>
+              <div className="flex items-center gap-2 text-foreground font-bold">
+                <Calendar className="w-4 h-4 text-primary shrink-0" />
+                {new Date(evento.data_inicio).toLocaleString('pt-BR')}
+              </div>
+            </div>
+            <div className="p-4 bg-muted rounded-xl transition-colors">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Local</p>
+              <div className="flex items-center gap-2 text-foreground font-bold">
+                <MapPin className="w-4 h-4 text-primary shrink-0" />
+                <span className="truncate">{evento.local}</span>
+              </div>
+            </div>
+            <div className="p-4 bg-muted rounded-xl transition-colors">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Capacidade</p>
+              <div className="flex items-center gap-2 text-foreground font-bold">
+                <Users className="w-4 h-4 text-primary shrink-0" />
+                {evento.vagas_totais} pessoas
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Cards de stats — 3 colunas */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
-              <Info className="w-5 h-5 text-primary" />
-              Informações do Evento
+          <CardHeader className="p-6">
+            <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
+              <TrendingUp className="w-4 h-4 text-primary" />
+              Ocupação de Vagas
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <Link to={`/eventos/${evento.id}/editar`}>
-                <Button variant="outline" size="sm" className="rounded-xl border-border text-muted-foreground hover:bg-accent hover:text-foreground">
-                  <Edit2 className="w-4 h-4 mr-2" />
-                  Editar Evento
-                </Button>
-              </Link>
-            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Data e Hora</p>
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  {new Date(evento.data_inicio).toLocaleString('pt-BR')}
-                </div>
-              </div>
-              <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Local</p>
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  {evento.local}
-                </div>
-              </div>
-
-              <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Capacidade</p>
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <Users className="w-4 h-4 text-primary" />
-                  {evento.vagas_totais} pessoas
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
-            <CardHeader className="p-6">
-              <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
-                <TrendingUp className="w-4 h-4 text-primary" />
-                Ocupação de Vagas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="h-[320px] p-6 pt-0 relative flex flex-col justify-center items-center">
+          <CardContent className="h-[320px] p-6 pt-0 relative flex flex-col justify-center items-center">
               <div className="w-full h-full relative">
                 <ResponsiveContainer width="100%" height="85%">
                   <PieChart>
@@ -159,53 +141,25 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
-            <CardHeader profile="p-6">
-              <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
-                <DollarSign className="w-4 h-4 text-primary" />
-                Resumo Financeiro
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 p-6 pt-0">
-              <div className="p-4 bg-muted rounded-xl transition-colors">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Total Arrecadado</p>
-                <p className="text-2xl font-black text-foreground">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRevenue)}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {/* Link de inscrição */}
-        <Card className="border-none shadow-sm rounded-2xl bg-card">
-          <CardContent className="p-5 space-y-3">
-            <div className="flex items-center gap-2">
-              <Link2 className="w-4 h-4 text-primary shrink-0" />
-              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Link de Inscrição</p>
-            </div>
-            <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2.5">
-              <p className="text-xs font-mono text-foreground flex-1 truncate">{registrationUrl.replace(/^https?:\/\//, '')}</p>
-              <button
-                onClick={copyRegistrationLink}
-                className="shrink-0 text-muted-foreground hover:text-primary transition-colors"
-              >
-                {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-            {profile?.codigo && evento.codigo && (
-              <p className="text-[10px] text-muted-foreground">
-                Produtor <span className="font-black text-foreground">{profile.codigo}</span>
-                {' · '}Evento <span className="font-black text-foreground">{evento.codigo}</span>
+        <Card className="border-none shadow-sm rounded-2xl bg-card transition-colors">
+          <CardHeader className="p-6">
+            <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
+              <DollarSign className="w-4 h-4 text-primary" />
+              Resumo Financeiro
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 p-6 pt-0">
+            <div className="p-4 bg-muted rounded-xl transition-colors">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Total Arrecadado</p>
+              <p className="text-2xl font-black text-foreground">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRevenue)}
               </p>
-            )}
+            </div>
           </CardContent>
         </Card>
 
         <Card className="border-none shadow-xl rounded-3xl bg-primary text-primary-foreground">
-          <CardHeader profile="p-8">
+          <CardHeader className="p-8">
             <CardTitle className="text-xl font-black">Resumo de Vagas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 p-8 pt-0">
@@ -216,7 +170,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
                 <p className="text-primary-foreground/40 text-lg font-bold mb-1">/ {evento.vagas_totais}</p>
               </div>
               <div className="w-full bg-primary-foreground/10 h-3 rounded-full mt-6 overflow-hidden">
-                <div 
+                <div
                   className="bg-primary-foreground h-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                   style={{ width: `${Math.min(100, (occupiedSlots / evento.vagas_totais) * 100)}%` }}
                 />
