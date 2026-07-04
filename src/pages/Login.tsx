@@ -49,6 +49,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<'fraca' | 'média' | 'forte' | null>(null);
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [resetSent, setResetSent] = useState(false);
 
   function calcStrength(pwd: string): 'fraca' | 'média' | 'forte' | null {
     if (!pwd) return null;
@@ -123,11 +125,30 @@ export default function Login() {
             toast.error('Erro ao entrar na equipe: ' + joinErr.message);
           }
         }
+        setLoginAttempts(0);
+        setResetSent(false);
         toast.success('Bem-vindo de volta!');
         navigate(isAdminEmail(cred.user.email) ? '/admin' : '/dashboard');
       }
     } catch (error: any) {
-      toast.error('Erro na autenticação: ' + error.message);
+      if (!isRegistering) {
+        const next = loginAttempts + 1;
+        setLoginAttempts(next);
+        if (next >= 3) {
+          try {
+            await sendPasswordResetEmail(auth, email);
+            setResetSent(true);
+            toast.error('Muitas tentativas. Enviamos um link de redefinição de senha para seu e-mail.');
+          } catch {
+            toast.error('Senha incorreta. Clique em "Esqueceu sua senha?" para redefinir.');
+          }
+        } else {
+          const remaining = 3 - next;
+          toast.error(`Senha incorreta. Mais ${remaining} tentativa${remaining > 1 ? 's' : ''} antes do envio automático de redefinição.`);
+        }
+      } else {
+        toast.error('Erro ao criar conta: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -194,7 +215,7 @@ export default function Login() {
                   type="email"
                   required
                   value={email}
-                  onChange={e => !inviteEmailParam && setEmail(e.target.value)}
+                  onChange={e => { if (!inviteEmailParam) { setEmail(e.target.value); setLoginAttempts(0); setResetSent(false); } }}
                   readOnly={!!inviteEmailParam}
                   placeholder="seu@email.com"
                   className={`pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/30 rounded-xl h-12 focus-visible:ring-white/40 ${inviteEmailParam ? 'opacity-80 cursor-not-allowed' : ''}`}
@@ -268,6 +289,14 @@ export default function Login() {
                   {' '}da Tovia.
                 </span>
               </label>
+            )}
+
+            {resetSent && (
+              <div className="rounded-2xl bg-amber-400/20 border border-amber-400/40 px-4 py-3 text-center">
+                <p className="text-amber-200 text-xs font-bold leading-relaxed">
+                  Enviamos um link de redefinição para <span className="text-white">{email}</span>. Verifique sua caixa de entrada e spam.
+                </p>
+              </div>
             )}
 
             <Button
