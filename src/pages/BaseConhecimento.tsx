@@ -399,53 +399,57 @@ export default function BaseConhecimento() {
       {/* ── Ticket de suporte (só logados) ── */}
       {user && (
         <section className="max-w-5xl mx-auto px-6 pb-12">
-          <div className="rounded-2xl border border-border bg-muted/30 overflow-hidden">
-            {/* Header clicável */}
-            <button
-              onClick={() => { setTicketOpen(v => !v); setTicketSent(false); }}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-muted/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <LifeBuoy className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">Não encontrou o que procurava?</p>
-                  <p className="text-xs text-muted-foreground">Abra um ticket e o suporte Tovia te responde em breve.</p>
-                </div>
+          <div className="rounded-2xl overflow-hidden shadow-sm">
+
+            {/* Banner principal */}
+            <div className="bg-primary px-8 py-10 flex flex-col sm:flex-row items-center gap-6 text-white">
+              <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
+                <LifeBuoy className="w-8 h-8 text-white" />
               </div>
-              <span className={cn(
-                'text-xs font-bold px-3 py-1.5 rounded-full border transition-colors shrink-0',
-                ticketOpen
-                  ? 'bg-muted text-muted-foreground border-border'
-                  : 'bg-primary text-white border-primary'
-              )}>
-                {ticketOpen ? 'Fechar' : 'Abrir ticket'}
-              </span>
-            </button>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="text-xl font-black leading-snug">Precisa de ajuda?</p>
+                <p className="text-sm text-white/80 mt-1 leading-relaxed max-w-lg">
+                  Ficou com dúvida ou encontrou algum problema? Nossa equipe está aqui — abra um chamado e respondemos em até 1 dia útil.
+                </p>
+              </div>
+              <button
+                onClick={() => { setTicketOpen(v => !v); setTicketSent(false); }}
+                className={cn(
+                  'shrink-0 flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold border-2 transition-all cursor-pointer',
+                  ticketOpen
+                    ? 'bg-white/15 text-white border-white/30 hover:bg-white/25'
+                    : 'bg-white text-primary border-white hover:bg-white/90'
+                )}
+              >
+                <LifeBuoy className="w-4 h-4" />
+                {ticketOpen ? 'Fechar chamado' : 'Abrir chamado'}
+              </button>
+            </div>
 
             {/* Formulário */}
             {ticketOpen && (
-              <div className="border-t border-border px-6 py-6">
+              <div className="bg-card border-x border-b border-border rounded-b-2xl px-8 py-8">
                 {ticketSent ? (
-                  <div className="flex flex-col items-center gap-3 py-6 text-center">
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <div className="flex flex-col items-center gap-4 py-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-8 h-8 text-primary" />
                     </div>
-                    <p className="text-sm font-bold text-foreground">Ticket enviado!</p>
-                    <p className="text-xs text-muted-foreground">Nossa equipe vai analisar e responder em breve.</p>
+                    <div>
+                      <p className="text-base font-black text-foreground">Chamado enviado com sucesso!</p>
+                      <p className="text-sm text-muted-foreground mt-1">Nossa equipe vai analisar e responder em breve. Fique de olho nas notificações.</p>
+                    </div>
                     <button
                       onClick={() => setTicketSent(false)}
-                      className="text-xs font-semibold text-primary hover:underline mt-1"
+                      className="text-sm font-semibold text-primary hover:underline cursor-pointer"
                     >
-                      Abrir outro ticket
+                      Abrir outro chamado
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleTicketSubmit} className="space-y-4 max-w-2xl">
-                    <div className="grid sm:grid-cols-2 gap-4">
+                  <form onSubmit={handleTicketSubmit} className="space-y-5 max-w-2xl">
+                    <div className="grid sm:grid-cols-2 gap-5">
                       <div className="sm:col-span-2">
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
                           Assunto
                         </label>
                         <input
@@ -454,17 +458,17 @@ export default function BaseConhecimento() {
                           onChange={e => setTicketTitulo(e.target.value)}
                           placeholder="Descreva brevemente o problema ou dúvida"
                           required
-                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                          className="w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
                           Categoria
                         </label>
                         <select
                           value={ticketCategoria}
                           onChange={e => setTicketCategoria(e.target.value as Categoria)}
-                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                          className="w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
                         >
                           {CATEGORIAS.map(c => (
                             <option key={c.value} value={c.value}>{c.label}</option>
@@ -472,7 +476,7 @@ export default function BaseConhecimento() {
                         </select>
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
                           Descrição
                         </label>
                         <textarea
@@ -481,18 +485,18 @@ export default function BaseConhecimento() {
                           placeholder="Explique com detalhes — quanto mais informação, mais rápido te ajudamos."
                           required
                           rows={4}
-                          className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                          className="w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4 pt-1">
                       <button
                         type="submit"
                         disabled={ticketSending || !ticketTitulo.trim() || !ticketDesc.trim()}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold disabled:opacity-50 hover:bg-primary/90 transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold disabled:opacity-50 hover:bg-primary/90 transition-colors cursor-pointer"
                       >
                         {ticketSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <LifeBuoy className="w-4 h-4" />}
-                        Enviar ticket
+                        Enviar chamado
                       </button>
                       <p className="text-xs text-muted-foreground">Respondemos em até 1 dia útil.</p>
                     </div>
