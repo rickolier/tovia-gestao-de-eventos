@@ -193,26 +193,26 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
       {subTab === 'membros' && isOwner && (
         <div className="max-w-2xl mx-auto space-y-8">
 
-          {/* Contador de membros */}
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-bold text-muted-foreground">
-              {equipe.length}{isFinite(plan.maxTeamMembers) ? `/${plan.maxTeamMembers}` : ''} membro{equipe.length !== 1 ? 's' : ''}
-            </p>
-            {atLimit && (
-              <Link to="/plans" className="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline">
-                <Crown className="w-3.5 h-3.5" /> Ampliar com plano Personalizado
-              </Link>
-            )}
-          </div>
-
           {/* Convidar */}
           <div className={cn(
             'bg-card rounded-3xl border border-border p-6 space-y-5',
             atLimit && 'opacity-60 pointer-events-none'
           )}>
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <UserPlus className="w-4 h-4 text-primary" /> Convidar por e-mail
-            </h3>
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-primary" /> Convidar por e-mail
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-muted-foreground">
+                  {equipe.length}{isFinite(plan.maxTeamMembers) ? `/${plan.maxTeamMembers}` : ''} membro{equipe.length !== 1 ? 's' : ''}
+                </span>
+                {atLimit && (
+                  <Link to="/plans" className="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline">
+                    <Crown className="w-3.5 h-3.5" /> Ampliar
+                  </Link>
+                )}
+              </div>
+            </div>
 
             {/* E-mail input */}
             <div className="flex gap-2">
