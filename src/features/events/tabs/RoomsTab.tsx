@@ -18,7 +18,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { listDocuments, createDocument, removeDocument, subscribeToDocuments, updateDocument } from '~/services/firestore';
-import { Quarto, Inscricao, Pessoa } from '~/types';
+import { Quarto, Inscricao, Pessoa, PaginaVenda } from '~/types';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -48,25 +48,11 @@ const TIPOS_GRUPO = [
 // ─── Critérios de distribuição ───────────────────────────────────────────────
 type Reg = Inscricao & { pessoa?: Pessoa };
 
-const CRITERIO_FIELDS = [
-  { value: 'genero',      label: 'Sexo',             getVal: (reg: Reg) => reg.pessoa?.genero },
-  { value: 'celula',      label: 'Célula',            getVal: (reg: Reg) => reg.pessoa?.celula },
-  { value: 'ticket_nome', label: 'Tipo de Ingresso',  getVal: (reg: Reg) => reg.ticket_nome },
-  {
-    value: 'faixa_etaria', label: 'Faixa Etária',
-    getVal: (reg: Reg) => {
-      const idade = reg.pessoa?.idade;
-      if (!idade) return undefined;
-      if (idade < 12) return 'Criança (< 12)';
-      if (idade < 18) return 'Adolescente (12–17)';
-      if (idade < 30) return 'Jovem (18–29)';
-      if (idade < 50) return 'Adulto (30–49)';
-      return 'Sênior (50+)';
-    },
-  },
-];
-
-const GENERO_LABEL: Record<string, string> = { masculino: 'Masculino', feminino: 'Feminino' };
+type CriterioFieldDef = {
+  value: string;
+  label: string;
+  getVal: (reg: Reg) => string | undefined;
+};
 
 function getLabelForDivisao(div: Divisao | null) {
   if (!div) return { singular: 'Grupo', plural: 'Grupos', membros: 'Membros' };
@@ -88,6 +74,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
   // ── Data ───────────────────────────────────────────────────────────────
   const [rooms, setRooms]               = useState<Quarto[]>([]);
   const [registrations, setRegistrations] = useState<Reg[]>([]);
+  const [formCampos, setFormCampos]     = useState<Array<{ id: string; label: string; tipo: string }>>([]);
 
   // ── View ───────────────────────────────────────────────────────────────
   const [viewMode, setViewMode]   = useState<'grid' | 'list'>('grid');
@@ -127,7 +114,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
   // ── Auto config ────────────────────────────────────────────────────────
   const [autoConfig, setAutoConfig] = useState({
-    quantidade: 5, vagas: 4, criterio: 'celula',
+    quantidade: 5, vagas: 4, criterio: 'ticket_nome',
     prefixoNome: '', lideresIds: [] as string[],
   });
 
@@ -168,7 +155,21 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
   const allocatedIds   = divisaoRooms.flatMap(r => r.hospedes || []);
   const unallocatedRegs = registrations.filter(r => !allocatedIds.includes(r.id));
 
-  const criterioFieldDef = CRITERIO_FIELDS.find(f => f.value === form.criterioField);
+  const criterioFields = useMemo<CriterioFieldDef[]>(() => [
+    { value: 'ticket_nome', label: 'Tipo de Ingresso', getVal: (reg) => reg.ticket_nome },
+    ...formCampos.map(c => ({
+      value: c.id,
+      label: c.label,
+      getVal: (reg: Reg) => {
+        const v = reg.respostas_formulario?.[c.id];
+        if (v === undefined || v === null || v === '') return undefined;
+        if (typeof v === 'boolean') return v ? 'Sim' : 'Não';
+        return String(v);
+      },
+    })),
+  ], [formCampos]);
+
+  const criterioFieldDef = criterioFields.find(f => f.value === form.criterioField);
 
   const criterioValues = useMemo(() => {
     if (!criterioFieldDef) return [];
@@ -187,6 +188,24 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
   }, [form.criterioField, form.criterioValue, form.hospedes, registrations, allocatedIds]);
 
   // ── Data fetching ──────────────────────────────────────────────────────
+  useEffect(() => {
+    listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`)
+      .then(paginas => {
+        const seen = new Set<string>();
+        const campos: Array<{ id: string; label: string; tipo: string }> = [];
+        paginas.forEach(p => {
+          (p.campos_formulario ?? []).forEach(c => {
+            if (!seen.has(c.id) && !['texto', 'email', 'telefone', 'textarea'].includes(c.tipo)) {
+              seen.add(c.id);
+              campos.push({ id: c.id, label: c.label, tipo: c.tipo });
+            }
+          });
+        });
+        setFormCampos(campos);
+      })
+      .catch(() => {});
+  }, [eventoId]);
+
   useEffect(() => {
     const unsub = subscribeToDocuments<Divisao>(
       `eventos/${eventoId}/divisoes`, [],
@@ -325,7 +344,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
       return;
     }
     const criterioStr = (form.criterioField && form.criterioValue)
-      ? `${CRITERIO_FIELDS.find(f => f.value === form.criterioField)?.label}: ${GENERO_LABEL[form.criterioValue] ?? form.criterioValue}`
+      ? `${criterioFields.find(f => f.value === form.criterioField)?.label}: ${form.criterioValue}`
       : undefined;
     try {
       const payload: Partial<Quarto> = {
@@ -348,7 +367,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
   const handleAutoAllocate = async () => {
     if (!activeDivisao) return;
-    const criterioFd = CRITERIO_FIELDS.find(f => f.value === autoConfig.criterio);
+    const criterioFd = criterioFields.find(f => f.value === autoConfig.criterio);
     const criterioLabel = criterioFd?.label ?? '';
     const groups: Record<string, Reg[]> = {};
     const pool = unallocatedRegs.filter(p => !autoConfig.lideresIds.includes(p.id));
@@ -845,15 +864,9 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-5 pt-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome</Label>
-                <Input placeholder={`Ex: ${label.singular} A`} value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary shadow-sm" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Identificador</Label>
-                <Input placeholder="Ex: A1, 101..." value={form.numero} onChange={e => setForm({ ...form, numero: e.target.value })} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary shadow-sm" />
-              </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome</Label>
+              <Input placeholder={`Ex: ${label.singular} A`} value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary shadow-sm" />
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Capacidade</Label>
@@ -869,13 +882,13 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-semibold shadow-sm text-sm"><SelectValue placeholder="Campo..." /></SelectTrigger>
                   <SelectContent className="rounded-xl shadow-xl border-border">
                     <SelectItem value="">Sem critério</SelectItem>
-                    {CRITERIO_FIELDS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                    {criterioFields.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={form.criterioValue} onValueChange={v => setForm({ ...form, criterioValue: v })} disabled={!form.criterioField || criterioValues.length === 0}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-semibold shadow-sm text-sm disabled:opacity-40"><SelectValue placeholder="Valor..." /></SelectTrigger>
                   <SelectContent className="rounded-xl shadow-xl border-border">
-                    {criterioValues.map(v => <SelectItem key={v} value={v}>{GENERO_LABEL[v] ?? v}</SelectItem>)}
+                    {criterioValues.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -966,7 +979,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
               <Select value={autoConfig.criterio} onValueChange={v => setAutoConfig({ ...autoConfig, criterio: v })}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl border-none shadow-2xl">
-                  {CRITERIO_FIELDS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                  {criterioFields.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
