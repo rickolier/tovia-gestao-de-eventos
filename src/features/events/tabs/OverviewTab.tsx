@@ -50,9 +50,12 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 bg-muted rounded-xl transition-colors">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Data e Hora</p>
-              <div className="flex items-center gap-2 text-foreground font-bold">
-                <Calendar className="w-4 h-4 text-primary shrink-0" />
-                {new Date(evento.data_inicio).toLocaleString('pt-BR')}
+              <div className="flex items-start gap-2 text-foreground font-bold">
+                <Calendar className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div className="flex flex-col gap-0.5">
+                  <span>{new Date(evento.data_inicio).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                  <span className="text-muted-foreground font-semibold text-xs">até {new Date(evento.data_fim).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                </div>
               </div>
             </div>
             <div className="p-4 bg-muted rounded-xl transition-colors">
