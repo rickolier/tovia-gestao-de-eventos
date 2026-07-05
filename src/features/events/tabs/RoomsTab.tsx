@@ -86,7 +86,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
   const [isDeleteRoomDialogOpen, setIsDeleteRoomDialogOpen] = useState(false);
   const [roomToDelete, setRoomToDelete]                   = useState<string | null>(null);
   const [editingRoomId, setEditingRoomId]                 = useState<string | null>(null);
-  const [isTipoDialogOpen, setIsTipoDialogOpen]           = useState(false);
   const [isNovaDivisaoOpen, setIsNovaDivisaoOpen]         = useState(false);
   const [isDeleteDivisaoOpen, setIsDeleteDivisaoOpen]     = useState(false);
   const [isRenameDivisaoOpen, setIsRenameDivisaoOpen]     = useState(false);
@@ -98,11 +97,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     customTipoSingular: '', customTipoPlural: '', customTipoMembros: '',
   });
   const [novaDivisaoForm, setNovaDivisaoForm] = useState(emptyNovaDivisao());
-
-  // ── Custom tipo (para editar divisão ativa) ────────────────────────────
-  const [customTipoSingular, setCustomTipoSingular] = useState('');
-  const [customTipoPlural, setCustomTipoPlural]     = useState('');
-  const [customTipoMembros, setCustomTipoMembros]   = useState('');
 
   // ── Group form ─────────────────────────────────────────────────────────
   const emptyForm = () => ({
@@ -246,14 +240,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     setAutoConfig(prev => ({ ...prev, prefixoNome: label.singular }));
   }, [activeDivisao?.id, label.singular]);
 
-  // Sync custom tipo fields when active divisão changes
-  useEffect(() => {
-    if (!activeDivisao) return;
-    setCustomTipoSingular(activeDivisao.customTipoSingular || '');
-    setCustomTipoPlural(activeDivisao.customTipoPlural || '');
-    setCustomTipoMembros(activeDivisao.customTipoMembros || '');
-  }, [activeDivisao?.id]);
-
   // Auto-select participants when criterion value changes
   useEffect(() => {
     if (!form.criterioField || !form.criterioValue || !criterioFieldDef) return;
@@ -304,21 +290,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     await removeDocument(`eventos/${eventoId}/divisoes`, activeDivisao.id);
     setIsDeleteDivisaoOpen(false);
     toast.success('Divisão removida.');
-  };
-
-  const handleUpdateTipo = async (key: string) => {
-    if (!activeDivisao) return;
-    await updateDocument(`eventos/${eventoId}/divisoes`, activeDivisao.id, { tipoGrupoKey: key });
-    if (key === 'custom') setIsTipoDialogOpen(true);
-  };
-
-  const handleSaveCustomTipo = async () => {
-    if (!activeDivisao) return;
-    await updateDocument(`eventos/${eventoId}/divisoes`, activeDivisao.id, {
-      tipoGrupoKey: 'custom',
-      customTipoSingular, customTipoPlural, customTipoMembros,
-    });
-    setIsTipoDialogOpen(false);
   };
 
   // ── Group handlers ─────────────────────────────────────────────────────
@@ -503,25 +474,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
         <>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 flex-wrap">
-              {/* Tipo selector */}
-              <div className="flex items-center gap-2 bg-muted/60 border border-border rounded-xl px-3 h-10">
-                <LayoutGrid className="w-4 h-4 text-muted-foreground shrink-0" />
-                <Select
-                  value={activeDivisao.tipoGrupoKey}
-                  onValueChange={v => { handleUpdateTipo(v); }}
-                >
-                  <SelectTrigger className="border-none bg-transparent shadow-none h-auto p-0 text-sm font-semibold text-foreground focus:ring-0 w-36">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl shadow-xl border-border">
-                    {TIPOS_GRUPO.filter(t => t.value !== 'custom').map(t => (
-                      <SelectItem key={t.value} value={t.value} className="font-medium">{t.plural}</SelectItem>
-                    ))}
-                    <SelectItem value="custom" className="font-medium text-primary">Personalizar...</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <span className="text-xs text-muted-foreground hidden sm:inline">
                 {unallocatedRegs.length} sem alocação · {divisaoRooms.length} {label.plural.toLowerCase()}
               </span>
@@ -587,7 +539,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
           {/* ── Grid view ── */}
           {viewMode === 'grid' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredRooms.length === 0 && (
                 <div className="col-span-full py-20 text-center bg-muted/20 rounded-2xl border-2 border-dashed border-border/50">
                   <Users className="w-14 h-14 text-muted-foreground/20 mx-auto mb-3" />
@@ -600,11 +552,11 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
               {filteredRooms.map(room => (
                 <Card key={room.id} className="border border-border shadow-sm rounded-2xl bg-card overflow-hidden group hover:shadow-md transition-all hover:-translate-y-0.5 card-flat">
                   <div className="h-1.5 bg-primary/40 group-hover:bg-primary transition-colors" />
-                  <CardHeader className="pb-3 pt-5 px-5">
+                  <CardHeader className="pb-2 pt-4 px-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-base font-bold text-foreground">{room.nome}</CardTitle>
-                        <div className="flex gap-3 mt-1 flex-wrap">
+                        <CardTitle className="text-sm font-bold text-foreground">{room.nome}</CardTitle>
+                        <div className="flex gap-2 mt-0.5 flex-wrap">
                           {room.numero && <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">#{room.numero}</span>}
                           <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">
                             {room.hospedes?.length || 0}/{room.vagas || 0} vagas
@@ -614,18 +566,18 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                           )}
                         </div>
                       </div>
-                      <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-muted-foreground/40 group-hover:text-primary group-hover:bg-primary/10 transition-colors shrink-0">
-                        <Users className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center text-muted-foreground/40 group-hover:text-primary group-hover:bg-primary/10 transition-colors shrink-0">
+                        <Users className="w-3.5 h-3.5" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="px-5 pb-5 space-y-4">
+                  <CardContent className="px-4 pb-4 space-y-2">
                     <div>
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{label.membros}</p>
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">{label.membros}</p>
                       {(room.hospedes?.length || 0) === 0
                         ? <p className="text-xs text-muted-foreground/50 italic">Nenhum membro alocado</p>
                         : (
-                          <div className="flex flex-wrap gap-1.5">
+                          <div className="flex flex-wrap gap-1">
                             {room.hospedes?.map(hId => {
                               const reg = registrations.find(r => r.id === hId);
                               const isResp = room.responsaveis?.includes(hId);
@@ -639,7 +591,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                           </div>
                         )}
                     </div>
-                    <div className="flex gap-2 pt-3 border-t border-border/50">
+                    <div className="flex gap-2 pt-2 border-t border-border/50">
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10" onClick={() => openEdit(room)}>
                         <Edit2 className="w-3.5 h-3.5" />
                       </Button>
@@ -822,32 +774,6 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
           <DialogFooter className="pt-6 gap-2">
             <Button variant="ghost" onClick={() => setIsDeleteDivisaoOpen(false)} className="rounded-xl h-11 px-6 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
             <Button variant="destructive" onClick={handleDeleteDivisao} className="rounded-xl h-11 px-6 font-black shadow-lg">Remover</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ════════════════ DIALOG — Personalizar tipo ════════════════ */}
-      <Dialog open={isTipoDialogOpen} onOpenChange={setIsTipoDialogOpen}>
-        <DialogContent className="sm:max-w-sm rounded-2xl border-none shadow-2xl p-8 bg-card">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl font-bold text-foreground">Personalizar tipo de grupo</DialogTitle>
-            <DialogDescription className="text-muted-foreground">Defina como chamará cada divisão no seu evento.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            {([
-              ['Nome no singular', 'Ex: Célula', customTipoSingular, setCustomTipoSingular],
-              ['Nome no plural',   'Ex: Células', customTipoPlural,  setCustomTipoPlural],
-              ['Nome dos membros', 'Ex: Participantes', customTipoMembros, setCustomTipoMembros],
-            ] as const).map(([lbl, ph, val, setter]) => (
-              <div key={lbl} className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{lbl}</Label>
-                <Input placeholder={ph} value={val} onChange={e => (setter as any)(e.target.value)} className="rounded-xl border-border h-11" />
-              </div>
-            ))}
-          </div>
-          <DialogFooter className="pt-6 gap-2">
-            <Button variant="ghost" onClick={() => { handleUpdateTipo('grupo'); setIsTipoDialogOpen(false); }} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
-            <Button onClick={handleSaveCustomTipo} className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6">Confirmar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
