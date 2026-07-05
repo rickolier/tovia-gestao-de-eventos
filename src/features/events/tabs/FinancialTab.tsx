@@ -453,7 +453,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                 <p className="text-xs text-amber-700 mt-0.5">Conecte seu Asaas para ativar cobranças automáticas. Enquanto isso, o controle é manual.</p>
               </div>
             </div>
-            <a href="/dashboard?tab=gateway" className="shrink-0">
+            <a href="/dashboard?tab=configuracoes&sub=gateway" className="shrink-0">
               <button className="text-xs font-black text-amber-800 underline underline-offset-2 whitespace-nowrap">Conectar gateway</button>
             </a>
           </div>
@@ -822,8 +822,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
             </div>
             
             <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
-              <Button variant="ghost" onClick={() => setIsHistoryDialogOpen(false)} className="rounded-2xl h-12 px-8 font-black text-muted-foreground hover:bg-muted">Ver Mais Tarde</Button>
-              <Button 
+              <Button
                 onClick={() => {
                   setLockedInscricaoId(selectedRegId);
                   setFormData(f => ({ ...f, inscricaoId: selectedRegId || '' }));
