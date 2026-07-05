@@ -355,7 +355,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
             {/* Section tabs */}
             <div className="flex gap-1 mt-5 bg-muted/50 p-1 rounded-xl w-fit">
               {([
-                { id: 'tickets', label: 'Ingressos & Info', icon: TicketIcon },
+                { id: 'tickets', label: 'Informações', icon: TicketIcon },
                 { id: 'campos',  label: 'Formulário',    icon: FileText },
               ] as const).map(s => (
                 <button
@@ -559,19 +559,6 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
 
           <div className="px-8 pb-8 flex flex-col sm:flex-row gap-3 flex-wrap">
             <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
-            {editingId && form.slug && (
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-2xl h-12 px-6 font-bold border-border text-muted-foreground hover:border-primary hover:text-primary gap-2"
-                onClick={() => {
-                  const p = paginas.find(x => x.id === editingId);
-                  if (p) { setPreviewPagina({ ...p, ...form, slug: slugify(form.slug) }); setPreviewKey(k => k + 1); }
-                }}
-              >
-                <Eye className="w-4 h-4" /> Abrir
-              </Button>
-            )}
             {activeSection === 'tickets' && (
               <Button onClick={() => setActiveSection('campos')} variant="outline" className="rounded-2xl h-12 px-8 font-bold border-primary text-primary hover:bg-primary/5 gap-2">
                 Próximo: Formulário →
