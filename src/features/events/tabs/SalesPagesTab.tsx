@@ -496,10 +496,6 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">Placeholder (opcional)</Label>
-                      <Input value={novoCampo.placeholder || ''} onChange={e => setNovoCampo(p => ({ ...p, placeholder: e.target.value }))} placeholder="Texto de exemplo" className="rounded-xl border-none bg-muted/50 h-10 text-sm shadow-sm" />
-                    </div>
                     <div className="flex items-end pb-1">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <Checkbox checked={novoCampo.obrigatorio} onCheckedChange={v => setNovoCampo(p => ({ ...p, obrigatorio: !!v }))} className="rounded-md data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
