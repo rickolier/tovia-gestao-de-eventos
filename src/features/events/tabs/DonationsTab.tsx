@@ -450,47 +450,47 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-none shadow-sm bg-card rounded-[2rem] transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <Card className="border-none shadow-sm bg-card rounded-2xl transition-colors">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-center justify-between mb-1">
               <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em]">Total Bruto</p>
-              <Wallet className="w-4 h-4 text-primary opacity-50" />
+              <Wallet className="w-3.5 h-3.5 text-primary opacity-50" />
             </div>
-            <p className="text-xl font-black text-primary">
+            <p className="text-lg font-black text-primary">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalArrecadado)}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-none shadow-sm bg-card rounded-[2rem] transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
+        <Card className="border-none shadow-sm bg-card rounded-2xl transition-colors">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-center justify-between mb-1">
               <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em]">Total Líquido</p>
-              <Info className="w-4 h-4 text-blue-500 opacity-50" />
+              <Info className="w-3.5 h-3.5 text-blue-500 opacity-50" />
             </div>
-            <p className="text-xl font-black text-blue-600 dark:text-blue-400">
+            <p className="text-lg font-black text-blue-600 dark:text-blue-400">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalLiquido)}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-none shadow-sm bg-card rounded-[2rem] transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
+        <Card className="border-none shadow-sm bg-card rounded-2xl transition-colors">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-center justify-between mb-1">
               <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em]">Destinado a Inscritos</p>
-              <Target className="w-4 h-4 text-emerald-500 opacity-50" />
+              <Target className="w-3.5 h-3.5 text-emerald-500 opacity-50" />
             </div>
-            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalDestinadoInscritos)}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-none shadow-xl shadow-primary/20 bg-primary text-white rounded-[2rem] transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
+        <Card className="border-none shadow-xl shadow-primary/20 bg-primary text-white rounded-2xl transition-colors">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-center justify-between mb-1">
               <p className="text-[9px] text-primary-foreground/70 uppercase font-black tracking-[0.2em]">Valores Não Destinados</p>
-              <Coins className="w-4 h-4 text-primary-foreground/70" />
+              <Coins className="w-3.5 h-3.5 text-primary-foreground/70" />
             </div>
-            <p className="text-xl font-black">
+            <p className="text-lg font-black">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValoresNaoDestinados)}
             </p>
           </CardContent>
