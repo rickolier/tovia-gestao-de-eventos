@@ -17,6 +17,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { listDocuments, createDocument, removeDocument, subscribeToDocuments, updateDocument } from '~/services/firestore';
 import { Quarto, Inscricao, Pessoa, PaginaVenda } from '~/types';
 import { v4 as uuidv4 } from 'uuid';
@@ -495,30 +502,42 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
               </div>
             </div>
 
-            <div className="flex gap-2 w-full sm:w-auto flex-wrap">
-              {/* Rename / Delete divisão */}
-              <Button variant="ghost" size="sm"
-                onClick={() => { setRenameValue(activeDivisao.nome); setIsRenameDivisaoOpen(true); }}
-                className="h-10 px-3 rounded-xl text-muted-foreground hover:text-foreground gap-1.5">
-                <Pencil className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Renomear</span>
-              </Button>
-              {sortedDivisoes.length > 1 && (
-                <Button variant="ghost" size="sm"
-                  onClick={() => setIsDeleteDivisaoOpen(true)}
-                  className="h-10 px-3 rounded-xl text-muted-foreground hover:text-destructive gap-1.5">
-                  <X className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Remover aba</span>
-                </Button>
-              )}
-              <Button variant="outline" onClick={handleExport}
-                className="border-border text-muted-foreground hover:bg-muted/40 gap-2 rounded-xl font-bold h-10 flex-1 sm:flex-none">
-                <FileDown className="w-4 h-4" /> Exportar
-              </Button>
-              <Button variant="outline" onClick={() => setIsAutoConfigOpen(true)}
-                className="border-primary text-primary hover:bg-primary/5 gap-2 rounded-xl font-bold h-10 flex-1 sm:flex-none">
-                <Settings className="w-4 h-4" /> Automático
-              </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline"
+                    className="border-border text-muted-foreground hover:bg-muted/40 gap-2 rounded-xl font-bold h-10">
+                    <Settings className="w-4 h-4" /> Editar Aba
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52 rounded-xl shadow-xl border-border p-1">
+                  <DropdownMenuItem
+                    onClick={() => { setRenameValue(activeDivisao.nome); setIsRenameDivisaoOpen(true); }}
+                    className="gap-2.5 rounded-lg font-semibold cursor-pointer">
+                    <Pencil className="w-4 h-4 text-muted-foreground" /> Renomear aba
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setIsAutoConfigOpen(true)}
+                    className="gap-2.5 rounded-lg font-semibold cursor-pointer">
+                    <Wand2 className="w-4 h-4 text-muted-foreground" /> Preencher automaticamente
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleExport}
+                    className="gap-2.5 rounded-lg font-semibold cursor-pointer">
+                    <FileDown className="w-4 h-4 text-muted-foreground" /> Exportar XLSX
+                  </DropdownMenuItem>
+                  {sortedDivisoes.length > 1 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => setIsDeleteDivisaoOpen(true)}
+                        className="gap-2.5 rounded-lg font-semibold cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                        <X className="w-4 h-4" /> Remover aba
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button onClick={openCreate}
                 className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl font-bold h-10 px-5 shadow-sm transition-all active:scale-95 flex-1 sm:flex-none">
                 <Plus className="w-4 h-4" /> Novo {label.singular}
