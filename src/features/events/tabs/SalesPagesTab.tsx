@@ -15,6 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Plus, Copy, Trash2, ExternalLink, Globe, GlobeLock,
   Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft, FileDown, Loader2,
+  ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '~/services/firestore';
 import { PaginaVenda, CampoFormulario, Ticket, Evento, UserProfile } from '~/types';
@@ -223,6 +224,17 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
 
   const removeCampo = (id: string) => {
     setForm(prev => ({ ...prev, campos_formulario: prev.campos_formulario.filter(c => c.id !== id) }));
+  };
+
+  const moveCampo = (id: string, direction: 'up' | 'down') => {
+    setForm(prev => {
+      const arr = [...prev.campos_formulario];
+      const idx = arr.findIndex(c => c.id === id);
+      const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (swapIdx < 0 || swapIdx >= arr.length) return prev;
+      [arr[idx], arr[swapIdx]] = [arr[swapIdx], arr[idx]];
+      return { ...prev, campos_formulario: arr };
+    });
   };
 
   const toggleCampoObrigatorio = (id: string) => {
@@ -435,9 +447,26 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Campos do formulário</Label>
                   <div className="space-y-2">
-                    {form.campos_formulario.map(campo => (
-                      <div key={campo.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border border-border/40">
-                        <GripVertical className="w-4 h-4 text-muted-foreground/30 shrink-0" />
+                    {form.campos_formulario.map((campo, idx) => (
+                      <div key={campo.id} className="flex items-center gap-2 p-3 bg-muted/30 rounded-xl border border-border/40">
+                        <div className="flex flex-col shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => moveCampo(campo.id, 'up')}
+                            disabled={idx === 0}
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"
+                          >
+                            <ChevronUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveCampo(campo.id, 'down')}
+                            disabled={idx === form.campos_formulario.length - 1}
+                            className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"
+                          >
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-bold text-foreground leading-none">{campo.label}</p>
                           <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{TIPOS_CAMPO.find(t => t.value === campo.tipo)?.label}</p>
