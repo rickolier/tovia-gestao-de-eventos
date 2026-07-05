@@ -297,7 +297,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                       onClick={() => { setPreviewPagina(p); setPreviewKey(k => k + 1); }}
                       className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
                     >
-                      <Eye className="w-3.5 h-3.5" /> Visualizar
+                      <Eye className="w-3.5 h-3.5" /> Abrir
                     </button>
                     <button
                       onClick={() => exportarFicha(p)}
@@ -544,7 +544,7 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                   if (p) { setPreviewPagina({ ...p, ...form, slug: slugify(form.slug) }); setPreviewKey(k => k + 1); }
                 }}
               >
-                <Eye className="w-4 h-4" /> Visualizar
+                <Eye className="w-4 h-4" /> Abrir
               </Button>
             )}
             {activeSection === 'tickets' && (

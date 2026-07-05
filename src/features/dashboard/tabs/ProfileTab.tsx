@@ -511,7 +511,7 @@ export default function ProfileTab() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" /> Visualizar
+                    <ExternalLink className="w-3.5 h-3.5" /> Abrir
                   </a>
                 </div>
               )}
