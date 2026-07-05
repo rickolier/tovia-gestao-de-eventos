@@ -37,7 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestDataDeletion = exports.uploadEventCover = exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
+exports.requestDataDeletion = exports.validateBillingKey = exports.uploadEventCover = exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
 const functions = __importStar(require("firebase-functions/v2/https"));
 const admin = __importStar(require("firebase-admin"));
 const firestore_1 = require("firebase-admin/firestore");
@@ -70,8 +70,9 @@ async function checkRateLimit(uid, action, maxPerHour = 20) {
     });
 }
 const PLAN_PRICES = {
-    essencial: 39.90,
-    pro: 99.00,
+    start: 39,
+    essencial: 99,
+    pro: 249,
 };
 // ─── Criar checkout de assinatura ─────────────────────────────────────────────
 exports.createCheckout = functions.onCall({ secrets: ["ASAAS_API_KEY"], region: "us-central1" }, async (request) => {
@@ -416,11 +417,40 @@ exports.uploadEventCover = functions.onCall({ region: "us-central1" }, async (re
     const file = bucket.file(path);
     await file.save(buffer, { contentType, resumable: false });
     await file.makePublic();
-    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}`;
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}?t=${Date.now()}`;
     // Atualiza o evento com a nova URL
     await db.collection("eventos").doc(eventoId).update({ imagem_url: downloadUrl });
     console.log(`[uploadEventCover] uid=${uid} evento=${eventoId} path=${path}`);
     return { downloadUrl };
+});
+// ─── Validar chave de billing da plataforma Tovia ────────────────────────────
+exports.validateBillingKey = functions.onCall({ region: "us-central1" }, async (request) => {
+    if (!request.auth) {
+        throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+    const callerEmail = request.auth.token.email;
+    const isToviaMaster = callerEmail === "admin@tovia.app" ||
+        callerEmail === "admin@toviaapp.com.br";
+    if (!isToviaMaster) {
+        const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
+        if (!adminDoc.exists) {
+            throw new functions.HttpsError("permission-denied", "Acesso negado.");
+        }
+    }
+    const configDoc = await db.collection("config").doc("billing").get();
+    if (!configDoc.exists) {
+        throw new functions.HttpsError("not-found", "Nenhuma chave configurada.");
+    }
+    const { asaas_api_key: apiKey, sandbox } = configDoc.data();
+    if (!apiKey) {
+        throw new functions.HttpsError("not-found", "Chave API não definida.");
+    }
+    const valid = await (0, gateway_utils_1.testAsaasApiKey)(apiKey, sandbox !== null && sandbox !== void 0 ? sandbox : true);
+    await db.collection("config").doc("billing").update({
+        is_valid: valid,
+        last_validated_at: new Date().toISOString(),
+    });
+    return { valid };
 });
 // ─── LGPD Art. 18 — Solicitação de exclusão de dados pessoais ────────────────
 // Anonimiza os dados imediatamente e marca a conta para exclusão completa.
