@@ -175,6 +175,10 @@ service cloud.firestore {
         allow read, write: if isEventOwner(eventoId);
       }
 
+      match /divisoes/{divisaoId} {
+        allow read, write: if isEventOwner(eventoId);
+      }
+
       match /tarefas/{taskId} {
         allow read, write: if isEventOwner(eventoId);
       }

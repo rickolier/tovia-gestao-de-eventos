@@ -254,6 +254,8 @@ export interface Quarto {
   genero?: 'masculino' | 'feminino' | 'misto';
   hospedes: string[]; // IDs of Inscricao or Pessoa
   responsaveis: string[]; // IDs of Inscricao or Pessoa
+  divisaoId?: string;
+  criterio?: string;
 }
 
 export interface AppNotification {
