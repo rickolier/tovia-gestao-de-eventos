@@ -571,7 +571,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
               {filteredRooms.map(room => (
                 <Card key={room.id} className="border border-border shadow-sm rounded-2xl bg-card overflow-hidden group hover:shadow-md transition-all hover:-translate-y-0.5 card-flat">
                   <div className="h-1.5 bg-primary/40 group-hover:bg-primary transition-colors" />
-                  <CardHeader className="pb-2 pt-4 px-4">
+                  <CardHeader className="pb-2 pt-3 px-4">
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="text-sm font-bold text-foreground">{room.nome}</CardTitle>
@@ -590,7 +590,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="px-4 pb-4 space-y-2">
+                  <CardContent className="px-4 pb-2 space-y-2">
                     <div>
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">{label.membros}</p>
                       {(room.hospedes?.length || 0) === 0
@@ -610,7 +610,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                           </div>
                         )}
                     </div>
-                    <div className="flex gap-2 pt-2 border-t border-border/50">
+                    <div className="flex gap-2 pt-1 border-t border-border/50">
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10" onClick={() => openEdit(room)}>
                         <Edit2 className="w-3.5 h-3.5" />
                       </Button>
