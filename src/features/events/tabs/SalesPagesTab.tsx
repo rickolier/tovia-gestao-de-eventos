@@ -559,14 +559,15 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
 
           <div className="px-8 pb-8 flex flex-col sm:flex-row gap-3 flex-wrap">
             <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-2xl h-12 px-8 font-bold text-muted-foreground hover:bg-muted">Cancelar</Button>
-            {activeSection === 'tickets' && (
-              <Button onClick={() => setActiveSection('campos')} variant="outline" className="rounded-2xl h-12 px-8 font-bold border-primary text-primary hover:bg-primary/5 gap-2">
+            {activeSection === 'tickets' ? (
+              <Button onClick={() => setActiveSection('campos')} className="rounded-2xl h-12 px-8 font-black bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 transition-all active:scale-95 ml-auto gap-2">
                 Próximo: Formulário →
               </Button>
+            ) : (
+              <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 transition-all active:scale-95 ml-auto">
+                {editingId ? 'Salvar Alterações' : 'Criar Página'}
+              </Button>
             )}
-            <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 px-10 font-black shadow-xl shadow-primary/20 transition-all active:scale-95 ml-auto">
-              {editingId ? 'Salvar Alterações' : 'Criar Página'}
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
