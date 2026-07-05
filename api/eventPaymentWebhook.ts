@@ -6,6 +6,37 @@ import { db } from './_firebase';
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
+function interpolate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? `{${key}}`);
+}
+
+function wrapCustomEmail(corpo: string): string {
+  const PRIMARY = '#1a7a45';
+  const TEXT = '#1a1a1a';
+  const html = corpo
+    .split('\n')
+    .map(line => line.trim()
+      ? `<p style="margin:0 0 16px;color:${TEXT};font-size:15px;line-height:1.6;">${line}</p>`
+      : '')
+    .join('');
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/></head>
+<body style="font-family:sans-serif;background:#f4f6f3;margin:0;padding:40px 16px;">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr><td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:24px 40px;text-align:center;">
+          <span style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-1px;">tovia</span>
+        </td></tr>
+        <tr><td style="background:#fff;padding:32px 40px;border-radius:0 0 16px 16px;">${html}</td></tr>
+        <tr><td style="padding:24px 0;text-align:center;">
+          <span style="font-size:12px;color:#9ca3af;">Este é um e-mail automático, por favor não responda.</span>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
 async function sendEmail(to: string, subject: string, html: string) {
   if (!RESEND_API_KEY) return;
   try {
@@ -121,25 +152,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
       // E-mail de confirmação
-      const recipientEmail = inscricao.email ?? inscricao.doadorNome;
       const recipientName = isDonation ? (inscricao.doadorNome ?? '') : (inscricao.nome ?? '');
       if (inscricao.email) {
-        const eventoDoc = await db.collection('eventos').doc(eventoId).get();
-        const eventoNome = eventoDoc.exists ? (eventoDoc.data()!.nome ?? 'evento') : 'evento';
-        const subject = isDonation
-          ? `Doação confirmada — ${eventoNome} ✅`
-          : `Inscrição confirmada — ${eventoNome} ✅`;
-        const body = isDonation
-          ? `<p>Olá, <strong>${recipientName}</strong>!</p>
-             <p>Sua doação para o evento <strong>${eventoNome}</strong> foi confirmada. Obrigado pela contribuição!</p>
-             <p>Número do pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>
-             <br><p>Equipe Tovia</p>`
-          : `<p>Olá, <strong>${recipientName}</strong>!</p>
-             <p>Seu pagamento foi confirmado e sua inscrição no evento <strong>${eventoNome}</strong> está garantida.</p>
-             <p>Número do pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>
-             <br><p>Até lá!<br><em>Equipe Tovia</em></p>`;
+        const evDoc = await db.collection('eventos').doc(eventoId).get();
+        const evData = evDoc.exists ? evDoc.data()! : {};
+        const eventoNome: string = evData.nome ?? 'evento';
+        const cfgEmail = !isDonation ? evData.config_comunicacao?.email_confirmacao : null;
+
+        let subject: string;
+        let body: string;
+
+        if (cfgEmail?.ativo && cfgEmail.corpo) {
+          const vars: Record<string, string> = {
+            nome: recipientName,
+            evento: eventoNome,
+            data: evData.data_inicio ? new Date(evData.data_inicio).toLocaleDateString('pt-BR') : '',
+            local: evData.local ?? '',
+          };
+          subject = interpolate(cfgEmail.assunto || `Inscrição confirmada — ${eventoNome}`, vars);
+          body = wrapCustomEmail(interpolate(cfgEmail.corpo, vars));
+        } else {
+          subject = isDonation
+            ? `Doação confirmada — ${eventoNome} ✅`
+            : `Inscrição confirmada — ${eventoNome} ✅`;
+          body = isDonation
+            ? `<p>Olá, <strong>${recipientName}</strong>! Sua doação para <strong>${eventoNome}</strong> foi confirmada. Obrigado!</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>`
+            : `<p>Olá, <strong>${recipientName}</strong>! Sua inscrição em <strong>${eventoNome}</strong> está garantida.</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>`;
+        }
+
         await sendEmail(inscricao.email, subject, body);
-        void recipientEmail;
       }
     }
 

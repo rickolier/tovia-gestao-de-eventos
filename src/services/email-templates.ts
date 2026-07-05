@@ -189,3 +189,12 @@ export function emailConfirmacaoVinculo(nome: string, eventoNome: string) {
     ${btn('Ver meu painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
   `, `Você agora faz parte da equipe de ${eventoNome}`);
 }
+
+// Envolve corpo customizado (texto do organizador) no template Tovia padrão
+export function emailCustom(corpo: string, preview = '') {
+  const html = corpo
+    .split('\n')
+    .map(line => line.trim() ? `<p style="margin:0 0 16px;color:${TEXT};font-size:15px;line-height:1.6;">${line}</p>` : '')
+    .join('');
+  return wrap(html, preview);
+}

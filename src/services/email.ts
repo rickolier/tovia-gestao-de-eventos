@@ -7,7 +7,13 @@ import {
   emailPagamentoNaoRealizado,
   emailConviteEquipe,
   emailConfirmacaoVinculo,
+  emailCustom,
 } from './email-templates';
+
+// Substitui {nome}, {evento}, {data}, {local} etc. no texto do organizador
+export function interpolate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? `{${key}}`);
+}
 import { auth } from './firebase';
 
 async function send(to: string, subject: string, html: string) {
@@ -52,4 +58,7 @@ export const Email = {
 
   confirmacaoVinculo: (to: string, nome: string, eventoNome: string) =>
     send(to, `Você entrou na equipe de ${eventoNome}! 🎯`, emailConfirmacaoVinculo(nome, eventoNome)),
+
+  custom: (to: string, subject: string, corpo: string, preview?: string) =>
+    send(to, subject, emailCustom(corpo, preview)),
 };

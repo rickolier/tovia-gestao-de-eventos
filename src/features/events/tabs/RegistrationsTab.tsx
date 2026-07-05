@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { differenceInMonths } from 'date-fns';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import { Email } from '~/services/email';
+import { Email, interpolate } from '~/services/email';
 
 export default function RegistrationsTab({ eventoId, readOnly = false }: { eventoId: string; readOnly?: boolean }) {
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa, ticket?: Ticket })[]>([]);
@@ -361,13 +361,29 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
         const participanteEmail = email || formData.email;
         const participanteNome = nome || formData.nome;
         if (participanteEmail) {
-          Email.confirmacaoInscricao(
-            participanteEmail,
-            participanteNome,
-            evento?.nome || '',
-            evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '',
-            evento?.local || '',
-          );
+          const cfgEmail = evento?.config_comunicacao?.email_confirmacao;
+          if (cfgEmail?.ativo && cfgEmail.corpo) {
+            const vars = {
+              nome: participanteNome,
+              evento: evento?.nome || '',
+              data: evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '',
+              local: evento?.local || '',
+            };
+            Email.custom(
+              participanteEmail,
+              interpolate(cfgEmail.assunto || `Inscrição confirmada: ${evento?.nome}`, vars),
+              interpolate(cfgEmail.corpo, vars),
+              `Inscrição confirmada em ${evento?.nome}`,
+            );
+          } else {
+            Email.confirmacaoInscricao(
+              participanteEmail,
+              participanteNome,
+              evento?.nome || '',
+              evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '',
+              evento?.local || '',
+            );
+          }
         }
         toast.success('Inscrição manual realizada!');
       }
