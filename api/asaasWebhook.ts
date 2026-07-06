@@ -1,6 +1,6 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { db } from './_firebase';
+import { db } from './_firebase.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';

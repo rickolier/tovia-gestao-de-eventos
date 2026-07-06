@@ -1,6 +1,6 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { db } from './_firebase';
+import { db } from './_firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
 
 const RATE_LIMIT_MAX = 10;      // max requests

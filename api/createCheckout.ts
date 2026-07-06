@@ -1,7 +1,7 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
-import { db, verifyAuth } from './_firebase';
+import { db, verifyAuth } from './_firebase.js';
 
 const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
 
