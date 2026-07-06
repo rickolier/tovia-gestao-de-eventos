@@ -52,6 +52,8 @@ const TIPOS_GRUPO = [
   { value: 'custom',   singular: '',         plural: '',          membros: '' },
 ];
 
+const LIMITE_DIVISOES = 10;
+
 // ─── Critérios de distribuição ───────────────────────────────────────────────
 type Reg = Inscricao & { pessoa?: Pessoa };
 
@@ -260,6 +262,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
   // ── Divisão handlers ───────────────────────────────────────────────────
   const handleCreateDivisao = async () => {
     if (!novaDivisaoForm.nome.trim()) { toast.error('Nome da divisão é obrigatório'); return; }
+    if (divisoes.length >= LIMITE_DIVISOES) { toast.error(`Limite de ${LIMITE_DIVISOES} abas atingido.`); return; }
     const id = uuidv4();
     const data: Divisao = {
       id,
@@ -469,7 +472,13 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
           </button>
         ))}
         <button
-          onClick={() => setIsNovaDivisaoOpen(true)}
+          onClick={() => {
+            if (sortedDivisoes.length >= LIMITE_DIVISOES) {
+              toast.error(`Limite de ${LIMITE_DIVISOES} abas atingido.`);
+              return;
+            }
+            setIsNovaDivisaoOpen(true);
+          }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-muted-foreground hover:text-primary border-b-2 border-transparent -mb-px shrink-0 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" /> Nova Divisão
