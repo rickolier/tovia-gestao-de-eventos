@@ -96,6 +96,15 @@ export interface EquipeMembro {
   adicionadoEm: string;
 }
 
+export interface MembroEquipeGlobal {
+  id: string;
+  donoId: string;
+  email: string;
+  nome: string;
+  adicionadoEm: string;
+  status: 'ativo' | 'pendente';
+}
+
 export interface Evento {
   id: string;
   codigo?: string;

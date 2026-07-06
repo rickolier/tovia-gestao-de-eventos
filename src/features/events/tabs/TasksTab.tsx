@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
-import { Task, AppNotification, EquipeMembro } from '~/types';
+import { Task, AppNotification, EquipeMembro, MembroEquipeGlobal } from '~/types';
+import { where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  CheckSquare, 
-  ListTodo, 
-  Kanban, 
-  Calendar as CalendarIcon, 
-  Users, 
+  CheckSquare,
+  ListTodo,
+  Kanban,
+  Calendar as CalendarIcon,
+  Users,
   Clock,
   Plus,
   Trash2,
@@ -17,7 +18,9 @@ import {
   MoreVertical,
   CheckCircle2,
   AlertCircle,
-  LayoutList
+  LayoutList,
+  Link2,
+  Link2Off,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -46,13 +49,75 @@ const STATUS_LIST = [
   { value: 'atrasada', label: 'Atrasado', color: 'bg-red-100 text-red-700' }
 ];
 
-export default function TasksTab({ eventoId, equipe = [] }: { eventoId: string; equipe?: EquipeMembro[] }) {
+interface TasksTabProps {
+  eventoId: string;
+  equipe?: EquipeMembro[];
+  donoId?: string;
+  onEquipeUpdate?: () => void;
+}
+
+const DEFAULT_PERMS: EquipeMembro['permissoes'] = ['registrations', 'management', 'rooms', 'tasks'];
+
+export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate }: TasksTabProps) {
   const { user, profile } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [view, setView] = useState<'lista' | 'quadros'>('quadros');
+
+  // Membros globais do organizador
+  const [globalMembros, setGlobalMembros] = useState<MembroEquipeGlobal[]>([]);
+  const [linkingId, setLinkingId] = useState<string | null>(null);
+  const isOwner = !!donoId && user?.uid === donoId;
+
+  useEffect(() => {
+    if (!isOwner || !donoId) return;
+    listDocuments<MembroEquipeGlobal>('equipes', [where('donoId', '==', donoId)])
+      .then(data => setGlobalMembros(data.filter(m => m.status === 'ativo')))
+      .catch(() => {});
+  }, [donoId, isOwner]);
+
+  const handleVincular = async (membro: MembroEquipeGlobal) => {
+    if (equipe.some(m => m.email === membro.email)) return;
+    setLinkingId(membro.id);
+    try {
+      const novoMembro: EquipeMembro = {
+        userId: membro.id,
+        email: membro.email,
+        nome: membro.nome,
+        permissoes: DEFAULT_PERMS,
+        adicionadoEm: new Date().toISOString(),
+      };
+      await updateDocument('eventos', eventoId, {
+        equipe: [...equipe, novoMembro],
+        equipeIds: arrayUnion(membro.id),
+      } as any);
+      toast.success(`${membro.nome} vinculado a este evento.`);
+      onEquipeUpdate?.();
+    } catch {
+      toast.error('Erro ao vincular membro.');
+    } finally {
+      setLinkingId(null);
+    }
+  };
+
+  const handleDesvincular = async (membro: MembroEquipeGlobal) => {
+    setLinkingId(membro.id);
+    try {
+      const novaEquipe = equipe.filter(m => m.email !== membro.email);
+      await updateDocument('eventos', eventoId, {
+        equipe: novaEquipe,
+        equipeIds: arrayRemove(membro.id),
+      } as any);
+      toast.success(`${membro.nome} removido deste evento.`);
+      onEquipeUpdate?.();
+    } catch {
+      toast.error('Erro ao desvincular membro.');
+    } finally {
+      setLinkingId(null);
+    }
+  };
 
   const [formData, setFormData] = useState({
     titulo: '',
@@ -211,6 +276,61 @@ export default function TasksTab({ eventoId, equipe = [] }: { eventoId: string; 
 
   return (
     <div className="space-y-6 text-foreground">
+
+      {/* ── Membros vinculados a este evento ── */}
+      {isOwner && (
+        <div className="bg-card rounded-3xl border border-border p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" />
+              Membros neste evento
+            </h3>
+            {equipe.length > 0 && (
+              <span className="text-xs text-muted-foreground font-medium">
+                {equipe.length} vinculado{equipe.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+
+          {globalMembros.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              Nenhum colaborador cadastrado ainda.{' '}
+              <a href="/dashboard?tab=equipe" className="text-primary font-semibold hover:underline">
+                Cadastre membros na sua Equipe.
+              </a>
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {globalMembros.map(membro => {
+                const vinculado = equipe.some(m => m.email === membro.email);
+                const busy = linkingId === membro.id;
+                return (
+                  <button
+                    key={membro.id}
+                    onClick={() => vinculado ? handleDesvincular(membro) : handleVincular(membro)}
+                    disabled={busy}
+                    title={vinculado ? 'Clique para desvincular' : 'Clique para vincular'}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-2xl border text-xs font-semibold transition-all ${
+                      vinculado
+                        ? 'bg-primary/10 border-primary/30 text-primary'
+                        : 'bg-muted border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                    } ${busy ? 'opacity-50 pointer-events-none' : ''}`}
+                  >
+                    <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-black text-primary shrink-0">
+                      {(membro.nome || membro.email).charAt(0).toUpperCase()}
+                    </span>
+                    <span>{membro.nome || membro.email}</span>
+                    {vinculado
+                      ? <Link2Off className="w-3 h-3 shrink-0" />
+                      : <Link2 className="w-3 h-3 shrink-0" />
+                    }
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex justify-end gap-3">
         <Tabs value={view} onValueChange={(v: any) => setView(v)} className="bg-muted p-1.5 rounded-2xl">

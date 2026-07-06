@@ -17,6 +17,7 @@ import {
   Palette,
   GraduationCap,
   BookOpen,
+  Users,
 } from 'lucide-react';
 import { auth } from '~/services/firebase';
 import { signOut } from 'firebase/auth';
@@ -35,6 +36,7 @@ import ProfileTab from './tabs/ProfileTab';
 import CalendarTab from './tabs/CalendarTab';
 import ConfiguracoesTab from './tabs/ConfiguracoesTab';
 import DesignSystemTab from './tabs/DesignSystemTab';
+import EquipeDashTab from './tabs/EquipeDashTab';
 
 export default function Dashboard() {
   const { user, profile, isAuthReady } = useAuth();
@@ -135,6 +137,7 @@ export default function Dashboard() {
     { id: 'inicio',      label: 'Início',        icon: House },
     { id: 'perfil',      label: 'Meu Perfil',    icon: User },
     { id: 'agenda',      label: 'Agenda',         icon: CalendarIcon },
+    { id: 'equipe',      label: 'Equipe',         icon: Users },
     { id: 'relatorios',     label: 'Relatórios',    icon: BarChart3 },
     { id: 'configuracoes',  label: 'Configurações', icon: Settings },
     ...(isAdmin ? [{ id: 'design-system', label: 'Design System', icon: Palette }] : []),
@@ -268,6 +271,7 @@ export default function Dashboard() {
           <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
             {activeTab === 'inicio'         && <HomeTab eventos={eventos} />}
             {activeTab === 'agenda'         && <CalendarTab eventos={eventos} />}
+            {activeTab === 'equipe'         && <EquipeDashTab />}
             {activeTab === 'relatorios'     && <ReportsTab eventos={eventos} />}
             {activeTab === 'perfil'         && <ProfileTab />}
             {activeTab === 'configuracoes'  && <ConfiguracoesTab />}

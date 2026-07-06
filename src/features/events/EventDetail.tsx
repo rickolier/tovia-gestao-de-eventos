@@ -29,7 +29,7 @@ import {
   PanelLeftOpen,
   Globe,
   Settings2,
-  UserCog,
+  CheckSquare,
   Calculator,
   ScanLine,
   ChevronRight,
@@ -45,7 +45,7 @@ import ManagementTab from './tabs/ManagementTab';
 import CalculatorTab from '~/features/dashboard/tabs/CalculatorTab';
 import NotificationsTab from './tabs/NotificationsTab';
 import SalesPagesTab from './tabs/SalesPagesTab';
-import EquipeTab from './tabs/EquipeTab';
+import TasksTab from './tabs/TasksTab';
 import CheckinTab from './tabs/CheckinTab';
 import { toast } from 'sonner';
 import { getPlanConfig } from '~/utils/plan-limits';
@@ -117,7 +117,7 @@ export default function EventDetail() {
     const tabToCategory: Record<string, string> = {
       tickets: 'Inscrições', 'sales-pages': 'Inscrições', registrations: 'Inscrições', 'checkin-list': 'Inscrições',
       financial: 'Financeiro', donations: 'Financeiro',
-      calculadora: 'Gestão', management: 'Gestão', grupos: 'Gestão', equipe: 'Gestão',
+      calculadora: 'Gestão', management: 'Gestão', grupos: 'Gestão', tarefas: 'Gestão',
     };
     const cat = tabToCategory[activeTab];
     if (cat) setExpandedSections(prev => new Set([...prev, cat]));
@@ -153,7 +153,7 @@ export default function EventDetail() {
     { value: 'grupos',         label: 'Grupos',       shortLabel: 'Grupos',    icon: Bed,             show: showTab('rooms', plan.modules.eventManagement) },
     { value: 'sales-pages',       label: 'Páginas',        shortLabel: 'Páginas',  icon: Globe,      show: !isGuest && plan.modules.registrations },
     { value: 'reports',           label: 'Relatórios',     shortLabel: 'Relatórios',icon: BarChart3, show: !isGuest && plan.modules.reports },
-    { value: 'equipe',            label: 'Equipe',         shortLabel: 'Equipe',   icon: UserCog,    show: showTab('tasks', plan.modules.tasksAndTeam) },
+    { value: 'tarefas',           label: 'Tarefas',        shortLabel: 'Tarefas',  icon: CheckSquare, show: showTab('tasks', plan.modules.tasksAndTeam) },
   ].filter(t => t.show);
 
   // Categorised sidebar structure
@@ -188,7 +188,7 @@ export default function EventDetail() {
         { value: 'calculadora', label: 'Calculadora', icon: Calculator, show: showTab('management', plan.modules.eventManagement) },
         { value: 'management', label: 'Recursos',    icon: Wallet,     show: showTab('management', plan.modules.eventManagement) },
         { value: 'grupos',     label: 'Grupos',      icon: Bed,        show: showTab('rooms', plan.modules.eventManagement) },
-        { value: 'equipe',     label: 'Equipe',   icon: UserCog,  show: showTab('tasks', plan.modules.tasksAndTeam) },
+        { value: 'tarefas',    label: 'Tarefas',  icon: CheckSquare, show: showTab('tasks', plan.modules.tasksAndTeam) },
       ],
     },
   ].map(s => ({ ...s, items: s.items.filter(i => i.show) }))
@@ -252,7 +252,7 @@ export default function EventDetail() {
               </p>
               {isGuest && (
                 <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full">
-                  <UserCog className="w-3 h-3" /> Convidado
+                  <Users className="w-3 h-3" /> Convidado
                 </span>
               )}
             </div>
@@ -449,8 +449,13 @@ export default function EventDetail() {
               <ReportsTab evento={evento} />
             </TabsContent>
 
-            <TabsContent value="equipe" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <EquipeTab evento={evento} onUpdate={fetchEventoData} />
+            <TabsContent value="tarefas" className="mt-0 border-none p-0 shadow-none bg-transparent">
+              <TasksTab
+                eventoId={evento.id}
+                equipe={evento.equipe || []}
+                donoId={evento.criado_por}
+                onEquipeUpdate={fetchEventoData}
+              />
             </TabsContent>
           </main>
         </div>
