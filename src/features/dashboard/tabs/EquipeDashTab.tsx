@@ -9,7 +9,7 @@ import { Email } from '~/services/email';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, Mail, Users, Crown, CheckCircle2, Clock } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Users, Crown, CheckCircle2, Clock, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -72,6 +72,15 @@ export default function EquipeDashTab() {
       toast.error('Erro ao adicionar membro.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleReenviar = async (membro: MembroEquipeGlobal) => {
+    try {
+      await Email.conviteEquipe(membro.email, profile?.nome || 'Um organizador');
+      toast.success(`Convite reenviado para ${membro.email}.`);
+    } catch {
+      toast.error('Erro ao reenviar convite.');
     }
   };
 
@@ -209,9 +218,18 @@ export default function EquipeDashTab() {
                       <CheckCircle2 className="w-3 h-3" /> Ativo
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-1 rounded-full">
-                      <Clock className="w-3 h-3" /> Aguardando cadastro
-                    </span>
+                    <>
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-1 rounded-full">
+                        <Clock className="w-3 h-3" /> Aguardando cadastro
+                      </span>
+                      <button
+                        onClick={() => handleReenviar(membro)}
+                        className="text-muted-foreground hover:text-primary transition-colors p-1.5 rounded-lg hover:bg-primary/10"
+                        title="Reenviar convite"
+                      >
+                        <Send className="w-4 h-4" />
+                      </button>
+                    </>
                   )}
                   <button
                     onClick={() => handleRemover(membro.id)}
