@@ -18,9 +18,9 @@ const ANNUAL_PRICES: Record<string, number> = {
 };
 
 const PLAN_LABEL: Record<string, string> = {
-  petach: 'Pétach',
-  koach: 'Koách',
-  chalem: 'Chalém',
+  petach: 'Plano 2 - Pétach',
+  koach:  'Plano 3 - Koách',
+  chalem: 'Plano 4 - Chalém',
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -104,7 +104,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
     }
 
-    const description = `Tovia - Plano ${PLAN_LABEL[planLevel]} ${period === 'annual' ? 'Anual' : 'Mensal'}`;
+    const description = `Tovia · ${PLAN_LABEL[planLevel]} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
 
     if (period === 'monthly') {
       // Assinatura recorrente mensal com cartão de crédito

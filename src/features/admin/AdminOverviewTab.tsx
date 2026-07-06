@@ -5,7 +5,7 @@ import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 49, koach: 129, chalem: 299, start: 0, essencial: 49, pro: 129, personalizado: 299 };
-const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
 const PLAN_COLORS: Record<string, string> = {
   chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
   petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',

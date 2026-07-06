@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
 const PLAN_COLORS: Record<string, string> = {
   chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
   petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
@@ -109,10 +109,10 @@ export default function AdminClientesTab() {
 
   const filters: { id: Filter; label: string }[] = [
     { id: 'all', label: 'Todos' },
-    { id: 'chalem', label: 'Chalém' },
-    { id: 'koach', label: 'Koách' },
-    { id: 'petach', label: 'Pétach' },
-    { id: 'chinam', label: 'Chinám' },
+    { id: 'chalem', label: 'Plano 4 - Chalém' },
+    { id: 'koach',  label: 'Plano 3 - Koách'  },
+    { id: 'petach', label: 'Plano 2 - Pétach' },
+    { id: 'chinam', label: 'Plano 1 - Chinám' },
     { id: 'pending', label: 'Pendente' },
     { id: 'none', label: 'Sem plano' },
     { id: 'deactivated', label: 'Desativados' },

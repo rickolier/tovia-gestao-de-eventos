@@ -15,7 +15,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 49, koach: 129, chalem: 299, start: 0, essencial: 49, pro: 129, personalizado: 299 };
-const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
 const PLAN_COLORS_HEX: Record<string, string> = { chinam: '#9ca3af', petach: '#3b82f6', koach: '#7c3aed', chalem: '#16a34a', start: '#9ca3af', essencial: '#3b82f6', pro: '#7c3aed' };
 
 function fmt(v: number) {

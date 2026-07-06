@@ -451,10 +451,10 @@ function CalculadoraEvento() {
             <SectionTitle>Plano Tovia</SectionTitle>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {[
-                { v: 0,   label: 'Chinám — Gratuito' },
-                { v: 49,  label: 'Pétach — R$49'     },
-                { v: 129, label: 'Koách — R$129'      },
-                { v: 299, label: 'Chalém — R$299'     },
+                { v: 0,   label: 'Plano 1 - Chinám — Gratuito'   },
+                { v: 49,  label: 'Plano 2 - Pétach — R$49/mês'   },
+                { v: 129, label: 'Plano 3 - Koách — R$129/mês'   },
+                { v: 299, label: 'Plano 4 - Chalém — R$299/mês'  },
               ].map(({ v, label }) => (
                 <button key={v} onClick={() => setPlanoTovia(v)} style={{
                   padding: '7px 14px', fontSize: 12, fontWeight: 700, borderRadius: 8, cursor: 'pointer',
@@ -643,10 +643,10 @@ function ProjecaoMRR() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <p className="text-sm font-black mb-4">Clientes por plano</p>
-          <SliderRowMRR label="Pétach — R$49/mês"   min={0} max={500}  step={5}  value={nPetach} onChange={setNPetach} display={String(nPetach)} />
-          <SliderRowMRR label="Koách — R$129/mês"    min={0} max={300}  step={5}  value={nKoach}  onChange={setNKoach}  display={String(nKoach)} />
-          <SliderRowMRR label="Chalém — R$299/mês"   min={0} max={100}  step={1}  value={nChalem} onChange={setNChalem} display={String(nChalem)} />
-          <SliderRowMRR label="Média inscritos pagos (Chalém)" min={0} max={5000} step={50} value={nIns} onChange={setNIns} display={String(nIns)} />
+          <SliderRowMRR label="Plano 2 - Pétach — R$49/mês"   min={0} max={500}  step={5}  value={nPetach} onChange={setNPetach} display={String(nPetach)} />
+          <SliderRowMRR label="Plano 3 - Koách — R$129/mês"   min={0} max={300}  step={5}  value={nKoach}  onChange={setNKoach}  display={String(nKoach)} />
+          <SliderRowMRR label="Plano 4 - Chalém — R$299/mês"  min={0} max={100}  step={1}  value={nChalem} onChange={setNChalem} display={String(nChalem)} />
+          <SliderRowMRR label="Média inscritos pagos (Plano 4 - Chalém)" min={0} max={5000} step={50} value={nIns} onChange={setNIns} display={String(nIns)} />
         </div>
         <div>
           <p className="text-sm font-black mb-4">Custos fixos mensais</p>
@@ -659,10 +659,10 @@ function ProjecaoMRR() {
       <Card><CardContent className="pt-4 pb-3 px-4">
         <p className="text-xs text-muted-foreground font-semibold mb-3">Composição da receita bruta</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-          <span>Pétach: <strong className="text-foreground">{fmt(rPetach)}</strong></span>
-          <span>Koách: <strong className="text-foreground">{fmt(rKoach)}</strong></span>
-          <span>Chalém (fixo): <strong className="text-foreground">{fmt(rChalemFix)}</strong></span>
-          <span>0,8% inscritos: <strong className="text-foreground">{fmt(rChalemVar)}</strong></span>
+          <span>Plano 2 - Pétach: <strong className="text-foreground">{fmt(rPetach)}</strong></span>
+          <span>Plano 3 - Koách: <strong className="text-foreground">{fmt(rKoach)}</strong></span>
+          <span>Plano 4 - Chalém (fixo): <strong className="text-foreground">{fmt(rChalemFix)}</strong></span>
+          <span>0,8% inscritos Chalém: <strong className="text-foreground">{fmt(rChalemVar)}</strong></span>
         </div>
       </CardContent></Card>
     </div>

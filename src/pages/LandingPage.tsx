@@ -34,7 +34,7 @@ const FEATURES = [
   {
     icon: DollarSign,
     title: 'Controle Financeiro',
-    description: 'Registre entradas, saídas e doações por categoria e acompanhe o saldo do evento em tempo real. No plano Pro, conecte seu próprio gateway e receba PIX, boleto e cartão direto na sua conta.',
+    description: 'Registre entradas, saídas e doações por categoria e acompanhe o saldo do evento em tempo real. No Plano 4 - Chalém, conecte seu próprio gateway e receba PIX, boleto e cartão direto na sua conta.',
     color: 'bg-orange-50 text-orange-600',
   },
   {
@@ -457,11 +457,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Posso cobrar pelos ingressos?',
-    a: 'Sim. No plano Essencial você define o valor dos ingressos e registra os pagamentos manualmente (Pix, dinheiro, transferência). No plano Pro você conecta seu próprio gateway de pagamento e os participantes pagam online — com PIX, boleto ou cartão.',
+    a: 'Sim. No Plano 2 - Pétach você define o valor dos ingressos e registra os pagamentos manualmente (Pix, dinheiro, transferência). No Plano 4 - Chalém você conecta seu próprio gateway de pagamento e os participantes pagam online — com PIX, boleto ou cartão.',
   },
   {
     q: 'O dinheiro das inscrições passa pelo Tovia?',
-    a: 'Nunca. O Tovia não intermedia pagamentos nem fica com nenhuma parte do valor. No Essencial, você recebe pelos seus próprios meios e registra no painel. No Pro, você conecta seu próprio gateway (como o Asaas) e o dinheiro vai direto para a sua conta.',
+    a: 'Nunca. O Tovia não intermedia pagamentos nem fica com nenhuma parte do valor. No Plano 2 - Pétach, você recebe pelos seus próprios meios e registra no painel. No Plano 4 - Chalém, você conecta seu próprio gateway (como o Asaas) e o dinheiro vai direto para a sua conta.',
   },
   {
     q: 'O que dá para controlar financeiramente?',
@@ -472,8 +472,8 @@ const FAQ_ITEMS = [
     a: 'Cada inscrito recebe um QR Code por e-mail na confirmação. Na entrada do evento, abra o Tovia em qualquer celular ou tablet e escaneie o código — a presença é confirmada na hora. Se o participante não tiver o QR Code, é possível buscar pelo nome.',
   },
   {
-    q: 'O Tovia tem período de teste gratuito?',
-    a: 'Sim. Ao criar sua conta, você tem 14 dias de acesso completo com todos os recursos do plano Pro — sem precisar inserir cartão. Após o período de teste, a conta fica suspensa até a escolha de um dos planos.',
+    q: 'O Tovia tem um plano gratuito?',
+    a: 'Sim. O Plano 1 - Chinám é gratuito e permanente — sem cartão, sem prazo, sem surpresa. Você organiza até 1 evento com até 100 participantes e 1 ingresso gratuito. Quando precisar de mais, basta fazer upgrade para o Plano 2 - Pétach ou superior a qualquer momento.',
   },
 ];
 
