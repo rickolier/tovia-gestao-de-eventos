@@ -52,7 +52,7 @@ export default function EquipeDashTab() {
       const novoMembro: MembroEquipeGlobal = {
         id,
         donoId: user.uid,
-        userId: usuario?.uid,   // UID real do Firebase — undefined se ainda não tem conta
+        ...(usuario?.uid ? { userId: usuario.uid } : {}),
         email: trimmed,
         nome: usuario?.nome || trimmed,
         adicionadoEm: new Date().toISOString(),
