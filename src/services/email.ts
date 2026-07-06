@@ -6,7 +6,6 @@ import {
   emailPagamentoConfirmado,
   emailPagamentoNaoRealizado,
   emailConviteEquipe,
-  emailConviteEquipeGlobal,
   emailConfirmacaoVinculo,
   emailCustom,
 } from './email-templates';
@@ -52,14 +51,13 @@ export const Email = {
   pagamentoNaoRealizado: (to: string, nome: string, plano: string, vencimento: string) =>
     send(to, 'Atenção: pagamento pendente na sua conta Tovia ⚠️', emailPagamentoNaoRealizado(nome, plano, vencimento)),
 
-  conviteEquipe: (to: string, eventoNome: string, donoNome: string) => {
+  // eventoNome opcional: sem ele, envia convite global de equipe
+  conviteEquipe: (to: string, donoNome: string, eventoNome?: string) => {
     const loginUrl = `${window.location.origin}/login?cadastro=true`;
-    return send(to, `${donoNome} convidou você para organizar ${eventoNome} 🤝`, emailConviteEquipe(eventoNome, donoNome, loginUrl));
-  },
-
-  conviteEquipeGlobal: (to: string, donoNome: string) => {
-    const cadastroUrl = `${window.location.origin}/login?cadastro=true`;
-    return send(to, `${donoNome} adicionou você à equipe no Tovia 🤝`, emailConviteEquipeGlobal(donoNome, cadastroUrl));
+    const subject = eventoNome
+      ? `${donoNome} convidou você para organizar ${eventoNome} 🤝`
+      : `${donoNome} adicionou você à equipe no Tovia 🤝`;
+    return send(to, subject, emailConviteEquipe(donoNome, loginUrl, eventoNome));
   },
 
   confirmacaoVinculo: (to: string, nome: string, eventoNome: string) =>

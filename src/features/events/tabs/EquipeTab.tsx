@@ -122,7 +122,7 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         };
         await createDocument('convites', conviteId, convite);
         setPendingInvites(prev => [...prev, convite]);
-        Email.conviteEquipe(trimmed, evento.nome, profile?.nome || 'Administrador');
+        Email.conviteEquipe(trimmed, profile?.nome || 'Administrador', evento.nome);
         toast.success(`Convite enviado para ${trimmed}!`);
       }
       setEmail('');

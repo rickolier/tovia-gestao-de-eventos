@@ -63,7 +63,7 @@ export default function EquipeDashTab() {
       setMembros(prev => [...prev, novoMembro]);
       setEmail('');
       if (!usuario) {
-        Email.conviteEquipeGlobal(trimmed, profile?.nome || 'Um organizador').catch(() => {});
+        Email.conviteEquipe(trimmed, profile?.nome || 'Um organizador').catch(() => {});
         toast.success(`Convite enviado para ${trimmed}. Ele aparecerá como ativo após o cadastro.`);
       } else {
         toast.success(`${usuario.nome} adicionado à equipe!`);
