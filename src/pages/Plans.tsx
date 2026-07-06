@@ -92,7 +92,7 @@ export default function Plans() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start p-6">
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-6xl">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-10 pt-2">
@@ -151,7 +151,7 @@ export default function Plans() {
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
           {PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
             const moduleCount = PLAN_CONFIGS[level].modulesCount;
@@ -163,7 +163,7 @@ export default function Plans() {
                 key={level}
                 onClick={() => setSelected(level)}
                 className={cn(
-                  'relative flex flex-col gap-5 p-7 rounded-3xl text-left transition-all duration-200 border-2',
+                  'relative flex flex-col gap-4 p-5 rounded-3xl text-left transition-all duration-200 border-2',
                   isSelected
                     ? 'bg-white border-white shadow-2xl scale-[1.02]'
                     : 'bg-white/10 border-white/20 hover:bg-white/20 hover:border-white/40',
