@@ -1150,7 +1150,7 @@ export default function LandingPage() {
                 {[
                   '1 evento ativo',
                   'Até 100 vagas por evento',
-                  '1 tipo de ingresso',
+                  '1 Ingresso cadastrado',
                   'Página de inscrição pública',
                   'Relatórios básicos',
                 ].map((label, i) => (
@@ -1195,7 +1195,7 @@ export default function LandingPage() {
                 {[
                   '3 eventos ativos',
                   'Até 200 vagas por evento',
-                  '3 tipos de ingresso',
+                  '3 Ingressos cadastrados',
                   'Financeiro manual',
                   'Painel de Doações',
                 ].map((label, i) => (
@@ -1249,7 +1249,7 @@ export default function LandingPage() {
                   </li>
                 ))}
                 {[
-                  { mod: 'Inscrições', items: ['5 tipos de ingresso', 'Múltiplas páginas de inscrição'] },
+                  { mod: 'Inscrições', items: ['5 Ingressos cadastrados', 'Múltiplas páginas de inscrição'] },
                   { mod: 'Financeiro', items: ['Financeiro manual', 'Painel de Doações'] },
                   { mod: 'Gestão', items: ['Grupos, quartos e mesas', 'Tarefas e equipe integrada'] },
                 ].map(({ mod, items }) => (
@@ -1310,7 +1310,7 @@ export default function LandingPage() {
                   </li>
                 ))}
                 {[
-                  { mod: 'Inscrições', items: ['10 tipos de ingresso', 'Múltiplas páginas de inscrição'] },
+                  { mod: 'Inscrições', items: ['10 Ingressos cadastrados', 'Múltiplas páginas de inscrição'] },
                   { mod: 'Financeiro', items: ['PIX, Boleto e Cartão automáticos', 'BYOG — seu próprio gateway'] },
                   { mod: 'Gestão', items: ['Grupos, quartos e mesas', 'Tarefas e equipe integrada'] },
                 ].map(({ mod, items }) => (
