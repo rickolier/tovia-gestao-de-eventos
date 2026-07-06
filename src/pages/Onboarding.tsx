@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
-import { updateDocument } from '~/services/firestore';
 import { PlanLevel } from '~/types';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
-import { Check, TicketIcon, DollarSign, Wallet, ArrowRight, Loader2, Sparkles, CreditCard, QrCode } from 'lucide-react';
+import { Check, TicketIcon, DollarSign, Wallet, ArrowRight, Loader2, CreditCard, QrCode } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -18,17 +17,17 @@ const MODULE_DESCRIPTIONS = [
   'Recursos, grupos e tarefas',
 ];
 
-const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro', 'personalizado'];
-const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
+const PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { chinam: 1, petach: 2, koach: 3, chalem: 4 };
 
 const MONTHLY_PRICES: Record<PlanLevel, string> = {
-  start: 'R$ 39/mês', essencial: 'R$ 99/mês', pro: 'R$ 249/mês', personalizado: 'Sob consulta',
+  chinam: 'Gratuito', petach: 'R$ 49/mês', koach: 'R$ 129/mês', chalem: 'R$ 299/mês',
 };
 const ANNUAL_PRICES: Record<PlanLevel, string> = {
-  start: 'R$ 32,50/mês', essencial: 'R$ 82,50/mês', pro: 'R$ 207,50/mês', personalizado: 'Sob consulta',
+  chinam: 'Gratuito', petach: 'R$ 40,83/mês', koach: 'R$ 107,50/mês', chalem: 'R$ 249,17/mês',
 };
 const ANNUAL_TOTALS: Record<PlanLevel, string> = {
-  start: 'R$ 390/ano', essencial: 'R$ 990/ano', pro: 'R$ 2.490/ano', personalizado: '',
+  chinam: '', petach: 'R$ 490/ano', koach: 'R$ 1.290/ano', chalem: 'R$ 2.990/ano',
 };
 
 type Period = 'monthly' | 'annual';
@@ -37,29 +36,12 @@ type PaymentMethod = 'credit_card' | 'pix';
 export default function Onboarding() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<PlanLevel>('essencial');
+  const [selected, setSelected] = useState<PlanLevel>('koach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
   const [saving, setSaving] = useState(false);
-  const [startingTrial, setStartingTrial] = useState(false);
-
-  const handleStartTrial = async () => {
-    if (!user) return;
-    setStartingTrial(true);
-    try {
-      const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-      await updateDocument('users', user.uid, { plano: 'pro', trialEndsAt });
-      toast.success('Trial iniciado! Aproveite 14 dias com tudo do Pro.');
-      navigate('/dashboard');
-    } catch {
-      toast.error('Erro ao iniciar trial. Tente novamente.');
-    } finally {
-      setStartingTrial(false);
-    }
-  };
-
   const handleConfirm = async () => {
-    if (!selected || !user || selected === 'personalizado') return;
+    if (!selected || !user || selected === 'chinam') return;
     setSaving(true);
     try {
       const idToken = await user.getIdToken();
@@ -113,47 +95,6 @@ export default function Onboarding() {
               Antes de começar, escolha como você quer usar o Tovia.
             </p>
           </div>
-        </div>
-
-        {/* Trial card */}
-        <div className="bg-white rounded-3xl p-8 mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-56 h-56 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-          <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Sparkles className="w-6 h-6 text-primary" />
-              </div>
-              <span className="bg-primary text-white text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full">
-                14 dias grátis
-              </span>
-            </div>
-            <h2 className="text-2xl font-black text-foreground mb-2">
-              Teste o Pro completo, sem pagar agora.
-            </h2>
-            <p className="text-muted-foreground text-sm mb-6 max-w-lg">
-              Acesse todos os recursos do plano Pro por 14 dias. Sem cartão de crédito, sem compromisso. Escolha um plano só quando estiver pronto.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-              <Button
-                onClick={handleStartTrial}
-                disabled={startingTrial}
-                className="h-12 px-8 rounded-2xl font-black bg-primary text-white hover:bg-primary/90 gap-2 shadow-lg shadow-primary/20"
-              >
-                {startingTrial
-                  ? <Loader2 className="w-4 h-4 animate-spin" />
-                  : <Sparkles className="w-4 h-4" />}
-                Iniciar trial gratuito
-              </Button>
-              <span className="text-xs text-muted-foreground">Sem cartão · 14 dias · Acesso completo ao Pro</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Separator */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="flex-1 h-px bg-white/20" />
-          <span className="text-white/50 text-sm font-semibold">ou contrate agora</span>
-          <div className="flex-1 h-px bg-white/20" />
         </div>
 
         {/* Period toggle */}
@@ -231,7 +172,7 @@ export default function Onboarding() {
                   <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
                     {displayPrice[level]}
                   </span>
-                  {period === 'annual' && level !== 'personalizado' && (
+                  {period === 'annual' && level !== 'chinam' && (
                     <p className={cn('text-xs mt-1', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
                       {ANNUAL_TOTALS[level]} · 2 meses grátis
                     </p>
@@ -304,13 +245,13 @@ export default function Onboarding() {
 
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pb-12">
-          {selected === 'personalizado' ? (
-            <a
-              href="mailto:contato@toviaapp.com.br"
-              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all flex items-center gap-2"
+          {selected === 'chinam' ? (
+            <Button
+              onClick={() => navigate('/dashboard')}
+              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all"
             >
-              Falar com a equipe <ArrowRight className="w-5 h-5" />
-            </a>
+              Começar grátis <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           ) : (
             <Button
               onClick={handleConfirm}

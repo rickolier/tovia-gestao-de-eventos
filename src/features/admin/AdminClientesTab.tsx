@@ -13,15 +13,16 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
 const PLAN_COLORS: Record<string, string> = {
-  start:    'bg-gray-100 text-gray-600',
-  essencial:'bg-blue-100 text-blue-700',
-  pro:      'bg-primary/10 text-primary',
+  chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
+  petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
+  koach: 'bg-violet-100 text-violet-700', pro: 'bg-violet-100 text-violet-700',
+  chalem: 'bg-primary/10 text-primary',
 };
-const PLAN_OPTIONS: PlanLevel[] = ['start', 'essencial', 'pro'];
+const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
 
-type Filter = 'all' | 'pro' | 'essencial' | 'start' | 'pending' | 'none' | 'deactivated';
+type Filter = 'all' | 'chalem' | 'koach' | 'petach' | 'chinam' | 'pending' | 'none' | 'deactivated';
 
 export default function AdminClientesTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -108,9 +109,10 @@ export default function AdminClientesTab() {
 
   const filters: { id: Filter; label: string }[] = [
     { id: 'all', label: 'Todos' },
-    { id: 'pro', label: 'Pro' },
-    { id: 'essencial', label: 'Essencial' },
-    { id: 'start', label: 'Start' },
+    { id: 'chalem', label: 'Chalém' },
+    { id: 'koach', label: 'Koách' },
+    { id: 'petach', label: 'Pétach' },
+    { id: 'chinam', label: 'Chinám' },
     { id: 'pending', label: 'Pendente' },
     { id: 'none', label: 'Sem plano' },
     { id: 'deactivated', label: 'Desativados' },
@@ -414,7 +416,7 @@ export default function AdminClientesTab() {
                         variant="ghost"
                         size="sm"
                         disabled={saving === selected.uid}
-                        onClick={() => handleChangePlan(selected.uid, 'start')}
+                        onClick={() => handleChangePlan(selected.uid, 'chinam')}
                         className="flex-1 text-primary hover:bg-primary/5 rounded-xl gap-1.5 text-xs"
                       >
                         <ArrowUpCircle className="w-3 h-3" /> Ativar Start

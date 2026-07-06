@@ -46,28 +46,28 @@ export const TOUR_DEFS: TourMeta[] = [
     label: 'Tutorial Inicial',
     description: 'Conheça o painel do Tovia: navegação, perfil, agenda e como criar seu primeiro evento.',
     icon: <Sparkles className="w-4 h-4" />,
-    plans: ['start', 'essencial', 'pro', 'personalizado'],
+    plans: ['chinam', 'petach', 'koach', 'chalem'],
   },
   {
     id: 'inscricoes',
     label: 'Módulo de Inscrições',
     description: 'Ingressos, páginas de venda, participantes, cupons e check-in — dentro do seu evento.',
     icon: <Ticket className="w-4 h-4" />,
-    plans: ['start', 'essencial', 'pro', 'personalizado'],
+    plans: ['chinam', 'petach', 'koach', 'chalem'],
   },
   {
     id: 'financeiro',
     label: 'Módulo Financeiro',
     description: 'Configuração financeira, pagamentos manuais e doações.',
     icon: <DollarSign className="w-4 h-4" />,
-    plans: ['essencial', 'pro', 'personalizado'],
+    plans: ['petach', 'koach', 'chalem'],
   },
   {
     id: 'gestao',
     label: 'Módulo de Gestão',
     description: 'Recursos, grupos, tarefas, equipe e calculadora de eventos.',
     icon: <ListChecks className="w-4 h-4" />,
-    plans: ['pro', 'personalizado'],
+    plans: ['koach', 'chalem'],
   },
 ];
 
@@ -91,35 +91,35 @@ interface Props {
 // ─── Steps per tour ──────────────────────────────────────────────────────────
 
 const PLAN_WELCOME: Record<PlanLevel, string> = {
-  start:
-    'Você está no plano Start (gratuito): 1 evento ativo, até 200 participantes, 1 ingresso gratuito por evento. Vamos ver o caminho mais rápido para começar!',
-  essencial:
-    'Plano Essencial: até 3 eventos simultâneos, 500 participantes cada, 3 tipos de ingresso, controle financeiro manual e doações incluídos. Vamos configurar tudo!',
-  pro:
-    'Plano Pro: eventos e participantes ilimitados, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
-  personalizado:
-    'Plano Personalizado com limites ajustados para a sua organização. Vamos conhecer cada módulo do Tovia!',
+  chinam:
+    'Você está no plano Chinám (gratuito): 1 evento ativo, até 100 participantes, 1 ingresso por evento. Vamos ver o caminho mais rápido para começar!',
+  petach:
+    'Plano Pétach: até 3 eventos simultâneos, 200 participantes cada, 3 tipos de ingresso, controle financeiro manual e doações incluídos. Vamos configurar tudo!',
+  koach:
+    'Plano Koách: até 5 eventos com 500 participantes cada, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
+  chalem:
+    'Plano Chalém: 10 eventos, inscritos ilimitados, pagamentos automáticos via PIX, boleto e cartão, e equipe com até 10 membros. O plano completo do Tovia!',
 };
 
 const PLAN_TICKET_DESC: Record<PlanLevel, string> = {
-  start:
-    'No plano Start você cria 1 ingresso gratuito por evento, com número de vagas e prazo. Para criar ingressos pagos ou múltiplos tipos, faça upgrade para o Essencial.',
-  essencial:
-    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento. Para pagamentos online, conecte um gateway nas Configurações do evento.',
-  pro:
-    'Crie quantos tipos de ingresso quiser: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Combine para atender todos os perfis de participante.',
-  personalizado:
-    'Crie quantos tipos de ingresso quiser: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Combine para atender todos os perfis de participante.',
+  chinam:
+    'No plano Chinám você cria 1 ingresso gratuito por evento, com número de vagas e prazo. Para criar ingressos pagos ou múltiplos tipos, faça upgrade para o Pétach.',
+  petach:
+    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento. Para pagamentos automáticos online, conheça o plano Chalém.',
+  koach:
+    'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Para pagamentos automáticos, conheça o plano Chalém.',
+  chalem:
+    'Crie até 10 tipos de ingresso: gratuitos, pagos e doações. Com pagamentos automáticos (BYOG), seus participantes pagam via PIX, boleto ou cartão direto para sua conta.',
 };
 
 const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
-  start:
-    'Você conhece o módulo de inscrições! Crie seu evento, configure o ingresso gratuito e divulgue o link. Para desbloquear pagamentos e doações, conheça o plano Essencial em Configurações → Faturamento.',
-  essencial:
+  chinam:
+    'Você conhece o módulo de inscrições! Crie seu evento, configure o ingresso e divulgue o link. Para desbloquear pagamentos e doações, conheça o plano Pétach em Configurações → Faturamento.',
+  petach:
     'Você conhece o módulo de inscrições! Próximo passo: explore o Módulo Financeiro — clique em Tutorial na barra lateral e escolha "Módulo Financeiro" para aprender a registrar pagamentos.',
-  pro:
+  koach:
     'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
-  personalizado:
+  chalem:
     'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
 };
 
@@ -214,7 +214,7 @@ function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
         icon: <QrCode className="w-4 h-4" />,
       },
       {
-        title: plan === 'start' ? 'Você está pronto para começar!' : 'Módulo de Inscrições concluído!',
+        title: plan === 'chinam' ? 'Você está pronto para começar!' : 'Módulo de Inscrições concluído!',
         description: PLAN_FINAL_DESC[plan],
         icon: <BookOpen className="w-4 h-4" />,
       },

@@ -13,46 +13,55 @@ import { cn } from '@/lib/utils';
 // ── Badge config ────────────────────────────────────────────────────────────
 
 const BADGES = {
-  start:     { label: 'Start',     color: 'bg-emerald-100 text-emerald-700' },
-  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'       },
-  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700'   },
+  chinam: { label: 'Chinám', color: 'bg-emerald-100 text-emerald-700' },
+  petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
+  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
+  chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
 };
 
 const ACCENT: Record<string, string> = {
-  start:     'bg-primary',
-  essencial: 'bg-blue-400',
-  pro:       'bg-violet-500',
+  chinam: 'bg-primary',
+  petach: 'bg-blue-400',
+  koach:  'bg-violet-500',
+  chalem: 'bg-amber-500',
 };
 
 // Active filter pill styles (shown on the banner dark bg)
 const PLAN_FILTER_ACTIVE: Record<string, string> = {
-  start:     'bg-emerald-500 text-white border-emerald-500',
-  essencial: 'bg-blue-500 text-white border-blue-500',
-  pro:       'bg-violet-500 text-white border-violet-500',
+  chinam: 'bg-emerald-500 text-white border-emerald-500',
+  petach: 'bg-blue-500 text-white border-blue-500',
+  koach:  'bg-violet-500 text-white border-violet-500',
+  chalem: 'bg-amber-500 text-white border-amber-500',
 };
 
-type PlanKey = 'start' | 'essencial' | 'pro';
+type PlanKey = 'chinam' | 'petach' | 'koach' | 'chalem';
 
 const PLAN_FILTERS: { key: PlanKey; label: string }[] = [
-  { key: 'start',     label: 'Start'     },
-  { key: 'essencial', label: 'Essencial' },
-  { key: 'pro',       label: 'Pro'       },
+  { key: 'chinam', label: 'Chinám'  },
+  { key: 'petach', label: 'Pétach'  },
+  { key: 'koach',  label: 'Koách'   },
+  { key: 'chalem', label: 'Chalém'  },
 ];
 
 const PINNED_TAGS = ['início', 'configuração', 'eventos', 'financeiro', 'suporte'];
 
+const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
+
 function badgesFromTags(tags: string[]): PlanKey[] {
-  const hasPro       = tags.includes('pro');
-  const hasEssencial = tags.includes('essencial');
-  if (hasPro && !hasEssencial) return ['pro'];
-  if (hasEssencial)            return ['essencial', 'pro'];
-  return ['start', 'essencial', 'pro'];
+  const hasChalem = tags.includes('chalem');
+  const hasKoach  = tags.includes('koach');
+  const hasPetach = tags.includes('petach');
+  if (hasChalem && !hasKoach && !hasPetach) return ['chalem'];
+  if (hasKoach)  return ['koach', 'chalem'];
+  if (hasPetach) return ['petach', 'koach', 'chalem'];
+  return ['chinam', 'petach', 'koach', 'chalem'];
 }
 
 function accentFromBadges(badges: PlanKey[]): string {
-  if (badges.length === 1 && badges[0] === 'pro') return ACCENT.pro;
-  if (badges[0] === 'essencial')                  return ACCENT.essencial;
-  return ACCENT.start;
+  if (badges[0] === 'chalem') return ACCENT.chalem;
+  if (badges[0] === 'koach')  return ACCENT.koach;
+  if (badges[0] === 'petach') return ACCENT.petach;
+  return ACCENT.chinam;
 }
 
 function articleMatchesPlan(tags: string[], plan: PlanKey): boolean {
@@ -316,7 +325,7 @@ export default function BaseConhecimento() {
                 const badges      = badgesFromTags(artigo.tags);
                 const accent      = accentFromBadges(badges);
                 const hasBanner   = !!artigo.banner_url;
-                const contentTags = artigo.tags.filter(t => t !== 'pro' && t !== 'essencial');
+                const contentTags = artigo.tags.filter(t => !PLAN_TAG_KEYS.has(t));
 
                 return (
                   <Link

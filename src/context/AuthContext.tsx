@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '~/services/firebase';
-import { getDocument, createDocument, listDocuments, removeDocument } from '~/services/firestore';
+import { getDocument, createDocument, updateDocument, listDocuments, removeDocument } from '~/services/firestore';
 import { notifIfReadOrMissing } from '~/utils/notifications';
 import { UserProfile, PlanLevel, ConvitePendente } from '../types';
 import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const loginAsDemo = async (plano: PlanLevel = 'pro') => {
+  const loginAsDemo = async (plano: PlanLevel = 'koach') => {
     setLoading(true);
     try {
       // Sign in anonymously to get a real Firebase Auth session for rules
@@ -167,13 +167,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? null,
+              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'chinam',
               codigo: isAdmin ? undefined : gerarCodigoProdutor(),
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {
             // Garante que contas de teste sempre têm o plano correto
             userProfile = { ...userProfile, plano: getTestPlan(firebaseUser.email) as PlanLevel };
+          } else if (!userProfile.plano && !isAdminEmail(firebaseUser.email)) {
+            // Usuários antigos sem plano recebem chinam automaticamente
+            userProfile = { ...userProfile, plano: 'chinam' };
+            updateDocument('users', firebaseUser.uid, { plano: 'chinam' }).catch(() => {});
           }
 
           await processarConvites(firebaseUser);

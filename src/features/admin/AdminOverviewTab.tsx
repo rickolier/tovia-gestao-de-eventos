@@ -4,12 +4,13 @@ import { UserProfile } from '~/types';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const PLAN_PRICES: Record<string, number> = { start: 39, essencial: 99, pro: 249 };
-const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
+const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 49, koach: 129, chalem: 299, start: 0, essencial: 49, pro: 129, personalizado: 299 };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
 const PLAN_COLORS: Record<string, string> = {
-  start: 'bg-gray-100 text-gray-600',
-  essencial: 'bg-blue-100 text-blue-700',
-  pro: 'bg-primary/10 text-primary',
+  chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
+  petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
+  koach: 'bg-violet-100 text-violet-700', pro: 'bg-violet-100 text-violet-700',
+  chalem: 'bg-primary/10 text-primary',
 };
 
 export default function AdminOverviewTab() {
@@ -24,21 +25,22 @@ export default function AdminOverviewTab() {
   }, []);
 
   const totalUsers = users.length;
-  const byPlan = { start: 0, essencial: 0, pro: 0, none: 0 };
+  const byPlan: Record<string, number> = { chinam: 0, petach: 0, koach: 0, chalem: 0, none: 0 };
   let mrr = 0;
   let pending = 0;
 
   users.forEach(u => {
     if (u.planoPendente) { pending++; return; }
-    if (u.plano && byPlan[u.plano] !== undefined) {
-      byPlan[u.plano as keyof typeof byPlan]++;
-      mrr += PLAN_PRICES[u.plano] || 0;
+    const normalizedPlano = u.plano ? ({ start: 'chinam', essencial: 'petach', pro: 'koach', personalizado: 'chalem' }[u.plano] ?? u.plano) : null;
+    if (normalizedPlano && byPlan[normalizedPlano] !== undefined) {
+      byPlan[normalizedPlano]++;
+      mrr += PLAN_PRICES[normalizedPlano] || 0;
     } else {
       byPlan.none++;
     }
   });
 
-  const paying = byPlan.start + byPlan.essencial + byPlan.pro;
+  const paying = byPlan.chinam + byPlan.petach + byPlan.koach + byPlan.chalem;
 
   const statCards = [
     {
@@ -111,7 +113,7 @@ export default function AdminOverviewTab() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 pt-2 space-y-3">
-            {(['pro', 'essencial', 'start'] as const).map(plan => {
+            {(['chalem', 'koach', 'petach', 'chinam'] as const).map(plan => {
               const count = byPlan[plan];
               const pct = totalUsers > 0 ? Math.round((count / totalUsers) * 100) : 0;
               return (
@@ -127,7 +129,7 @@ export default function AdminOverviewTab() {
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${pct}%`, opacity: plan === 'pro' ? 1 : plan === 'essencial' ? 0.6 : 0.3 }}
+                      style={{ width: `${pct}%`, opacity: plan === 'chalem' ? 1 : plan === 'koach' ? 0.8 : plan === 'petach' ? 0.6 : 0.3 }}
                     />
                   </div>
                 </div>

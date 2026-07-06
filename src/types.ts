@@ -1,4 +1,4 @@
-export type PlanLevel = 'start' | 'essencial' | 'pro' | 'personalizado';
+export type PlanLevel = 'chinam' | 'petach' | 'koach' | 'chalem';
 
 export interface ArtigoBC {
   id: string;
@@ -53,7 +53,6 @@ export interface UserProfile {
   planoPendente?: string | null;
   asaasCustomerId?: string | null;
   asaasSubscriptionId?: string | null;
-  trialEndsAt?: string | null;
   subscriptionPeriod?: 'monthly' | 'annual' | null;
   subscriptionExpiresAt?: string | null;
   isDemo?: boolean;

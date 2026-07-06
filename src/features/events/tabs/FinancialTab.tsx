@@ -414,7 +414,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
       {financialTourOpen && user && (
         <OnboardingTour
           userId={user.uid}
-          plan={profile?.plano || 'start'}
+          plan={profile?.plano || 'chinam'}
           tourId="financeiro"
           onClose={() => setFinancialTourOpen(false)}
         />

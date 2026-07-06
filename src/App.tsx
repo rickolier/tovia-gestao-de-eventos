@@ -67,15 +67,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Trial expirado sem assinatura ativa → escolha de plano
-  if (profile?.trialEndsAt && !profile.asaasSubscriptionId) {
-    if (new Date(profile.trialEndsAt) < new Date()) {
-      return <Navigate to="/planos" state={{ trialExpired: true }} replace />;
-    }
-  }
-
-  // Novo usuário sem plano e sem trial → onboarding
-  if (profile && !profile.plano && !profile.trialEndsAt) return <Navigate to="/onboarding" replace />;
 
   return <>{children}</>;
 }

@@ -288,7 +288,7 @@ export default function Dashboard() {
       {tourSelectorOpen && user && (
         <TourSelector
           userId={user.uid}
-          plan={profile?.plano || 'start'}
+          plan={profile?.plano || 'chinam'}
           onStart={(id) => setActiveTourId(id)}
           onClose={() => setTourSelectorOpen(false)}
         />
@@ -298,7 +298,7 @@ export default function Dashboard() {
       {activeTourId && user && (
         <OnboardingTour
           userId={user.uid}
-          plan={profile?.plano || 'start'}
+          plan={profile?.plano || 'chinam'}
           tourId={activeTourId}
           onClose={() => setActiveTourId(null)}
         />

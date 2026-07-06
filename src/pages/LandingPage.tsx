@@ -53,43 +53,43 @@ const FEATURES = [
 
 const PLANS = [
   {
-    id: 'start',
-    name: 'Start',
-    subtitle: 'Inscrições',
-    price: 'R$ 39/mês',
-    limits: '1 evento · até 200 vagas · 1 tipo de ingresso',
-    description: 'Crie eventos e gerencie inscrições e participantes.',
-    modules: ['Ingressos gratuitos', 'Páginas de Inscrição Personalizadas', 'Gestão de participantes', 'Relatórios básicos'],
+    id: 'chinam',
+    name: 'Plano 1 · Chinám',
+    subtitle: 'Gratuito · חינם',
+    price: 'Grátis',
+    limits: '1 evento · até 100 vagas · 1 ingresso',
+    description: 'Comece a organizar sem custo. Chinám (חינם) significa "gratuito" em hebraico.',
+    modules: ['Calculadora de eventos', 'Página de inscrição', 'Gestão de participantes', 'Relatórios básicos'],
     highlight: false,
   },
   {
-    id: 'essencial',
-    name: 'Essencial',
-    subtitle: 'Inscrições + Financeiro',
-    price: 'R$ 99/mês',
-    limits: '3 eventos · até 500 vagas cada · 3 tipos de ingresso',
-    description: 'Gerencie inscrições e controle financeiro manualmente: pagamentos, doações e saldo dos participantes.',
-    modules: ['Tudo do Start', 'Ingressos com valores reais', 'Registro manual de pagamentos e doações', 'Controle financeiro e saldo livre'],
+    id: 'petach',
+    name: 'Plano 2 · Pétach',
+    subtitle: 'Abertura · פֶּתַח',
+    price: 'R$ 49/mês',
+    limits: '3 eventos · até 200 vagas cada · 3 ingressos',
+    description: 'A porta de entrada para eventos com cobrança. Pétach (פֶּתַח) significa "abertura" em hebraico.',
+    modules: ['Tudo do Chinám', 'Ingressos com valores reais', 'Registro manual de pagamentos', 'Controle de doações'],
     highlight: false,
   },
   {
-    id: 'pro',
-    name: 'Pro',
-    subtitle: 'Pagamentos Automáticos',
-    price: 'R$ 249/mês',
-    limits: '10 eventos · até 1.000 vagas cada · 10 tipos de ingresso',
-    description: 'Checkout online com PIX, boleto e cartão direto para sua conta. Gestão completa de equipe e recursos.',
-    modules: ['Tudo do Essencial', 'Pagamentos automáticos (BYOG)', 'PIX, Boleto e Cartão de crédito', 'Grupos, quartos e mesas', 'Tarefas e equipe integrada'],
+    id: 'koach',
+    name: 'Plano 3 · Koách',
+    subtitle: 'Força · כֹּחַ',
+    price: 'R$ 129/mês',
+    limits: '5 eventos · até 500 vagas cada · 5 ingressos · 5 membros de equipe',
+    description: 'Gestão completa: recursos, grupos, tarefas e equipe. Koách (כֹּחַ) significa "força" em hebraico.',
+    modules: ['Tudo do Pétach', 'Grupos, quartos e mesas', 'Tarefas e equipe integrada', 'Recursos do evento'],
     highlight: true,
   },
   {
-    id: 'personalizado',
-    name: 'Personalizado',
-    subtitle: 'Limites maiores',
-    price: 'Sob consulta',
-    limits: 'Eventos ilimitados · Inscrições ilimitadas · + 0,8% sobre inscritos pagos',
-    description: 'Para organizações com múltiplos eventos de grande porte — cresça sem preocupação com limites.',
-    modules: ['Tudo do Pro', 'Eventos e inscrições ilimitados', '0,8% apenas sobre inscrições pagas', 'Suporte prioritário e onboarding dedicado'],
+    id: 'chalem',
+    name: 'Plano 4 · Chalém',
+    subtitle: 'Completo · שָׁלֵם',
+    price: 'R$ 299/mês',
+    limits: '10 eventos · inscritos ilimitados · 10 ingressos · 10 membros de equipe',
+    description: 'Pagamentos automáticos via PIX, boleto e cartão. Chalém (שָׁלֵם) significa "completo" em hebraico.',
+    modules: ['Tudo do Koách', 'Pagamentos automáticos (BYOG)', 'PIX, Boleto e Cartão de crédito', 'Inscritos ilimitados'],
     highlight: false,
   },
 ];
@@ -1110,13 +1110,7 @@ export default function LandingPage() {
             <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
               Escolha o plano ideal<br />para o seu evento
             </h2>
-            <p className="text-muted-foreground mt-3 text-sm">14 dias testando o Pro completo, sem custo. Depois escolha o plano certo para você.</p>
-
-            {/* Trial callout */}
-            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold px-4 py-2 rounded-full mt-5">
-              <Zap className="w-3.5 h-3.5 text-emerald-600" />
-              Trial gratuito de 14 dias com todas as funcionalidades Pro
-            </div>
+            <p className="text-muted-foreground mt-3 text-sm">Do gratuito ao completo — escolha o plano certo para o seu evento.</p>
 
             <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-6 ml-0 block">
               <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1">
@@ -1335,50 +1329,23 @@ export default function LandingPage() {
       {/* ── FAQ ── */}
       <FAQ />
 
-      {/* ── Trial ── */}
+      {/* ── CTA Final ── */}
       <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-20 px-6 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
-        <div className="max-w-4xl mx-auto relative">
-
-          {/* Chip */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-bold px-4 py-2 rounded-full">
-              <Zap className="w-3.5 h-3.5 text-emerald-300" />
-              Trial gratuito de 14 dias — sem cartão de crédito
-            </div>
-          </div>
-
-          <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-4 text-center">
-            Teste o Pro completo por 14 dias,<br className="hidden md:block" /> sem pagar nada agora.
+        <div className="max-w-4xl mx-auto relative text-center">
+          <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-4">
+            Comece a organizar hoje,<br className="hidden md:block" /> no plano Chinám — gratuito.
           </h2>
-          <p className="text-white/70 text-center text-base mb-10 max-w-2xl mx-auto">
-            Ao criar sua conta, você acessa todas as funcionalidades do plano Pro gratuitamente por 14 dias. Depois do trial, escolha o plano que faz sentido para o seu evento — a partir de <strong className="text-white">R$39/mês</strong>.
+          <p className="text-white/70 text-base mb-10 max-w-2xl mx-auto">
+            Crie sua conta, organize seu primeiro evento e faça upgrade quando precisar de mais recursos. Sem cartão, sem compromisso.
           </p>
-
-          {/* Como funciona o trial */}
-          <div className="grid md:grid-cols-3 gap-4 mb-10">
-            {[
-              { step: '1', title: 'Crie sua conta', desc: 'Cadastro em menos de 1 minuto. Sem cartão, sem compromisso.' },
-              { step: '2', title: '14 dias com tudo', desc: 'Acesso completo ao plano Pro: inscrições, financeiro, check-in e equipe.' },
-              { step: '3', title: 'Escolha seu plano', desc: 'Depois do trial, assine o plano certo — Start R$39, Essencial R$99 ou Pro R$249.' },
-            ].map(({ step, title, desc }) => (
-              <div key={step} className="bg-white/10 border border-white/15 rounded-2xl p-5">
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center mb-3">
-                  <span className="text-sm font-black text-white">{step}</span>
-                </div>
-                <p className="font-black text-white text-sm mb-1">{title}</p>
-                <p className="text-white/60 text-xs leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-
           <div className="flex justify-center">
             <Link
               to="/login?cadastro=true"
               className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
             >
-              Começar trial gratuito <ArrowRight className="w-4 h-4" />
+              Criar conta grátis <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

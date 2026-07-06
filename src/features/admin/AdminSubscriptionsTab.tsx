@@ -5,14 +5,15 @@ import { Search, ExternalLink, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
 const PLAN_COLORS: Record<string, string> = {
-  start: 'bg-gray-100 text-gray-600',
-  essencial: 'bg-blue-100 text-blue-700',
-  pro: 'bg-primary/10 text-primary',
+  chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
+  petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
+  koach: 'bg-violet-100 text-violet-700', pro: 'bg-violet-100 text-violet-700',
+  chalem: 'bg-primary/10 text-primary',
 };
 
-type Filter = 'all' | 'pro' | 'essencial' | 'start' | 'pending' | 'none';
+type Filter = 'all' | 'chalem' | 'koach' | 'petach' | 'chinam' | 'pending' | 'none';
 
 export default function AdminSubscriptionsTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -51,9 +52,10 @@ export default function AdminSubscriptionsTab() {
 
   const filters: { id: Filter; label: string }[] = [
     { id: 'all', label: 'Todos' },
-    { id: 'pro', label: 'Pro' },
-    { id: 'essencial', label: 'Essencial' },
-    { id: 'start', label: 'Start' },
+    { id: 'chalem', label: 'Chalém' },
+    { id: 'koach', label: 'Koách' },
+    { id: 'petach', label: 'Pétach' },
+    { id: 'chinam', label: 'Chinám' },
     { id: 'pending', label: 'Pendente' },
     { id: 'none', label: 'Sem plano' },
   ];

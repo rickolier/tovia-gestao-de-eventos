@@ -7,41 +7,50 @@ import { where, orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 
 const PLAN_LABELS: Record<string, { label: string; color: string }> = {
-  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700' },
-  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'    },
+  chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
+  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
+  petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
 };
 
 const BADGES = {
-  start:     { label: 'Start',     color: 'bg-emerald-100 text-emerald-700' },
-  essencial: { label: 'Essencial', color: 'bg-blue-100 text-blue-700'       },
-  pro:       { label: 'Pro',       color: 'bg-violet-100 text-violet-700'   },
+  chinam: { label: 'Chinám', color: 'bg-emerald-100 text-emerald-700' },
+  petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
+  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
+  chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
 };
 
 const ACCENT: Record<string, string> = {
-  start:     'bg-primary',
-  essencial: 'bg-blue-400',
-  pro:       'bg-violet-500',
+  chinam: 'bg-primary',
+  petach: 'bg-blue-400',
+  koach:  'bg-violet-500',
+  chalem: 'bg-amber-500',
 };
 
-type PlanKey = 'start' | 'essencial' | 'pro';
+const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
+
+type PlanKey = 'chinam' | 'petach' | 'koach' | 'chalem';
 
 function badgesFromTags(tags: string[]): PlanKey[] {
-  const hasPro       = tags.includes('pro');
-  const hasEssencial = tags.includes('essencial');
-  if (hasPro && !hasEssencial) return ['pro'];
-  if (hasEssencial)            return ['essencial', 'pro'];
-  return ['start', 'essencial', 'pro'];
+  const hasChalem = tags.includes('chalem');
+  const hasKoach  = tags.includes('koach');
+  const hasPetach = tags.includes('petach');
+  if (hasChalem && !hasKoach && !hasPetach) return ['chalem'];
+  if (hasKoach)  return ['koach', 'chalem'];
+  if (hasPetach) return ['petach', 'koach', 'chalem'];
+  return ['chinam', 'petach', 'koach', 'chalem'];
 }
 
 function accentFromBadges(badges: PlanKey[]): string {
-  if (badges.length === 1 && badges[0] === 'pro') return ACCENT.pro;
-  if (badges[0] === 'essencial')                  return ACCENT.essencial;
-  return ACCENT.start;
+  if (badges[0] === 'chalem') return ACCENT.chalem;
+  if (badges[0] === 'koach')  return ACCENT.koach;
+  if (badges[0] === 'petach') return ACCENT.petach;
+  return ACCENT.chinam;
 }
 
 function planFromTags(tags: string[]): string | null {
-  if (tags.includes('pro')) return 'pro';
-  if (tags.includes('essencial')) return 'essencial';
+  if (tags.includes('chalem')) return 'chalem';
+  if (tags.includes('koach'))  return 'koach';
+  if (tags.includes('petach')) return 'petach';
   return null;
 }
 
@@ -65,11 +74,11 @@ function getYoutubeEmbedUrl(url: string): string | null {
 
 function getRelated(current: ArtigoBC, all: ArtigoBC[]): ArtigoBC[] {
   const others = all.filter(a => a.id !== current.id);
-  const contentTags = current.tags.filter(t => t !== 'pro' && t !== 'essencial');
+  const contentTags = current.tags.filter(t => !PLAN_TAG_KEYS.has(t));
 
   // Score by shared content tags
   const scored = others.map(a => {
-    const shared = a.tags.filter(t => t !== 'pro' && t !== 'essencial' && contentTags.includes(t));
+    const shared = a.tags.filter(t => !PLAN_TAG_KEYS.has(t) && contentTags.includes(t));
     return { artigo: a, score: shared.length };
   });
 
@@ -138,7 +147,7 @@ export default function ArtigoBaseConhecimento() {
   }
 
   const plan        = planFromTags(artigo.tags);
-  const contentTags = artigo.tags.filter(t => t !== 'pro' && t !== 'essencial');
+  const contentTags = artigo.tags.filter(t => !PLAN_TAG_KEYS.has(t));
   const embedUrl    = artigo.video_url ? getYoutubeEmbedUrl(artigo.video_url) : null;
   const paragraphs  = artigo.conteudo.split(/\n\n+/).filter(Boolean);
 

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
   Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2,
-  ExternalLink, AlertTriangle, CreditCard, QrCode, AlertCircle,
+  ExternalLink, AlertTriangle, CreditCard, QrCode,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -21,19 +21,19 @@ const MODULE_DESCRIPTIONS = [
   'Recursos, grupos e tarefas',
 ];
 
-const PLAN_ORDER: PlanLevel[] = ['start', 'essencial', 'pro', 'personalizado'];
-const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { start: 1, essencial: 2, pro: 3, personalizado: 4 };
+const PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { chinam: 1, petach: 2, koach: 3, chalem: 4 };
 
 const MONTHLY_PRICES: Record<PlanLevel, string> = {
-  start: 'R$ 39/mês', essencial: 'R$ 99/mês', pro: 'R$ 249/mês', personalizado: 'Sob consulta',
+  chinam: 'Gratuito', petach: 'R$ 49/mês', koach: 'R$ 129/mês', chalem: 'R$ 299/mês',
 };
 const ANNUAL_PRICES: Record<PlanLevel, string> = {
-  start: 'R$ 32,50/mês', essencial: 'R$ 82,50/mês', pro: 'R$ 207,50/mês', personalizado: 'Sob consulta',
+  chinam: 'Gratuito', petach: 'R$ 40,83/mês', koach: 'R$ 107,50/mês', chalem: 'R$ 249,17/mês',
 };
 const ANNUAL_TOTALS: Record<PlanLevel, string> = {
-  start: 'R$ 390/ano', essencial: 'R$ 990/ano', pro: 'R$ 2.490/ano', personalizado: '',
+  chinam: '', petach: 'R$ 490/ano', koach: 'R$ 1.290/ano', chalem: 'R$ 2.990/ano',
 };
-const PLAN_RANK: Record<PlanLevel, number> = { start: 0, essencial: 1, pro: 2, personalizado: 3 };
+const PLAN_RANK: Record<PlanLevel, number> = { chinam: 0, petach: 1, koach: 2, chalem: 3 };
 
 type Period = 'monthly' | 'annual';
 type PaymentMethod = 'credit_card' | 'pix';
@@ -42,7 +42,6 @@ export default function Plans() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const trialExpired = (location.state as any)?.trialExpired ?? false;
 
   const [selected, setSelected] = useState<PlanLevel | null>(null);
   const [period, setPeriod] = useState<Period>('monthly');
@@ -54,7 +53,7 @@ export default function Plans() {
   const activeSelection = selected ?? currentPlan ?? null;
 
   const executePlanChange = async () => {
-    if (!selected || !user || selected === 'personalizado') return;
+    if (!selected || !user || selected === 'chinam') return;
     setShowDowngradeWarning(false);
     setSaving(true);
     try {
@@ -93,7 +92,7 @@ export default function Plans() {
   };
 
   const handleConfirm = async () => {
-    if (!selected || !user || selected === currentPlan || selected === 'personalizado') return;
+    if (!selected || !user || selected === currentPlan || selected === 'chinam') return;
     if (currentPlan && PLAN_RANK[selected] < PLAN_RANK[currentPlan]) {
       setShowDowngradeWarning(true);
       return;
@@ -120,27 +119,12 @@ export default function Plans() {
           <div className="w-16" />
         </div>
 
-        {/* Trial expired banner */}
-        {trialExpired && (
-          <div className="bg-amber-500/20 border border-amber-400/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-400/20 flex items-center justify-center shrink-0 mt-0.5">
-              <AlertCircle className="w-5 h-5 text-amber-300" />
-            </div>
-            <div>
-              <p className="text-white font-black text-sm">Seu trial de 14 dias expirou</p>
-              <p className="text-white/60 text-sm mt-1">
-                Escolha um plano para continuar acessando o Tovia.
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black text-white tracking-tight">Escolha seu plano</h1>
           <p className="text-white/60 text-sm mt-2">
             Selecione os módulos que melhor se encaixam na sua necessidade.
-            {currentPlan && !trialExpired && (
+            {currentPlan && (
               <span className="ml-1 text-white/40">
                 (Plano atual: <span className="text-white/70 font-semibold">{PLAN_CONFIGS[currentPlan].name}</span>)
               </span>
@@ -205,7 +189,7 @@ export default function Plans() {
                     {config.name}
                   </span>
                   <div className="flex items-center gap-2">
-                    {isCurrent && !trialExpired && (
+                    {isCurrent && (
                       <span className={cn(
                         'text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full',
                         isSelected ? 'bg-primary/10 text-primary' : 'bg-white/20 text-white/70',
@@ -234,7 +218,7 @@ export default function Plans() {
                   <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
                     {displayPrice[level]}
                   </span>
-                  {period === 'annual' && level !== 'personalizado' && (
+                  {period === 'annual' && level !== 'chinam' && (
                     <p className={cn('text-xs mt-1', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
                       {ANNUAL_TOTALS[level]} · 2 meses grátis
                     </p>
@@ -271,7 +255,7 @@ export default function Plans() {
         </div>
 
         {/* Annual payment method selector */}
-        {period === 'annual' && selected && selected !== 'personalizado' && (
+        {period === 'annual' && selected && selected !== 'chinam' && (
           <div className="bg-white/10 rounded-2xl p-5 mb-6">
             <p className="text-white/70 text-sm font-semibold mb-3">Forma de pagamento para o plano anual:</p>
             <div className="flex gap-3">
@@ -335,22 +319,17 @@ export default function Plans() {
 
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pb-10">
-          {selected === 'personalizado' ? (
-            <a
-              href="mailto:contato@toviaapp.com.br"
-              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all flex items-center gap-2"
-            >
-              Falar com a equipe <ExternalLink className="w-5 h-5" />
-            </a>
+          {selected === 'chinam' ? (
+            <p className="text-white/50 text-sm font-semibold">Este é o plano gratuito — sem pagamento necessário.</p>
           ) : (
             <Button
               onClick={handleConfirm}
-              disabled={!selected || (selected === currentPlan && !trialExpired) || saving}
+              disabled={!selected || selected === currentPlan || saving}
               className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
             >
               {saving ? (
                 <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
-              ) : selected && selected === currentPlan && !trialExpired ? (
+              ) : selected && selected === currentPlan ? (
                 <><CheckCircle2 className="w-5 h-5 mr-2" /> Plano atual</>
               ) : (
                 <><ExternalLink className="w-5 h-5 mr-2" /> Ir para o pagamento</>

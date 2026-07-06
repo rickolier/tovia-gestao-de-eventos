@@ -87,7 +87,8 @@ function KpiCard({
 
 export default function ReportsTab({ eventos }: ReportsTabProps) {
   const { profile } = useAuth();
-  const isPro = profile?.plano === 'essencial' || profile?.plano === 'pro' || profile?.plano === 'personalizado';
+  const isPro = profile?.plano === 'petach' || profile?.plano === 'koach' || profile?.plano === 'chalem' ||
+    profile?.plano === 'essencial' || profile?.plano === 'pro' || profile?.plano === 'personalizado';
 
   // Filter state
   const [eventFilterMode, setEventFilterMode] = useState<EventFilterMode>('all');

@@ -6,21 +6,21 @@ import { db, verifyAuth } from './_firebase.js';
 const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
 
 const MONTHLY_PRICES: Record<string, number> = {
-  start: 39,
-  essencial: 99,
-  pro: 249,
+  petach: 49,
+  koach: 129,
+  chalem: 299,
 };
 
 const ANNUAL_PRICES: Record<string, number> = {
-  start: 390,
-  essencial: 990,
-  pro: 2490,
+  petach: 490,
+  koach: 1290,
+  chalem: 2990,
 };
 
 const PLAN_LABEL: Record<string, string> = {
-  start: 'Start',
-  essencial: 'Essencial',
-  pro: 'Pro',
+  petach: 'Pétach',
+  koach: 'Koách',
+  chalem: 'Chalém',
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -46,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Dados incompletos.' });
   }
 
-  if (!['start', 'essencial', 'pro'].includes(planLevel)) {
+  if (!['petach', 'koach', 'chalem'].includes(planLevel)) {
     return res.status(400).json({ error: 'Plano inválido.' });
   }
 

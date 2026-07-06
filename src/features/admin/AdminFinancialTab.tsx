@@ -14,9 +14,9 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 
-const PLAN_PRICES: Record<string, number> = { start: 39, essencial: 99, pro: 249 };
-const PLAN_LABELS: Record<string, string> = { start: 'Start', essencial: 'Essencial', pro: 'Pro' };
-const PLAN_COLORS_HEX: Record<string, string> = { start: '#9ca3af', essencial: '#3b82f6', pro: '#16a34a' };
+const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 49, koach: 129, chalem: 299, start: 0, essencial: 49, pro: 129, personalizado: 299 };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Chinám', petach: 'Pétach', koach: 'Koách', chalem: 'Chalém', start: 'Chinám', essencial: 'Pétach', pro: 'Koách', personalizado: 'Chalém' };
+const PLAN_COLORS_HEX: Record<string, string> = { chinam: '#9ca3af', petach: '#3b82f6', koach: '#7c3aed', chalem: '#16a34a', start: '#9ca3af', essencial: '#3b82f6', pro: '#7c3aed' };
 
 function fmt(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -106,7 +106,7 @@ export default function AdminFinancialTab() {
   const deactivated = useMemo(() => users.filter(u => u.desativado), [users]);
   const pendingCheckout = useMemo(() => users.filter(u => u.planoPendente && !u.desativado), [users]);
 
-  const planStats = useMemo(() => (['start', 'essencial', 'pro'] as const).map(plan => {
+  const planStats = useMemo(() => (['chinam', 'petach', 'koach', 'chalem'] as const).map(plan => {
     const count = activeUsers.filter(u => u.plano === plan).length;
     return { plan, count, revenue: count * PLAN_PRICES[plan] };
   }), [activeUsers]);
@@ -114,7 +114,7 @@ export default function AdminFinancialTab() {
   const mrr = useMemo(() => planStats.reduce((s, p) => s + p.revenue, 0), [planStats]);
   const arr = mrr * 12;
   const payingUsers = useMemo(() => planStats.reduce((s, p) => s + p.count, 0), [planStats]);
-  const upgradedUsers = useMemo(() => planStats.filter(p => p.plan !== 'start').reduce((s, p) => s + p.count, 0), [planStats]);
+  const upgradedUsers = useMemo(() => planStats.filter(p => p.plan !== 'chinam').reduce((s, p) => s + p.count, 0), [planStats]);
   const conversionRate = payingUsers > 0 ? ((upgradedUsers / payingUsers) * 100).toFixed(1) : '0';
 
   // Events in period (by data_inicio as proxy)
@@ -449,8 +449,9 @@ export default function AdminFinancialTab() {
                       <td className="px-4 py-3">
                         <span className={cn(
                           'text-[10px] font-bold px-2 py-0.5 rounded-full',
-                          u.plano === 'pro' ? 'bg-primary/10 text-primary' :
-                          u.plano === 'essencial' ? 'bg-blue-100 text-blue-700' :
+                          (u.plano === 'chalem') ? 'bg-primary/10 text-primary' :
+                          (u.plano === 'koach' || u.plano === 'pro') ? 'bg-violet-100 text-violet-700' :
+                          (u.plano === 'petach' || u.plano === 'essencial') ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-600'
                         )}>
                           {u.plano ? PLAN_LABELS[u.plano] : '—'}

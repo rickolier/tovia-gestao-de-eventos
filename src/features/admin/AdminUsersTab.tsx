@@ -11,7 +11,7 @@ import { PlanLevel } from '~/types';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '~/services/firebase';
 
-const PLAN_OPTIONS: PlanLevel[] = ['start', 'essencial', 'pro'];
+const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
 
 export default function AdminUsersTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -147,9 +147,10 @@ export default function AdminUsersTab() {
                     <td className="px-4 py-4">
                       <span className={cn(
                         'text-xs font-bold px-2 py-1 rounded-full',
-                        u.plano === 'pro' ? 'bg-primary/10 text-primary' :
-                        u.plano === 'essencial' ? 'bg-blue-100 text-blue-700' :
-                        u.plano === 'start' ? 'bg-gray-100 text-gray-600' :
+                        (u.plano === 'chalem' || u.plano === 'pro') ? 'bg-primary/10 text-primary' :
+                        (u.plano === 'koach') ? 'bg-violet-100 text-violet-700' :
+                        (u.plano === 'petach' || u.plano === 'essencial') ? 'bg-blue-100 text-blue-700' :
+                        (u.plano === 'chinam' || u.plano === 'start') ? 'bg-gray-100 text-gray-600' :
                         'bg-red-100 text-red-600'
                       )}>
                         {u.plano ? (PLAN_CONFIGS[u.plano as PlanLevel]?.name || u.plano) : 'Sem plano'}
@@ -197,11 +198,11 @@ export default function AdminUsersTab() {
                             size="sm"
                             variant="ghost"
                             disabled={saving === u.uid}
-                            onClick={() => handleChangePlan(u.uid!, 'start')}
+                            onClick={() => handleChangePlan(u.uid!, 'chinam')}
                             className="text-primary hover:bg-primary/5 rounded-xl h-8 text-xs gap-1"
                           >
                             <ArrowUpCircle className="w-3 h-3" />
-                            Ativar Start
+                            Ativar Chinám
                           </Button>
                         )}
                         {!u.desativado ? (
