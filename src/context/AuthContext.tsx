@@ -4,7 +4,7 @@ import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '~/services/firebase';
 import { getDocument, createDocument, updateDocument, listDocuments, removeDocument } from '~/services/firestore';
 import { notifIfReadOrMissing } from '~/utils/notifications';
-import { UserProfile, PlanLevel, ConvitePendente } from '../types';
+import { UserProfile, PlanLevel, ConvitePendente, MembroEquipeGlobal } from '../types';
 import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
 import { gerarCodigoProdutor } from '~/utils/codigos';
 import { where, doc, getDocFromServer } from 'firebase/firestore';
@@ -153,6 +153,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (e) { console.warn('Erro ao processar convites pendentes:', e); }
   };
 
+  // Ativa membros de equipe global pendentes — roda uma vez por sessão após login/cadastro
+  const processarEquipesPendentes = async (firebaseUser: User) => {
+    if (!firebaseUser.email || isAdminEmail(firebaseUser.email)) return;
+    if (sessionStorage.getItem('equipesPendentesProcessed')) return;
+    sessionStorage.setItem('equipesPendentesProcessed', '1');
+
+    const email = firebaseUser.email.toLowerCase();
+    try {
+      const pendentes = await listDocuments<MembroEquipeGlobal>('equipes', [
+        where('email', '==', email),
+        where('status', '==', 'pendente'),
+      ]);
+      for (const membro of pendentes) {
+        await updateDocument('equipes', membro.id, {
+          userId: firebaseUser.uid,
+          status: 'ativo',
+          nome: firebaseUser.displayName || firebaseUser.email || membro.nome,
+        });
+      }
+    } catch (e) { console.warn('Erro ao ativar equipes pendentes:', e); }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
@@ -181,6 +203,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
 
           await processarConvites(firebaseUser);
+          await processarEquipesPendentes(firebaseUser);
 
           if (!userProfile.isDemo) {
             const isComplete = !!(userProfile.nome?.trim() && userProfile.whatsapp?.trim() && userProfile.instituicao?.trim());

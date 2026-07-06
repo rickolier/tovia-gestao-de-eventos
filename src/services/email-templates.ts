@@ -181,6 +181,18 @@ export function emailConviteEquipe(eventoNome: string, donoNome: string, loginUr
   `, `${donoNome} convidou você para organizar ${eventoNome}`);
 }
 
+export function emailConviteEquipeGlobal(donoNome: string, cadastroUrl: string) {
+  return wrap(`
+    ${h1('Você foi adicionado a uma equipe! 🤝')}
+    ${p(`<strong>${donoNome}</strong> adicionou você como membro da equipe no Tovia.`)}
+    ${p('Quando o organizador vincular você a um evento, ele aparecerá automaticamente no seu painel — você só verá o que ele liberar.')}
+    ${p('Para aceitar, crie sua conta gratuita no Tovia. Não é necessário nenhum plano pago:')}
+    ${btn('Criar conta gratuita', cadastroUrl)}
+    ${divider()}
+    ${p('Já tem conta? Faça login com este e-mail e a conexão será ativada automaticamente.')}
+  `, `${donoNome} adicionou você à equipe no Tovia`);
+}
+
 export function emailConfirmacaoVinculo(nome: string, eventoNome: string) {
   return wrap(`
     ${h1('Você entrou na equipe! 🎯')}

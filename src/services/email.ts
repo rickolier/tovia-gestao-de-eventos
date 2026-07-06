@@ -6,6 +6,7 @@ import {
   emailPagamentoConfirmado,
   emailPagamentoNaoRealizado,
   emailConviteEquipe,
+  emailConviteEquipeGlobal,
   emailConfirmacaoVinculo,
   emailCustom,
 } from './email-templates';
@@ -54,6 +55,11 @@ export const Email = {
   conviteEquipe: (to: string, eventoNome: string, donoNome: string) => {
     const loginUrl = `${window.location.origin}/login?cadastro=true`;
     return send(to, `${donoNome} convidou você para organizar ${eventoNome} 🤝`, emailConviteEquipe(eventoNome, donoNome, loginUrl));
+  },
+
+  conviteEquipeGlobal: (to: string, donoNome: string) => {
+    const cadastroUrl = `${window.location.origin}/login?cadastro=true`;
+    return send(to, `${donoNome} adicionou você à equipe no Tovia 🤝`, emailConviteEquipeGlobal(donoNome, cadastroUrl));
   },
 
   confirmacaoVinculo: (to: string, nome: string, eventoNome: string) =>

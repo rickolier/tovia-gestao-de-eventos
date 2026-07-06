@@ -5,6 +5,7 @@ import { listDocuments, createDocument, removeDocument } from '~/services/firest
 import { MembroEquipeGlobal, UserProfile } from '~/types';
 import { useAuth } from '~/context/AuthContext';
 import { getPlanConfig } from '~/utils/plan-limits';
+import { Email } from '~/services/email';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -61,11 +62,12 @@ export default function EquipeDashTab() {
       await createDocument('equipes', id, novoMembro);
       setMembros(prev => [...prev, novoMembro]);
       setEmail('');
-      toast.success(
-        usuario
-          ? `${usuario.nome} adicionado à equipe!`
-          : `${trimmed} adicionado — aguardando cadastro no Tovia.`,
-      );
+      if (!usuario) {
+        Email.conviteEquipeGlobal(trimmed, profile?.nome || 'Um organizador').catch(() => {});
+        toast.success(`Convite enviado para ${trimmed}. Ele aparecerá como ativo após o cadastro.`);
+      } else {
+        toast.success(`${usuario.nome} adicionado à equipe!`);
+      }
     } catch {
       toast.error('Erro ao adicionar membro.');
     } finally {

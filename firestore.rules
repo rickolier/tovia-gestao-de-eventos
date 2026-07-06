@@ -207,8 +207,15 @@ service cloud.firestore {
     // ===============================================================
     match /equipes/{membroId} {
       allow read:   if isSignedIn() && (resource.data.donoId == request.auth.uid || isAdmin());
+      // Membro pode ler o próprio registro para processar convite pendente
+      allow read:   if isSignedIn() && resource.data.email == request.auth.token.email;
       allow create: if isSignedIn() && incoming().donoId == request.auth.uid;
       allow update: if isSignedIn() && resource.data.donoId == request.auth.uid;
+      // Membro pode ativar o próprio registro pendente (só userId, status e nome)
+      allow update: if isSignedIn() &&
+        resource.data.email == request.auth.token.email &&
+        resource.data.status == 'pendente' &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['userId', 'status', 'nome']);
       allow delete: if isSignedIn() && resource.data.donoId == request.auth.uid;
     }
 
