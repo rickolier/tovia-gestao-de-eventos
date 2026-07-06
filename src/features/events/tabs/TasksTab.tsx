@@ -79,11 +79,15 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
   }, [donoId, isOwner]);
 
   const handleVincular = async (membro: MembroEquipeGlobal) => {
-    if (equipe.some(m => m.email === membro.email)) return;
+    if (!membro.userId) {
+      toast.error(`${membro.nome} ainda não tem conta no Tovia. Aguarde o cadastro.`);
+      return;
+    }
+    if (equipe.some(m => m.userId === membro.userId)) return;
     setLinkingId(membro.id);
     try {
       const novoMembro: EquipeMembro = {
-        userId: membro.id,
+        userId: membro.userId,          // UID real do Firebase
         email: membro.email,
         nome: membro.nome,
         permissoes: DEFAULT_PERMS,
@@ -91,7 +95,7 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
       };
       await updateDocument('eventos', eventoId, {
         equipe: [...equipe, novoMembro],
-        equipeIds: arrayUnion(membro.id),
+        equipeIds: arrayUnion(membro.userId),  // UID real → query equipeIds funciona
       } as any);
       toast.success(`${membro.nome} vinculado a este evento.`);
       onEquipeUpdate?.();
@@ -103,12 +107,13 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
   };
 
   const handleDesvincular = async (membro: MembroEquipeGlobal) => {
+    if (!membro.userId) return;
     setLinkingId(membro.id);
     try {
-      const novaEquipe = equipe.filter(m => m.email !== membro.email);
+      const novaEquipe = equipe.filter(m => m.userId !== membro.userId);
       await updateDocument('eventos', eventoId, {
         equipe: novaEquipe,
-        equipeIds: arrayRemove(membro.id),
+        equipeIds: arrayRemove(membro.userId),  // UID real
       } as any);
       toast.success(`${membro.nome} removido deste evento.`);
       onEquipeUpdate?.();
@@ -302,18 +307,25 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
           ) : (
             <div className="flex flex-wrap gap-2">
               {globalMembros.map(membro => {
-                const vinculado = equipe.some(m => m.email === membro.email);
+                const semConta = !membro.userId;
+                const vinculado = !semConta && equipe.some(m => m.userId === membro.userId);
                 const busy = linkingId === membro.id;
                 return (
                   <button
                     key={membro.id}
                     onClick={() => vinculado ? handleDesvincular(membro) : handleVincular(membro)}
-                    disabled={busy}
-                    title={vinculado ? 'Clique para desvincular' : 'Clique para vincular'}
+                    disabled={busy || semConta}
+                    title={
+                      semConta
+                        ? 'Aguardando cadastro no Tovia'
+                        : vinculado ? 'Clique para desvincular' : 'Clique para vincular'
+                    }
                     className={`flex items-center gap-2 px-3 py-2 rounded-2xl border text-xs font-semibold transition-all ${
-                      vinculado
-                        ? 'bg-primary/10 border-primary/30 text-primary'
-                        : 'bg-muted border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                      semConta
+                        ? 'bg-muted border-dashed border-border text-muted-foreground/50 cursor-not-allowed'
+                        : vinculado
+                          ? 'bg-primary/10 border-primary/30 text-primary'
+                          : 'bg-muted border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
                     } ${busy ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-black text-primary shrink-0">

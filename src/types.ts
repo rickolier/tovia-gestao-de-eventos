@@ -99,6 +99,7 @@ export interface EquipeMembro {
 export interface MembroEquipeGlobal {
   id: string;
   donoId: string;
+  userId?: string;   // UID real do Firebase — só preenchido quando o usuário já tem conta
   email: string;
   nome: string;
   adicionadoEm: string;
