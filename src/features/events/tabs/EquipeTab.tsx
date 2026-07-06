@@ -126,7 +126,8 @@ export default function EquipeTab({ evento, onUpdate }: Props) {
         toast.success(`Convite enviado para ${trimmed}!`);
       }
       setEmail('');
-    } catch {
+    } catch (err) {
+      console.error('Erro ao convidar usuário:', err);
       toast.error('Erro ao convidar usuário.');
     } finally {
       setLoading(false);
