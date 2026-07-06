@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { PlanLevel } from '~/types';
-import { PLAN_CONFIGS } from '~/utils/plan-limits';
+import { PLAN_CONFIGS, PLAN_ORDER } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Check, TicketIcon, DollarSign, Wallet, ArrowRight, Loader2, CreditCard, QrCode } from 'lucide-react';
@@ -17,18 +17,6 @@ const MODULE_DESCRIPTIONS = [
   'Recursos, grupos e tarefas',
 ];
 
-const PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
-const PLAN_MODULES_COUNT: Record<PlanLevel, number> = { chinam: 1, petach: 2, koach: 3, chalem: 4 };
-
-const MONTHLY_PRICES: Record<PlanLevel, string> = {
-  chinam: 'Gratuito', petach: 'R$ 49/mês', koach: 'R$ 129/mês', chalem: 'R$ 299/mês',
-};
-const ANNUAL_PRICES: Record<PlanLevel, string> = {
-  chinam: 'Gratuito', petach: 'R$ 40,83/mês', koach: 'R$ 107,50/mês', chalem: 'R$ 249,17/mês',
-};
-const ANNUAL_TOTALS: Record<PlanLevel, string> = {
-  chinam: '', petach: 'R$ 490/ano', koach: 'R$ 1.290/ano', chalem: 'R$ 2.990/ano',
-};
 
 type Period = 'monthly' | 'annual';
 type PaymentMethod = 'credit_card' | 'pix';
@@ -78,7 +66,8 @@ export default function Onboarding() {
     }
   };
 
-  const displayPrice = period === 'monthly' ? MONTHLY_PRICES : ANNUAL_PRICES;
+  const displayPrice = (level: PlanLevel) =>
+    period === 'monthly' ? PLAN_CONFIGS[level].price.monthlyLabel : PLAN_CONFIGS[level].price.annualMonthLabel;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start p-6 pt-12">
@@ -131,7 +120,7 @@ export default function Onboarding() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
           {PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
-            const moduleCount = PLAN_MODULES_COUNT[level];
+            const moduleCount = PLAN_CONFIGS[level].modulesCount;
             const isSelected = selected === level;
 
             return (
@@ -170,11 +159,11 @@ export default function Onboarding() {
 
                 <div>
                   <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
-                    {displayPrice[level]}
+                    {displayPrice(level)}
                   </span>
                   {period === 'annual' && level !== 'chinam' && (
                     <p className={cn('text-xs mt-1', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
-                      {ANNUAL_TOTALS[level]} · 2 meses grátis
+                      {PLAN_CONFIGS[level].price.annualTotalLabel} · 2 meses grátis
                     </p>
                   )}
                 </div>
