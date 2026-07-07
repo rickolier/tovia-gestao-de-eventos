@@ -87,31 +87,60 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...(userBairro ? { province: userBairro } : {}),
     };
 
-    if (userData.asaasCustomerId) {
-      customerId = userData.asaasCustomerId;
-      if (userCpfCnpj) {
+    // Busca ou cria cliente no Asaas
+    // Estratégia: (1) asaasCustomerId salvo → atualiza; (2) busca por cpfCnpj; (3) cria novo
+    const resolveCustomer = async (): Promise<string> => {
+      const cpfCnpjClean = userCpfCnpj ? userCpfCnpj.replace(/\D/g, '') : '';
+
+      // Temos ID salvo — atualiza e retorna
+      if (userData.asaasCustomerId) {
         try {
-          await axios.put(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers });
+          await axios.put(`${ASAAS_BASE_URL}/customers/${userData.asaasCustomerId}`, customerPayload, { headers });
+          return userData.asaasCustomerId;
         } catch {
-          try {
-            const newCustomerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
-            customerId = newCustomerRes.data.id;
-            await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
-          } catch (custErr: any) {
-            console.error('Erro ao recriar cliente Asaas:', JSON.stringify(custErr?.response?.data));
-            return res.status(500).json({ error: 'Erro ao criar cliente no Asaas.' });
-          }
+          // ID salvo pode estar obsoleto, tenta buscar/criar abaixo
         }
       }
-    } else {
-      try {
-        const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
-        customerId = customerRes.data.id;
-        await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
-      } catch (custErr: any) {
-        console.error('Erro ao criar cliente Asaas:', JSON.stringify(custErr?.response?.data));
-        return res.status(500).json({ error: 'Erro ao criar cliente no Asaas.' });
+
+      // Busca por cpfCnpj para evitar duplicata
+      if (cpfCnpjClean) {
+        try {
+          const searchRes = await axios.get(
+            `${ASAAS_BASE_URL}/customers?cpfCnpj=${cpfCnpjClean}`,
+            { headers }
+          );
+          const existing = searchRes.data?.data?.[0];
+          if (existing?.id) {
+            // Atualiza o cadastro existente e salva o ID
+            try {
+              await axios.put(`${ASAAS_BASE_URL}/customers/${existing.id}`, customerPayload, { headers });
+            } catch { /* atualização não crítica */ }
+            await db.collection('users').doc(userId).set({ asaasCustomerId: existing.id }, { merge: true });
+            return existing.id;
+          }
+        } catch { /* busca falhou, tenta criar */ }
       }
+
+      // Cria novo cliente
+      try {
+        const createRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
+        const newId = createRes.data.id;
+        await db.collection('users').doc(userId).set({ asaasCustomerId: newId }, { merge: true });
+        return newId;
+      } catch (custErr: any) {
+        const asaasErrors = custErr?.response?.data?.errors;
+        const detail = Array.isArray(asaasErrors)
+          ? asaasErrors.map((e: any) => e.description || e.code).join('; ')
+          : JSON.stringify(custErr?.response?.data ?? custErr?.message);
+        console.error('Erro ao criar cliente Asaas:', detail);
+        throw new Error(`Erro ao registrar cliente no Asaas: ${detail}`);
+      }
+    };
+
+    try {
+      customerId = await resolveCustomer();
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || 'Erro ao criar cliente no Asaas.' });
     }
 
     const description = `Tovia · ${PLAN_LABEL[planLevel]} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
