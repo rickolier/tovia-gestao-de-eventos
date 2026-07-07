@@ -39,7 +39,7 @@ export default function VerificarEmail() {
     if (profileRef.current?.planoPendente) {
       navigate('/planos/aguardando', { replace: true });
     } else {
-      navigate('/dashboard', { replace: true });
+      navigate('/onboarding', { replace: true });
     }
   }
 

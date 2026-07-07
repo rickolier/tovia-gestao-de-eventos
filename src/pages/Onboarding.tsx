@@ -31,7 +31,7 @@ export default function Onboarding() {
   const handleConfirm = () => {
     if (!user) return;
     if (selected === 'chinam') {
-      navigate('/verificar-email');
+      navigate('/dashboard');
       return;
     }
     navigate('/checkout-plano', {
