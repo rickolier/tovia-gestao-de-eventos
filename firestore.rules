@@ -135,10 +135,13 @@ service cloud.firestore {
         // get: dono do evento ou o próprio participante (via userId gravado na inscrição)
         allow get: if isEventOwner(eventoId) || (isSignedIn() && resource.data.get('userId', '') == request.auth.uid);
         allow list: if isEventOwner(eventoId);
-        // create: público para páginas de venda; status inicial restrito a pendente/pagamento_iniciado
+        // create: público para páginas de venda; gratuitos podem entrar direto como 'pago'
         allow create: if isValidInscricao(incoming()) &&
           incoming().eventoId == eventoId &&
-          incoming().status in ['pendente', 'pagamento_iniciado'];
+          (
+            incoming().status in ['pendente', 'pagamento_iniciado'] ||
+            (incoming().status == 'pago' && incoming().valor_total == 0)
+          );
         allow update: if (isEventOwner(eventoId) || (isSignedIn() && existing().get('userId', '') == request.auth.uid)) &&
           isValidInscricao(incoming()) &&
           incoming().eventoId == eventoId;
