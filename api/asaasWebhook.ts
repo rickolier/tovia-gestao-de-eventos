@@ -11,9 +11,9 @@ const PLAN_NAMES: Record<string, string> = {
   chalem: 'Chalém',
 };
 const PLAN_VALUES: Record<string, string> = {
-  petach: 'R$ 39/mês',
-  koach:  'R$ 99/mês',
-  chalem: 'R$ 249/mês',
+  petach: 'R$ 49/mês',
+  koach:  'R$ 129/mês',
+  chalem: 'R$ 299/mês',
 };
 
 async function sendEmail(to: string, subject: string, html: string) {
