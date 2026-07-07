@@ -128,7 +128,7 @@ export function emailPrimeiroEvento(nome: string, eventoNome: string) {
   `, `${eventoNome} foi criado com sucesso!`);
 }
 
-export function emailConfirmacaoInscricao(participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string) {
+export function emailConfirmacaoInscricao(participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string) {
   return wrap(`
     ${h1('Inscrição confirmada! ✅')}
     ${p(`Olá, <strong>${participanteNome}</strong>! Sua inscrição no evento abaixo foi registrada com sucesso.`)}
@@ -139,8 +139,19 @@ export function emailConfirmacaoInscricao(participanteNome: string, eventoNome: 
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">📍 ${eventoLocal}</p>
       </td></tr>
     </table>
+    ${acessoUrl ? btn('Ver minha inscrição', acessoUrl) : ''}
     ${p('Guarde este e-mail como comprovante da sua inscrição. Nos vemos em breve!')}
   `, `Você está inscrito em ${eventoNome}`);
+}
+
+export function emailMagicLink(acessoUrl: string) {
+  return wrap(`
+    ${h1('Acesse suas inscrições 🎟️')}
+    ${p('Você solicitou um link de acesso às suas inscrições. Clique no botão abaixo — ele é válido por 1 hora:')}
+    ${btn('Acessar minhas inscrições', acessoUrl)}
+    ${divider()}
+    ${p('Se você não solicitou este e-mail, pode ignorá-lo com segurança.')}
+  `, 'Seu link de acesso às inscrições');
 }
 
 export function emailPagamentoConfirmado(nome: string, plano: string, valor: string, proxVencimento: string) {

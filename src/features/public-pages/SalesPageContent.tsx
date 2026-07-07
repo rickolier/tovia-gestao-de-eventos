@@ -17,6 +17,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '~/services/firebase';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
+import { Email } from '~/services/email';
 import Logo from '~/components/Logo';
 
 type Step = 'ticket' | 'form' | 'checkout' | 'success';
@@ -216,6 +217,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       } else {
         // Página de inscrição normal
         const id = uuidv4();
+        const inscricaoToken = uuidv4();
         const ticket = selectedTickets[0];
         const valorFinal = ticket ? getTicketTotal(ticket) : total;
         const useGateway = gatewayConnected && selectedMethod && valorFinal > 0;
@@ -238,8 +240,22 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           validada_manual: false,
           pagina_venda_id: pagina.id,
           pagina_venda_slug: pagina.slug,
+          token: inscricaoToken,
         } as any);
         setInscricaoId(id);
+
+        // Envia email de confirmação com link de acesso
+        if (email) {
+          const acessoUrl = `${window.location.origin}/consultar?email=${encodeURIComponent(email)}&token=${inscricaoToken}`;
+          Email.confirmacaoInscricao(
+            email,
+            nome || email,
+            evento?.nome || '',
+            evento?.data_inicio || '',
+            evento?.local || '',
+            acessoUrl,
+          ).catch(() => {});
+        }
 
         if (useGateway) {
           const fns = getFunctions(app, 'us-central1');

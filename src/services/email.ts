@@ -3,6 +3,7 @@ import {
   emailTutorial,
   emailPrimeiroEvento,
   emailConfirmacaoInscricao,
+  emailMagicLink,
   emailPagamentoConfirmado,
   emailPagamentoNaoRealizado,
   emailConviteEquipe,
@@ -42,8 +43,11 @@ export const Email = {
   primeiroEvento: (to: string, nome: string, eventoNome: string) =>
     send(to, `${eventoNome} foi criado com sucesso! 🚀`, emailPrimeiroEvento(nome, eventoNome)),
 
-  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string) =>
-    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal)),
+  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string) =>
+    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal, acessoUrl)),
+
+  magicLink: (to: string, acessoUrl: string) =>
+    send(to, 'Seu link de acesso às inscrições — Tovia', emailMagicLink(acessoUrl)),
 
   pagamentoConfirmado: (to: string, nome: string, plano: string, valor: string, proxVencimento: string) =>
     send(to, 'Pagamento confirmado — Tovia 💳', emailPagamentoConfirmado(nome, plano, valor, proxVencimento)),
