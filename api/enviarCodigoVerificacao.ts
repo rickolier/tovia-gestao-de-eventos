@@ -3,9 +3,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db, verifyAuth } from './_firebase.js';
-import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -95,12 +94,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       </p>
     `);
 
-    await resend.emails.send({
-      from: FROM,
-      to: [userRecord.email!],
-      subject: `${code} é seu código Tovia`,
-      html,
+    if (!RESEND_API_KEY) {
+      console.warn('RESEND_API_KEY não configurada — código não enviado.');
+      return res.status(500).json({ error: 'Serviço de e-mail não configurado.' });
+    }
+    const emailRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM, to: [userRecord.email!], subject: `${code} é seu código Tovia`, html }),
     });
+    if (!emailRes.ok) {
+      const errBody = await emailRes.json().catch(() => ({}));
+      console.error('Resend error ao enviar código:', JSON.stringify(errBody));
+      return res.status(500).json({ error: 'Não foi possível enviar o código. Tente novamente.' });
+    }
 
     return res.json({ ok: true });
   } catch (err: any) {
