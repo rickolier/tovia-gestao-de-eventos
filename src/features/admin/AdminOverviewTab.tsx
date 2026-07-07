@@ -41,7 +41,7 @@ export default function AdminOverviewTab() {
     }
   });
 
-  const paying = byPlan.chinam + byPlan.petach + byPlan.koach + byPlan.chalem;
+  const paying = byPlan.petach + byPlan.koach + byPlan.chalem;
 
   const statCards = [
     {
@@ -50,7 +50,7 @@ export default function AdminOverviewTab() {
       icon: Users,
       color: 'text-blue-600',
       bg: 'bg-blue-50',
-      sub: `${paying} assinantes pagos`,
+      sub: `${paying} assinante${paying !== 1 ? 's' : ''} pago${paying !== 1 ? 's' : ''}`,
     },
     {
       label: 'MRR estimado',
@@ -58,7 +58,7 @@ export default function AdminOverviewTab() {
       icon: TrendingUp,
       color: 'text-primary',
       bg: 'bg-primary/10',
-      sub: `${byPlan.essencial} Essencial · ${byPlan.pro} Pro`,
+      sub: `${byPlan.petach} Pétach · ${byPlan.koach} Koách · ${byPlan.chalem} Chalém`,
     },
     {
       label: 'Pagamentos pendentes',
@@ -69,12 +69,12 @@ export default function AdminOverviewTab() {
       sub: 'Aguardando confirmação',
     },
     {
-      label: 'Plano Start',
-      value: byPlan.start,
+      label: 'Plano Chinám (gratuito)',
+      value: byPlan.chinam,
       icon: CheckCircle2,
       color: 'text-gray-500',
       bg: 'bg-gray-100',
-      sub: `${byPlan.start} usuários ativos`,
+      sub: `${byPlan.chinam} usuário${byPlan.chinam !== 1 ? 's' : ''} ativo${byPlan.chinam !== 1 ? 's' : ''}`,
     },
   ];
 
