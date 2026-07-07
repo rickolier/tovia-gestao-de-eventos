@@ -7,6 +7,7 @@ import CreateEvent from '~/features/events/CreateEvent';
 import EventDetail from '~/features/events/EventDetail';
 import EditEvent from '~/features/events/EditEvent';
 import Onboarding from './pages/Onboarding';
+import VerificarEmail from './pages/VerificarEmail';
 import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
@@ -41,6 +42,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   // Admin nunca vai para onboarding
   if (isAdminEmail(user.email)) return <Navigate to="/admin" replace />;
+
+  // Email não verificado — bloqueia acesso ao app
+  if (!user.emailVerified) return <Navigate to="/verificar-email" replace />;
 
   // Conta desativada
   if (profile?.desativado) {
@@ -88,6 +92,7 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/verificar-email" element={<VerificarEmail />} />
             <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
             <Route path="/planos/aguardando" element={<PrivateRoute><AguardandoPagamento /></PrivateRoute>} />
             <Route

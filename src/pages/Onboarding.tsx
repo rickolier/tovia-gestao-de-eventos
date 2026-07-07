@@ -236,7 +236,7 @@ export default function Onboarding() {
         <div className="flex flex-col items-center gap-3 pb-12">
           {selected === 'chinam' ? (
             <Button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/verificar-email')}
               className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all"
             >
               Começar grátis <ArrowRight className="w-5 h-5 ml-2" />
