@@ -93,15 +93,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
           await axios.put(`${ASAAS_BASE_URL}/customers/${customerId}`, customerPayload, { headers });
         } catch {
-          const newCustomerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
-          customerId = newCustomerRes.data.id;
-          await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
+          try {
+            const newCustomerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
+            customerId = newCustomerRes.data.id;
+            await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
+          } catch (custErr: any) {
+            console.error('Erro ao recriar cliente Asaas:', JSON.stringify(custErr?.response?.data));
+            return res.status(500).json({ error: 'Erro ao criar cliente no Asaas.' });
+          }
         }
       }
     } else {
-      const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
-      customerId = customerRes.data.id;
-      await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
+      try {
+        const customerRes = await axios.post(`${ASAAS_BASE_URL}/customers`, customerPayload, { headers });
+        customerId = customerRes.data.id;
+        await db.collection('users').doc(userId).set({ asaasCustomerId: customerId }, { merge: true });
+      } catch (custErr: any) {
+        console.error('Erro ao criar cliente Asaas:', JSON.stringify(custErr?.response?.data));
+        return res.status(500).json({ error: 'Erro ao criar cliente no Asaas.' });
+      }
     }
 
     const description = `Tovia · ${PLAN_LABEL[planLevel]} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
@@ -125,7 +135,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         );
         subscriptionId = subscriptionRes.data.id;
       } catch (subErr: any) {
-        console.error('Erro ao criar assinatura no Asaas.', subErr?.response?.status);
+        console.error('Erro ao criar assinatura no Asaas:', JSON.stringify(subErr?.response?.data));
         return res.status(500).json({ error: 'Erro ao criar assinatura no Asaas.' });
       }
 
