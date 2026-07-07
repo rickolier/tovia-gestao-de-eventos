@@ -11,7 +11,7 @@ export function isAdminEmail(email: string | null | undefined): boolean {
 
 // Contas de teste com plano pré-definido
 export const TEST_ACCOUNT_PLANS: Record<string, string> = {
-  'testepro@toviaapp.com.br': 'koach',
+  'testepro@toviaapp.com.br': 'chalem',
 };
 
 export function getTestPlan(email: string | null | undefined): string | null {

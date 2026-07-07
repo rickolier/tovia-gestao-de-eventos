@@ -19,8 +19,8 @@ service cloud.firestore {
 
     function isAdmin() {
       return isSignedIn() && (
-        request.auth.token.email == "admin@tovia.app" ||
         request.auth.token.email == "admin@toviaapp.com.br" ||
+        request.auth.token.email == "suporte@toviaapp.com.br" ||
         (request.auth.token.email_verified == true &&
          exists(/databases/$(database)/documents/admins/$(request.auth.uid)))
       );
