@@ -6,12 +6,14 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 
 const PLAN_NAMES: Record<string, string> = {
-  essencial: 'Essencial',
-  pro: 'Pro',
+  petach: 'Pétach',
+  koach:  'Koách',
+  chalem: 'Chalém',
 };
 const PLAN_VALUES: Record<string, string> = {
-  essencial: 'R$ 39,90',
-  pro: 'R$ 99,00',
+  petach: 'R$ 39/mês',
+  koach:  'R$ 99/mês',
+  chalem: 'R$ 249/mês',
 };
 
 async function sendEmail(to: string, subject: string, html: string) {
@@ -30,6 +32,49 @@ async function sendEmail(to: string, subject: string, html: string) {
 function fmtDate(iso: string) {
   if (!iso) return '';
   return new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR');
+}
+
+const PRIMARY = '#1a7a45';
+const MUTED = '#6b7280';
+const TEXT = '#1a1a1a';
+
+function emailWrap(content: string) {
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f3;padding:40px 16px;">
+<tr><td align="center"><table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+<tr><td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
+<span style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">tovia</span>
+</td></tr>
+<tr><td style="background:#fff;padding:40px;border-radius:0 0 16px 16px;">${content}</td></tr>
+<tr><td style="padding:24px 40px;text-align:center;">
+<p style="font-size:12px;color:${MUTED};margin:0;">© ${new Date().getFullYear()} Tovia Gestão de Eventos</p>
+</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+function buildEmailPagamentoConfirmado(nome: string, plano: string, valor: string, proxVencimento: string) {
+  return emailWrap(`
+    <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Pagamento confirmado! 💳</h1>
+    <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 16px;">Olá, <strong>${nome}</strong>! Recebemos o pagamento da sua assinatura Tovia.</p>
+    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:20px 0;">
+      <tr><td>
+        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">${plano}</strong></p>
+        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>
+        ${proxVencimento ? `<p style="font-size:13px;color:${MUTED};margin:2px 0;">Próximo vencimento: <strong style="color:${TEXT};">${proxVencimento}</strong></p>` : ''}
+      </td></tr>
+    </table>
+    <a href="https://tovia-gestao-de-eventos.vercel.app/dashboard" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;margin-top:8px;">Acessar o painel</a>
+  `);
+}
+
+function buildEmailPagamentoNaoRealizado(nome: string, plano: string, vencimento: string) {
+  return emailWrap(`
+    <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Pagamento não identificado ⚠️</h1>
+    <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 12px;">Olá, <strong>${nome}</strong>. Não identificamos o pagamento da sua assinatura do plano <strong>${plano}</strong>${vencimento ? `, com vencimento em <strong>${vencimento}</strong>` : ''}.</p>
+    <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 12px;">Para manter o acesso, regularize o pagamento o quanto antes.</p>
+    <a href="https://tovia-gestao-de-eventos.vercel.app/planos" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;margin-top:8px;">Regularizar pagamento</a>
+  `);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -90,14 +135,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // E-mail: confirmação de pagamento
       if (userEmail) {
-        const { emailPagamentoConfirmado } = await import('../src/lib/email-templates.js');
         const proxVencimento = fmtDate(payment.dueDate
           ? new Date(new Date(payment.dueDate).setMonth(new Date(payment.dueDate).getMonth() + 1)).toISOString().split('T')[0]
           : '');
+        const planNome = PLAN_NAMES[planLevel] || planLevel;
+        const planValor = PLAN_VALUES[planLevel] || '';
         await sendEmail(
           userEmail,
           'Pagamento confirmado — Tovia 💳',
-          emailPagamentoConfirmado(userName, PLAN_NAMES[planLevel] || planLevel, PLAN_VALUES[planLevel] || '', proxVencimento),
+          buildEmailPagamentoConfirmado(userName, planNome, planValor, proxVencimento),
         );
       }
     }
@@ -111,11 +157,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // E-mail: pagamento não realizado
       if (userEmail && planLevel) {
-        const { emailPagamentoNaoRealizado } = await import('../src/lib/email-templates.js');
         await sendEmail(
           userEmail,
           'Atenção: pagamento pendente na sua conta Tovia ⚠️',
-          emailPagamentoNaoRealizado(userName, PLAN_NAMES[planLevel] || planLevel, fmtDate(payment.dueDate)),
+          buildEmailPagamentoNaoRealizado(userName, PLAN_NAMES[planLevel] || planLevel, fmtDate(payment.dueDate)),
         );
       }
     }

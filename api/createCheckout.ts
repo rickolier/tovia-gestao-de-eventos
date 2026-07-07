@@ -6,15 +6,15 @@ import { db, verifyAuth } from './_firebase.js';
 const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
 
 const MONTHLY_PRICES: Record<string, number> = {
-  petach: 49,
-  koach: 129,
-  chalem: 299,
+  petach: 39,
+  koach: 99,
+  chalem: 249,
 };
 
 const ANNUAL_PRICES: Record<string, number> = {
-  petach: 490,
-  koach: 1290,
-  chalem: 2990,
+  petach: 390,
+  koach: 990,
+  chalem: 2490,
 };
 
 const PLAN_LABEL: Record<string, string> = {
