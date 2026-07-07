@@ -33,7 +33,7 @@ service cloud.firestore {
     function isValidUser(data) {
       return data.nome is string && data.nome.size() <= 100 &&
              data.email is string && data.email.size() <= 100 &&
-             (!data.keys().hasAll(['plano']) || (data.plano in ['chinam', 'petach', 'koach', 'chalem']) || data.plano == null);
+             (!data.keys().hasAll(['plano']) || (data.plano in ['chinam', 'petach', 'koach', 'chalem', 'start', 'essencial', 'pro', 'personalizado']) || data.plano == null);
     }
 
     function isValidEvento(data) {
