@@ -4,41 +4,35 @@ import { auth } from '~/services/firebase';
 import { useAuth } from '~/context/AuthContext';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
-import { Mail, RefreshCw, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Mail, RefreshCw, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 export default function VerificarEmail() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
-  const [resending, setResending] = useState(false);
-  const [resent, setResent] = useState(false);
-  const hasPendingPayment = !!profile?.planoPendente;
 
-  // Ref sempre atualizado para leitura dentro do setInterval
+  const [digits, setDigits] = useState(['', '', '', '', '', '']);
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const profileRef = useRef(profile);
   useEffect(() => { profileRef.current = profile; }, [profile]);
 
+  // Countdown timer for resend cooldown
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
   useEffect(() => {
     if (!user) { navigate('/login', { replace: true }); return; }
-
-    if (auth.currentUser?.emailVerified) {
-      doRedirect();
-      return;
-    }
-
-    const interval = setInterval(async () => {
-      try {
-        await user.reload();
-        if (auth.currentUser?.emailVerified) {
-          clearInterval(interval);
-          await refreshProfile?.();
-          doRedirect();
-        }
-      } catch { /* ignore */ }
-    }, 3000);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (auth.currentUser?.emailVerified) { doRedirect(); }
   }, [user]);
 
   function doRedirect() {
@@ -49,109 +43,173 @@ export default function VerificarEmail() {
     }
   }
 
+  const handleDigit = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const next = [...digits];
+    next[index] = value.slice(-1);
+    setDigits(next);
+    setError('');
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !digits[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) {
+      setDigits(pasted.split(''));
+      inputRefs.current[5]?.focus();
+    }
+    e.preventDefault();
+  };
+
+  const handleVerify = async () => {
+    const fullCode = digits.join('');
+    if (fullCode.length !== 6) { setError('Digite os 6 dígitos do código.'); return; }
+    setVerifying(true);
+    setError('');
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error('Sessão expirada.');
+      const idToken = await currentUser.getIdToken();
+      const res = await fetch('/api/confirmarCodigoVerificacao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ userId: currentUser.uid, code: fullCode }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Código inválido.'); return; }
+      setSuccess(true);
+      await currentUser.reload();
+      await refreshProfile?.();
+      setTimeout(() => doRedirect(), 1200);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao verificar. Tente novamente.');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const handleResend = async () => {
     const currentUser = auth.currentUser;
-    if (!currentUser) return;
+    if (!currentUser || resendCooldown > 0) return;
     setResending(true);
     try {
       const idToken = await currentUser.getIdToken();
-      const res = await fetch('/api/enviarVerificacaoEmail', {
+      const res = await fetch('/api/enviarCodigoVerificacao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
         body: JSON.stringify({ userId: currentUser.uid }),
       });
-      if (!res.ok) throw new Error();
-      setResent(true);
-      toast.success('E-mail reenviado! Verifique sua caixa de entrada.');
+      const data = await res.json();
+      if (!res.ok) { toast.error(data.error || 'Erro ao reenviar.'); return; }
+      setDigits(['', '', '', '', '', '']);
+      setError('');
+      setResendCooldown(60);
+      inputRefs.current[0]?.focus();
+      toast.success('Novo código enviado! Verifique sua caixa de entrada.');
     } catch {
-      toast.error('Não foi possível reenviar. Aguarde alguns minutos e tente de novo.');
+      toast.error('Não foi possível reenviar. Tente novamente.');
     } finally {
       setResending(false);
     }
   };
 
-  const handleUseFree = () => {
-    navigate('/planos/aguardando', { replace: true });
-  };
+  const codeComplete = digits.every(d => d !== '');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8 text-center">
         <Logo variant="white" />
 
-        <div className="bg-white/10 border-2 border-white/20 rounded-3xl p-10 backdrop-blur-sm space-y-6">
-          <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto">
-            <Mail className="w-10 h-10 text-white animate-pulse" />
-          </div>
-
-          <div>
-            <h1 className="text-2xl font-black text-white">Confirme seu e-mail</h1>
-            <p className="text-white/60 text-sm mt-2 leading-relaxed">
-              Enviamos um link de confirmação para{' '}
-              <span className="text-white font-semibold">{user?.email}</span>.
-              <br />
-              Clique no link para liberar o acesso.
-            </p>
-          </div>
-
-          {hasPendingPayment && (
-            <div className="flex items-start gap-3 bg-white/5 rounded-2xl px-4 py-3 text-left">
-              <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0 mt-1.5" />
-              <p className="text-white/70 text-xs font-medium">
-                Seu pagamento também está sendo processado. Assim que confirmarmos, seu plano será ativado automaticamente.
-              </p>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-3">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-            <p className="text-white/70 text-xs font-medium">
-              Verificando automaticamente...
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {resent ? (
-              <div className="flex items-center justify-center gap-2 text-white/60 text-sm py-2">
-                <CheckCircle2 className="w-4 h-4 text-green-400" />
-                E-mail reenviado! Verifique sua caixa de entrada.
+        <div className="bg-white/10 border-2 border-white/20 rounded-3xl p-10 backdrop-blur-sm space-y-7">
+          {success ? (
+            <div className="flex flex-col items-center gap-4 py-4">
+              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-white" />
               </div>
-            ) : (
-              <Button
-                onClick={handleResend}
-                disabled={resending}
-                className="w-full h-12 rounded-2xl bg-white text-primary hover:bg-white/90 font-black uppercase tracking-widest text-sm"
-              >
-                {resending
-                  ? <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Reenviando...</>
-                  : <><Mail className="w-4 h-4 mr-2" /> Reenviar e-mail</>}
-              </Button>
-            )}
+              <h1 className="text-2xl font-black text-white">E-mail confirmado!</h1>
+              <p className="text-white/60 text-sm">Redirecionando...</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                  <Mail className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-black text-white">Confirme seu e-mail</h1>
+                  <p className="text-white/60 text-sm mt-1 leading-relaxed">
+                    Enviamos um código de 6 dígitos para<br />
+                    <span className="text-white font-semibold">{user?.email}</span>
+                  </p>
+                </div>
+              </div>
 
-            {!hasPendingPayment && (
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/onboarding', { replace: true })}
-                className="text-white/50 hover:text-white hover:bg-white/10 rounded-2xl text-sm"
-              >
-                Voltar à escolha de plano
-              </Button>
-            )}
+              {/* OTP inputs */}
+              <div className="flex gap-2 justify-center" onPaste={handlePaste}>
+                {digits.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={el => { inputRefs.current[i] = el; }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={e => handleDigit(i, e.target.value)}
+                    onKeyDown={e => handleKeyDown(i, e)}
+                    className={cn(
+                      'w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 bg-white/10 text-white outline-none transition-all',
+                      error ? 'border-red-400' : digit ? 'border-white' : 'border-white/30',
+                      'focus:border-white focus:bg-white/20',
+                    )}
+                  />
+                ))}
+              </div>
 
-            {hasPendingPayment && (
+              {error && (
+                <p className="text-red-300 text-sm font-medium -mt-2">{error}</p>
+              )}
+
               <Button
-                variant="ghost"
-                onClick={handleUseFree}
-                className="text-white/50 hover:text-white hover:bg-white/10 rounded-2xl text-sm"
+                onClick={handleVerify}
+                disabled={!codeComplete || verifying}
+                className="w-full h-12 rounded-2xl bg-white text-primary hover:bg-white/90 font-black uppercase tracking-widest text-sm disabled:opacity-40"
               >
-                Acompanhar pagamento <ArrowRight className="w-4 h-4 ml-1" />
+                {verifying
+                  ? <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Verificando...</>
+                  : <><CheckCircle2 className="w-4 h-4 mr-2" /> Confirmar</>}
               </Button>
-            )}
-          </div>
+
+              <div className="flex flex-col gap-2 pt-1">
+                <button
+                  onClick={handleResend}
+                  disabled={resending || resendCooldown > 0}
+                  className="text-white/50 hover:text-white text-sm transition-colors disabled:cursor-not-allowed"
+                >
+                  {resending
+                    ? 'Reenviando...'
+                    : resendCooldown > 0
+                    ? `Reenviar em ${resendCooldown}s`
+                    : 'Não recebi o código — reenviar'}
+                </button>
+                <button
+                  onClick={() => navigate('/onboarding', { replace: true })}
+                  className="text-white/30 hover:text-white/60 text-xs transition-colors flex items-center justify-center gap-1"
+                >
+                  Voltar à escolha de plano <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <p className="text-white/30 text-xs">
-          Não encontrou o e-mail? Verifique a pasta de spam.
+          Não encontrou? Verifique a pasta de spam.
         </p>
       </div>
     </div>

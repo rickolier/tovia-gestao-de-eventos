@@ -114,7 +114,7 @@ export default function Login() {
           }
         }
         const idToken = await userCredential.user.getIdToken();
-        await fetch('/api/enviarVerificacaoEmail', {
+        await fetch('/api/enviarCodigoVerificacao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
           body: JSON.stringify({ userId: userCredential.user.uid }),

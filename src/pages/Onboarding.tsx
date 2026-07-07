@@ -5,9 +5,13 @@ import { PlanLevel } from '~/types';
 import { PLAN_CONFIGS, PLAN_ORDER } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
-import { Check, TicketIcon, DollarSign, Wallet, ArrowRight, Loader2, CreditCard, QrCode } from 'lucide-react';
+import {
+  TicketIcon, DollarSign, Wallet, ArrowRight, Loader2,
+  CreditCard, QrCode, ChevronDown, Zap, Check,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'motion/react';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
 const MODULE_LABELS = ['Inscrições', 'Financeiro', 'Gestão do Evento'];
@@ -17,7 +21,6 @@ const MODULE_DESCRIPTIONS = [
   'Recursos, grupos e tarefas',
 ];
 
-
 type Period = 'monthly' | 'annual';
 type PaymentMethod = 'credit_card' | 'pix';
 
@@ -25,11 +28,22 @@ export default function Onboarding() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<PlanLevel>('koach');
+  const [expanded, setExpanded] = useState<PlanLevel | null>('koach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
   const [saving, setSaving] = useState(false);
+
+  const handleCardClick = (level: PlanLevel) => {
+    setSelected(level);
+    setExpanded(prev => (prev === level ? null : level));
+  };
+
   const handleConfirm = async () => {
-    if (!selected || !user || selected === 'chinam') return;
+    if (!user) return;
+    if (selected === 'chinam') {
+      navigate('/verificar-email');
+      return;
+    }
     setSaving(true);
     try {
       const idToken = await user.getIdToken();
@@ -67,20 +81,22 @@ export default function Onboarding() {
   };
 
   const displayPrice = (level: PlanLevel) =>
-    period === 'monthly' ? PLAN_CONFIGS[level].price.monthlyLabel : PLAN_CONFIGS[level].price.annualMonthLabel;
+    period === 'monthly'
+      ? PLAN_CONFIGS[level].price.monthlyLabel
+      : PLAN_CONFIGS[level].price.annualMonthLabel;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start p-6 pt-12">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start py-10 px-4">
+      <div className="w-full max-w-7xl">
 
         {/* Header */}
-        <div className="flex flex-col items-center gap-4 mb-10">
+        <div className="flex flex-col items-center gap-3 mb-8">
           <Logo variant="white" />
-          <div className="text-center">
-            <h1 className="text-3xl font-black text-white mt-4">
+          <div className="text-center mt-2">
+            <h1 className="text-3xl font-black text-white">
               Olá{profile?.nome ? `, ${profile.nome.split(' ')[0]}` : ''}! 👋
             </h1>
-            <p className="text-white/70 mt-2">
+            <p className="text-white/70 mt-2 text-base">
               Antes de começar, escolha como você quer usar o Tovia.
             </p>
           </div>
@@ -92,7 +108,7 @@ export default function Onboarding() {
             <button
               onClick={() => setPeriod('monthly')}
               className={cn(
-                'px-5 py-2 rounded-xl text-sm font-bold transition-all',
+                'px-6 py-2.5 rounded-xl text-sm font-bold transition-all',
                 period === 'monthly' ? 'bg-white text-primary shadow' : 'text-white/70 hover:text-white',
               )}
             >
@@ -101,7 +117,7 @@ export default function Onboarding() {
             <button
               onClick={() => setPeriod('annual')}
               className={cn(
-                'px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
+                'px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2',
                 period === 'annual' ? 'bg-white text-primary shadow' : 'text-white/70 hover:text-white',
               )}
             >
@@ -116,144 +132,202 @@ export default function Onboarding() {
           </div>
         </div>
 
-        {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
           {PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
-            const moduleCount = PLAN_CONFIGS[level].modulesCount;
             const isSelected = selected === level;
+            const isExpanded = expanded === level;
+            const moduleCount = config.modulesCount;
 
             return (
-              <button
+              <div
                 key={level}
-                onClick={() => setSelected(level)}
+                onClick={() => handleCardClick(level)}
                 className={cn(
-                  'relative flex flex-col gap-5 p-7 rounded-3xl text-left transition-all duration-200 border-2',
+                  'relative rounded-3xl border-2 cursor-pointer transition-all duration-300 overflow-hidden',
                   isSelected
-                    ? 'bg-white border-white shadow-2xl scale-[1.02]'
-                    : 'bg-white/10 border-white/20 hover:bg-white/20 hover:border-white/40',
+                    ? 'bg-white border-white shadow-2xl'
+                    : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40',
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <span className={cn(
-                    'text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full',
-                    isSelected ? 'bg-primary text-white' : 'bg-white/20 text-white',
+                {/* Chalém auto-payments banner */}
+                {level === 'chalem' && (
+                  <div className={cn(
+                    'flex items-center gap-1.5 px-4 py-2 text-xs font-bold',
+                    isSelected
+                      ? 'bg-primary text-white'
+                      : 'bg-white/20 text-white',
                   )}>
-                    {config.name}
-                  </span>
-                  {isSelected && (
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" strokeWidth={3} />
-                    </div>
-                  )}
-                </div>
+                    <Zap className="w-3.5 h-3.5 shrink-0" />
+                    Único com pagamentos automáticos
+                  </div>
+                )}
 
-                <div>
-                  <h3 className={cn('text-xl font-black leading-tight', isSelected ? 'text-foreground' : 'text-white')}>
+                {/* Card header — always visible */}
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className={cn(
+                      'text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full',
+                      isSelected ? 'bg-primary text-white' : 'bg-white/20 text-white',
+                    )}>
+                      {config.name}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {isSelected && (
+                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                        </div>
+                      )}
+                      <motion.div
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <ChevronDown className={cn('w-4 h-4', isSelected ? 'text-muted-foreground' : 'text-white/50')} />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  <h3 className={cn('text-lg font-black leading-tight', isSelected ? 'text-foreground' : 'text-white')}>
                     {config.label}
                   </h3>
-                  <p className={cn('text-sm mt-1', isSelected ? 'text-muted-foreground' : 'text-white/60')}>
-                    {config.description}
-                  </p>
+
+                  <div className="mt-2">
+                    <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
+                      {displayPrice(level)}
+                    </span>
+                    {period === 'annual' && level !== 'chinam' && (
+                      <p className={cn('text-xs mt-0.5', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
+                        {config.price.annualTotalLabel} · 2 meses grátis
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <span className={cn('text-2xl font-black', isSelected ? 'text-primary' : 'text-white')}>
-                    {displayPrice(level)}
-                  </span>
-                  {period === 'annual' && level !== 'chinam' && (
-                    <p className={cn('text-xs mt-1', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
-                      {PLAN_CONFIGS[level].price.annualTotalLabel} · 2 meses grátis
-                    </p>
+                {/* Expandable body */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      key="body"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div className={cn('px-5 pb-5 space-y-4', !isSelected && 'opacity-90')}>
+                        {/* Description */}
+                        <p className={cn('text-sm leading-relaxed', isSelected ? 'text-muted-foreground' : 'text-white/70')}>
+                          {config.description}
+                        </p>
+
+                        {/* Modules */}
+                        <div className="space-y-2.5">
+                          {MODULE_LABELS.map((mod, i) => {
+                            const Icon = MODULE_ICONS[i];
+                            const active = i < moduleCount;
+                            return (
+                              <div
+                                key={mod}
+                                className={cn('flex items-start gap-3', !active && 'opacity-30')}
+                              >
+                                <div className={cn(
+                                  'w-8 h-8 rounded-xl flex items-center justify-center shrink-0',
+                                  active
+                                    ? isSelected ? 'bg-primary/10' : 'bg-white/15'
+                                    : 'bg-white/5',
+                                )}>
+                                  <Icon className={cn('w-4 h-4', active ? isSelected ? 'text-primary' : 'text-white' : 'text-white/40')} />
+                                </div>
+                                <div>
+                                  <p className={cn(
+                                    'text-sm font-bold',
+                                    !active && 'line-through',
+                                    isSelected ? 'text-foreground' : 'text-white',
+                                  )}>
+                                    {mod}
+                                  </p>
+                                  {active && (
+                                    <p className={cn('text-xs', isSelected ? 'text-muted-foreground' : 'text-white/50')}>
+                                      {MODULE_DESCRIPTIONS[i]}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Annual payment method — only for paid plans */}
+                        {period === 'annual' && level !== 'chinam' && isSelected && (
+                          <div className="space-y-2 pt-1">
+                            <p className={cn('text-xs font-semibold', isSelected ? 'text-muted-foreground' : 'text-white/60')}>
+                              Forma de pagamento:
+                            </p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={e => { e.stopPropagation(); setPaymentMethod('credit_card'); }}
+                                className={cn(
+                                  'flex-1 flex items-center gap-2 p-3 rounded-xl border transition-all text-left',
+                                  paymentMethod === 'credit_card'
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-gray-200 hover:border-gray-300',
+                                )}
+                              >
+                                <CreditCard className={cn('w-4 h-4 shrink-0', paymentMethod === 'credit_card' ? 'text-primary' : 'text-muted-foreground')} />
+                                <div>
+                                  <p className="text-xs font-bold text-foreground">Cartão</p>
+                                  <p className="text-[10px] text-muted-foreground">12x sem juros</p>
+                                </div>
+                              </button>
+                              <button
+                                onClick={e => { e.stopPropagation(); setPaymentMethod('pix'); }}
+                                className={cn(
+                                  'flex-1 flex items-center gap-2 p-3 rounded-xl border transition-all text-left',
+                                  paymentMethod === 'pix'
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-gray-200 hover:border-gray-300',
+                                )}
+                              >
+                                <QrCode className={cn('w-4 h-4 shrink-0', paymentMethod === 'pix' ? 'text-primary' : 'text-muted-foreground')} />
+                                <div>
+                                  <p className="text-xs font-bold text-foreground">PIX</p>
+                                  <p className="text-[10px] text-muted-foreground">À vista</p>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* CTA inside expanded selected card */}
+                        {isSelected && (
+                          <Button
+                            onClick={e => { e.stopPropagation(); handleConfirm(); }}
+                            disabled={saving}
+                            className={cn(
+                              'w-full h-11 rounded-2xl font-black uppercase tracking-widest text-sm mt-2',
+                              'bg-primary text-white hover:bg-primary/90 disabled:opacity-40',
+                            )}
+                          >
+                            {saving
+                              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Aguarde...</>
+                              : level === 'chinam'
+                              ? <>Começar grátis <ArrowRight className="w-4 h-4 ml-1.5" /></>
+                              : <>Ir para o pagamento <ArrowRight className="w-4 h-4 ml-1.5" /></>}
+                          </Button>
+                        )}
+                      </div>
+                    </motion.div>
                   )}
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  {MODULE_LABELS.slice(0, moduleCount).map((mod, i) => {
-                    const Icon = MODULE_ICONS[i];
-                    return (
-                      <div key={mod} className="flex items-start gap-3">
-                        <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center shrink-0', isSelected ? 'bg-primary/10' : 'bg-white/10')}>
-                          <Icon className={cn('w-4 h-4', isSelected ? 'text-primary' : 'text-white')} />
-                        </div>
-                        <div>
-                          <p className={cn('text-sm font-bold', isSelected ? 'text-foreground' : 'text-white')}>{mod}</p>
-                          <p className={cn('text-xs', isSelected ? 'text-muted-foreground' : 'text-white/50')}>{MODULE_DESCRIPTIONS[i]}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {MODULE_LABELS.slice(moduleCount).map((mod, i) => (
-                    <div key={mod} className="flex items-center gap-3 opacity-30">
-                      <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                        {React.createElement(MODULE_ICONS[moduleCount + i], { className: 'w-4 h-4 text-white' })}
-                      </div>
-                      <p className="text-sm text-white line-through">{mod}</p>
-                    </div>
-                  ))}
-                </div>
-              </button>
+                </AnimatePresence>
+              </div>
             );
           })}
         </div>
 
-        {/* Annual payment method selector */}
-        {period === 'annual' && selected !== 'personalizado' && (
-          <div className="bg-white/10 rounded-2xl p-5 mb-6">
-            <p className="text-white/70 text-sm font-semibold mb-3">Forma de pagamento para o plano anual:</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setPaymentMethod('credit_card')}
-                className={cn(
-                  'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
-                  paymentMethod === 'credit_card' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
-                )}
-              >
-                <CreditCard className={cn('w-5 h-5 shrink-0', paymentMethod === 'credit_card' ? 'text-primary' : 'text-white')} />
-                <div className="text-left">
-                  <p className={cn('text-sm font-bold', paymentMethod === 'credit_card' ? 'text-foreground' : 'text-white')}>Cartão de crédito</p>
-                  <p className={cn('text-xs', paymentMethod === 'credit_card' ? 'text-muted-foreground' : 'text-white/60')}>12x sem juros</p>
-                </div>
-              </button>
-              <button
-                onClick={() => setPaymentMethod('pix')}
-                className={cn(
-                  'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
-                  paymentMethod === 'pix' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
-                )}
-              >
-                <QrCode className={cn('w-5 h-5 shrink-0', paymentMethod === 'pix' ? 'text-primary' : 'text-white')} />
-                <div className="text-left">
-                  <p className={cn('text-sm font-bold', paymentMethod === 'pix' ? 'text-foreground' : 'text-white')}>PIX</p>
-                  <p className={cn('text-xs', paymentMethod === 'pix' ? 'text-muted-foreground' : 'text-white/60')}>À vista</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* CTA */}
-        <div className="flex flex-col items-center gap-3 pb-12">
-          {selected === 'chinam' ? (
-            <Button
-              onClick={() => navigate('/verificar-email')}
-              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all"
-            >
-              Começar grátis <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          ) : (
-            <Button
-              onClick={handleConfirm}
-              disabled={saving}
-              className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
-            >
-              {saving
-                ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
-                : <>Ir para o pagamento <ArrowRight className="w-5 h-5 ml-2" /></>}
-            </Button>
-          )}
-          <p className="text-white/40 text-xs">Você pode alterar o plano a qualquer momento.</p>
-        </div>
+        <p className="text-white/30 text-xs text-center pb-8">
+          Você pode alterar o plano a qualquer momento.
+        </p>
       </div>
     </div>
   );
