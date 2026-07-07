@@ -13,28 +13,35 @@ const MUTED = '#6b7280';
 
 function wrap(content: string, preview = '') {
   return `<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  ${preview ? `<meta name="x-apple-disable-message-reformatting" /><div style="display:none;max-height:0;overflow:hidden;">${preview}</div>` : ''}
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <style>
+    :root { color-scheme: light only; }
+    body { margin: 0 !important; padding: 0 !important; background-color: #f4f6f3 !important; }
+  </style>
+  ${preview ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preview}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>` : ''}
 </head>
-<body style="${BASE}">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f3;padding:40px 16px;">
+<body style="${BASE}" bgcolor="#f4f6f3">
+  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6f3" style="background-color:#f4f6f3;padding:40px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
         <!-- Header -->
         <tr>
-          <td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
-            <span style="font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;">tovia</span>
-            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);display:block;letter-spacing:3px;margin-top:2px;">GESTÃO DE EVENTOS</span>
+          <td bgcolor="${PRIMARY}" style="background-color:${PRIMARY} !important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
+            <span style="font-size:28px;font-weight:900;color:#ffffff !important;letter-spacing:-1px;-webkit-text-fill-color:#ffffff;">tovia</span>
+            <span style="font-size:11px;font-weight:600;color:#a7f3d0 !important;-webkit-text-fill-color:#a7f3d0;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
           </td>
         </tr>
 
         <!-- Body -->
         <tr>
-          <td style="background:#ffffff;padding:40px;border-radius:0 0 16px 16px;">
+          <td bgcolor="#ffffff" style="background-color:#ffffff !important;padding:40px;border-radius:0 0 16px 16px;">
             ${content}
           </td>
         </tr>
@@ -91,13 +98,14 @@ function feature(icon: string, title: string, desc: string) {
 
 export function emailBoasVindas(nome: string) {
   return wrap(`
-    ${h1(`Bem-vindo ao Tovia, ${nome || 'organizador'}! 🎉`)}
-    ${p('Sua conta foi criada com sucesso. O Tovia é a plataforma completa para gestão de eventos — inscrições, financeiro, equipe e muito mais.')}
-    ${p('Você está no plano <strong>Start gratuito</strong>. Pode criar seu primeiro evento agora mesmo!')}
-    ${btn('Criar meu primeiro evento', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
+    ${h1(`Bem-vindo ao Tovia, ${nome || 'organizador'}!`)}
+    ${p('Sua conta foi criada com sucesso. O Tovia é a plataforma completa para gestão de eventos — inscrições, financeiro e gestão da equipe.')}
+    ${p('Para ativar sua conta, <strong>verifique sua caixa de entrada</strong>: enviamos um segundo e-mail com o <strong>código de 6 dígitos</strong> para confirmar seu endereço.')}
+    ${btn('Confirmar meu e-mail', 'https://www.toviaapp.com.br/verificar-email')}
     ${divider()}
-    ${p('Qualquer dúvida, estamos aqui. Bom evento!')}
-  `, 'Sua conta Tovia foi criada com sucesso!');
+    ${p('Não encontrou o código? Verifique a pasta de spam ou acesse o link acima para reenviar.')}
+    ${p('Qualquer dúvida, estamos aqui para ajudar.')}
+  `, 'Confirme seu e-mail para ativar sua conta Tovia');
 }
 
 export function emailTutorial(nome: string) {

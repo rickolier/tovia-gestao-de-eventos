@@ -114,15 +114,16 @@ export default function Login() {
           }
         }
         const idToken = await userCredential.user.getIdToken();
-        await fetch('/api/enviarCodigoVerificacao', {
+        const otpRes = await fetch('/api/enviarCodigoVerificacao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
           body: JSON.stringify({ userId: userCredential.user.uid }),
         });
+        const codeSent = otpRes.ok;
         Email.boasVindas(email, name);
         setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
-        navigate(eventoIdParam ? '/dashboard' : '/verificar-email', { state: { codeSent: true } });
+        navigate(eventoIdParam ? '/dashboard' : '/verificar-email', { state: { codeSent } });
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (eventoIdParam && !isAdminEmail(cred.user.email)) {

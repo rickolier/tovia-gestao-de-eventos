@@ -17,14 +17,21 @@ const MUTED = '#6b7280';
 const TEXT = '#1a1a1a';
 
 function emailWrap(content: string) {
-  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/></head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f3;padding:40px 16px;">
+  return `<!DOCTYPE html><html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="color-scheme" content="light"/>
+<meta name="supported-color-schemes" content="light"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<style>:root{color-scheme:light only;}body{margin:0!important;padding:0!important;background-color:#f4f6f3!important;}</style>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;" bgcolor="#f4f6f3">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6f3" style="background-color:#f4f6f3;padding:40px 16px;">
 <tr><td align="center"><table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-<tr><td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
-<span style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">tovia</span>
+<tr><td bgcolor="${PRIMARY}" style="background-color:${PRIMARY}!important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
+<span style="font-size:28px;font-weight:900;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:-1px;">tovia</span>
+<span style="font-size:11px;font-weight:600;color:#a7f3d0!important;-webkit-text-fill-color:#a7f3d0;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
 </td></tr>
-<tr><td style="background:#fff;padding:40px;border-radius:0 0 16px 16px;">${content}</td></tr>
+<tr><td bgcolor="#ffffff" style="background-color:#ffffff!important;padding:40px;border-radius:0 0 16px 16px;">${content}</td></tr>
 <tr><td style="padding:24px 40px;text-align:center;">
 <p style="font-size:12px;color:${MUTED};margin:0;">© ${new Date().getFullYear()} Tovia Gestão de Eventos</p>
 </td></tr>
