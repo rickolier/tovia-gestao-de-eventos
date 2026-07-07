@@ -41,17 +41,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const emailNorm = email.trim().toLowerCase();
 
-  // Verify that at least one inscription exists for this email
-  const snap = await db.collectionGroup('inscricoes')
-    .where('email', '==', emailNorm)
-    .limit(1)
-    .get();
-
-  if (snap.empty) {
-    // Return 200 to avoid email enumeration — client shows generic success
-    return res.json({ ok: true });
-  }
-
   // Rate limit
   const allowed = await checkRateLimit(emailNorm);
   if (!allowed) {
