@@ -6,10 +6,9 @@ import { PLAN_CONFIGS, PLAN_ORDER } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
-  TicketIcon, DollarSign, Wallet, ArrowRight, Loader2,
+  TicketIcon, DollarSign, Wallet, ArrowRight,
   CreditCard, QrCode, Zap, Check,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
@@ -29,48 +28,19 @@ export default function Onboarding() {
   const [selected, setSelected] = useState<PlanLevel>('koach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
-  const [saving, setSaving] = useState(false);
-
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!user) return;
     if (selected === 'chinam') {
       navigate('/verificar-email');
       return;
     }
-    setSaving(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('/api/createCheckout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({
-          planLevel: selected,
-          period,
-          paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
-          userId: user.uid,
-          userName: profile?.nome || user.displayName || '',
-          userEmail: user.email || '',
-          userCpfCnpj: profile?.cnpj || '',
-          userPhone: profile?.telefone || '',
-          userCep: profile?.cep || '',
-          userEndereco: profile?.endereco || '',
-          userNumero: profile?.numero || '',
-          userComplemento: profile?.complemento || '',
-          userBairro: profile?.bairro || '',
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-      if (data.paymentUrl) {
-        toast.success('Redirecionando para o pagamento...');
-        window.open(data.paymentUrl, '_blank');
-        navigate('/planos/aguardando');
-      }
-    } catch (err: any) {
-      toast.error(err?.message || 'Erro ao processar. Tente novamente.');
-    } finally {
-      setSaving(false);
-    }
+    navigate('/checkout-plano', {
+      state: {
+        planLevel: selected,
+        period,
+        paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
+      },
+    });
   };
 
   const displayPrice = (level: PlanLevel) =>
@@ -266,12 +236,9 @@ export default function Onboarding() {
         <div className="flex flex-col items-center gap-3 pb-10">
           <Button
             onClick={handleConfirm}
-            disabled={saving}
-            className="h-14 px-14 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
+            className="h-14 px-14 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 shadow-xl transition-all"
           >
-            {saving
-              ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
-              : selected === 'chinam'
+            {selected === 'chinam'
               ? <>Começar grátis <ArrowRight className="w-5 h-5 ml-2" /></>
               : <>Ir para o pagamento <ArrowRight className="w-5 h-5 ml-2" /></>}
           </Button>

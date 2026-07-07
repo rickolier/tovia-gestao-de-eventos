@@ -7,10 +7,9 @@ import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
-  Check, TicketIcon, DollarSign, Wallet, ArrowLeft, Loader2, CheckCircle2,
+  Check, TicketIcon, DollarSign, Wallet, ArrowLeft, CheckCircle2,
   ExternalLink, AlertTriangle, CreditCard, QrCode,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
@@ -33,58 +32,30 @@ export default function Plans() {
   const [selected, setSelected] = useState<PlanLevel | null>(null);
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
-  const [saving, setSaving] = useState(false);
   const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
 
   const currentPlan = profile?.plano;
   const activeSelection = selected ?? currentPlan ?? null;
 
-  const executePlanChange = async () => {
-    if (!selected || !user || selected === 'chinam') return;
+  const goToCheckout = () => {
+    if (!selected || selected === 'chinam') return;
     setShowDowngradeWarning(false);
-    setSaving(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('/api/createCheckout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({
-          planLevel: selected,
-          period,
-          paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
-          userId: user.uid,
-          userName: profile?.nome || user.displayName || '',
-          userEmail: user.email || '',
-          userCpfCnpj: profile?.cnpj || '',
-          userPhone: profile?.telefone || '',
-          userCep: profile?.cep || '',
-          userEndereco: profile?.endereco || '',
-          userNumero: profile?.numero || '',
-          userComplemento: profile?.complemento || '',
-          userBairro: profile?.bairro || '',
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-      if (data.paymentUrl) {
-        toast.success('Redirecionando para o pagamento...');
-        window.open(data.paymentUrl, '_blank');
-        navigate('/planos/aguardando');
-      }
-    } catch (err: any) {
-      toast.error(err?.message || 'Erro ao processar. Tente novamente.');
-    } finally {
-      setSaving(false);
-    }
+    navigate('/checkout-plano', {
+      state: {
+        planLevel: selected,
+        period,
+        paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
+      },
+    });
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!selected || !user || selected === currentPlan || selected === 'chinam') return;
     if (currentPlan && PLAN_RANK[selected] < PLAN_RANK[currentPlan]) {
       setShowDowngradeWarning(true);
       return;
     }
-    await executePlanChange();
+    goToCheckout();
   };
 
   const displayPrice = (level: PlanLevel) =>
@@ -297,8 +268,8 @@ export default function Plans() {
                 <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowDowngradeWarning(false)}>
                   Cancelar
                 </Button>
-                <Button className="flex-1 rounded-xl bg-primary text-white font-bold" onClick={executePlanChange} disabled={saving}>
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Confirmar mudança'}
+                <Button className="flex-1 rounded-xl bg-primary text-white font-bold" onClick={goToCheckout}>
+                  Confirmar mudança
                 </Button>
               </div>
             </div>
@@ -312,12 +283,10 @@ export default function Plans() {
           ) : (
             <Button
               onClick={handleConfirm}
-              disabled={!selected || selected === currentPlan || saving}
+              disabled={!selected || selected === currentPlan}
               className="h-14 px-12 rounded-2xl font-black uppercase tracking-widest text-sm bg-white text-primary hover:bg-white/90 disabled:opacity-40 shadow-xl transition-all"
             >
-              {saving ? (
-                <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Aguarde...</>
-              ) : selected && selected === currentPlan ? (
+              {selected && selected === currentPlan ? (
                 <><CheckCircle2 className="w-5 h-5 mr-2" /> Plano atual</>
               ) : (
                 <><ExternalLink className="w-5 h-5 mr-2" /> Ir para o pagamento</>

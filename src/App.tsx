@@ -21,6 +21,7 @@ import BaseConhecimento from './pages/BaseConhecimento';
 import ArtigoBaseConhecimento from './pages/ArtigoBaseConhecimento';
 import ConsultarInscricao from './pages/ConsultarInscricao';
 import CheckinPage from './pages/CheckinPage';
+import CheckoutPlano from './pages/CheckoutPlano';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
@@ -95,6 +96,7 @@ export default function App() {
             <Route path="/verificar-email" element={<VerificarEmail />} />
             <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
             <Route path="/planos/aguardando" element={<PrivateRoute><AguardandoPagamento /></PrivateRoute>} />
+            <Route path="/checkout-plano" element={<PrivateRoute><CheckoutPlano /></PrivateRoute>} />
             <Route
               path="/dashboard"
               element={
