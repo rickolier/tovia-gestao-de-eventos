@@ -5,8 +5,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-  sendEmailVerification,
-  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from '~/services/firebase';
 import { Email } from '~/services/email';
@@ -85,7 +83,11 @@ export default function Login() {
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, email);
+      await fetch('/api/enviarRedefinicaoSenha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
       toast.success('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
     } catch (error: any) {
       toast.error('Erro ao enviar e-mail: ' + error.message);
@@ -111,7 +113,12 @@ export default function Login() {
             toast.error('Erro ao entrar na equipe: ' + joinErr.message);
           }
         }
-        await sendEmailVerification(userCredential.user);
+        const idToken = await userCredential.user.getIdToken();
+        await fetch('/api/enviarVerificacaoEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+          body: JSON.stringify({ userId: userCredential.user.uid }),
+        });
         Email.boasVindas(email, name);
         setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
@@ -136,7 +143,11 @@ export default function Login() {
         setLoginAttempts(next);
         if (next >= 3) {
           try {
-            await sendPasswordResetEmail(auth, email);
+            await fetch('/api/enviarRedefinicaoSenha', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email }),
+            });
             setResetSent(true);
             toast.error('Muitas tentativas. Enviamos um link de redefinição de senha para seu e-mail.');
           } catch {

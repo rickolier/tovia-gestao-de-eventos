@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sendEmailVerification } from 'firebase/auth';
 import { auth } from '~/services/firebase';
 import { useAuth } from '~/context/AuthContext';
 import Logo from '~/components/Logo';
@@ -55,7 +54,13 @@ export default function VerificarEmail() {
     if (!currentUser) return;
     setResending(true);
     try {
-      await sendEmailVerification(currentUser);
+      const idToken = await currentUser.getIdToken();
+      const res = await fetch('/api/enviarVerificacaoEmail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ userId: currentUser.uid }),
+      });
+      if (!res.ok) throw new Error();
       setResent(true);
       toast.success('E-mail reenviado! Verifique sua caixa de entrada.');
     } catch {
