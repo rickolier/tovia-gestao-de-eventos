@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, updateDocument } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { Inscricao } from '~/types';
 import { Button } from '@/components/ui/button';
 import { UserCheck, UserX, Download, Loader2 } from 'lucide-react';
@@ -16,7 +17,7 @@ export default function CheckinTab({ eventoId }: Props) {
   const [updating, setUpdating] = useState<string | null>(null);
 
   useEffect(() => {
-    listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`)
+    listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)])
       .then(data => {
         const pagas = data
           .filter(i => i.status === 'pago')

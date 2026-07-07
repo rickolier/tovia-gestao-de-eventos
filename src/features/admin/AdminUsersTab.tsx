@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments, updateDocument } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { UserProfile } from '~/types';
 import { Search, RefreshCw, ShieldOff, ArrowUpCircle, UserX, UserCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -22,7 +23,7 @@ export default function AdminUsersTab() {
 
   const load = async () => {
     setLoading(true);
-    const data = await listDocuments<UserProfile>('users');
+    const data = await listDocuments<UserProfile>('users', [limit(200)]);
     setUsers(data.filter(u => !u.isDemo).sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
     setLoading(false);
   };

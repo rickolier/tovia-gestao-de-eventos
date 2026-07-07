@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { getDocument, listDocuments, updateDocument } from '~/services/firestore';
+import { where, limit } from 'firebase/firestore';
 import { Evento, Inscricao } from '~/types';
 import { CheckCircle2, XCircle, AlertCircle, Search, QrCode, List, ArrowLeft, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -45,7 +46,7 @@ export default function CheckinPage() {
       setEvento(ev);
       setAuthorized(true);
 
-      const all = await listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`);
+      const all = await listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [where('status', '==', 'pago'), limit(500)]);
       setInscricoes(all.filter(i => i.status === 'pago'));
       setLoading(false);
     })();

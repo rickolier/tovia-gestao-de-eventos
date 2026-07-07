@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { listDocuments, createDocument, removeDocument, subscribeToDocuments, updateDocument } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { Quarto, Inscricao, Pessoa, PaginaVenda } from '~/types';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
@@ -232,7 +233,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
     const fetchRegs = async () => {
       try {
         const [regData, peopleData] = await Promise.all([
-          listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
+          listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)]),
           listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
         ]);
         const enriched = regData

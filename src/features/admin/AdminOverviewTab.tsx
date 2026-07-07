@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { UserProfile } from '~/types';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +19,7 @@ export default function AdminOverviewTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listDocuments<UserProfile>('users')
+    listDocuments<UserProfile>('users', [limit(200)])
       .then(data => setUsers(data.filter(u => !u.isDemo)))
       .catch(console.error)
       .finally(() => setLoading(false));

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Evento, Inscricao, Ticket, Donation } from '~/types';
 import { useAuth } from '~/context/AuthContext';
 import { listDocuments } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -124,7 +125,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
     Promise.all(
       toLoad.map(async (id) => {
         const [insc, tix, doac] = await Promise.all([
-          listDocuments<Inscricao>(`eventos/${id}/inscricoes`),
+          listDocuments<Inscricao>(`eventos/${id}/inscricoes`, [limit(1000)]),
           listDocuments<Ticket>(`eventos/${id}/tickets`),
           listDocuments<Donation>(`eventos/${id}/doacoes`),
         ]);

@@ -5,7 +5,7 @@ const ITEMS_PER_PAGE = 50;
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '~/services/firestore';
 import { Inscricao, Pessoa, Ticket, Pagamento, Evento, PaginaVenda, CampoFormulario } from '~/types';
 import { notifOnce } from '~/utils/notifications';
-import { where } from 'firebase/firestore';
+import { where, limit } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus, UserPlus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle, Trash2, Edit2, ArrowUpAZ, ArrowDownZA, Filter, X, ArrowUp, ArrowDown, Upload, FileDown, AlertTriangle, Check, QrCode } from 'lucide-react';
@@ -79,7 +79,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
   const fetchData = async () => {
     setLoading(true);
     const [regData, ticketData, peopleData, eventData, paginasData] = await Promise.all([
-      listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
+      listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)]),
       listDocuments<Ticket>(`eventos/${eventoId}/tickets`),
       listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
       getDocument<Evento>('eventos', eventoId),

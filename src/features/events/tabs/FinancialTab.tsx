@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
 import { Pagamento, Inscricao, Pessoa, Ticket } from '~/types';
-import { where } from 'firebase/firestore';
+import { where, limit } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -23,6 +23,7 @@ import { Progress } from '@/components/ui/progress';
 
 export default function FinancialTab({ eventoId, isActive }: { eventoId: string; isActive?: boolean }) {
   const { user, profile } = useAuth();
+  const skipFirstActiveRef = useRef(true);
   const [financialTourOpen, setFinancialTourOpen] = useState(false);
   const [payments, setPayments] = useState<Pagamento[]>([]);
   const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa })[]>([]);
@@ -60,10 +61,10 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
     setLoading(true);
     try {
       const [payData, regData, peopleData, transData, ticketData] = await Promise.all([
-        listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`),
-        listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`),
-        listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`),
-        listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`),
+        listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`, [limit(500)]),
+        listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)]),
+        listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`, [limit(500)]),
+        listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`, [limit(500)]),
         listDocuments<Ticket>(`eventos/${eventoId}/tickets`),
       ]);
 
@@ -87,10 +88,12 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
   };
 
   useEffect(() => {
+    skipFirstActiveRef.current = true;
     fetchData();
   }, [eventoId]);
 
   useEffect(() => {
+    if (skipFirstActiveRef.current) { skipFirstActiveRef.current = false; return; }
     if (isActive) fetchData();
   }, [isActive]);
 

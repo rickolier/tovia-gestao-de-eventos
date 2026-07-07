@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { collectionGroup, getDocs } from 'firebase/firestore';
+import { collectionGroup, getDocs, limit } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { listDocuments } from '~/services/firestore';
 import { UserProfile, Evento, Inscricao } from '~/types';
@@ -77,8 +77,8 @@ export default function AdminFinancialTab() {
     setError(null);
     try {
       const [usersData, eventosData] = await Promise.all([
-        listDocuments<UserProfile>('users'),
-        listDocuments<Evento>('eventos'),
+        listDocuments<UserProfile>('users', [limit(200)]),
+        listDocuments<Evento>('eventos', [limit(500)]),
       ]);
 
       // Collection group query for inscricoes across all events

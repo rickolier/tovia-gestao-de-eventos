@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listDocuments } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { Inscricao, Pagamento, Donation, Evento, Ticket, FinancialTransaction } from '~/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ export default function ReportsTab({ evento }: { evento: Evento }) {
 
   useEffect(() => {
     Promise.all([
-      listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`),
+      listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`, [limit(500)]),
       listDocuments<Ticket>(`eventos/${evento.id}/tickets`),
       listDocuments<FinancialTransaction>(`eventos/${evento.id}/transacoes`),
       listDocuments<Donation>(`eventos/${evento.id}/doacoes`),

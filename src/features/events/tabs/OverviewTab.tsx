@@ -3,6 +3,7 @@ import { Evento, Inscricao, Ticket } from '~/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin, Users, Info, DollarSign, Edit2, Clock } from 'lucide-react';
 import { listDocuments } from '~/services/firestore';
+import { limit } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -33,7 +34,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
   useEffect(() => {
     const fetchData = async () => {
       const [regs, tickets] = await Promise.all([
-        listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`),
+        listDocuments<Inscricao>(`eventos/${evento.id}/inscricoes`, [limit(500)]),
         listDocuments<Ticket>(`eventos/${evento.id}/tickets`),
       ]);
       const doacaoIds = new Set(tickets.filter(t => t.tipo === 'doacao').map(t => t.id));
