@@ -122,7 +122,7 @@ export default function Login() {
         Email.boasVindas(email, name);
         setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
-        navigate(eventoIdParam ? '/dashboard' : '/verificar-email');
+        navigate(eventoIdParam ? '/dashboard' : '/verificar-email', { state: { codeSent: true } });
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (eventoIdParam && !isAdminEmail(cred.user.email)) {

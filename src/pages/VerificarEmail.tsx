@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '~/services/firebase';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { cn } from '@/lib/utils';
 export default function VerificarEmail() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const [verifying, setVerifying] = useState(false);
@@ -23,16 +23,32 @@ export default function VerificarEmail() {
   const profileRef = useRef(profile);
   useEffect(() => { profileRef.current = profile; }, [profile]);
 
-  // Countdown timer for resend cooldown
+  // Countdown timer
   useEffect(() => {
     if (resendCooldown <= 0) return;
     const t = setTimeout(() => setResendCooldown(s => s - 1), 1000);
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
+  // Redirect if already verified or not logged in
   useEffect(() => {
     if (!user) { navigate('/login', { replace: true }); return; }
-    if (auth.currentUser?.emailVerified) { doRedirect(); }
+    if (user.emailVerified) { doRedirect(); }
+  }, [user]);
+
+  // Auto-send code on mount if NOT coming from registration (which already sent it)
+  const didAutoSend = useRef(false);
+  useEffect(() => {
+    if (!user || user.emailVerified || didAutoSend.current) return;
+    const codeSentFromRegistration = location.state?.codeSent === true;
+    if (codeSentFromRegistration) {
+      // Registration already sent the code — just start the cooldown
+      setResendCooldown(60);
+    } else {
+      // Arrived via redirect (PrivateRoute) — send code now
+      didAutoSend.current = true;
+      sendCode();
+    }
   }, [user]);
 
   function doRedirect() {
@@ -42,6 +58,46 @@ export default function VerificarEmail() {
       navigate('/onboarding', { replace: true });
     }
   }
+
+  const sendCode = async () => {
+    if (!user || resendCooldown > 0 || resending) return;
+    setResending(true);
+    try {
+      const idToken = await user.getIdToken();
+      const res = await fetch('/api/enviarCodigoVerificacao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ userId: user.uid }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao enviar o código.');
+        return;
+      }
+      setDigits(['', '', '', '', '', '']);
+      setError('');
+      setResendCooldown(60);
+      inputRefs.current[0]?.focus();
+    } catch {
+      toast.error('Não foi possível enviar o código. Verifique sua conexão e tente novamente.');
+    } finally {
+      setResending(false);
+    }
+  };
+
+  const handleResend = () => {
+    if (!user) {
+      toast.error('Sessão expirada. Faça login novamente.');
+      navigate('/login', { replace: true });
+      return;
+    }
+    if (resendCooldown > 0) return;
+    toast.promise(sendCode(), {
+      loading: 'Enviando código...',
+      success: 'Novo código enviado! Verifique sua caixa de entrada.',
+      error: (e) => e?.message || 'Erro ao enviar o código.',
+    });
+  };
 
   const handleDigit = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -70,52 +126,26 @@ export default function VerificarEmail() {
   const handleVerify = async () => {
     const fullCode = digits.join('');
     if (fullCode.length !== 6) { setError('Digite os 6 dígitos do código.'); return; }
+    if (!user) { toast.error('Sessão expirada.'); navigate('/login', { replace: true }); return; }
     setVerifying(true);
     setError('');
     try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error('Sessão expirada.');
-      const idToken = await currentUser.getIdToken();
+      const idToken = await user.getIdToken();
       const res = await fetch('/api/confirmarCodigoVerificacao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({ userId: currentUser.uid, code: fullCode }),
+        body: JSON.stringify({ userId: user.uid, code: fullCode }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Código inválido.'); return; }
       setSuccess(true);
-      await currentUser.reload();
+      await user.reload();
       await refreshProfile?.();
       setTimeout(() => doRedirect(), 1200);
     } catch (err: any) {
       setError(err.message || 'Erro ao verificar. Tente novamente.');
     } finally {
       setVerifying(false);
-    }
-  };
-
-  const handleResend = async () => {
-    const currentUser = auth.currentUser;
-    if (!currentUser || resendCooldown > 0) return;
-    setResending(true);
-    try {
-      const idToken = await currentUser.getIdToken();
-      const res = await fetch('/api/enviarCodigoVerificacao', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({ userId: currentUser.uid }),
-      });
-      const data = await res.json();
-      if (!res.ok) { toast.error(data.error || 'Erro ao reenviar.'); return; }
-      setDigits(['', '', '', '', '', '']);
-      setError('');
-      setResendCooldown(60);
-      inputRefs.current[0]?.focus();
-      toast.success('Novo código enviado! Verifique sua caixa de entrada.');
-    } catch {
-      toast.error('Não foi possível reenviar. Tente novamente.');
-    } finally {
-      setResending(false);
     }
   };
 
@@ -139,13 +169,16 @@ export default function VerificarEmail() {
             <>
               <div className="flex flex-col items-center gap-3">
                 <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
-                  <Mail className="w-8 h-8 text-white" />
+                  {resending
+                    ? <RefreshCw className="w-8 h-8 text-white animate-spin" />
+                    : <Mail className="w-8 h-8 text-white" />}
                 </div>
                 <div>
                   <h1 className="text-2xl font-black text-white">Confirme seu e-mail</h1>
                   <p className="text-white/60 text-sm mt-1 leading-relaxed">
-                    Enviamos um código de 6 dígitos para<br />
-                    <span className="text-white font-semibold">{user?.email}</span>
+                    {resending
+                      ? 'Enviando código...'
+                      : <>Enviamos um código de 6 dígitos para<br /><span className="text-white font-semibold">{user?.email}</span></>}
                   </p>
                 </div>
               </div>
@@ -189,10 +222,10 @@ export default function VerificarEmail() {
                 <button
                   onClick={handleResend}
                   disabled={resending || resendCooldown > 0}
-                  className="text-white/50 hover:text-white text-sm transition-colors disabled:cursor-not-allowed"
+                  className="text-white/50 hover:text-white text-sm transition-colors disabled:cursor-not-allowed disabled:hover:text-white/50"
                 >
                   {resending
-                    ? 'Reenviando...'
+                    ? 'Enviando...'
                     : resendCooldown > 0
                     ? `Reenviar em ${resendCooldown}s`
                     : 'Não recebi o código — reenviar'}
