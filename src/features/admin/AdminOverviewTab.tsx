@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { listDocuments } from '~/services/firestore';
 import { limit } from 'firebase/firestore';
 import { UserProfile } from '~/types';
+import { isAdminEmail } from '~/utils/admin-config';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -20,7 +21,7 @@ export default function AdminOverviewTab() {
 
   useEffect(() => {
     listDocuments<UserProfile>('users', [limit(200)])
-      .then(data => setUsers(data.filter(u => !u.isDemo)))
+      .then(data => setUsers(data.filter(u => !u.isDemo && !isAdminEmail(u.email))))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
