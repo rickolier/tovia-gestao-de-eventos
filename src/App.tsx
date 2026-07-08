@@ -22,6 +22,7 @@ import ArtigoBaseConhecimento from './pages/ArtigoBaseConhecimento';
 import ConsultarInscricao from './pages/ConsultarInscricao';
 import CheckinPage from './pages/CheckinPage';
 import CheckoutPlano from './pages/CheckoutPlano';
+import SatisfacaoPage from './pages/SatisfacaoPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
@@ -145,6 +146,7 @@ export default function App() {
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
             <Route path="/:orgCodigo" element={<PublicOrganizerProfileByCodigo />} />
             <Route path="/consultar" element={<ConsultarInscricao />} />
+            <Route path="/satisfacao" element={<SatisfacaoPage />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos-de-uso" element={<TermosDeUso />} />
             <Route path="/base-de-conhecimento" element={<PrivateRoute><BaseConhecimento /></PrivateRoute>} />

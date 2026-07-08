@@ -121,7 +121,7 @@ export default function Login() {
         });
         const codeSent = otpRes.ok;
         Email.boasVindas(email, name);
-        setTimeout(() => Email.tutorial(email, name), 24 * 60 * 60 * 1000);
+        Email.boasVindasPlano(email, name, 'chinam');
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
         navigate(eventoIdParam ? '/dashboard' : '/verificar-email', { state: { codeSent } });
       } else {

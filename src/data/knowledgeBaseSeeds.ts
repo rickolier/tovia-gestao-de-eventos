@@ -11,6 +11,7 @@ export const SEED_ARTIGOS: ArtigoBC[] = [
     resumo: 'Conheça a plataforma de gestão de eventos do Tovia e saiba como ela pode transformar a organização dos seus eventos.',
     tags: ['introdução', 'visão geral', 'plataforma'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O Tovia é uma plataforma completa de gestão de eventos, desenvolvida para igrejas, ministérios, conferências e qualquer organização que precise organizar eventos com inscrições, pagamentos e equipe.
 
 A plataforma foi criada para simplificar o que normalmente é complicado: receber inscrições, controlar pagamentos, gerenciar participantes e coordenar a equipe — tudo em um só lugar, sem precisar de planilhas ou ferramentas separadas.
@@ -26,7 +27,6 @@ O Tovia é organizado em quatro planos com nomes em hebraico:
 Todo usuário começa com o plano Chinám e pode fazer upgrade conforme o evento crescer. Membros de equipe convidados por um organizador também recebem o plano Chinám gratuitamente — eles acessam o evento específico onde foram adicionados, com as permissões que o organizador definiu.
 
 Explore cada seção usando o tutorial guiado ou consulte esta Base de Conhecimento sempre que precisar entender melhor alguma funcionalidade. Boas organizações de eventos!`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -39,6 +39,7 @@ Explore cada seção usando o tutorial guiado ou consulte esta Base de Conhecime
     resumo: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
     tags: ['perfil', 'organização', 'configuração'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://plus.unsplash.com/premium_photo-1752230474021-5749c334925a?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O perfil da sua organização é a identidade que aparece em todos os pontos de contato com os participantes: nas páginas de inscrição, nos e-mails de confirmação e na página pública da organização.
 
 Para configurar seu perfil, acesse a aba Meu Perfil na barra lateral. Lá você pode adicionar o nome da organização, logo, bio, contatos (e-mail, WhatsApp, site), endereço e redes sociais.
@@ -50,7 +51,6 @@ O campo de descrição permite apresentar sua organização para os participante
 Você também pode ativar uma página pública da organização, acessível por um link único (tovia.app/o/seu-usuario), que lista todos os seus eventos públicos. Essa página é uma vitrine para quem quiser conhecer o trabalho da sua organização.
 
 Manter o perfil atualizado garante que as informações de contato nos e-mails automáticos estejam sempre corretas — isso evita que participantes fiquem sem resposta quando tiverem dúvidas.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -63,6 +63,7 @@ Manter o perfil atualizado garante que as informações de contato nos e-mails a
     resumo: 'Visualize todos os seus eventos num calendário mensal. Ideal para nunca perder uma data importante.',
     tags: ['agenda', 'calendário', 'eventos'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1435527173128-983b87201f4d?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A Agenda é uma visão calendário de todos os seus eventos. Ao clicar em Agenda na barra lateral, você verá um calendário mensal com os eventos distribuídos nos dias correspondentes às suas datas de início.
 
 Cada evento aparece como um bloco colorido no calendário. Ao clicar em um evento, você é direcionado para a página interna desse evento, onde pode gerenciar ingressos, participantes e muito mais.
@@ -72,7 +73,6 @@ A Agenda é especialmente útil quando você organiza múltiplos eventos simult�
 Use os botões de navegação para avançar ou retroceder entre os meses. Eventos que se estendem por vários dias aparecem marcados em todos os dias do período.
 
 Dica: antes de criar um novo evento, consulte a Agenda para garantir que não há sobreposição com outros eventos já programados, especialmente se você compartilha equipe ou espaço físico entre diferentes eventos.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -85,6 +85,7 @@ Dica: antes de criar um novo evento, consulte a Agenda para garantir que não h�
     resumo: 'Use a calculadora para estimar o investimento do seu evento antes de criá-lo — defina vagas, custos fixos e variáveis e veja a viabilidade financeira.',
     tags: ['calculadora', 'planejamento', 'financeiro'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A Calculadora de Eventos é uma ferramenta de planejamento que permite estimar a viabilidade financeira de um evento antes de criá-lo. Com ela, você define os parâmetros do evento e vê automaticamente os números calculados.
 
 Na calculadora, você preenche: número de vagas, valor do ingresso (ou meta de arrecadação), custos fixos (aluguel de espaço, estrutura, etc.) e custos variáveis por participante (alimentação, material, etc.). A calculadora então mostra o ponto de equilíbrio — quantas inscrições você precisa para cobrir todos os custos.
@@ -94,7 +95,6 @@ Isso é muito útil para saber se o preço do ingresso está adequado ou se a ca
 A calculadora está disponível em todos os planos — inclusive no Chinám (gratuito). Nos planos Pétach, Koách e Chalém, após fazer os cálculos, você pode clicar em Criar Evento para que os dados da calculadora sejam transferidos automaticamente para as configurações financeiras do evento.
 
 Use a calculadora antes de divulgar qualquer evento. Definir o preço certo desde o início evita problemas financeiros durante o evento.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -107,6 +107,7 @@ Use a calculadora antes de divulgar qualquer evento. Definir o preço certo desd
     resumo: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',
     tags: ['relatórios', 'métricas', 'análise'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Relatórios oferece uma visão consolidada de todos os seus eventos ativos e históricos. Em vez de acessar evento por evento, você tem uma visão macro da sua organização como um todo.
 
 Os relatórios mostram: total de participantes inscritos em todos os eventos, capacidade total disponível, taxa de ocupação média, eventos ativos no momento e destaque de desempenho (qual evento tem mais inscrições).
@@ -118,7 +119,6 @@ Os gráficos na seção de relatórios facilitam a visualização de tendências
 Dica: use os relatórios também para apresentar resultados para parceiros, mantenedores ou lideranças da sua organização. Os dados consolidados mostram o impacto do trabalho de forma objetiva.
 
 Os relatórios são atualizados automaticamente conforme novas inscrições são realizadas nos seus eventos, sem necessidade de ação manual.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -131,6 +131,7 @@ Os relatórios são atualizados automaticamente conforme novas inscrições são
     resumo: 'Veja o plano que você contratou, seus limites de eventos e participantes, e o histórico de pagamentos da plataforma.',
     tags: ['faturamento', 'plano', 'assinatura'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1609429019995-8c40f49535a5?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Faturamento mostra as informações da sua assinatura no Tovia: qual plano você contratou, os limites de eventos e participantes incluídos, e o histórico de pagamentos da plataforma.
 
 Nessa página você encontra: o plano atual (Chinám, Pétach, Koách ou Chalém), a data de renovação, o valor pago mensalmente e o status de cada cobrança (pago, pendente, vencido).
@@ -144,7 +145,6 @@ O Tovia não realiza cobranças dos participantes dos seus eventos — todas as 
 Membros de equipe que foram convidados para eventos de terceiros utilizam o plano Chinám gratuito — eles não precisam assinar nenhum plano para acessar os eventos onde foram adicionados.
 
 Em caso de dúvidas sobre sua assinatura ou faturas, entre em contato com o suporte através do e-mail ou WhatsApp informados na página de planos.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -157,6 +157,7 @@ Em caso de dúvidas sobre sua assinatura ou faturas, entre em contato com o supo
     resumo: 'Na página Início você encontra todos os seus eventos e acessa qualquer um deles com um clique.',
     tags: ['eventos', 'início', 'gestão'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A página Início é o ponto central do Tovia. Ao fazer login, você é direcionado para essa página, que lista todos os seus eventos — tanto os que você criou quanto os que você foi adicionado como membro de equipe.
 
 Cada evento aparece como um card com: nome do evento, data, status (ativo, encerrado, rascunho), número de inscrições realizadas e capacidade total. Os eventos são organizados por data, com os mais próximos aparecendo primeiro.
@@ -168,7 +169,6 @@ O botão de status rápido em cada card permite arquivar ou encerrar um evento s
 Também na página Início você encontra o botão Criar Evento (ou na barra lateral), que inicia o fluxo de criação de um novo evento.
 
 Dica: mantenha o nome dos eventos claro e objetivo — ele aparece para os participantes nas páginas de inscrição e nos e-mails de confirmação.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -181,6 +181,7 @@ Dica: mantenha o nome dos eventos claro e objetivo — ele aparece para os parti
     resumo: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
     tags: ['criar evento', 'configuração', 'início'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1599739291060-4578e77dac5d?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Criar um evento no Tovia é rápido e direto. Clique no botão Criar Evento na barra lateral ou na página Início para iniciar o fluxo de criação.
 
 Você precisará preencher: nome do evento, descrição, data de início, data de término (opcional), local (endereço ou link de evento online) e uma imagem de capa. Esses são os dados básicos que aparecerão para os participantes nas páginas de inscrição.
@@ -192,7 +193,6 @@ Pense na descrição do evento como a principal comunicação com os participant
 Para a imagem de capa, use uma foto ou arte com boa resolução (mínimo 800×450px). Ela é o primeiro impacto visual que o participante tem ao acessar a página de inscrição — vale caprichar.
 
 Após criar o evento, a próxima etapa obrigatória é configurar pelo menos um ingresso. Sem ingressos, o evento não tem como receber inscrições.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -205,6 +205,7 @@ Após criar o evento, a próxima etapa obrigatória é configurar pelo menos um 
     resumo: 'Dentro de cada evento, configure os ingressos: gratuitos, pagos ou por doação. Você define vagas, prazo e as formas de pagamento aceitas.',
     tags: ['ingressos', 'tickets', 'vagas', 'pagamento'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Os ingressos definem como os participantes vão se inscrever no seu evento: se é gratuito, pago ou por doação. Todo evento precisa ter ao menos um ingresso configurado para receber inscrições.
 
 Para configurar ingressos, entre no seu evento e clique na aba Ingressos. Ali você pode criar um ou mais tipos de ingresso para o mesmo evento — por exemplo, "Ingresso Geral" (gratuito) e "Ingresso VIP" (pago), ou "Adulto" e "Criança".
@@ -222,7 +223,6 @@ Disponibilidade por plano:
 Os pagamentos manuais (Pix, dinheiro, transferência) estão disponíveis a partir do plano Pétach. Os pagamentos automáticos via gateway (PIX, boleto e cartão online) são exclusivos do plano Chalém.
 
 Dica: crie ingressos com nomes claros que ajudem os participantes a identificar qual categoria se aplica a eles. Evite termos técnicos ou internos que só fazem sentido para a equipe organizadora.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -235,6 +235,7 @@ Dica: crie ingressos com nomes claros que ajudem os participantes a identificar 
     resumo: 'As páginas de inscrição são links públicos que você compartilha com os participantes. Cada página tem ingressos vinculados, formulário personalizado e confirmação automática por e-mail.',
     tags: ['páginas', 'inscrição', 'link', 'formulário'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1601342630314-8427c38bf5e6?w=1200&q=80&auto=format&fit=crop',
     conteudo: `As Páginas de Inscrição são a interface pública do seu evento — o link que você compartilha nas redes sociais, no WhatsApp e onde quer que vá divulgar. Cada página pode ter ingressos específicos, formulário personalizado e design próprio.
 
 Para criar uma página de inscrição, entre no evento e acesse a aba Páginas de Inscrição. Clique em Nova Página, defina um título, escolha quais ingressos serão oferecidos nessa página, e configure o formulário de dados que os participantes devem preencher.
@@ -246,7 +247,6 @@ O formulário de cada página é totalmente personalizável. Além dos campos pa
 Ao ativar uma página, ela recebe um link público no formato tovia.app/e/id-do-evento/nome-da-pagina. Esse link pode ser compartilhado diretamente. Participantes que acessam esse link veem a página de inscrição sem precisar criar conta no Tovia.
 
 A confirmação de inscrição é enviada automaticamente por e-mail para o participante, com os dados da inscrição e as informações de contato do organizador.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -259,6 +259,7 @@ A confirmação de inscrição é enviada automaticamente por e-mail para o part
     resumo: 'Aqui você vê todas as inscrições realizadas: nome, contato, ingresso escolhido, status do pagamento e muito mais. Também é possível exportar a lista.',
     tags: ['participantes', 'inscrições', 'lista', 'exportar'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Participantes exibe todas as inscrições recebidas no evento, com informações detalhadas de cada inscrito: nome, e-mail, telefone, ingresso escolhido, data da inscrição, status do pagamento e respostas do formulário personalizado.
 
 Nessa aba você pode filtrar participantes por ingresso, por status de pagamento ou pesquisar pelo nome. Isso facilita encontrar um participante específico em eventos com muitas inscrições.
@@ -270,7 +271,6 @@ Você pode registrar informações adicionais em cada inscrição, como observa�
 A lista de participantes pode ser exportada para planilha (formato CSV/Excel), com todos os campos preenchidos nos formulários. Isso é útil para geração de crachás, listas de presença e relatórios pós-evento.
 
 Dica: use o campo de status para acompanhar o processo de confirmação em eventos com muitos participantes. Marcar como "Pago" manualmente após receber o comprovante evita cobranças duplicadas ou confusões na entrada do evento.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -283,6 +283,7 @@ Dica: use o campo de status para acompanhar o processo de confirmação em event
     resumo: 'Ficou com dúvida? Aqui você encontra tutoriais, explicações e respostas para as perguntas mais frequentes sobre o Tovia.',
     tags: ['ajuda', 'suporte', 'documentação', 'tutoriais'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A Base de Conhecimento é o repositório de artigos e tutoriais sobre o Tovia. Aqui você encontra explicações detalhadas sobre cada funcionalidade da plataforma, dicas de uso e respostas para as perguntas mais frequentes.
 
 Os artigos estão organizados na mesma sequência do Tutorial Guiado — seguindo a lógica de uso da plataforma, do básico ao avançado, e agrupados por plano (Chinám, Pétach, Koách e Chalém).
@@ -294,7 +295,6 @@ O conteúdo da Base de Conhecimento é atualizado pela equipe Tovia conforme nov
 Se você não encontrar resposta para sua dúvida aqui, entre em contato com o suporte pelo WhatsApp ou e-mail informados na aba Faturamento do seu painel. Nossa equipe está disponível para ajudar.
 
 Sugestões de novos artigos são bem-vindas — se você sentiu falta de alguma explicação, nos envie uma mensagem e faremos o possível para incluir na próxima atualização.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -307,6 +307,7 @@ Sugestões de novos artigos são bem-vindas — se você sentiu falta de alguma 
     resumo: 'Na aba Configurações Financeiras do evento, você pode definir as taxas, os valores reais do seu evento.',
     tags: ['pagamentos', 'financeiro', 'configuração', 'petach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1707157284454-553ef0a4ed0d?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Configurações Financeiras (disponível a partir do plano Pétach) é onde você define as regras financeiras do evento: custo total previsto, meta de arrecadação, taxas e margens. O Tovia é um organizador financeiro — não processamos cobranças. Toda a gestão de recebimentos é feita por você.
 
 Nessa aba você preenche: o custo total previsto do evento (soma de todos os gastos esperados, como local, alimentação, material), a meta de arrecadação com inscrições e doações, e as taxas ou margens que deseja considerar no planejamento.
@@ -318,7 +319,6 @@ Você também pode definir taxas administrativas ou de processamento externo par
 A comparação entre o custo previsto e o total arrecadado (registrado manualmente na aba Financeiro) aparece em tempo real, permitindo acompanhar se o evento está dentro do orçamento.
 
 Importante: cada evento tem suas próprias configurações financeiras. Configure os dados de cada evento separadamente — os números de um evento não interferem nos outros.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -331,6 +331,7 @@ Importante: cada evento tem suas próprias configurações financeiras. Configur
     resumo: 'Na aba Financeiro você registra e acompanha todos os pagamentos recebidos — parcelas, confirmações manuais e o fluxo de caixa do evento.',
     tags: ['financeiro', 'pagamentos', 'fluxo de caixa', 'petach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1626266061368-46a8f578ddd6?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Financeiro (disponível a partir do plano Pétach) centraliza o registro e acompanhamento de todos os recebimentos do evento. O Tovia não processa cobranças — você recebe os pagamentos pelos seus próprios meios (Pix, dinheiro, transferência, etc.) e registra aqui o que foi recebido.
 
 Para registrar um pagamento, clique em "Adicionar Pagamento", selecione o participante, informe o valor recebido, a forma de pagamento (Pix, dinheiro, cartão, transferência...) e a data. O status da inscrição correspondente é atualizado automaticamente para "Pago".
@@ -344,7 +345,6 @@ No plano Chalém com gateway conectado, os pagamentos via PIX, boleto e cartão 
 Todos os registros ficam visíveis apenas para você e sua equipe — os participantes não têm acesso ao painel financeiro.
 
 Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso facilita a prestação de contas para parceiros, patrocinadores ou lideranças após o evento, e evita cobranças duplicadas na entrada.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -357,6 +357,7 @@ Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso 
     resumo: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você. Você pode também alocar uma doação para um participante!',
     tags: ['doações', 'contribuições', 'petach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Doações (disponível a partir do plano Pétach) registra e exibe todas as contribuições recebidas no evento. O Tovia não processa cobranças — você recebe as doações pelos seus próprios meios e registra aqui o que chegou.
 
 Para registrar uma doação, clique em "Alocar Doação", selecione o participante (ou informe um doador externo), defina o valor, a forma de pagamento e a data. O registro fica salvo no histórico e entra na soma total do evento.
@@ -368,7 +369,6 @@ A aba exibe: o total de doações registradas, a média de contribuição por do
 As doações também entram no cálculo financeiro geral do evento, somando com os pagamentos de ingressos para compor o total arrecadado versus o custo previsto.
 
 Dica: use o campo de observações ao registrar uma doação para anotar informações relevantes, como o número do comprovante Pix ou a designação específica da oferta (ex: "para o fundo de bolsas").`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -381,6 +381,7 @@ Dica: use o campo de observações ao registrar uma doação para anotar informa
     resumo: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
     tags: ['recursos', 'equipamentos', 'espaços', 'koach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1629327896333-7ecec1515ae5?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Recursos (disponível nos planos Koách e Chalém) permite cadastrar e gerenciar tudo que o evento precisa de infraestrutura: equipamentos, espaços físicos, materiais e qualquer outro recurso que precise de controle de disponibilidade.
 
 Para cada recurso você define: nome, tipo (equipamento, espaço, material, etc.), quantidade disponível, responsável e observações. Você pode então alocar recursos para horários específicos dentro do evento, garantindo que não haverá conflito de uso.
@@ -392,7 +393,6 @@ A visão de disponibilidade mostra, para cada recurso, em quais momentos ele est
 Você pode também associar recursos a tarefas (aba Tarefas), de modo que a equipe responsável por uma atividade saiba quais recursos foram reservados para ela.
 
 Dica: cadastre os recursos logo após criar o evento e antes de montar a programação. Assim você parte do inventário real disponível ao planejar as alocações.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -405,6 +405,7 @@ Dica: cadastre os recursos logo após criar o evento e antes de montar a program
     resumo: 'Divida os participantes em grupos, quartos, mesas ou qualquer outra estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
     tags: ['grupos', 'quartos', 'hospedagem', 'koach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1630068846062-3ffe78aa5049?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Grupos (disponível nos planos Koách e Chalém) permite dividir os participantes do evento em grupos, quartos, mesas ou qualquer outra estrutura de agrupamento. É ideal para acampamentos, retiros, conferências com hospedagem e eventos com mesas temáticas.
 
 Para cada grupo você define: nome, capacidade máxima, tipo (quarto, mesa, ônibus, célula, etc.) e a lista de participantes alocados. A aba exibe quantas vagas cada grupo tem disponíveis e quem já foi alocado.
@@ -416,7 +417,6 @@ A visão geral dos grupos mostra a taxa de ocupação de cada grupo e o total di
 Nos retiros e acampamentos, é comum definir os grupos logo após o encerramento das inscrições, quando se conhece o número exato de participantes. Use a exportação de participantes para auxiliar na montagem dos grupos se preferir trabalhar em planilha antes.
 
 Dica: dê nomes descritivos e intuitivos para os grupos — "Quarto 1" é menos útil do que "Quarto Azul (Homens)" ou "Mesa dos Líderes". Isso facilita a comunicação com a equipe no dia do evento.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -429,6 +429,7 @@ Dica: dê nomes descritivos e intuitivos para os grupos — "Quarto 1" é menos 
     resumo: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
     tags: ['tarefas', 'cronograma', 'equipe', 'koach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1754548930574-6a995e5eb5a7?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Tarefas (disponível nos planos Koách e Chalém) é onde você monta o cronograma operacional do evento, com cada atividade organizada em tarefas que podem ser atribuídas a membros da equipe.
 
 Para cada tarefa você define: título, descrição, responsável, data/horário de início e término, status (a fazer, em andamento, concluída) e a prioridade. As tarefas aparecem em uma lista organizada por data, facilitando a visão do que precisa ser feito e quando.
@@ -440,7 +441,6 @@ Ao longo do evento, a equipe pode atualizar o status das tarefas em tempo real �
 As tarefas podem ser associadas a recursos específicos (aba Recursos), de forma que a equipe saiba quais materiais e espaços estão disponíveis para cada atividade.
 
 Dica: crie as tarefas com pelo menos uma semana de antecedência e atribua responsáveis com clareza. Evite tarefas genéricas como "organizar o evento" — prefira tarefas específicas como "montar palco da sessão da tarde" ou "receber participantes na portaria das 14h às 18h".`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -453,6 +453,7 @@ Dica: crie as tarefas com pelo menos uma semana de antecedência e atribua respo
     resumo: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Membros convidados têm o plano Chinám gratuito — sem custo para eles.',
     tags: ['equipe', 'colaboradores', 'permissões', 'koach'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Equipe (disponível nos planos Koách e Chalém) permite adicionar colaboradores ao seu evento para que outras pessoas possam ajudar a gerenciar inscrições, financeiro, recursos e tarefas.
 
 COMO FUNCIONA PARA O MEMBRO CONVIDADO:
@@ -473,7 +474,6 @@ A pessoa adicionada como equipe não vê as configurações da conta do organiza
 Para remover um membro da equipe, acesse a aba Equipe e clique em remover ao lado do nome da pessoa. O acesso é revogado imediatamente.
 
 Dica: use a aba Equipe para delegar funções antes do evento começar. Por exemplo: adicionar a secretaria como gestora de inscrições, o tesoureiro como gestor financeiro e os coordenadores de grupo como gestores de recursos. Isso distribui o trabalho e mantém o organizador principal focado na visão geral.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -486,6 +486,7 @@ Dica: use a aba Equipe para delegar funções antes do evento começar. Por exem
     resumo: 'Você conhece tudo que o Tovia tem a oferecer! Para rever este tour a qualquer momento, clique em Tutorial na barra lateral.',
     tags: ['conclusão', 'próximos passos', 'suporte'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1503266980949-bd30d04d0b7a?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Parabéns por completar o tour do Tovia! Você agora conhece todas as ferramentas disponíveis na plataforma e como cada uma contribui para a organização de eventos de sucesso.
 
 A jornada recomendada para um novo evento é: criar o evento → configurar ingressos → criar a página de inscrição → divulgar o link → acompanhar as inscrições e participantes → gerenciar o financeiro (Pétach+) → coordenar equipe, grupos e tarefas (Koách+) → pagamentos automáticos (Chalém).
@@ -497,7 +498,6 @@ Esta Base de Conhecimento é sempre atualizada com novos artigos e melhorias nas
 Novidades da plataforma são comunicadas por e-mail e no painel. Fique de olho nas notificações para saber quando novas funcionalidades ficarem disponíveis.
 
 Boa sorte na organização dos seus próximos eventos! O Tovia foi feito para que você gaste menos tempo com planilhas e mais tempo com o que realmente importa: transformar vidas através de eventos incríveis.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -513,6 +513,7 @@ Boa sorte na organização dos seus próximos eventos! O Tovia foi feito para qu
     resumo: 'Crie cupons percentuais ou de valor fixo para seus eventos. Compartilhe com o público certo e acompanhe os usos em tempo real.',
     tags: ['cupons', 'desconto', 'promoção', 'inscrições'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1589758438368-0ad531db3366?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Os cupons de desconto permitem oferecer preços diferenciados para grupos específicos de participantes — membros da organização, parceiros ou qualquer outro perfil.
 
 Para criar um cupom, entre no evento e acesse a aba Cupons. Clique em Novo Cupom e defina: código (ex: "LIDER2025"), tipo (percentual ou valor fixo), valor do desconto, quantidade máxima de usos e prazo de validade.
@@ -524,7 +525,6 @@ Você pode criar múltiplos cupons para o mesmo evento — por exemplo: um cupom
 Na listagem de cupons você acompanha, para cada código: quantas vezes foi usado, o total de desconto concedido e se ainda está ativo. Isso permite medir o alcance de cada ação promocional.
 
 Dica: evite cupons com desconto de 100% em eventos pagos — prefira criar um ingresso gratuito separado para isenções, assim você mantém o controle de quem tem acesso gratuito sem comprometer a integridade financeira dos relatórios.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -538,6 +538,7 @@ Dica: evite cupons com desconto de 100% em eventos pagos — prefira criar um in
     resumo: 'Use a tela de check-in para confirmar a presença dos participantes. Busque por nome, CPF ou leia o QR Code do ingresso.',
     tags: ['check-in', 'presença', 'qr code', 'dia do evento'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A tela de Check-in foi projetada para funcionar na entrada do evento: confirma presenças de forma rápida, mesmo com muitos participantes na fila.
 
 Para acessar o check-in, entre no evento e clique na aba Check-in, ou use o link direto disponível nessa aba — ideal para abrir no celular de quem está na portaria sem precisar acessar o painel completo.
@@ -552,7 +553,6 @@ Ao confirmar uma presença, o status da inscrição muda para "Presente" e o reg
 Se um participante chega sem QR Code (perdeu o e-mail), busque pelo nome ou CPF. Nunca deixe alguém sem entrar por falta do QR Code — a busca manual existe justamente para isso.
 
 Dica: abra a tela de check-in em um tablet na portaria. Com tela maior, a busca por nome fica mais prática e visível para a equipe. Se possível, tenha uma segunda pessoa buscando na lista enquanto outra recebe as pessoas.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -568,6 +568,7 @@ Dica: abra a tela de check-in em um tablet na portaria. Com tela maior, a busca 
     resumo: 'Você está no plano gratuito. Veja o passo a passo para tirar o máximo proveito do Chinám e quando faz sentido fazer upgrade.',
     tags: ['chinam', 'gratuito', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1780478474266-d9375abd5d99?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O plano Chinám é gratuito e permanente — você pode usar o Tovia sem pagar enquanto o Chinám atender suas necessidades. Chinám (חינם) significa "gratuito" em hebraico. Ele é ideal para quem está começando ou organiza eventos pequenos e esporádicos.
 
 O que você pode fazer no Chinám:
@@ -599,7 +600,6 @@ Quando considerar upgrade para o Pétach:
 • Se quer controlar o financeiro do evento (entradas, doações, saldo)
 
 O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua disponível nos planos seguintes.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -613,6 +613,7 @@ O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua di
     resumo: 'Você tem o plano Pétach com controle financeiro manual. Veja como configurar seu evento do zero até o relatório final.',
     tags: ['petach', 'financeiro', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1699771913117-a747414bafd2?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O plano Pétach é ideal para organizações que precisam cobrar pelos eventos e controlar os recebimentos. Pétach (פֶּתַח) significa "abertura" em hebraico — a porta de entrada para eventos com cobrança. O Tovia não processa pagamentos — você usa Pix, dinheiro, transferência ou qualquer meio e registra aqui o que foi recebido.
 
 O que você pode fazer no Pétach:
@@ -655,7 +656,6 @@ Quando considerar upgrade para o Koách:
 • Se quer adicionar colaboradores como gestores do evento (equipe)
 • Se precisa organizar grupos/quartos de participantes
 • Se quer gestão de tarefas e cronograma com a equipe`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -669,6 +669,7 @@ Quando considerar upgrade para o Koách:
     resumo: 'Você tem o plano Koách com gestão completa. Veja como usar equipe, grupos, tarefas e recursos para eventos mais complexos.',
     tags: ['koach', 'equipe', 'gestão', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1748356804570-1df85cbdcfb8?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O plano Koách libera a gestão completa do Tovia: equipe colaborativa, grupos de participantes, tarefas com cronograma e recursos do evento. Koách (כֹּחַ) significa "força" em hebraico. É ideal para organizações que realizam eventos com equipe e logística mais complexa.
 
 O que você pode fazer no Koách (além de tudo do Pétach):
@@ -714,7 +715,6 @@ Quando considerar upgrade para o Chalém:
 • Se seus eventos ultrapassam 500 participantes
 • Se organiza mais de 5 eventos simultâneos
 • Se precisa de mais de 5 membros de equipe ou mais de 5 ingressos por evento`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -728,6 +728,7 @@ Quando considerar upgrade para o Chalém:
     resumo: 'Você tem o plano Chalém — completo e sem limites de inscritos. Veja como usar pagamentos automáticos e gerir eventos de grande porte.',
     tags: ['chalem', 'pagamentos automáticos', 'gateway', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1592205644721-2fe5214762ae?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O plano Chalém é o mais completo do Tovia: inscritos ilimitados, pagamentos automáticos via PIX, boleto e cartão, e equipe com até 10 membros por evento. Chalém (שָׁלֵם) significa "completo" ou "pleno" em hebraico — da mesma raiz de Shalom.
 
 O que você pode fazer no Chalém (além de tudo do Koách):
@@ -766,7 +767,6 @@ NO DIA:
 12. Check-in ágil — por nome, CPF ou QR Code
 
 Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. Pagamentos por boleto podem atrasar — verifique o status antes do evento para evitar surpresas na entrada.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -782,6 +782,7 @@ Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. 
     resumo: 'Como igrejas, ministérios e comunidades de fé usam o Tovia para cultos especiais, células, conferências e eventos de evangelismo.',
     tags: ['igrejas', 'ministérios', 'comunidade', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1477281765962-ef34e8bb0967?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Igrejas e ministérios são um dos principais perfis de usuário do Tovia. O contexto de fé tem algumas particularidades que a plataforma atende bem: mistura de inscrições gratuitas e por doação, necessidade de confirmação por e-mail, eventos recorrentes e equipe voluntária.
 
 USOS COMUNS:
@@ -812,7 +813,6 @@ Adicione a secretaria como gestora de inscrições e o tesoureiro como gestor fi
 
 DICA PARA IGREJAS:
 Use o campo "Observações" no formulário de inscrição para perguntas específicas: qual célula frequenta, se é membro ou visitante, se tem restrição alimentar. Essas informações são exportáveis e facilitam o planejamento.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -826,6 +826,7 @@ Use o campo "Observações" no formulário de inscrição para perguntas especí
     resumo: 'Como usar o Tovia para eventos com hospedagem: grupos, quartos, alimentação e logística de participantes.',
     tags: ['retiros', 'acampamentos', 'hospedagem', 'grupos', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1584068921546-2d799f7aaf1d?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Retiros e acampamentos têm desafios únicos de logística: hospedagem em grupos, alimentação, transporte e cronograma operacional com equipe. Os planos Koách e Chalém do Tovia foram projetados para esse cenário.
 
 CARACTERÍSTICAS DO PERFIL:
@@ -862,7 +863,6 @@ Use a Calculadora de Evento: defina número de vagas, valor da taxa de participa
 
 DICA:
 Inclua no formulário de inscrição: restrição alimentar, tamanho de camiseta (se houver uniforme/brinde), condição de saúde relevante e contato de emergência. Essas informações são exportáveis e essenciais para a logística.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -876,6 +876,7 @@ Inclua no formulário de inscrição: restrição alimentar, tamanho de camiseta
     resumo: 'Como usar o Tovia para conferências com múltiplas sessões, palestrantes, ingressos VIP e grande volume de participantes.',
     tags: ['conferências', 'congressos', 'palestrantes', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Conferências e congressos reúnem grande volume de participantes, múltiplos ingressos (meia, inteira, VIP, estudante) e uma equipe numerosa na organização. Os planos Koách e Chalém atendem esse perfil com recursos de gestão de equipe, múltiplos ingressos e check-in ágil.
 
 CARACTERÍSTICAS DO PERFIL:
@@ -921,7 +922,6 @@ Com muitos participantes, o check-in por QR Code é essencial. Distribua tablets
 
 DICA:
 Envie um e-mail de lembrete para os inscritos alguns dias antes com o QR Code — isso agiliza muito o credenciamento no dia.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -935,6 +935,7 @@ Envie um e-mail de lembrete para os inscritos alguns dias antes com o QR Code �
     resumo: 'Como usar o Tovia para cursos presenciais, treinamentos de equipe e capacitações com controle de presença e certificação.',
     tags: ['cursos', 'treinamentos', 'capacitação', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Cursos e treinamentos presenciais têm uma lógica diferente de outros eventos: as inscrições costumam ser controladas, há um valor de matrícula, o grupo é pequeno e o controle de presença é obrigatório para certificação.
 
 CARACTERÍSTICAS DO PERFIL:
@@ -968,7 +969,6 @@ Para a próxima turma do mesmo curso, duplique as configurações criando um nov
 
 DICA:
 Use cupons com código do nome da turma (ex: "LIDER-JAN26") para facilitar a identificação de inscrições de parceiros ou indicações. Isso também permite medir a eficácia de cada canal de divulgação.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -982,6 +982,7 @@ Use cupons com código do nome da turma (ex: "LIDER-JAN26") para facilitar a ide
     resumo: 'Como ONGs, institutos e projetos sociais usam o Tovia para eventos com bolsas, inscrições gratuitas e prestação de contas a patrocinadores.',
     tags: ['ongs', 'projetos sociais', 'bolsas', 'gratuito', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1758599668178-d9716bbda9d5?w=1200&q=80&auto=format&fit=crop',
     conteudo: `ONGs e projetos sociais têm um perfil específico: eventos muitas vezes gratuitos ou subsidiados, necessidade de prestação de contas e público que nem sempre tem acesso fácil à tecnologia. O Tovia atende bem esse perfil com inscrições simples e acessíveis.
 
 CARACTERÍSTICAS DO PERFIL:
@@ -1018,7 +1019,6 @@ Na aba Doações (Pétach+), registre contribuições de apoiadores e mantenedor
 
 DICA:
 A página de inscrição pública do Tovia é simples de usar no celular — o que é essencial quando o público atendido tem acesso limitado a computadores. Teste o fluxo de inscrição no celular antes de divulgar para garantir uma boa experiência.`,
-    banner_url: '',
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,

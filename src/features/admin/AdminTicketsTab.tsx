@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { listDocuments, updateDocument, createDocument } from '~/services/firestore';
+import { Email } from '~/services/email';
 import { LifeBuoy, Plus, RefreshCw, Clock, CheckCircle2, Circle, X, ChevronDown, Send, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -112,7 +113,11 @@ export default function AdminTicketsTab() {
     try {
       const ticket = { ...form, criado_em: new Date().toISOString() };
       const ref = await addDoc(collection(db, 'tickets'), ticket);
-      setTickets(prev => [{ ...ticket, id: ref.id }, ...prev]);
+      const newTicket = { ...ticket, id: ref.id };
+      setTickets(prev => [newTicket, ...prev]);
+      if (form.cliente_email) {
+        Email.ticketCriado(form.cliente_email, form.nome || 'organizador', form.titulo, form.descricao, ref.id);
+      }
       setForm({ ...EMPTY });
       setShowForm(false);
       toast.success('Ticket criado!');
@@ -137,6 +142,12 @@ export default function AdminTicketsTab() {
           'Ticket finalizado',
           `Seu ticket "${ticket.titulo}" foi marcado como ${status === 'resolvido' ? 'resolvido' : 'fechado'}. Obrigado pelo contato!`,
         );
+      }
+
+      // E-mail de encerramento com link de pesquisa de satisfação
+      if (ticket.cliente_email && (status === 'resolvido' || status === 'fechado')) {
+        const satisfacaoUrl = `${window.location.origin}/satisfacao?ticket=${ticket.id}`;
+        Email.ticketFechado(ticket.cliente_email, ticket.nome || 'organizador', ticket.titulo, satisfacaoUrl);
       }
 
       toast.success('Status atualizado!');
@@ -170,6 +181,11 @@ export default function AdminTicketsTab() {
           'Suporte respondeu seu ticket',
           `Sua solicitação "${ticket.titulo}" recebeu uma resposta. Acesse a Base de Conhecimento para ver.`,
         );
+      }
+
+      // E-mail com a resposta
+      if (ticket.cliente_email) {
+        Email.ticketRespondido(ticket.cliente_email, ticket.nome || 'organizador', ticket.titulo, replyText.trim());
       }
 
       setReplyText('');

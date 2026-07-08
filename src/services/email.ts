@@ -9,6 +9,13 @@ import {
   emailConviteEquipe,
   emailConfirmacaoVinculo,
   emailCustom,
+  emailBoasVindasChinam,
+  emailBoasVindasPetach,
+  emailBoasVindasKoach,
+  emailBoasVindasChalem,
+  emailTicketCriado,
+  emailTicketRespondido,
+  emailTicketFechado,
 } from './email-templates';
 
 // Substitui {nome}, {evento}, {data}, {local} etc. no texto do organizador
@@ -69,4 +76,20 @@ export const Email = {
 
   custom: (to: string, subject: string, corpo: string, preview?: string) =>
     send(to, subject, emailCustom(corpo, preview)),
+
+  boasVindasPlano: (to: string, nome: string, plano: 'chinam' | 'petach' | 'koach' | 'chalem', valor?: string, proxVencimento?: string) => {
+    if (plano === 'petach') return send(to, 'Bem-vindo ao Tovia Pétach! 🚪', emailBoasVindasPetach(nome, valor || 'R$ 49/mês', proxVencimento || ''));
+    if (plano === 'koach')  return send(to, 'Bem-vindo ao Tovia Koách! ⚡',  emailBoasVindasKoach(nome, valor || 'R$ 129/mês', proxVencimento || ''));
+    if (plano === 'chalem') return send(to, 'Bem-vindo ao Tovia Chalém! 🌟', emailBoasVindasChalem(nome, valor || 'R$ 299/mês', proxVencimento || ''));
+    return send(to, 'Bem-vindo ao Tovia! 🌱', emailBoasVindasChinam(nome));
+  },
+
+  ticketCriado: (to: string, nome: string, titulo: string, descricao: string, ticketId: string) =>
+    send(to, `Ticket aberto: ${titulo} — Tovia 🎫`, emailTicketCriado(nome, titulo, descricao, ticketId)),
+
+  ticketRespondido: (to: string, nome: string, titulo: string, resposta: string) =>
+    send(to, `Suporte respondeu: ${titulo} — Tovia 💬`, emailTicketRespondido(nome, titulo, resposta)),
+
+  ticketFechado: (to: string, nome: string, titulo: string, satisfacaoUrl: string) =>
+    send(to, `Ticket encerrado — avalie o atendimento Tovia ✅`, emailTicketFechado(nome, titulo, satisfacaoUrl)),
 };

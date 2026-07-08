@@ -151,9 +151,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         gateway_payment_id: payment.id,
       });
 
-      // E-mail de confirmação
+      // E-mail de confirmação (não envia para doações — comunicação fica com o organizador)
       const recipientName = isDonation ? (inscricao.doadorNome ?? '') : (inscricao.nome ?? '');
-      if (inscricao.email) {
+      if (!isDonation && inscricao.email) {
         const evDoc = await db.collection('eventos').doc(eventoId).get();
         const evData = evDoc.exists ? evDoc.data()! : {};
         const eventoNome: string = evData.nome ?? 'evento';
