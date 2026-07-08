@@ -1,26 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
+import { auth } from '~/services/firebase';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle2, RefreshCw } from 'lucide-react';
 
 export default function AguardandoPagamento() {
-  const { profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [checking, setChecking] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const pollingDone = attempts >= 12;
 
+  const syncAndRefresh = async () => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      if (idToken && user) {
+        await fetch('/api/getBillingInfo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+          body: JSON.stringify({ userId: user.uid }),
+        });
+      }
+    } catch { /* ignora erro de sync — refreshProfile abaixo ainda roda */ }
+    await refreshProfile?.();
+  };
+
   // Verifica automaticamente a cada 5s (até 12 tentativas = 1 min)
   useEffect(() => {
     if (!profile?.planoPendente || attempts >= 12) return;
     const timer = setTimeout(async () => {
-      await refreshProfile?.();
+      await syncAndRefresh();
       setAttempts(a => a + 1);
     }, 5000);
     return () => clearTimeout(timer);
-  }, [profile, attempts, refreshProfile]);
+  }, [profile, attempts]);
 
   // Pagamento confirmado → redireciona
   useEffect(() => {
@@ -31,7 +46,7 @@ export default function AguardandoPagamento() {
 
   const handleCheckManual = async () => {
     setChecking(true);
-    await refreshProfile?.();
+    await syncAndRefresh();
     setChecking(false);
   };
 

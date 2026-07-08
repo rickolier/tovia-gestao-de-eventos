@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const userData = userDoc.data();
     if (!userData) return res.status(404).json({ error: 'Dados do usuário ausentes.' });
 
-    const { asaasSubscriptionId, asaasCustomerId, plano } = userData;
+    const { asaasSubscriptionId, asaasCustomerId, plano, planoPendente } = userData;
 
     if (!asaasSubscriptionId || !asaasCustomerId) {
       return res.json({ hasSubscription: false, plano: plano || null });
@@ -61,9 +61,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const lastPaid = payments.find((p: any) => p.status === 'RECEIVED' || p.status === 'CONFIRMED');
     const creditCard = lastPaid?.creditCard || null;
 
+    // Auto-ativa o plano se houver pagamento confirmado e o webhook ainda não disparou
+    let activePlano = plano;
+    if (planoPendente && lastPaid) {
+      await db.collection('users').doc(userId).set(
+        { plano: planoPendente, planoPendente: null },
+        { merge: true }
+      );
+      activePlano = planoPendente;
+      console.log(`getBillingInfo: plano ${planoPendente} ativado automaticamente para ${userId}`);
+    }
+
     return res.json({
       hasSubscription: true,
-      plano,
+      plano: activePlano,
       subscription: {
         id: subscription.id,
         status: subscription.status,

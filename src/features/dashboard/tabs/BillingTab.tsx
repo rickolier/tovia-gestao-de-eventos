@@ -64,7 +64,7 @@ interface BillingData {
 }
 
 export default function BillingTab() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState<BillingData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -197,6 +197,10 @@ export default function BillingTab() {
       }
       if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
       setData(json);
+      // Sincroniza o perfil local se o plano foi ativado automaticamente pelo getBillingInfo
+      if (json.plano && json.plano !== profile?.plano) {
+        await refreshProfile?.();
+      }
     } catch (e: any) {
       setError(e.message || 'Erro ao carregar dados.');
     } finally {
