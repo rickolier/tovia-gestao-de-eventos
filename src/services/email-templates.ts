@@ -108,20 +108,6 @@ export function emailBoasVindas(nome: string) {
   `, 'Confirme seu e-mail para ativar sua conta Tovia');
 }
 
-export function emailTutorial(nome: string) {
-  return wrap(`
-    ${h1(`${nome || 'Olá'}, conheça o Tovia por dentro 👋`)}
-    ${p('Aqui está um guia rápido das principais funcionalidades para você começar com tudo:')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="margin-top:16px;">
-      ${feature('📋', 'Páginas de Inscrição', 'Crie formulários personalizados com link único para cada evento.')}
-      ${feature('👥', 'Gestão de Participantes', 'Acompanhe inscrições, status e dados de cada participante.')}
-      ${feature('💰', 'Módulo Financeiro (Essencial+)', 'Registre pagamentos, doações e controle taxas e margens.')}
-      ${feature('✅', 'Tarefas e Equipe (Pro)', 'Distribua tarefas, convide colaboradores e gerencie grupos.')}
-    </table>
-    ${btn('Acessar o painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
-  `, 'Veja tudo que o Tovia pode fazer pelo seu evento');
-}
-
 export function emailPrimeiroEvento(nome: string, eventoNome: string) {
   return wrap(`
     ${h1('Seu primeiro evento foi criado! 🚀')}
@@ -160,21 +146,6 @@ export function emailMagicLink(acessoUrl: string) {
     ${divider()}
     ${p('Se você não solicitou este e-mail, pode ignorá-lo com segurança.')}
   `, 'Seu link de acesso às inscrições');
-}
-
-export function emailPagamentoConfirmado(nome: string, plano: string, valor: string, proxVencimento: string) {
-  return wrap(`
-    ${h1('Pagamento confirmado! 💳')}
-    ${p(`Olá, <strong>${nome}</strong>! Recebemos o pagamento da sua assinatura Tovia.`)}
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:20px 0;">
-      <tr><td>
-        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">${plano}</strong></p>
-        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>
-        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Próximo vencimento: <strong style="color:${TEXT};">${proxVencimento}</strong></p>
-      </td></tr>
-    </table>
-    ${btn('Ver detalhes do plano', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
-  `, 'Seu pagamento foi confirmado');
 }
 
 export function emailPagamentoNaoRealizado(nome: string, plano: string, vencimento: string) {

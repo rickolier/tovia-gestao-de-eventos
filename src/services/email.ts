@@ -1,10 +1,8 @@
 import {
   emailBoasVindas,
-  emailTutorial,
   emailPrimeiroEvento,
   emailConfirmacaoInscricao,
   emailMagicLink,
-  emailPagamentoConfirmado,
   emailPagamentoNaoRealizado,
   emailConviteEquipe,
   emailConfirmacaoVinculo,
@@ -44,9 +42,6 @@ export const Email = {
   boasVindas: (to: string, nome: string) =>
     send(to, 'Bem-vindo ao Tovia! 🎉', emailBoasVindas(nome)),
 
-  tutorial: (to: string, nome: string) =>
-    send(to, 'Conheça tudo que o Tovia pode fazer pelo seu evento', emailTutorial(nome)),
-
   primeiroEvento: (to: string, nome: string, eventoNome: string) =>
     send(to, `${eventoNome} foi criado com sucesso! 🚀`, emailPrimeiroEvento(nome, eventoNome)),
 
@@ -55,9 +50,6 @@ export const Email = {
 
   magicLink: (to: string, acessoUrl: string) =>
     send(to, 'Seu link de acesso às inscrições — Tovia', emailMagicLink(acessoUrl)),
-
-  pagamentoConfirmado: (to: string, nome: string, plano: string, valor: string, proxVencimento: string) =>
-    send(to, 'Pagamento confirmado — Tovia 💳', emailPagamentoConfirmado(nome, plano, valor, proxVencimento)),
 
   pagamentoNaoRealizado: (to: string, nome: string, plano: string, vencimento: string) =>
     send(to, 'Atenção: pagamento pendente na sua conta Tovia ⚠️', emailPagamentoNaoRealizado(nome, plano, vencimento)),

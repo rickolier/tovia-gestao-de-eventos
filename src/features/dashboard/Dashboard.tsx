@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '~/context/AuthContext';
+import { isAdminEmail } from '~/utils/admin-config';
 import { listDocuments, createDocument } from '~/services/firestore';
 import { Evento, AppNotification, FinancialTransaction } from '~/types';
 import { where } from 'firebase/firestore';
@@ -130,7 +131,7 @@ export default function Dashboard() {
     navigate('/login');
   };
 
-  const isAdmin = user?.email === 'admin@toviaapp.com.br';
+  const isAdmin = isAdminEmail(user?.email);
   const plan = getPlanConfig(profile?.plano);
 
   const menuItems: { id: string; label: string; icon: React.ComponentType<any>; badge?: number }[] = [

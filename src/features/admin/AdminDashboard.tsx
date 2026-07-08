@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import Logo from '~/components/Logo';
+import { ADMIN_EMAILS } from '~/utils/admin-config';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
@@ -23,7 +24,7 @@ import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 type AdminRole = 'criador' | 'suporte';
 
 function getRole(email: string | null | undefined): AdminRole {
-  return email === 'suporte@toviaapp.com.br' ? 'suporte' : 'criador';
+  return email === ADMIN_EMAILS[1] ? 'suporte' : 'criador';
 }
 
 interface NavItem {
