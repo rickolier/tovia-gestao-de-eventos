@@ -26,7 +26,7 @@ import SatisfacaoPage from './pages/SatisfacaoPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
 
-import { isAdminEmail } from '~/utils/admin-config';
+import { isAdminEmail, isDemoEmail } from '~/utils/admin-config';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, isAuthReady } = useAuth();
@@ -45,8 +45,8 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   // Admin nunca vai para onboarding
   if (isAdminEmail(user.email)) return <Navigate to="/admin" replace />;
 
-  // Email não verificado — bloqueia acesso ao app
-  if (!user.emailVerified) return <Navigate to="/verificar-email" replace />;
+  // Email não verificado — bloqueia acesso ao app (contas demo são isentas)
+  if (!user.emailVerified && !isDemoEmail(user.email)) return <Navigate to="/verificar-email" replace />;
 
   // Conta desativada
   if (profile?.desativado) {

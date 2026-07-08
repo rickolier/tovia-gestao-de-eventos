@@ -18,3 +18,7 @@ export function getTestPlan(email: string | null | undefined): string | null {
   if (!email) return null;
   return TEST_ACCOUNT_PLANS[email] ?? null;
 }
+
+export function isDemoEmail(email: string | null | undefined): boolean {
+  return !!email && email in TEST_ACCOUNT_PLANS;
+}
