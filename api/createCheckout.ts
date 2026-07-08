@@ -198,6 +198,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await db.collection('users').doc(userId).set(
         {
           asaasSubscriptionId: subscriptionId,
+          plano: planLevel,
           planoPendente: planLevel,
           subscriptionPeriod: 'monthly',
         },
@@ -244,6 +245,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await db.collection('users').doc(userId).set(
       {
+        plano: planLevel,
         planoPendente: planLevel,
         subscriptionPeriod: 'annual',
         subscriptionExpiresAt: annualExpiresAt,

@@ -45,7 +45,7 @@ function maskCep(value: string) {
 }
 
 export default function CheckoutPlano() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -111,6 +111,7 @@ export default function CheckoutPlano() {
       if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
+        await refreshProfile?.();
         navigate('/planos/aguardando');
       }
     } catch (err: any) {
