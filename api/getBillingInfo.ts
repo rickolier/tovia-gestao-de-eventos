@@ -3,7 +3,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
 
-const ASAAS_BASE_URL = 'https://sandbox.asaas.com/api/v3';
+const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
+const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -17,7 +18,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(e.status ?? 401).json({ error: e.message });
   }
 
-  const apiKey = process.env.ASAAS_API_KEY;
+  let apiKey: string;
+  let ASAAS_BASE_URL: string;
+  try {
+    const billingDoc = await db.collection('config').doc('billing').get();
+    const billing = billingDoc.exists ? billingDoc.data() : null;
+    apiKey = billing?.asaas_api_key?.trim() || process.env.ASAAS_API_KEY?.trim() || '';
+    const isSandbox = billing ? billing.sandbox !== false : true;
+    ASAAS_BASE_URL = isSandbox ? ASAAS_SANDBOX_URL : ASAAS_PRODUCTION_URL;
+  } catch {
+    apiKey = process.env.ASAAS_API_KEY?.trim() || '';
+    ASAAS_BASE_URL = ASAAS_SANDBOX_URL;
+  }
+
   if (!apiKey) return res.status(500).json({ error: 'Configuração de pagamento ausente.' });
 
   const headers = { access_token: apiKey, 'Content-Type': 'application/json' };
