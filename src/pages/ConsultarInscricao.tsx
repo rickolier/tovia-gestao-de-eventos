@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
   Search, CheckCircle2, Clock, XCircle, AlertCircle,
-  CalendarDays, MapPin, Ticket, CreditCard, Mail, Loader2, Send,
+  CalendarDays, MapPin, Ticket, CreditCard, Mail, Loader2,
+  ArrowLeft, ShieldCheck, QrCode,
 } from 'lucide-react';
 
 interface InscricaoResult {
@@ -11,6 +13,7 @@ interface InscricaoResult {
   eventoId: string;
   eventoNome: string;
   eventoData: string;
+  eventoDataFim: string;
   eventoLocal: string;
   ticketNome: string;
   status: string;
@@ -20,6 +23,7 @@ interface InscricaoResult {
   formaPagamento: string;
   nome: string;
   dataInscricao: string;
+  presenca: boolean;
 }
 
 const STATUS_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; border: string }> = {
@@ -28,7 +32,7 @@ const STATUS_CONFIG: Record<string, { icon: React.ElementType; color: string; bg
   pagamento_iniciado: { icon: CreditCard,   color: 'text-blue-700',   bg: 'bg-blue-50',     border: 'border-blue-200'    },
   ajuda_solicitada:   { icon: AlertCircle,  color: 'text-purple-700', bg: 'bg-purple-50',   border: 'border-purple-200'  },
   analise:            { icon: AlertCircle,  color: 'text-orange-700', bg: 'bg-orange-50',   border: 'border-orange-200'  },
-  cancelada:          { icon: XCircle,      color: 'text-red-700',    bg: 'bg-red-50',       border: 'border-red-200'     },
+  cancelada:          { icon: XCircle,      color: 'text-red-700',    bg: 'bg-red-50',      border: 'border-red-200'     },
 };
 
 function fmt(v: number) {
@@ -42,15 +46,70 @@ const METODO_LABELS: Record<string, string> = {
   pix: 'PIX', boleto: 'Boleto', credito: 'Cartão de crédito', recorrente: 'Recorrente',
 };
 
-async function buscarPorToken(email: string, token: string): Promise<InscricaoResult[]> {
-  const res = await fetch('/api/buscarPorToken', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, token }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Link inválido ou expirado.');
-  return data.inscricoes;
+// ─── OTP Input ────────────────────────────────────────────────────────────────
+
+function OtpInput({
+  value, onChange, disabled,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  disabled?: boolean;
+}) {
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const digits = value.padEnd(6, ' ').split('').slice(0, 6);
+
+  const handleChange = (i: number, raw: string) => {
+    const digit = raw.replace(/\D/g, '').slice(-1);
+    const next = digits
+      .map((d, idx) => (idx === i ? digit : d === ' ' ? '' : d))
+      .join('')
+      .padEnd(6, ' ');
+    onChange(next.trimEnd());
+    if (digit && i < 5) inputs.current[i + 1]?.focus();
+  };
+
+  const handleKey = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !digits[i].trim() && i > 0) {
+      inputs.current[i - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted) {
+      onChange(pasted);
+      inputs.current[Math.min(pasted.length, 5)]?.focus();
+    }
+    e.preventDefault();
+  };
+
+  return (
+    <div className="flex gap-2 justify-center">
+      {digits.map((d, i) => (
+        <input
+          key={i}
+          ref={el => { inputs.current[i] = el; }}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={d.trim()}
+          disabled={disabled}
+          onChange={e => handleChange(i, e.target.value)}
+          onKeyDown={e => handleKey(i, e)}
+          onPaste={handlePaste}
+          onFocus={e => e.target.select()}
+          className="w-12 h-14 text-center text-2xl font-black rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none bg-white text-gray-900 transition-colors disabled:opacity-50 caret-transparent"
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── Card de inscrição ────────────────────────────────────────────────────────
+
+function eventoFuturo(dataFim: string): boolean {
+  if (!dataFim) return false;
+  return new Date(dataFim) > new Date();
 }
 
 function InscricaoCard({ insc }: { insc: InscricaoResult }) {
@@ -58,6 +117,7 @@ function InscricaoCard({ insc }: { insc: InscricaoResult }) {
   const Icon = cfg.icon;
   const isCancelled = insc.status === 'cancelada';
   const isPaid = insc.status === 'pago';
+  const showQr = isPaid && !insc.presenca && eventoFuturo(insc.eventoDataFim);
 
   return (
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${isCancelled ? 'border-red-200' : 'border-gray-100'}`}>
@@ -131,11 +191,39 @@ function InscricaoCard({ insc }: { insc: InscricaoResult }) {
           </div>
         )}
 
-        {isPaid && (
+        {isPaid && !showQr && (
           <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
             <p className="text-xs text-emerald-700 font-medium">
               Inscrição confirmada! Sua participação está garantida.
             </p>
+          </div>
+        )}
+
+        {showQr && (
+          <div className="border border-emerald-200 rounded-xl overflow-hidden">
+            <div className="bg-emerald-50 px-4 py-2.5 flex items-center gap-2 border-b border-emerald-100">
+              <QrCode className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div>
+                <p className="text-xs font-black text-emerald-700">QR Code do ingresso</p>
+                <p className="text-[10px] text-emerald-600">Mostre na entrada para fazer check-in</p>
+              </div>
+            </div>
+            <div className="bg-white flex justify-center items-center p-6">
+              <div className="p-3 bg-white rounded-xl shadow-sm border border-gray-100 inline-block">
+                <QRCodeSVG
+                  value={insc.inscricaoId}
+                  size={160}
+                  level="M"
+                  bgColor="#ffffff"
+                  fgColor="#0c0e14"
+                />
+              </div>
+            </div>
+            <div className="bg-gray-50 px-4 py-2 text-center">
+              <p className="text-[10px] text-gray-400 font-mono tracking-widest">
+                {insc.inscricaoId.slice(0, 8).toUpperCase()}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -143,93 +231,46 @@ function InscricaoCard({ insc }: { insc: InscricaoResult }) {
   );
 }
 
-// ─── MODE: URL token → auto-validate ─────────────────────────────────────────
+// ─── Passos do fluxo ─────────────────────────────────────────────────────────
 
-function TokenMode({ email, token }: { email: string; token: string }) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<InscricaoResult[] | null>(null);
+type Step = 'email' | 'code' | 'results';
 
-  useEffect(() => {
-    buscarPorToken(email, token)
-      .then(setResults)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [email, token]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center gap-3 py-16">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
-        <p className="text-sm text-gray-500">Validando seu link de acesso...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-8 text-center space-y-3">
-        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto">
-          <XCircle className="w-6 h-6 text-red-400" />
-        </div>
-        <p className="font-bold text-gray-800">Link inválido ou expirado</p>
-        <p className="text-sm text-gray-500 leading-relaxed">{error}</p>
-        <a
-          href="/consultar"
-          className="inline-block mt-2 text-sm font-bold text-primary hover:underline"
-        >
-          Solicitar novo link →
-        </a>
-      </div>
-    );
-  }
-
-  if (!results || results.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center space-y-3">
-        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
-          <Search className="w-6 h-6 text-gray-400" />
-        </div>
-        <p className="font-bold text-gray-700">Nenhuma inscrição encontrada</p>
-        <p className="text-sm text-gray-500 leading-relaxed">
-          Não encontramos inscrições vinculadas a este e-mail.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <p className="text-xs text-gray-500 font-semibold uppercase tracking-widest text-center">
-        {results.length} inscrição{results.length !== 1 ? 'ões' : ''} encontrada{results.length !== 1 ? 's' : ''}
-      </p>
-      {results.map(insc => <InscricaoCard key={insc.inscricaoId} insc={insc} />)}
-    </div>
-  );
-}
-
-// ─── MODE: email form → sends magic link ─────────────────────────────────────
-
-function EmailMode() {
+export default function ConsultarInscricao() {
+  const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState<InscricaoResult[]>([]);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Countdown para reenvio
+  const startCooldown = () => {
+    setResendCooldown(60);
+    const id = setInterval(() => {
+      setResendCooldown(prev => {
+        if (prev <= 1) { clearInterval(id); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleSendCode = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!email.includes('@')) { setError('Informe um e-mail válido.'); return; }
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/enviarMagicLink', {
+      const res = await fetch('/api/enviarCodigoInscricao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao enviar.');
-      setSent(true);
+      setCode('');
+      setStep('code');
+      startCooldown();
     } catch (err: any) {
       setError(err.message || 'Erro ao enviar. Tente novamente.');
     } finally {
@@ -237,65 +278,66 @@ function EmailMode() {
     }
   };
 
-  if (sent) {
-    return (
-      <div className="bg-white rounded-2xl border border-emerald-200 shadow-sm p-8 text-center space-y-3">
-        <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto">
-          <Send className="w-6 h-6 text-emerald-500" />
-        </div>
-        <p className="font-bold text-gray-800">Link enviado!</p>
-        <p className="text-sm text-gray-500 leading-relaxed">
-          Se houver inscrições vinculadas a <strong>{email}</strong>, você receberá um link de acesso em breve.
-          O link é válido por <strong>1 hora</strong>.
-        </p>
-        <button
-          onClick={() => { setSent(false); setEmail(''); }}
-          className="text-xs font-bold text-primary hover:underline mt-2"
-        >
-          Tentar com outro e-mail
-        </button>
-      </div>
-    );
-  }
+  const handleResend = async () => {
+    if (resendCooldown > 0) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/enviarCodigoInscricao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao reenviar.');
+      setCode('');
+      startCooldown();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-      <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">E-mail usado na inscrição</label>
-        <Input
-          type="email"
-          placeholder="seu@email.com"
-          value={email}
-          onChange={e => { setEmail(e.target.value); setError(null); }}
-          className="h-12 rounded-xl border-gray-200 text-gray-900 text-base"
-          autoComplete="email"
-          autoFocus
-        />
-      </div>
-      {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
-      <Button
-        type="submit"
-        disabled={loading || !email.includes('@')}
-        className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-sm shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
-      >
-        {loading
-          ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Enviando...</>
-          : <><Mail className="w-4 h-4 mr-2" /> Enviar link de acesso</>}
-      </Button>
-      <p className="text-xs text-gray-400 text-center leading-relaxed">
-        Enviaremos um link seguro para o e-mail informado. Não é necessário senha.
-      </p>
-    </form>
-  );
-}
+  const handleConfirmCode = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const codeClean = code.replace(/\s/g, '');
+    if (codeClean.length < 6) { setError('Digite os 6 dígitos do código.'); return; }
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/confirmarCodigoInscricao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), code: codeClean }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Código inválido.');
+      setResults(data.inscricoes || []);
+      setStep('results');
+    } catch (err: any) {
+      setError(err.message || 'Código inválido. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// ─── Main page ────────────────────────────────────────────────────────────────
+  // Auto-submit quando todos os 6 dígitos são preenchidos
+  const handleCodeChange = (v: string) => {
+    setCode(v);
+    setError(null);
+    if (v.replace(/\s/g, '').length === 6) {
+      setTimeout(() => handleConfirmCode(), 0);
+    }
+  };
 
-export default function ConsultarInscricao() {
-  const params = new URLSearchParams(window.location.search);
-  const urlEmail = params.get('email') || '';
-  const urlToken = params.get('token') || '';
-  const hasToken = Boolean(urlEmail && urlToken);
+  const handleReset = () => {
+    setStep('email');
+    setEmail('');
+    setCode('');
+    setError(null);
+    setResults([]);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -305,7 +347,7 @@ export default function ConsultarInscricao() {
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
             <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
           </a>
-          <span className="hidden sm:block text-xs font-semibold text-gray-500 text-center">
+          <span className="hidden sm:block text-xs font-semibold text-gray-500">
             Consultar inscrição
           </span>
           <a href="/" className="text-xs font-black text-primary hover:underline whitespace-nowrap">
@@ -317,29 +359,172 @@ export default function ConsultarInscricao() {
       <main className="flex-1 flex flex-col items-center px-4 py-12">
         <div className="w-full max-w-xl space-y-8">
 
-          <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              {hasToken ? <Ticket className="w-7 h-7 text-primary" /> : <Mail className="w-7 h-7 text-primary" />}
-            </div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
-              {hasToken ? 'Suas inscrições' : 'Consultar minha inscrição'}
-            </h1>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              {hasToken
-                ? 'Carregando suas inscrições...'
-                : 'Informe o e-mail usado na inscrição. Enviaremos um link seguro de acesso.'}
-            </p>
-          </div>
+          {/* ── Passo 1: E-mail ── */}
+          {step === 'email' && (
+            <>
+              <div className="text-center space-y-2">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-7 h-7 text-primary" />
+                </div>
+                <h1 className="text-2xl font-black text-gray-900 tracking-tight">Consultar minha inscrição</h1>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Informe o e-mail usado na inscrição. Enviaremos um código de 6 dígitos para verificar sua identidade.
+                </p>
+              </div>
 
-          {hasToken
-            ? <TokenMode email={urlEmail} token={urlToken} />
-            : <EmailMode />}
+              <form onSubmit={handleSendCode} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700">E-mail usado na inscrição</label>
+                  <Input
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setError(null); }}
+                    className="h-12 rounded-xl border-gray-200 text-gray-900 text-base"
+                    autoComplete="email"
+                    autoFocus
+                  />
+                </div>
+                {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
+                <Button
+                  type="submit"
+                  disabled={loading || !email.includes('@')}
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-sm shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
+                >
+                  {loading
+                    ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Enviando...</>
+                    : <><Mail className="w-4 h-4 mr-2" /> Enviar código de acesso</>}
+                </Button>
+                <p className="text-xs text-gray-400 text-center leading-relaxed">
+                  Enviaremos um código seguro para o e-mail informado. Válido por 10 minutos.
+                </p>
+              </form>
+            </>
+          )}
 
-          <p className="text-center text-xs text-gray-400 pb-4">
-            Dados exibidos apenas para consulta. Para alterações, entre em contato com o organizador.
-          </p>
+          {/* ── Passo 2: Código ── */}
+          {step === 'code' && (
+            <>
+              <div className="text-center space-y-2">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheck className="w-7 h-7 text-primary" />
+                </div>
+                <h1 className="text-2xl font-black text-gray-900 tracking-tight">Verifique seu e-mail</h1>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Enviamos um código de 6 dígitos para{' '}
+                  <strong className="text-gray-700">{email}</strong>.
+                  <br />Digite-o abaixo para acessar suas inscrições.
+                </p>
+              </div>
+
+              <form onSubmit={handleConfirmCode} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+                <OtpInput value={code} onChange={handleCodeChange} disabled={loading} />
+
+                {error && (
+                  <p className="text-xs text-red-600 font-medium text-center">{error}</p>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={loading || code.replace(/\s/g, '').length < 6}
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-sm shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
+                >
+                  {loading
+                    ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Verificando...</>
+                    : 'Confirmar código'}
+                </Button>
+
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="flex items-center gap-1 text-gray-400 hover:text-gray-600 font-semibold transition-colors"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    Trocar e-mail
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resendCooldown > 0 || loading}
+                    className="text-primary font-bold disabled:text-gray-400 disabled:cursor-default hover:underline transition-colors"
+                  >
+                    {resendCooldown > 0 ? `Reenviar em ${resendCooldown}s` : 'Reenviar código'}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+
+          {/* ── Passo 3: Resultados ── */}
+          {step === 'results' && (
+            <>
+              <div className="text-center space-y-2">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Ticket className="w-7 h-7 text-primary" />
+                </div>
+                <h1 className="text-2xl font-black text-gray-900 tracking-tight">Suas inscrições</h1>
+                <p className="text-sm text-gray-500">{email}</p>
+              </div>
+
+              {results.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
+                    <Search className="w-6 h-6 text-gray-400" />
+                  </div>
+                  <p className="font-bold text-gray-700">Nenhuma inscrição encontrada</p>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Não encontramos inscrições vinculadas a este e-mail.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-widest text-center">
+                    {results.length} {results.length !== 1 ? 'inscrições' : 'inscrição'} encontrada{results.length !== 1 ? 's' : ''}
+                  </p>
+                  {results.map(insc => <InscricaoCard key={insc.inscricaoId} insc={insc} />)}
+                </div>
+              )}
+
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 font-semibold transition-colors mx-auto"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Consultar outro e-mail
+              </button>
+            </>
+          )}
+
         </div>
       </main>
+
+      <footer className="border-t border-gray-100 bg-white px-6 py-6 mt-auto">
+        <div className="max-w-xl mx-auto space-y-3">
+          <p className="text-xs text-gray-500 text-center leading-relaxed">
+            Os dados exibidos pertencem ao titular e são acessados após verificação por e-mail.
+            Para alterações, cancelamentos ou exclusão dos seus dados, entre em contato com o
+            organizador do evento ou com o Tovia em{' '}
+            <a href="mailto:suporte@toviaapp.com.br" className="text-primary font-semibold hover:underline">
+              suporte@toviaapp.com.br
+            </a>.
+          </p>
+          <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+            <a href="/privacidade" className="hover:text-gray-600 hover:underline transition-colors">
+              Política de Privacidade
+            </a>
+            <span>·</span>
+            <a href="/termos" className="hover:text-gray-600 hover:underline transition-colors">
+              Termos de Uso
+            </a>
+            <span>·</span>
+            <span>© {new Date().getFullYear()} Tovia</span>
+          </div>
+          <p className="text-[10px] text-gray-300 text-center">
+            Dados tratados em conformidade com a Lei nº 13.709/2020 (LGPD)
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

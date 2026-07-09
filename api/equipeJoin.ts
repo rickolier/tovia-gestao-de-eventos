@@ -1,46 +1,32 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-// Firebase client API key (public — already exposed in frontend bundle)
-const FIREBASE_API_KEY = require('../firebase-applet-config.json').apiKey;
+import { db, verifyAuth } from './_firebase.js';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { idToken, eventoId } = req.body || {};
-  if (!idToken || !eventoId) {
-    return res.status(400).json({ error: 'idToken e eventoId são obrigatórios.' });
+  const { eventoId } = req.body || {};
+  if (!eventoId) {
+    return res.status(400).json({ error: 'eventoId é obrigatório.' });
+  }
+
+  let decoded: any;
+  try {
+    decoded = await verifyAuth(req.headers.authorization);
+  } catch (e: any) {
+    return res.status(e.status ?? 401).json({ error: e.message });
+  }
+
+  const uid: string = decoded.uid;
+  const email: string = decoded.email || '';
+  const name: string = decoded.name || email;
+
+  if (!email) {
+    return res.status(403).json({ error: 'Operação não permitida.' });
   }
 
   try {
-    // Verificação via Firebase Auth REST API — sem dependência de jose/jwks-rsa
-    const verifyResp = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      }
-    );
-    const verifyData = await verifyResp.json();
-    if (!verifyResp.ok || !verifyData.users?.length) {
-      return res.status(401).json({ error: 'Token inválido.', detail: verifyData });
-    }
-
-    const firebaseUser = verifyData.users[0];
-    const uid: string = firebaseUser.localId;
-    const email: string = firebaseUser.email || '';
-    const name: string = firebaseUser.displayName || email;
-
-    if (!email || email === 'admin@tovia.app') {
-      return res.status(403).json({ error: 'Operação não permitida.' });
-    }
-
-    // Escrita no Firestore via Admin SDK (não usa jose)
-    const { getDb } = require('./_firebase');
-    const { FieldValue } = require('firebase-admin/firestore');
-
-    const db = getDb();
     const eventoRef = db.collection('eventos').doc(eventoId);
     const eventoSnap = await eventoRef.get();
 
@@ -55,7 +41,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json({ ok: true, alreadyMember: true });
     }
 
-    // Valida convite: o email do usuário deve ter um convite pendente para este evento
     const conviteSnap = await db.collection('convites')
       .where('eventoId', '==', eventoId)
       .where('email', '==', email.toLowerCase())
@@ -82,10 +67,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       equipeIds: FieldValue.arrayUnion(uid),
     });
 
-    // Remove o convite após uso
     await conviteDoc.ref.delete();
 
-    // Notificar o dono do evento sobre o novo membro
     if (evento.criado_por) {
       const notifId = `eq_${eventoId}_${uid}`;
       const notifRef = db.collection('notificacoes').doc(notifId);

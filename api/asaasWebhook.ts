@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -138,7 +139,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const token = req.headers['asaas-access-token'];
   const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
-  if (!expectedToken || token !== expectedToken) return res.status(401).send('Unauthorized');
+  const tokenStr = typeof token === 'string' ? token : '';
+  const expectedStr = expectedToken || '';
+  const tokenBuf = Buffer.from(tokenStr);
+  const expectedBuf = Buffer.from(expectedStr);
+  if (!expectedToken || tokenBuf.length !== expectedBuf.length || !timingSafeEqual(tokenBuf, expectedBuf)) {
+    return res.status(401).send('Unauthorized');
+  }
 
   const event = req.body;
   const eventType: string = event?.event;

@@ -1,21 +1,60 @@
 // @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { verifyAuth } from './_firebase.js';
+import { db, verifyAuth } from './_firebase.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
+const ADMIN_EMAILS = ['admin@toviaapp.com.br', 'suporte@toviaapp.com.br'];
+
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT = 10;
+
+async function checkRateLimit(uid: string): Promise<boolean> {
+  const key = `sendemail_${uid}`;
+  const ref = db.collection('_rate_limits').doc(key);
+  const snap = await ref.get();
+  const now = Date.now();
+  if (snap.exists) {
+    const data = snap.data()!;
+    const requests: number[] = (data.requests || []).filter((t: number) => now - t < RATE_WINDOW_MS);
+    if (requests.length >= RATE_LIMIT) return false;
+    requests.push(now);
+    await ref.set({ requests });
+  } else {
+    await ref.set({ requests: [now] });
+  }
+  return true;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  let decoded: any;
   try {
-    await verifyAuth(req.headers.authorization);
+    decoded = await verifyAuth(req.headers.authorization);
   } catch (e: any) {
     return res.status(e.status ?? 401).json({ error: e.message });
   }
 
+  const allowed = await checkRateLimit(decoded.uid);
+  if (!allowed) {
+    return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
+  }
+
   const { to, subject, html } = req.body || {};
   if (!to || !subject || !html) return res.status(400).json({ error: 'to, subject e html são obrigatórios.' });
+
+  const isAdmin = ADMIN_EMAILS.includes(decoded.email);
+  const toList: string[] = Array.isArray(to) ? to : [to];
+
+  // Não-admins só podem enviar para o próprio email autenticado
+  if (!isAdmin) {
+    const selfEmail = decoded.email?.toLowerCase();
+    const allToSelf = toList.every(addr => addr.toLowerCase() === selfEmail);
+    if (!allToSelf) {
+      return res.status(403).json({ error: 'Acesso negado.' });
+    }
+  }
 
   if (!RESEND_API_KEY) {
     console.warn('RESEND_API_KEY não configurada — e-mail não enviado.');
@@ -29,7 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ from: FROM, to: Array.isArray(to) ? to : [to], subject, html }),
+      body: JSON.stringify({ from: FROM, to: toList, subject, html }),
     });
 
     if (!response.ok) {

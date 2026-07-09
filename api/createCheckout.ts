@@ -3,6 +3,26 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
 
+const CHECKOUT_RATE_WINDOW_MS = 10 * 60 * 1000;
+const CHECKOUT_RATE_LIMIT = 3;
+
+async function checkCheckoutRateLimit(uid: string): Promise<boolean> {
+  const key = `checkout_${uid}`;
+  const ref = db.collection('_rate_limits').doc(key);
+  const snap = await ref.get();
+  const now = Date.now();
+  if (snap.exists) {
+    const data = snap.data()!;
+    const requests: number[] = (data.requests || []).filter((t: number) => now - t < CHECKOUT_RATE_WINDOW_MS);
+    if (requests.length >= CHECKOUT_RATE_LIMIT) return false;
+    requests.push(now);
+    await ref.set({ requests });
+  } else {
+    await ref.set({ requests: [now] });
+  }
+  return true;
+}
+
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
 const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';
 
@@ -59,6 +79,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await verifyAuth(req.headers.authorization, userId);
   } catch (e: any) {
     return res.status(e.status ?? 401).json({ error: e.message });
+  }
+
+  const checkoutAllowed = await checkCheckoutRateLimit(userId);
+  if (!checkoutAllowed) {
+    return res.status(429).json({ error: 'Muitas tentativas de pagamento. Aguarde alguns minutos.' });
   }
 
   const price = period === 'annual' ? ANNUAL_PRICES[planLevel] : MONTHLY_PRICES[planLevel];
