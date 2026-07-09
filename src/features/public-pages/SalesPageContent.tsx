@@ -217,7 +217,6 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       } else {
         // Página de inscrição normal
         const id = uuidv4();
-        const inscricaoToken = uuidv4();
         const ticket = selectedTickets[0];
         const valorFinal = ticket ? getTicketTotal(ticket) : total;
         const useGateway = gatewayConnected && selectedMethod && valorFinal > 0;
@@ -240,20 +239,18 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           validada_manual: false,
           pagina_venda_id: pagina.id,
           pagina_venda_slug: pagina.slug,
-          token: inscricaoToken,
         } as any);
         setInscricaoId(id);
 
-        // Envia email de confirmação com link de acesso
+        // Envia email de confirmação com link para consultar inscrição via OTP
         if (email) {
-          const acessoUrl = `${window.location.origin}/consultar?email=${encodeURIComponent(email)}&token=${inscricaoToken}`;
           Email.confirmacaoInscricao(
             email,
             nome || email,
             evento?.nome || '',
             evento?.data_inicio || '',
             evento?.local || '',
-            acessoUrl,
+            `${window.location.origin}/consultar`,
           ).catch(() => {});
         }
 

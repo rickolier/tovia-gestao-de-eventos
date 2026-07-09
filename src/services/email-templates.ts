@@ -138,16 +138,6 @@ export function emailConfirmacaoInscricao(participanteNome: string, eventoNome: 
   `, `Você está inscrito em ${eventoNome}`);
 }
 
-export function emailMagicLink(acessoUrl: string) {
-  return wrap(`
-    ${h1('Acesse suas inscrições 🎟️')}
-    ${p('Você solicitou um link de acesso às suas inscrições. Clique no botão abaixo — ele é válido por 1 hora:')}
-    ${btn('Acessar minhas inscrições', acessoUrl)}
-    ${divider()}
-    ${p('Se você não solicitou este e-mail, pode ignorá-lo com segurança.')}
-  `, 'Seu link de acesso às inscrições');
-}
-
 export function emailPagamentoNaoRealizado(nome: string, plano: string, vencimento: string) {
   return wrap(`
     ${h1('Pagamento não identificado ⚠️')}
