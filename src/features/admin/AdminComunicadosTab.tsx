@@ -95,57 +95,57 @@ async function resolveRecipients(grupo: ComunicadoGrupo, allUsers: UserProfile[]
   const emailSet = new Set<string>();
   const activeUsers = allUsers.filter(u => !u.desativado && !u.isDemo);
 
-  // Manual emails
+  // Filters narrow down by AND — each filter reduces the previous result
+  if (grupo.filtros.length > 0) {
+    let matches = activeUsers;
+
+    for (const filtro of grupo.filtros) {
+      if (filtro.tipo === 'plano') {
+        matches = matches.filter(u => u.plano && filtro.valores.includes(u.plano));
+
+      } else if (filtro.tipo === 'sem_plano') {
+        matches = matches.filter(u => !u.plano || u.plano === 'chinam');
+
+      } else if (filtro.tipo === 'gateway_conectado') {
+        matches = matches.filter(u => u.gateway_connected);
+
+      } else if (filtro.tipo === 'cidade') {
+        const lc = filtro.valor.toLowerCase();
+        matches = matches.filter(u => u.cidade?.toLowerCase().includes(lc));
+
+      } else if (filtro.tipo === 'eventos_ativos') {
+        const snap = await getDocs(query(collection(db, 'eventos'), where('ativo', '==', true)));
+        const uids = new Set(snap.docs.map(d => d.data().criado_por as string));
+        matches = matches.filter(u => uids.has(u.uid));
+
+      } else if (filtro.tipo === 'eventos_inativos') {
+        const snap = await getDocs(collection(db, 'eventos'));
+        const allUids = new Set(snap.docs.map(d => d.data().criado_por as string));
+        const activeUids = new Set(
+          snap.docs.filter(d => d.data().ativo).map(d => d.data().criado_por as string)
+        );
+        matches = matches.filter(u => allUids.has(u.uid) && !activeUids.has(u.uid));
+
+      } else if (filtro.tipo === 'tickets_abertos') {
+        const tickets = await listDocuments<{ cliente_email?: string; status: string }>('tickets', [
+          where('status', 'in', ['aberto', 'em_andamento']),
+        ]);
+        const ticketEmails = new Set(
+          tickets.filter(t => t.cliente_email).map(t => t.cliente_email!.toLowerCase())
+        );
+        matches = matches.filter(u => ticketEmails.has(u.email.toLowerCase()));
+      }
+    }
+
+    matches.forEach(u => emailSet.add(u.email.toLowerCase()));
+  }
+
+  // Manual emails are always additive (explicit additions, not narrowed)
   grupo.emails_manuais
     .flatMap(block => block.split(/[\n,;]+/))
     .map(e => e.trim().toLowerCase())
     .filter(e => e.includes('@'))
     .forEach(e => emailSet.add(e));
-
-  for (const filtro of grupo.filtros) {
-    if (filtro.tipo === 'plano') {
-      activeUsers
-        .filter(u => u.plano && filtro.valores.includes(u.plano))
-        .forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'sem_plano') {
-      activeUsers
-        .filter(u => !u.plano || u.plano === 'chinam')
-        .forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'gateway_conectado') {
-      activeUsers
-        .filter(u => u.gateway_connected)
-        .forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'cidade') {
-      const lc = filtro.valor.toLowerCase();
-      activeUsers
-        .filter(u => u.cidade?.toLowerCase().includes(lc))
-        .forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'eventos_ativos') {
-      const snap = await getDocs(query(collection(db, 'eventos'), where('ativo', '==', true)));
-      const uids = new Set(snap.docs.map(d => d.data().criado_por as string));
-      activeUsers.filter(u => uids.has(u.uid)).forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'eventos_inativos') {
-      const snap = await getDocs(collection(db, 'eventos'));
-      const allUids = new Set(snap.docs.map(d => d.data().criado_por as string));
-      const activeUids = new Set(
-        snap.docs.filter(d => d.data().ativo).map(d => d.data().criado_por as string)
-      );
-      activeUsers
-        .filter(u => allUids.has(u.uid) && !activeUids.has(u.uid))
-        .forEach(u => emailSet.add(u.email.toLowerCase()));
-
-    } else if (filtro.tipo === 'tickets_abertos') {
-      const tickets = await listDocuments<{ cliente_email?: string; status: string }>('tickets', [
-        where('status', 'in', ['aberto', 'em_andamento']),
-      ]);
-      tickets.filter(t => t.cliente_email).forEach(t => emailSet.add(t.cliente_email!.toLowerCase()));
-    }
-  }
 
   return Array.from(emailSet);
 }
@@ -536,7 +536,8 @@ export default function AdminComunicadosTab() {
         <div className="space-y-2">
           <label className="text-sm font-semibold text-foreground">Filtros</label>
           <p className="text-xs text-muted-foreground">
-            Os filtros são combinados por união — qualquer cliente que corresponda a pelo menos um será incluído.
+            Os filtros afunilam por cruzamento — cada filtro adicional restringe o grupo anterior (AND).
+            Emails manuais são sempre incluídos independentemente.
           </p>
 
           {grupoFiltros.length > 0 && (
