@@ -186,13 +186,18 @@ export default function AdminComunicadosTab() {
 
   const load = async () => {
     setLoading(true);
-    const [gs, hs] = await Promise.all([
-      listDocuments<ComunicadoGrupo>('comunicado_grupos'),
-      listDocuments<ComunicadoEnviado>('comunicados_enviados'),
-    ]);
-    setGrupos(gs.sort((a, b) => b.criado_em.localeCompare(a.criado_em)));
-    setHistorico(hs.sort((a, b) => b.enviado_em.localeCompare(a.enviado_em)));
-    setLoading(false);
+    try {
+      const [gs, hs] = await Promise.all([
+        listDocuments<ComunicadoGrupo>('comunicado_grupos'),
+        listDocuments<ComunicadoEnviado>('comunicados_enviados'),
+      ]);
+      setGrupos(gs.sort((a, b) => b.criado_em.localeCompare(a.criado_em)));
+      setHistorico(hs.sort((a, b) => b.enviado_em.localeCompare(a.enviado_em)));
+    } catch {
+      toast.error('Erro ao carregar comunicados');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const ensureUsers = async (): Promise<UserProfile[]> => {

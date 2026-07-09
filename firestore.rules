@@ -271,6 +271,17 @@ service cloud.firestore {
     }
 
     // ===============================================================
+    // Comunicados — grupos de destinatários e histórico de envios
+    // ===============================================================
+    match /comunicado_grupos/{grupoId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /comunicados_enviados/{comunicadoId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ===============================================================
     // Tickets de suporte — usuário cria e lê os próprios; admin lê tudo
     // ===============================================================
     match /tickets/{ticketId} {
