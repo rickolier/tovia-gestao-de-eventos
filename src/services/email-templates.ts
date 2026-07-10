@@ -335,3 +335,9 @@ export function emailCustom(corpo: string, preview = '') {
     .join('');
   return wrap(html, preview);
 }
+
+// Versão para corpo em HTML rico (saída de editor de texto)
+export function emailCustomHtml(corpo: string, preview = '') {
+  const wrapped = `<div style="color:${TEXT};font-size:15px;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">${corpo}</div>`;
+  return wrap(wrapped, preview);
+}

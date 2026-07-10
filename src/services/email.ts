@@ -6,6 +6,7 @@ import {
   emailConviteEquipe,
   emailConfirmacaoVinculo,
   emailCustom,
+  emailCustomHtml,
   emailBoasVindasChinam,
   emailBoasVindasPetach,
   emailBoasVindasKoach,
@@ -64,6 +65,9 @@ export const Email = {
 
   custom: (to: string, subject: string, corpo: string, preview?: string) =>
     send(to, subject, emailCustom(corpo, preview)),
+
+  customHtml: (to: string, subject: string, corpo: string, preview?: string) =>
+    send(to, subject, emailCustomHtml(corpo, preview)),
 
   boasVindasPlano: (to: string, nome: string, plano: 'chinam' | 'petach' | 'koach' | 'chalem', valor?: string, proxVencimento?: string) => {
     if (plano === 'petach') return send(to, 'Bem-vindo ao Tovia Pétach! 🚪', emailBoasVindasPetach(nome, valor || 'R$ 49/mês', proxVencimento || ''));

@@ -14,7 +14,13 @@ import {
   Megaphone, Users, Plus, Trash2, Edit2, Send, History,
   ChevronLeft, X, Mail, CheckCircle, AlertCircle, RefreshCw,
   Filter, Zap, Ticket, MapPin, CreditCard, CalendarCheck, CalendarX,
+  Bold, Italic, Underline as UnderlineIcon, Link2, Link2Off, ChevronDown,
 } from 'lucide-react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import LinkExtension from '@tiptap/extension-link';
+import { TextStyle, FontSize } from '@tiptap/extension-text-style';
+import UnderlineExtension from '@tiptap/extension-underline';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -124,6 +130,196 @@ async function applyFilters(filtros: FiltroDef[], allUsers: UserProfile[]): Prom
   return matches.map(u => u.email.toLowerCase());
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function isEditorEmpty(html: string) {
+  return !html || !html.replace(/<[^>]*>/g, '').trim();
+}
+
+// ─── RichTextEditor ───────────────────────────────────────────────────────────
+
+const FONT_SIZE_OPTIONS = [
+  { label: 'Normal', value: undefined },
+  { label: 'Médio',  value: '17px' },
+  { label: 'Grande', value: '20px' },
+  { label: 'Título', value: '24px' },
+];
+
+function RichTextEditor({
+  value, onChange, placeholder,
+}: {
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+}) {
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [sizeOpen, setSizeOpen] = useState(false);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextStyle,
+      FontSize,
+      UnderlineExtension,
+      LinkExtension.configure({
+        openOnClick: false,
+        HTMLAttributes: { style: 'color:#1a7a45;text-decoration:underline' },
+      }),
+    ],
+    content: value || '<p></p>',
+    onUpdate: ({ editor: ed }) => onChange(ed.getHTML()),
+    editorProps: {
+      attributes: {
+        class: 'min-h-[160px] px-3 py-3 text-sm focus:outline-none leading-relaxed',
+        'data-placeholder': placeholder ?? '',
+      },
+    },
+  });
+
+  const activeSize = editor?.getAttributes('textStyle').fontSize as string | undefined;
+  const activeSizeLabel = FONT_SIZE_OPTIONS.find(o => o.value === activeSize)?.label ?? 'Normal';
+
+  const applySize = (size: string | undefined) => {
+    if (!editor) return;
+    if (size) {
+      (editor.chain().focus() as any).setFontSize(size).run();
+    } else {
+      (editor.chain().focus() as any).unsetFontSize().run();
+    }
+    setSizeOpen(false);
+  };
+
+  const toggleLink = () => {
+    if (!editor) return;
+    if (editor.isActive('link')) {
+      editor.chain().focus().unsetLink().run();
+      return;
+    }
+    setLinkUrl('');
+    setLinkOpen(true);
+  };
+
+  const applyLink = () => {
+    if (!editor || !linkUrl.trim()) return;
+    const href = linkUrl.startsWith('http') ? linkUrl.trim() : `https://${linkUrl.trim()}`;
+    editor.chain().focus().setLink({ href }).run();
+    setLinkOpen(false);
+  };
+
+  const ToolbarBtn = ({
+    active, onClick, title, children,
+  }: {
+    active?: boolean; onClick: () => void; title: string; children: React.ReactNode;
+  }) => (
+    <button
+      type="button"
+      onMouseDown={e => { e.preventDefault(); onClick(); }}
+      title={title}
+      className={cn(
+        'h-7 w-7 rounded flex items-center justify-center transition-colors shrink-0',
+        active
+          ? 'bg-primary/10 text-primary'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+      )}
+    >
+      {children}
+    </button>
+  );
+
+  return (
+    <div className="border rounded-xl overflow-visible focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-colors">
+      {/* Toolbar */}
+      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b bg-muted/30 rounded-t-xl flex-wrap">
+        {/* Font size */}
+        <div className="relative">
+          <button
+            type="button"
+            onMouseDown={e => { e.preventDefault(); setSizeOpen(o => !o); }}
+            className="h-7 flex items-center gap-1 px-2 rounded text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            {activeSizeLabel}
+            <ChevronDown className="w-3 h-3" />
+          </button>
+          {sizeOpen && (
+            <div className="absolute top-full left-0 mt-1 z-50 bg-popover border rounded-lg shadow-md py-1 min-w-[110px]">
+              {FONT_SIZE_OPTIONS.map(opt => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onMouseDown={e => { e.preventDefault(); applySize(opt.value); }}
+                  className={cn(
+                    'w-full text-left px-3 py-1.5 text-xs hover:bg-muted transition-colors',
+                    activeSize === opt.value && 'text-primary font-semibold'
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="w-px h-4 bg-border mx-1" />
+
+        <ToolbarBtn active={editor?.isActive('bold')} onClick={() => editor?.chain().focus().toggleBold().run()} title="Negrito">
+          <Bold className="w-3.5 h-3.5" />
+        </ToolbarBtn>
+        <ToolbarBtn active={editor?.isActive('italic')} onClick={() => editor?.chain().focus().toggleItalic().run()} title="Itálico">
+          <Italic className="w-3.5 h-3.5" />
+        </ToolbarBtn>
+        <ToolbarBtn active={editor?.isActive('underline')} onClick={() => editor?.chain().focus().toggleUnderline().run()} title="Sublinhado">
+          <UnderlineIcon className="w-3.5 h-3.5" />
+        </ToolbarBtn>
+
+        <div className="w-px h-4 bg-border mx-1" />
+
+        <ToolbarBtn active={editor?.isActive('link')} onClick={toggleLink} title={editor?.isActive('link') ? 'Remover link' : 'Inserir link'}>
+          {editor?.isActive('link') ? <Link2Off className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+        </ToolbarBtn>
+      </div>
+
+      {/* Link input */}
+      {linkOpen && (
+        <div className="flex items-center gap-2 px-3 py-2 border-b bg-muted/20">
+          <Link2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+          <input
+            autoFocus
+            type="url"
+            placeholder="https://..."
+            value={linkUrl}
+            onChange={e => setLinkUrl(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') applyLink(); if (e.key === 'Escape') setLinkOpen(false); }}
+            className="flex-1 text-xs bg-transparent outline-none placeholder:text-muted-foreground/50"
+          />
+          <button type="button" onMouseDown={e => { e.preventDefault(); applyLink(); }}
+            className="text-xs font-semibold text-primary hover:underline">OK</button>
+          <button type="button" onMouseDown={e => { e.preventDefault(); setLinkOpen(false); }}
+            className="text-muted-foreground hover:text-foreground"><X className="w-3.5 h-3.5" /></button>
+        </div>
+      )}
+
+      {/* Editor area */}
+      <style>{`
+        .tiptap-editor .ProseMirror p { margin: 0 0 10px; }
+        .tiptap-editor .ProseMirror p:last-child { margin-bottom: 0; }
+        .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+          content: attr(data-placeholder);
+          color: hsl(var(--muted-foreground) / 0.5);
+          pointer-events: none;
+          float: left;
+          height: 0;
+          font-style: italic;
+        }
+        .tiptap-editor .ProseMirror a { color:#1a7a45; text-decoration:underline; }
+      `}</style>
+      <div className="tiptap-editor" onClick={() => { if (sizeOpen) setSizeOpen(false); }}>
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+}
+
 // ─── EmailPreviewPanel ────────────────────────────────────────────────────────
 
 function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
@@ -174,13 +370,16 @@ function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
 
           <div className="border-t border-gray-100 dark:border-zinc-800" />
 
-          <div className="text-[12px] text-gray-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed min-h-12">
-            {corpo || (
-              <span className="text-gray-300 dark:text-zinc-600 italic">
-                O conteúdo do seu comunicado aparecerá aqui...
-              </span>
-            )}
-          </div>
+          {corpo && !isEditorEmpty(corpo) ? (
+            <div
+              className="text-[12px] text-gray-700 dark:text-zinc-300 leading-relaxed min-h-12 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_a]:text-[#1a7a45] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_u]:underline"
+              dangerouslySetInnerHTML={{ __html: corpo }}
+            />
+          ) : (
+            <p className="text-[12px] text-gray-300 dark:text-zinc-600 italic min-h-12">
+              O conteúdo do seu comunicado aparecerá aqui...
+            </p>
+          )}
 
           {assinatura && (
             <>
@@ -239,6 +438,7 @@ export default function AdminComunicadosTab() {
   const [comPreview, setComPreview] = useState('');
   const [comCorpo, setComCorpo] = useState('');
   const [comAssinatura, setComAssinatura] = useState(DEFAULT_ASSINATURA);
+  const [editorKey, setEditorKey] = useState(0);
   const [confirmStep, setConfirmStep] = useState(false);
   const [sending, setSending] = useState(false);
   const [progress, setProgress] = useState({ sent: 0, total: 0, errors: 0 });
@@ -410,13 +610,14 @@ export default function AdminComunicadosTab() {
     setComAssinatura(DEFAULT_ASSINATURA);
     setConfirmStep(false);
     setProgress({ sent: 0, total: 0, errors: 0 });
+    setEditorKey(k => k + 1);
     setView('novo-comunicado');
   };
 
   const handlePrepararEnvio = () => {
     if (!comGrupoId) { toast.error('Selecione um grupo de destinatários'); return; }
     if (!comAssunto.trim()) { toast.error('Preencha o assunto do email'); return; }
-    if (!comCorpo.trim()) { toast.error('Escreva o corpo do email'); return; }
+    if (isEditorEmpty(comCorpo)) { toast.error('Escreva o corpo do email'); return; }
     const grupo = grupos.find(g => g.id === comGrupoId)!;
     if (!grupo.emails.length) { toast.error('Este grupo não tem destinatários'); return; }
     setConfirmStep(true);
@@ -440,12 +641,26 @@ export default function AdminComunicadosTab() {
     setProgress({ sent: 0, total: emails.length, errors: 0 });
     let erros = 0;
 
+    const P = 'margin:0 0 14px;color:#1a1a1a;font-size:15px;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,sans-serif';
+    const SIG = 'margin:0 0 6px;color:#6b7280;font-size:13px;line-height:1.5;font-family:-apple-system,BlinkMacSystemFont,sans-serif';
+    const HR = '<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 16px"/>';
+
     for (const email of emails) {
       try {
         const nome = nameMap.get(email.toLowerCase());
-        const greeting = nome ? `Olá, ${nome}, tudo bem?\n\n` : `Olá, tudo bem?\n\n`;
-        const bodyFinal = greeting + comCorpo + (comAssinatura.trim() ? `\n\n—\n${comAssinatura}` : '');
-        await Email.custom(email, comAssunto, bodyFinal, comPreview || undefined);
+        const greetingHtml = nome
+          ? `<p style="${P}">Olá, <strong>${nome}</strong>, tudo bem?</p>${HR}`
+          : `<p style="${P}">Olá, tudo bem?</p>${HR}`;
+        const bodyHtml = `<div style="${P}">${comCorpo}</div>`;
+        const signatureHtml = comAssinatura.trim()
+          ? `<hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0 12px"/>${
+              comAssinatura.trim().split('\n').map(line =>
+                line.trim() ? `<p style="${SIG}">${line}</p>` : ''
+              ).join('')
+            }`
+          : '';
+        const bodyFinal = greetingHtml + bodyHtml + signatureHtml;
+        await Email.customHtml(email, comAssunto, bodyFinal, comPreview || undefined);
         setProgress(p => ({ ...p, sent: p.sent + 1 }));
       } catch {
         erros++;
@@ -933,11 +1148,11 @@ export default function AdminComunicadosTab() {
             {/* Corpo */}
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-foreground">Corpo do email</label>
-              <Textarea
-                rows={8}
-                placeholder="Escreva o conteúdo do seu comunicado aqui..."
+              <RichTextEditor
+                key={editorKey}
                 value={comCorpo}
-                onChange={e => setComCorpo(e.target.value)}
+                onChange={setComCorpo}
+                placeholder="Escreva o conteúdo do seu comunicado aqui..."
               />
               <p className="text-xs text-muted-foreground">
                 O email será iniciado com <span className="font-mono text-primary">Olá, {'{nome}'}, tudo bem?</span> personalizado para cada destinatário.
@@ -967,7 +1182,7 @@ export default function AdminComunicadosTab() {
             <div className="flex gap-2 pt-2 border-t">
               <Button
                 onClick={handlePrepararEnvio}
-                disabled={!comGrupoId || !comAssunto.trim() || !comCorpo.trim()}
+                disabled={!comGrupoId || !comAssunto.trim() || isEditorEmpty(comCorpo)}
                 className="gap-1.5"
               >
                 <Send className="w-4 h-4" /> Enviar
