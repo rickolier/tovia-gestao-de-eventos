@@ -140,7 +140,7 @@ Os limites de cada plano são exibidos com indicadores de uso: por exemplo, "2 d
 
 Para fazer upgrade, clique no botão de troca de plano na própria aba de Faturamento. Você será direcionado para a página de planos onde pode comparar as funcionalidades e escolher o plano adequado.
 
-O Tovia não realiza cobranças dos participantes dos seus eventos — todas as transações financeiras dos seus eventos são gerenciadas por você. O Faturamento aqui se refere apenas à assinatura da plataforma Tovia.
+As transações financeiras dos seus eventos são gerenciadas inteiramente por você — o Faturamento aqui se refere à sua assinatura da plataforma Tovia.
 
 Membros de equipe que foram convidados para eventos de terceiros utilizam o plano Chinám gratuito — eles não precisam assinar nenhum plano para acessar os eventos onde foram adicionados.
 
@@ -308,7 +308,7 @@ Sugestões de novos artigos são bem-vindas — se você sentiu falta de alguma 
     tags: ['pagamentos', 'financeiro', 'configuração', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1707157284454-553ef0a4ed0d?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Configurações Financeiras (disponível a partir do plano Pétach) é onde você define as regras financeiras do evento: custo total previsto, meta de arrecadação, taxas e margens. O Tovia é um organizador financeiro — não processamos cobranças. Toda a gestão de recebimentos é feita por você.
+    conteudo: `A aba Configurações Financeiras (disponível a partir do plano Pétach) é onde você define as regras financeiras do evento: custo total previsto, meta de arrecadação, taxas e margens. O Tovia centraliza toda a organização financeira do evento — cada real registrado aqui reflete o que você recebeu nos seus próprios canais.
 
 Nessa aba você preenche: o custo total previsto do evento (soma de todos os gastos esperados, como local, alimentação, material), a meta de arrecadação com inscrições e doações, e as taxas ou margens que deseja considerar no planejamento.
 
@@ -332,7 +332,7 @@ Importante: cada evento tem suas próprias configurações financeiras. Configur
     tags: ['financeiro', 'pagamentos', 'fluxo de caixa', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1626266061368-46a8f578ddd6?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Financeiro (disponível a partir do plano Pétach) centraliza o registro e acompanhamento de todos os recebimentos do evento. O Tovia não processa cobranças — você recebe os pagamentos pelos seus próprios meios (Pix, dinheiro, transferência, etc.) e registra aqui o que foi recebido.
+    conteudo: `A aba Financeiro (disponível a partir do plano Pétach) centraliza o registro e acompanhamento de todos os recebimentos do evento. Você recebe os pagamentos pelos seus próprios canais (Pix, dinheiro, transferência, etc.) e registra aqui o que foi recebido — o Tovia organiza e consolida tudo em tempo real.
 
 Para registrar um pagamento, clique em "Adicionar Pagamento", selecione o participante, informe o valor recebido, a forma de pagamento (Pix, dinheiro, cartão, transferência...) e a data. O status da inscrição correspondente é atualizado automaticamente para "Pago".
 
@@ -358,7 +358,7 @@ Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso 
     tags: ['doações', 'contribuições', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Doações (disponível a partir do plano Pétach) registra e exibe todas as contribuições recebidas no evento. O Tovia não processa cobranças — você recebe as doações pelos seus próprios meios e registra aqui o que chegou.
+    conteudo: `A aba Doações (disponível a partir do plano Pétach) registra e exibe todas as contribuições recebidas no evento. Você recebe as doações pelos seus próprios canais e registra aqui o que chegou — o Tovia organiza tudo no histórico do evento.
 
 Para registrar uma doação, clique em "Alocar Doação", selecione o participante (ou informe um doador externo), defina o valor, a forma de pagamento e a data. O registro fica salvo no histórico e entra na soma total do evento.
 
@@ -614,7 +614,7 @@ O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua di
     tags: ['petach', 'financeiro', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1699771913117-a747414bafd2?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O plano Pétach é ideal para organizações que precisam cobrar pelos eventos e controlar os recebimentos. Pétach (פֶּתַח) significa "abertura" em hebraico — a porta de entrada para eventos com cobrança. O Tovia não processa pagamentos — você usa Pix, dinheiro, transferência ou qualquer meio e registra aqui o que foi recebido.
+    conteudo: `O plano Pétach é ideal para organizações que precisam cobrar pelos eventos e controlar os recebimentos. Pétach (פֶּתַח) significa "abertura" em hebraico — a porta de entrada para eventos com cobrança. Você recebe via Pix, dinheiro, transferência ou qualquer meio de sua preferência, e o Tovia organiza tudo no painel financeiro do evento.
 
 O que você pode fazer no Pétach:
 • Até 3 eventos ativos simultaneamente
@@ -737,7 +737,7 @@ O que você pode fazer no Chalém (além de tudo do Koách):
 • Até 10 tipos de ingresso e 10 páginas de inscrição por evento
 • Até 10 membros de equipe por evento
 • Pagamentos automáticos via PIX, boleto e cartão de crédito (BYOG)
-• Os valores vão direto para a sua conta — o Tovia não intermedeia o dinheiro
+• Os valores vão direto da inscrição para a sua conta bancária
 
 BYOG — Bring Your Own Gateway (Traga Seu Próprio Gateway):
 O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (Asaas) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
@@ -767,6 +767,41 @@ NO DIA:
 12. Check-in ágil — por nome, CPF ou QR Code
 
 Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. Pagamentos por boleto podem atrasar — verifique o status antes do evento para evitar surpresas na entrada.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'financeiro-gateway',
+    slug: 'financeiro-gateway',
+    ordem: 34,
+    titulo: 'Como acompanhar os pagamentos do evento com gateway?',
+    resumo: 'Com o gateway conectado, os pagamentos são registrados automaticamente no Tovia. Veja onde acompanhar cada cobrança, o saldo da conta e o histórico completo.',
+    tags: ['gateway', 'asaas', 'pagamentos automáticos', 'financeiro', 'chalem'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `Com o plano Chalém e o gateway de pagamento conectado, o Tovia passa a registrar automaticamente cada pagamento confirmado — sem precisar de lançamento manual. O dinheiro vai diretamente para a sua conta bancária vinculada ao gateway, e o Tovia cuida de organizar tudo por evento.
+
+ONDE ACOMPANHAR NO TOVIA:
+
+Na aba Financeiro do evento você tem a visão completa de cada inscrição: valor pago, forma de pagamento (PIX, boleto, cartão), data de confirmação e status. Todos os pagamentos processados automaticamente aparecem aqui assim que confirmados pelo gateway.
+
+O painel também mostra: total arrecadado até o momento, inscrições pendentes de pagamento e a comparação com a meta definida nas Configurações Financeiras. Essa é a sua central de controle financeiro por evento.
+
+ONDE ACOMPANHAR NO GATEWAY:
+
+Cada cobrança gerada pelo Tovia aparece na sua conta Asaas com uma referência única por evento. Lá você acompanha o saldo disponível para saque, o histórico de transferências para o seu banco e o status de cada cobrança emitida.
+
+O Asaas é a sua conta bancária do evento — o Tovia é o painel de gestão. Use o Tovia para entender os números do evento (quem pagou, quanto falta, qual a meta) e o Asaas para acompanhar saques e o saldo da conta.
+
+PAGAMENTOS PENDENTES:
+
+Boletos têm prazo de compensação de 1 a 2 dias úteis após o pagamento. PIX é compensado em segundos. Cartão de crédito pode ter confirmação imediata ou em alguns minutos, dependendo da operadora.
+
+O status no Tovia é atualizado automaticamente quando o gateway confirma o pagamento — sem nenhuma ação necessária da sua parte.
+
+Dica: antes do evento, filtre a lista de participantes por "Pagamento pendente" para saber quem ainda não confirmou. Entre em contato com antecedência — isso reduz surpresas na entrada e melhora o fluxo de caixa antes da data.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
