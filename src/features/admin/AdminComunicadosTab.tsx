@@ -32,6 +32,7 @@ interface ComunicadoGrupo {
   nome: string;
   filtros: FiltroDef[];
   emails_manuais: string[];
+  emails_excluidos: string[];
   criado_em: string;
 }
 
@@ -147,7 +148,9 @@ async function resolveRecipients(grupo: ComunicadoGrupo, allUsers: UserProfile[]
     .filter(e => e.includes('@'))
     .forEach(e => emailSet.add(e));
 
-  return Array.from(emailSet);
+  // Remove explicitly excluded emails
+  const excluded = new Set((grupo.emails_excluidos ?? []).map(e => e.toLowerCase()));
+  return Array.from(emailSet).filter(e => !excluded.has(e));
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -172,6 +175,8 @@ export default function AdminComunicadosTab() {
   const [previewEmails, setPreviewEmails] = useState<string[] | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [savingGrupo, setSavingGrupo] = useState(false);
+  const [excludedEmails, setExcludedEmails] = useState<Set<string>>(new Set());
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const previewDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Comunicado compose
@@ -231,6 +236,7 @@ export default function AdminComunicadosTab() {
           id: '', nome: '',
           filtros: grupoFiltros,
           emails_manuais: emailsManuais.split(/[\n,;]+/).map(e => e.trim()).filter(Boolean),
+          emails_excluidos: Array.from(excludedEmails),
           criado_em: '',
         };
         setPreviewEmails(await resolveRecipients(draft, users));
@@ -244,7 +250,22 @@ export default function AdminComunicadosTab() {
     return () => {
       if (previewDebounceRef.current) clearTimeout(previewDebounceRef.current);
     };
-  }, [grupoFiltros, emailsManuais, view]);
+  }, [grupoFiltros, emailsManuais, excludedEmails, view]);
+
+  // Keyboard: Delete/Backspace removes the selected email chip
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!selectedEmail) return;
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        setExcludedEmails(prev => new Set([...prev, selectedEmail]));
+        setSelectedEmail(null);
+        e.preventDefault();
+      }
+      if (e.key === 'Escape') setSelectedEmail(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedEmail]);
 
   // ── Group Editor ─────────────────────────────────────────────────────────
 
@@ -253,6 +274,8 @@ export default function AdminComunicadosTab() {
     setGrupoNome('');
     setGrupoFiltros([]);
     setEmailsManuais('');
+    setExcludedEmails(new Set());
+    setSelectedEmail(null);
     setAddFilterMode(null);
     setPreviewEmails(null);
     setView('editar-grupo');
@@ -263,6 +286,8 @@ export default function AdminComunicadosTab() {
     setGrupoNome(g.nome);
     setGrupoFiltros(g.filtros);
     setEmailsManuais(g.emails_manuais.join('\n'));
+    setExcludedEmails(new Set(g.emails_excluidos ?? []));
+    setSelectedEmail(null);
     setAddFilterMode(null);
     setPreviewEmails(null);
     setView('editar-grupo');
@@ -323,6 +348,7 @@ export default function AdminComunicadosTab() {
           .split(/[\n,;]+/)
           .map(e => e.trim())
           .filter(e => e.includes('@')),
+        emails_excluidos: Array.from(excludedEmails),
         criado_em: editGrupoId
           ? (grupos.find(g => g.id === editGrupoId)?.criado_em ?? new Date().toISOString())
           : new Date().toISOString(),
@@ -687,7 +713,7 @@ export default function AdminComunicadosTab() {
         </div>
 
         <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <label className="text-sm font-semibold text-foreground">Destinatários</label>
             {loadingPreview && <RefreshCw className="w-3 h-3 animate-spin text-muted-foreground" />}
             {!loadingPreview && previewEmails !== null && (
@@ -695,8 +721,27 @@ export default function AdminComunicadosTab() {
                 {previewEmails.length} encontrado{previewEmails.length !== 1 ? 's' : ''}
               </span>
             )}
+            {excludedEmails.size > 0 && (
+              <span className="text-xs text-muted-foreground">
+                · {excludedEmails.size} excluído{excludedEmails.size !== 1 ? 's' : ''}{' '}
+                <button
+                  onClick={() => setExcludedEmails(new Set())}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  desfazer
+                </button>
+              </span>
+            )}
+            {selectedEmail && (
+              <span className="text-xs text-destructive font-medium">
+                Pressione Delete para remover
+              </span>
+            )}
           </div>
-          <div className="min-h-16 border rounded-xl p-3 bg-muted/30">
+          <div
+            className="min-h-16 border rounded-xl p-3 bg-muted/30"
+            onClick={e => { if (e.target === e.currentTarget) setSelectedEmail(null); }}
+          >
             {previewEmails === null && !loadingPreview && (
               <p className="text-xs text-muted-foreground italic">
                 Selecione um filtro ou adicione um email para ver os destinatários.
@@ -711,16 +756,28 @@ export default function AdminComunicadosTab() {
             {!loadingPreview && previewEmails !== null && previewEmails.length > 0 && (
               <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
                 {previewEmails.map(e => (
-                  <span
+                  <button
                     key={e}
-                    className="text-xs bg-background border rounded-full px-2 py-0.5 text-muted-foreground font-mono"
+                    onClick={() => setSelectedEmail(prev => prev === e ? null : e)}
+                    className={cn(
+                      'text-xs rounded-full px-2 py-0.5 font-mono border transition-all',
+                      selectedEmail === e
+                        ? 'bg-destructive/10 border-destructive text-destructive ring-1 ring-destructive/30'
+                        : 'bg-background border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+                    )}
                   >
                     {e}
-                  </span>
+                    {selectedEmail === e && <span className="ml-1 opacity-70">×</span>}
+                  </button>
                 ))}
               </div>
             )}
           </div>
+          {selectedEmail && (
+            <p className="text-xs text-muted-foreground">
+              Clique em outro lugar ou pressione <kbd className="px-1 py-0.5 rounded bg-muted border text-xs">Esc</kbd> para cancelar a seleção.
+            </p>
+          )}
         </div>
 
         <div className="flex gap-2 pt-2 border-t">
