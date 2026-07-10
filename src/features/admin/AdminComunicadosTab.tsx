@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { listDocuments, createDocument, removeDocument } from '~/services/firestore';
@@ -12,8 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Megaphone, Users, Plus, Trash2, Edit2, Send, History,
-  ChevronLeft, X, Mail, CheckCircle, AlertCircle, RefreshCw, Eye,
-  Filter, Zap, Ticket, MapPin, CreditCard, CalendarCheck, CalendarX,
+  ChevronLeft, X, Mail, CheckCircle, AlertCircle, RefreshCw, Eye, Filter,
+  Zap, Ticket, MapPin, CreditCard, CalendarCheck, CalendarX,
 } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -172,6 +172,7 @@ export default function AdminComunicadosTab() {
   const [previewEmails, setPreviewEmails] = useState<string[] | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [savingGrupo, setSavingGrupo] = useState(false);
+  const previewDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Comunicado compose
   const [comGrupoId, setComGrupoId] = useState('');
@@ -209,6 +210,42 @@ export default function AdminComunicadosTab() {
 
   useEffect(() => { load(); }, []);
 
+  // Auto-resolve preview whenever filters or manual emails change
+  useEffect(() => {
+    if (view !== 'editar-grupo') return;
+
+    const hasFilters = grupoFiltros.length > 0;
+    const hasManualEmails = emailsManuais.split(/[\n,;]+/).some(e => e.trim().includes('@'));
+
+    if (!hasFilters && !hasManualEmails) {
+      setPreviewEmails(null);
+      return;
+    }
+
+    if (previewDebounceRef.current) clearTimeout(previewDebounceRef.current);
+    previewDebounceRef.current = setTimeout(async () => {
+      setLoadingPreview(true);
+      try {
+        const users = await ensureUsers();
+        const draft: ComunicadoGrupo = {
+          id: '', nome: '',
+          filtros: grupoFiltros,
+          emails_manuais: emailsManuais.split(/[\n,;]+/).map(e => e.trim()).filter(Boolean),
+          criado_em: '',
+        };
+        setPreviewEmails(await resolveRecipients(draft, users));
+      } catch {
+        setPreviewEmails(null);
+      } finally {
+        setLoadingPreview(false);
+      }
+    }, 400);
+
+    return () => {
+      if (previewDebounceRef.current) clearTimeout(previewDebounceRef.current);
+    };
+  }, [grupoFiltros, emailsManuais, view]);
+
   // ── Group Editor ─────────────────────────────────────────────────────────
 
   const openNewGrupo = () => {
@@ -233,7 +270,6 @@ export default function AdminComunicadosTab() {
 
   const removeFiltro = (idx: number) => {
     setGrupoFiltros(prev => prev.filter((_, i) => i !== idx));
-    setPreviewEmails(null);
   };
 
   const addFiltroSimple = (tipo: FiltroDef['tipo']) => {
@@ -244,7 +280,6 @@ export default function AdminComunicadosTab() {
     }
     setGrupoFiltros(prev => [...prev, { tipo } as FiltroDef]);
     setAddFilterMode(null);
-    setPreviewEmails(null);
   };
 
   const confirmPlanFilter = () => {
@@ -257,7 +292,6 @@ export default function AdminComunicadosTab() {
     }
     setPendingPlanos([]);
     setAddFilterMode(null);
-    setPreviewEmails(null);
   };
 
   const confirmCidadeFilter = () => {
@@ -270,26 +304,6 @@ export default function AdminComunicadosTab() {
     }
     setPendingCidade('');
     setAddFilterMode(null);
-    setPreviewEmails(null);
-  };
-
-  const handlePreviewGrupo = async () => {
-    setLoadingPreview(true);
-    try {
-      const users = await ensureUsers();
-      const draft: ComunicadoGrupo = {
-        id: '', nome: grupoNome,
-        filtros: grupoFiltros,
-        emails_manuais: emailsManuais.split(/[\n,;]+/).map(e => e.trim()).filter(Boolean),
-        criado_em: '',
-      };
-      const emails = await resolveRecipients(draft, users);
-      setPreviewEmails(emails);
-    } catch {
-      toast.error('Erro ao pré-visualizar destinatários');
-    } finally {
-      setLoadingPreview(false);
-    }
   };
 
   const handleSaveGrupo = async () => {
@@ -672,38 +686,41 @@ export default function AdminComunicadosTab() {
           />
         </div>
 
-        <div className="space-y-2">
-          <Button
-            variant="outline" size="sm" className="gap-1.5"
-            onClick={handlePreviewGrupo}
-            disabled={loadingPreview}
-          >
-            {loadingPreview
-              ? <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-              : <Eye className="w-3.5 h-3.5" />
-            }
-            Pré-visualizar destinatários
-          </Button>
-
-          {previewEmails !== null && (
-            <div className="border rounded-xl p-3 bg-muted/30 space-y-2">
-              <p className="text-sm font-semibold text-foreground">
-                {previewEmails.length} destinatário{previewEmails.length !== 1 ? 's' : ''} encontrado{previewEmails.length !== 1 ? 's' : ''}
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-foreground">Destinatários</label>
+            {loadingPreview && <RefreshCw className="w-3 h-3 animate-spin text-muted-foreground" />}
+            {!loadingPreview && previewEmails !== null && (
+              <span className="text-xs text-muted-foreground">
+                {previewEmails.length} encontrado{previewEmails.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+          <div className="min-h-16 border rounded-xl p-3 bg-muted/30">
+            {previewEmails === null && !loadingPreview && (
+              <p className="text-xs text-muted-foreground italic">
+                Selecione um filtro ou adicione um email para ver os destinatários.
               </p>
-              {previewEmails.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-                  {previewEmails.map(e => (
-                    <span
-                      key={e}
-                      className="text-xs bg-background border rounded-full px-2 py-0.5 text-muted-foreground font-mono"
-                    >
-                      {e}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            )}
+            {loadingPreview && (
+              <p className="text-xs text-muted-foreground">Calculando...</p>
+            )}
+            {!loadingPreview && previewEmails !== null && previewEmails.length === 0 && (
+              <p className="text-xs text-muted-foreground italic">Nenhum destinatário encontrado para estes filtros.</p>
+            )}
+            {!loadingPreview && previewEmails !== null && previewEmails.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
+                {previewEmails.map(e => (
+                  <span
+                    key={e}
+                    className="text-xs bg-background border rounded-full px-2 py-0.5 text-muted-foreground font-mono"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-2 pt-2 border-t">
