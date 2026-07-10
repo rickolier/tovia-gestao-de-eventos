@@ -126,10 +126,11 @@ async function applyFilters(filtros: FiltroDef[], allUsers: UserProfile[]): Prom
 
 // ─── EmailPreviewPanel ────────────────────────────────────────────────────────
 
-function EmailPreviewPanel({ assunto, corpo, previewText }: {
+function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
   assunto: string;
   corpo: string;
   previewText: string;
+  assinatura: string;
 }) {
   return (
     <div className="space-y-3 sticky top-4">
@@ -180,6 +181,15 @@ function EmailPreviewPanel({ assunto, corpo, previewText }: {
               </span>
             )}
           </div>
+
+          {assinatura && (
+            <>
+              <div className="border-t border-gray-100 dark:border-zinc-800" />
+              <div className="text-[11px] text-gray-400 dark:text-zinc-500 whitespace-pre-wrap leading-relaxed">
+                {assinatura}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Rodapé */}
@@ -223,10 +233,12 @@ export default function AdminComunicadosTab() {
   const [applyingFilters, setApplyingFilters] = useState(false);
 
   // Comunicado compose
+  const DEFAULT_ASSINATURA = 'Obrigado!\nEquipe Tovia\n\nTovia Gestão de Eventos\ntoviaapp.com.br';
   const [comGrupoId, setComGrupoId] = useState('');
   const [comAssunto, setComAssunto] = useState('');
   const [comPreview, setComPreview] = useState('');
   const [comCorpo, setComCorpo] = useState('');
+  const [comAssinatura, setComAssinatura] = useState(DEFAULT_ASSINATURA);
   const [confirmStep, setConfirmStep] = useState(false);
   const [sending, setSending] = useState(false);
   const [progress, setProgress] = useState({ sent: 0, total: 0, errors: 0 });
@@ -395,6 +407,7 @@ export default function AdminComunicadosTab() {
     setComAssunto('');
     setComPreview('');
     setComCorpo('');
+    setComAssinatura(DEFAULT_ASSINATURA);
     setConfirmStep(false);
     setProgress({ sent: 0, total: 0, errors: 0 });
     setView('novo-comunicado');
@@ -431,7 +444,7 @@ export default function AdminComunicadosTab() {
       try {
         const nome = nameMap.get(email.toLowerCase());
         const greeting = nome ? `Olá, ${nome}, tudo bem?\n\n` : `Olá, tudo bem?\n\n`;
-        const bodyFinal = greeting + comCorpo;
+        const bodyFinal = greeting + comCorpo + (comAssinatura.trim() ? `\n\n—\n${comAssinatura}` : '');
         await Email.custom(email, comAssunto, bodyFinal, comPreview || undefined);
         setProgress(p => ({ ...p, sent: p.sent + 1 }));
       } catch {
@@ -921,7 +934,7 @@ export default function AdminComunicadosTab() {
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-foreground">Corpo do email</label>
               <Textarea
-                rows={10}
+                rows={8}
                 placeholder="Escreva o conteúdo do seu comunicado aqui..."
                 value={comCorpo}
                 onChange={e => setComCorpo(e.target.value)}
@@ -929,6 +942,25 @@ export default function AdminComunicadosTab() {
               <p className="text-xs text-muted-foreground">
                 O email será iniciado com <span className="font-mono text-primary">Olá, {'{nome}'}, tudo bem?</span> personalizado para cada destinatário.
               </p>
+            </div>
+
+            {/* Assinatura */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-foreground">Assinatura</label>
+                <button
+                  onClick={() => setComAssinatura(DEFAULT_ASSINATURA)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Restaurar padrão
+                </button>
+              </div>
+              <Textarea
+                rows={5}
+                value={comAssinatura}
+                onChange={e => setComAssinatura(e.target.value)}
+                className="font-mono text-xs"
+              />
             </div>
 
             {/* Actions */}
@@ -949,6 +981,7 @@ export default function AdminComunicadosTab() {
             assunto={comAssunto}
             corpo={comCorpo}
             previewText={comPreview}
+            assinatura={comAssinatura}
           />
         </div>
       </div>
