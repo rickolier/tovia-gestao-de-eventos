@@ -970,7 +970,7 @@ export default function AdminComunicadosTab() {
                 disabled={!comGrupoId || !comAssunto.trim() || !comCorpo.trim()}
                 className="gap-1.5"
               >
-                <Send className="w-4 h-4" /> Preparar envio
+                <Send className="w-4 h-4" /> Enviar
               </Button>
               <Button variant="ghost" onClick={() => setView('grupos')}>Cancelar</Button>
             </div>
