@@ -14,13 +14,14 @@ import {
   Megaphone, Users, Plus, Trash2, Edit2, Send, History,
   ChevronLeft, X, Mail, CheckCircle, AlertCircle, RefreshCw,
   Filter, Zap, Ticket, MapPin, CreditCard, CalendarCheck, CalendarX,
-  Bold, Italic, Underline as UnderlineIcon, Link2, Link2Off, ChevronDown,
+  Bold, Italic, Underline as UnderlineIcon, Link2, Link2Off, ChevronDown, ImagePlus,
 } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import LinkExtension from '@tiptap/extension-link';
 import { TextStyle, FontSize } from '@tiptap/extension-text-style';
 import UnderlineExtension from '@tiptap/extension-underline';
+import ImageExtension from '@tiptap/extension-image';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -154,6 +155,8 @@ function RichTextEditor({
 }) {
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
+  const [imageOpen, setImageOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
   const [sizeOpen, setSizeOpen] = useState(false);
 
   const editor = useEditor({
@@ -165,6 +168,9 @@ function RichTextEditor({
       LinkExtension.configure({
         openOnClick: false,
         HTMLAttributes: { style: 'color:#1a7a45;text-decoration:underline' },
+      }),
+      ImageExtension.configure({
+        HTMLAttributes: { style: 'max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block' },
       }),
     ],
     content: value || '<p></p>',
@@ -205,6 +211,19 @@ function RichTextEditor({
     const href = linkUrl.startsWith('http') ? linkUrl.trim() : `https://${linkUrl.trim()}`;
     editor.chain().focus().setLink({ href }).run();
     setLinkOpen(false);
+  };
+
+  const openImageInput = () => {
+    setImageUrl('');
+    setLinkOpen(false);
+    setImageOpen(true);
+  };
+
+  const applyImage = () => {
+    if (!editor || !imageUrl.trim()) return;
+    const src = imageUrl.startsWith('http') ? imageUrl.trim() : `https://${imageUrl.trim()}`;
+    editor.chain().focus().setImage({ src }).run();
+    setImageOpen(false);
   };
 
   const ToolbarBtn = ({
@@ -277,6 +296,9 @@ function RichTextEditor({
         <ToolbarBtn active={editor?.isActive('link')} onClick={toggleLink} title={editor?.isActive('link') ? 'Remover link' : 'Inserir link'}>
           {editor?.isActive('link') ? <Link2Off className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
         </ToolbarBtn>
+        <ToolbarBtn active={false} onClick={openImageInput} title="Inserir imagem ou GIF">
+          <ImagePlus className="w-3.5 h-3.5" />
+        </ToolbarBtn>
       </div>
 
       {/* Link input */}
@@ -299,6 +321,26 @@ function RichTextEditor({
         </div>
       )}
 
+      {/* Image input */}
+      {imageOpen && (
+        <div className="flex items-center gap-2 px-3 py-2 border-b bg-muted/20">
+          <ImagePlus className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+          <input
+            autoFocus
+            type="url"
+            placeholder="URL da imagem ou GIF (https://...)"
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') applyImage(); if (e.key === 'Escape') setImageOpen(false); }}
+            className="flex-1 text-xs bg-transparent outline-none placeholder:text-muted-foreground/50"
+          />
+          <button type="button" onMouseDown={e => { e.preventDefault(); applyImage(); }}
+            className="text-xs font-semibold text-primary hover:underline">Inserir</button>
+          <button type="button" onMouseDown={e => { e.preventDefault(); setImageOpen(false); }}
+            className="text-muted-foreground hover:text-foreground"><X className="w-3.5 h-3.5" /></button>
+        </div>
+      )}
+
       {/* Editor area */}
       <style>{`
         .tiptap-editor .ProseMirror p { margin: 0 0 10px; }
@@ -312,6 +354,8 @@ function RichTextEditor({
           font-style: italic;
         }
         .tiptap-editor .ProseMirror a { color:#1a7a45; text-decoration:underline; }
+        .tiptap-editor .ProseMirror img { max-width:100%; height:auto; border-radius:6px; margin:8px 0; display:block; cursor:default; }
+        .tiptap-editor .ProseMirror img.ProseMirror-selectednode { outline: 2px solid #1a7a45; outline-offset:2px; border-radius:6px; }
       `}</style>
       <div className="tiptap-editor" onClick={() => { if (sizeOpen) setSizeOpen(false); }}>
         <EditorContent editor={editor} />
