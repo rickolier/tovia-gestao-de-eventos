@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2 } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2, MessageSquare, Trash2, Clock, ChevronDown, ChevronUp, Send, RefreshCw } from 'lucide-react';
 import { useAuth } from '~/context/AuthContext';
-import { listDocuments } from '~/services/firestore';
+import { listDocuments, updateDocument, removeDocument } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
-import { orderBy, addDoc, collection } from 'firebase/firestore';
+import { orderBy, addDoc, collection, where } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { createDocument } from '~/services/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // ── Badge config ────────────────────────────────────────────────────────────
 
@@ -71,6 +72,32 @@ function articleMatchesPlan(tags: string[], plan: PlanKey): boolean {
 
 type Categoria = 'problema' | 'duvida' | 'sugestao' | 'outro';
 
+interface MeuTicket {
+  id: string;
+  titulo: string;
+  descricao: string;
+  categoria: Categoria;
+  status: 'aberto' | 'em_andamento' | 'resolvido' | 'fechado';
+  criado_em: string;
+  resposta?: string;
+  respondido_em?: string;
+  resposta_usuario?: string;
+}
+
+const STATUS_TICKET: Record<MeuTicket['status'], { label: string; color: string }> = {
+  aberto:       { label: 'Aberto',       color: 'text-blue-600 bg-blue-50 dark:bg-blue-950 dark:text-blue-400' },
+  em_andamento: { label: 'Em andamento', color: 'text-orange-600 bg-orange-50 dark:bg-orange-950 dark:text-orange-400' },
+  resolvido:    { label: 'Resolvido',    color: 'text-green-600 bg-green-50 dark:bg-green-950 dark:text-green-400' },
+  fechado:      { label: 'Fechado',      color: 'text-gray-500 bg-gray-100' },
+};
+
+const CATEGORIA_LABELS: Record<Categoria, string> = {
+  problema: 'Problema',
+  duvida:   'Dúvida',
+  sugestao: 'Sugestão',
+  outro:    'Outro',
+};
+
 const CATEGORIAS: { value: Categoria; label: string }[] = [
   { value: 'problema',  label: 'Problema técnico' },
   { value: 'duvida',    label: 'Dúvida'           },
@@ -93,6 +120,15 @@ export default function BaseConhecimento() {
   const [ticketDesc, setTicketDesc]       = useState('');
   const [ticketSending, setTicketSending] = useState(false);
   const [ticketSent, setTicketSent]       = useState(false);
+
+  // Meus chamados
+  const [meusTicketsOpen, setMeusTicketsOpen] = useState(false);
+  const [meusTickets, setMeusTickets]         = useState<MeuTicket[]>([]);
+  const [loadingMeusTickets, setLoadingMeusTickets] = useState(false);
+  const [expandidoId, setExpandidoId]         = useState<string | null>(null);
+  const [replyMode, setReplyMode]             = useState<string | null>(null);
+  const [replyText, setReplyText]             = useState('');
+  const [actionLoading, setActionLoading]     = useState<string | null>(null);
 
   async function handleTicketSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -131,6 +167,101 @@ export default function BaseConhecimento() {
       setTicketSending(false);
     }
   }
+
+  const loadMeusTickets = async () => {
+    if (!user) return;
+    setLoadingMeusTickets(true);
+    try {
+      const dados = await listDocuments<MeuTicket>('tickets', [where('userId', '==', user.uid)]);
+      setMeusTickets(dados.sort((a, b) => (b.criado_em ?? '').localeCompare(a.criado_em ?? '')));
+    } catch {
+      toast.error('Erro ao carregar chamados');
+    } finally {
+      setLoadingMeusTickets(false);
+    }
+  };
+
+  const handleAbrirMeusTickets = () => {
+    setMeusTicketsOpen(true);
+    setTicketOpen(false);
+    setTicketSent(false);
+    loadMeusTickets();
+  };
+
+  const handleAbrirChamado = () => {
+    setTicketOpen(true);
+    setMeusTicketsOpen(false);
+    setTicketSent(false);
+    setExpandidoId(null);
+    setReplyMode(null);
+  };
+
+  const handleFecharPainel = () => {
+    setTicketOpen(false);
+    setMeusTicketsOpen(false);
+    setTicketSent(false);
+  };
+
+  const handleResolverTicket = async (id: string) => {
+    setActionLoading(id);
+    try {
+      await updateDocument('tickets', id, { status: 'resolvido' });
+      setMeusTickets(prev => prev.map(t => t.id === id ? { ...t, status: 'resolvido' } : t));
+      setExpandidoId(null);
+      toast.success('Chamado marcado como resolvido');
+    } catch {
+      toast.error('Erro ao atualizar chamado');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleResponderTicket = async (id: string) => {
+    if (!replyText.trim()) return;
+    setActionLoading(id);
+    try {
+      await updateDocument('tickets', id, {
+        resposta_usuario: replyText.trim(),
+        resposta_usuario_em: new Date().toISOString(),
+        status: 'aberto',
+      });
+      setMeusTickets(prev => prev.map(t =>
+        t.id === id ? { ...t, resposta_usuario: replyText.trim(), status: 'aberto' } : t
+      ));
+      setReplyMode(null);
+      setReplyText('');
+      toast.success('Resposta enviada!');
+    } catch {
+      toast.error('Erro ao enviar resposta');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleExcluirTicket = async (id: string) => {
+    if (!window.confirm('Excluir este chamado? Essa ação não pode ser desfeita.')) return;
+    setActionLoading(id);
+    try {
+      await removeDocument('tickets', id);
+      setMeusTickets(prev => prev.filter(t => t.id !== id));
+      if (expandidoId === id) setExpandidoId(null);
+      toast.success('Chamado excluído');
+    } catch {
+      toast.error('Erro ao excluir chamado');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Carregar tickets ao fazer login (para badge de notificação)
+  useEffect(() => {
+    if (user) loadMeusTickets();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
+
+  const respostasNaoLidas = meusTickets.filter(
+    t => t.resposta && t.status === 'em_andamento' && !t.resposta_usuario
+  ).length;
 
   useEffect(() => {
     listDocuments<ArtigoBC>('base_conhecimento', [orderBy('ordem')])
@@ -411,31 +542,52 @@ export default function BaseConhecimento() {
           <div className="rounded-2xl overflow-hidden shadow-sm">
 
             {/* Banner principal */}
-            <div className="bg-primary px-8 py-10 flex flex-col sm:flex-row items-center gap-6 text-white">
-              <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
-                <LifeBuoy className="w-8 h-8 text-white" />
+            <div className="bg-primary px-8 py-8 flex flex-col sm:flex-row items-center gap-6 text-white">
+              <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
+                <LifeBuoy className="w-7 h-7 text-white" />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <p className="text-xl font-black leading-snug">Precisa de ajuda?</p>
-                <p className="text-sm text-white/80 mt-1 leading-relaxed max-w-lg">
-                  Ficou com dúvida ou encontrou algum problema? Nossa equipe está aqui — abra um chamado e respondemos em até 1 dia útil.
+                <p className="text-lg font-black leading-snug">Precisa de ajuda?</p>
+                <p className="text-sm text-white/75 mt-0.5 leading-relaxed max-w-lg">
+                  Abra um chamado e nossa equipe responde em até 1 dia útil.
                 </p>
               </div>
-              <button
-                onClick={() => { setTicketOpen(v => !v); setTicketSent(false); }}
-                className={cn(
-                  'shrink-0 flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold border-2 transition-all cursor-pointer',
-                  ticketOpen
-                    ? 'bg-white/15 text-white border-white/30 hover:bg-white/25'
-                    : 'bg-white text-primary border-white hover:bg-white/90'
-                )}
-              >
-                <LifeBuoy className="w-4 h-4" />
-                {ticketOpen ? 'Fechar' : 'Abrir chamado'}
-              </button>
+              <div className="flex items-center gap-2 shrink-0 flex-wrap justify-center">
+                {/* Botão Meus chamados */}
+                <button
+                  onClick={meusTicketsOpen ? handleFecharPainel : handleAbrirMeusTickets}
+                  className={cn(
+                    'relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all cursor-pointer',
+                    meusTicketsOpen
+                      ? 'bg-white/15 text-white border-white/30 hover:bg-white/25'
+                      : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
+                  )}
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  Meus chamados
+                  {respostasNaoLidas > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center shadow-sm">
+                      {respostasNaoLidas}
+                    </span>
+                  )}
+                </button>
+                {/* Botão Abrir chamado */}
+                <button
+                  onClick={ticketOpen ? handleFecharPainel : handleAbrirChamado}
+                  className={cn(
+                    'flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all cursor-pointer',
+                    ticketOpen
+                      ? 'bg-white/15 text-white border-white/30 hover:bg-white/25'
+                      : 'bg-white text-primary border-white hover:bg-white/90'
+                  )}
+                >
+                  <LifeBuoy className="w-4 h-4" />
+                  {ticketOpen ? 'Fechar' : 'Abrir chamado'}
+                </button>
+              </div>
             </div>
 
-            {/* Formulário */}
+            {/* ── Painel: Abrir chamado ── */}
             {ticketOpen && (
               <div className="bg-card border-x border-b border-border rounded-b-2xl px-8 py-8">
                 {ticketSent ? (
@@ -447,20 +599,21 @@ export default function BaseConhecimento() {
                       <p className="text-base font-black text-foreground">Chamado enviado com sucesso!</p>
                       <p className="text-sm text-muted-foreground mt-1">Nossa equipe vai analisar e responder em breve. Fique de olho nas notificações.</p>
                     </div>
-                    <button
-                      onClick={() => setTicketSent(false)}
-                      className="text-sm font-semibold text-primary hover:underline cursor-pointer"
-                    >
-                      Abrir outro chamado
-                    </button>
+                    <div className="flex gap-3">
+                      <button onClick={() => setTicketSent(false)} className="text-sm font-semibold text-primary hover:underline cursor-pointer">
+                        Abrir outro chamado
+                      </button>
+                      <span className="text-muted-foreground">·</span>
+                      <button onClick={handleAbrirMeusTickets} className="text-sm font-semibold text-primary hover:underline cursor-pointer">
+                        Ver meus chamados
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleTicketSubmit} className="space-y-5 max-w-2xl">
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div className="sm:col-span-2">
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
-                          Assunto
-                        </label>
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">Assunto</label>
                         <input
                           type="text"
                           value={ticketTitulo}
@@ -471,9 +624,7 @@ export default function BaseConhecimento() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
-                          Categoria
-                        </label>
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">Categoria</label>
                         <select
                           value={ticketCategoria}
                           onChange={e => setTicketCategoria(e.target.value as Categoria)}
@@ -485,9 +636,7 @@ export default function BaseConhecimento() {
                         </select>
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
-                          Descrição
-                        </label>
+                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">Descrição</label>
                         <textarea
                           value={ticketDesc}
                           onChange={e => setTicketDesc(e.target.value)}
@@ -510,6 +659,207 @@ export default function BaseConhecimento() {
                       <p className="text-xs text-muted-foreground">Respondemos em até 1 dia útil.</p>
                     </div>
                   </form>
+                )}
+              </div>
+            )}
+
+            {/* ── Painel: Meus chamados ── */}
+            {meusTicketsOpen && (
+              <div className="bg-card border-x border-b border-border rounded-b-2xl">
+                {/* Header do painel */}
+                <div className="flex items-center justify-between px-8 py-4 border-b border-border">
+                  <p className="text-sm font-black text-foreground">Meus chamados</p>
+                  <button
+                    onClick={() => loadMeusTickets()}
+                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 cursor-pointer"
+                    disabled={loadingMeusTickets}
+                  >
+                    <RefreshCw className={cn('w-3 h-3', loadingMeusTickets && 'animate-spin')} />
+                    Atualizar
+                  </button>
+                </div>
+
+                {loadingMeusTickets ? (
+                  <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Carregando...</span>
+                  </div>
+                ) : meusTickets.length === 0 ? (
+                  <div className="flex flex-col items-center gap-3 py-12 text-center px-8">
+                    <MessageSquare className="w-8 h-8 text-muted-foreground/30" />
+                    <p className="text-sm font-medium text-foreground">Nenhum chamado aberto</p>
+                    <p className="text-xs text-muted-foreground max-w-xs">
+                      Quando você abrir um chamado, ele aparecerá aqui com o histórico de respostas.
+                    </p>
+                    <button
+                      onClick={handleAbrirChamado}
+                      className="mt-1 text-sm font-semibold text-primary hover:underline cursor-pointer"
+                    >
+                      Abrir primeiro chamado
+                    </button>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border">
+                    {meusTickets.map(ticket => {
+                      const st = STATUS_TICKET[ticket.status];
+                      const temResposta = !!ticket.resposta;
+                      const naoLido = temResposta && ticket.status === 'em_andamento' && !ticket.resposta_usuario;
+                      const isExpanded = expandidoId === ticket.id;
+                      const isReplying = replyMode === ticket.id;
+                      const loading = actionLoading === ticket.id;
+                      const data = ticket.criado_em
+                        ? new Date(ticket.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
+                        : '';
+
+                      return (
+                        <div key={ticket.id} className="px-6 py-4">
+                          {/* Linha principal */}
+                          <div className="flex items-start gap-3">
+                            {/* Indicador de resposta não lida */}
+                            <div className="mt-1 shrink-0">
+                              {naoLido
+                                ? <span className="block w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                : <span className="block w-2 h-2 rounded-full bg-transparent" />
+                              }
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={cn('text-[11px] font-bold px-2 py-0.5 rounded-full', st.color)}>
+                                  {st.label}
+                                </span>
+                                <p className="text-sm font-semibold text-foreground truncate">{ticket.titulo}</p>
+                                {naoLido && (
+                                  <span className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950 px-2 py-0.5 rounded-full">
+                                    Nova resposta!
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {CATEGORIA_LABELS[ticket.categoria]} · {data}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-1 shrink-0">
+                              {/* Botão expandir */}
+                              <button
+                                onClick={() => setExpandidoId(isExpanded ? null : ticket.id)}
+                                className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                                title={isExpanded ? 'Recolher' : 'Ver detalhes'}
+                              >
+                                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                              </button>
+                              {/* Botão excluir */}
+                              <button
+                                onClick={() => handleExcluirTicket(ticket.id)}
+                                disabled={loading}
+                                className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950 transition-colors cursor-pointer disabled:opacity-40"
+                                title="Excluir chamado"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Detalhe expandido */}
+                          {isExpanded && (
+                            <div className="mt-4 ml-5 space-y-4">
+                              {/* Minha mensagem */}
+                              <div className="space-y-1.5">
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Minha mensagem</p>
+                                <div className="bg-muted/40 rounded-xl px-4 py-3 text-sm text-foreground leading-relaxed">
+                                  {ticket.descricao}
+                                </div>
+                              </div>
+
+                              {/* Resposta da equipe */}
+                              {temResposta ? (
+                                <div className="space-y-1.5">
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Resposta da Equipe Tovia</p>
+                                    {ticket.respondido_em && (
+                                      <span className="text-[10px] text-muted-foreground">
+                                        {new Date(ticket.respondido_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 text-sm text-foreground leading-relaxed">
+                                    {ticket.resposta}
+                                  </div>
+
+                                  {/* Resposta do usuário já enviada */}
+                                  {ticket.resposta_usuario && (
+                                    <div className="space-y-1.5 mt-2">
+                                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Sua resposta</p>
+                                      <div className="bg-muted/40 rounded-xl px-4 py-3 text-sm text-foreground leading-relaxed">
+                                        {ticket.resposta_usuario}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Ações (só se não resolvido/fechado e não respondendo) */}
+                                  {ticket.status !== 'resolvido' && ticket.status !== 'fechado' && !isReplying && (
+                                    <div className="flex gap-2 pt-1">
+                                      <button
+                                        onClick={() => { setReplyMode(ticket.id); setReplyText(''); }}
+                                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+                                      >
+                                        <Send className="w-3.5 h-3.5" />
+                                        Responder
+                                      </button>
+                                      <button
+                                        onClick={() => handleResolverTicket(ticket.id)}
+                                        disabled={loading}
+                                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50"
+                                      >
+                                        {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                        Resolvido
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  {/* Caixa de resposta */}
+                                  {isReplying && (
+                                    <div className="space-y-2 pt-1">
+                                      <textarea
+                                        autoFocus
+                                        rows={3}
+                                        value={replyText}
+                                        onChange={e => setReplyText(e.target.value)}
+                                        placeholder="Escreva sua mensagem para a equipe Tovia..."
+                                        className="w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                                      />
+                                      <div className="flex gap-2">
+                                        <button
+                                          onClick={() => handleResponderTicket(ticket.id)}
+                                          disabled={loading || !replyText.trim()}
+                                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50"
+                                        >
+                                          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                                          Enviar
+                                        </button>
+                                        <button
+                                          onClick={() => setReplyMode(null)}
+                                          className="px-4 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                                        >
+                                          Cancelar
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-xl px-4 py-3">
+                                  <Clock className="w-3.5 h-3.5 shrink-0" />
+                                  Aguardando resposta da equipe Tovia. Retornamos em até 1 dia útil.
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             )}
