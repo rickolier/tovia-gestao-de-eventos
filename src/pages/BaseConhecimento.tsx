@@ -431,7 +431,7 @@ export default function BaseConhecimento() {
                 )}
               >
                 <LifeBuoy className="w-4 h-4" />
-                {ticketOpen ? 'Fechar chamado' : 'Abrir chamado'}
+                {ticketOpen ? 'Fechar' : 'Abrir chamado'}
               </button>
             </div>
 
