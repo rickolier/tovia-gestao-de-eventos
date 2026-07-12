@@ -1218,7 +1218,7 @@ export default function AdminComunicadosTab() {
                 rows={5}
                 value={comAssinatura}
                 onChange={e => setComAssinatura(e.target.value)}
-                className="font-mono text-xs"
+                className="text-sm"
               />
             </div>
 
