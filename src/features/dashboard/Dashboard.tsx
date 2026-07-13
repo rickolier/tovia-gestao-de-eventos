@@ -44,6 +44,7 @@ export default function Dashboard() {
   const [searchParams] = useSearchParams();
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [ticketResponseCount, setTicketResponseCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'inicio');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -73,6 +74,7 @@ export default function Dashboard() {
           const convidados = eventosConvidado.filter(e => !idsOwn.has(e.id));
           setEventos([...eventosData, ...convidados]);
           setUnreadCount(notifications.length);
+          setTicketResponseCount(notifications.filter(n => n.tipo === 'ticket_respondido').length);
           generateDailySummary(eventosData);
         } catch (error: any) {
           console.error('Error fetching dashboard data:', error);
@@ -225,6 +227,11 @@ export default function Dashboard() {
             <button className="sidebar-nav-item w-full text-white/60 hover:text-white hover:bg-white/10">
               <BookOpen className="w-[18px] h-[18px]" />
               Base de Conhecimento
+              {ticketResponseCount > 0 && (
+                <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold px-1 leading-none">
+                  {ticketResponseCount}
+                </span>
+              )}
             </button>
           </Link>
           <button
