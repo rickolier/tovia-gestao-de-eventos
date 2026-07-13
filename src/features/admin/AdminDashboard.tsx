@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
   Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
-  ChevronDown,
+  ChevronDown, FileText,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminFinancialTab from './AdminFinancialTab';
@@ -19,6 +19,7 @@ import AdminTicketsTab from './AdminTicketsTab';
 import AdminCSPanelTab from './AdminCSPanelTab';
 import AdminComunicadosTab from './AdminComunicadosTab';
 import AdminBillingKeyTab from './AdminBillingKeyTab';
+import AdminDocumentoProdutoTab from './AdminDocumentoProdutoTab';
 import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 
 type AdminRole = 'criador' | 'suporte';
@@ -43,48 +44,45 @@ const NAV: NavGroup[] = [
   {
     section: 'Geral', roles: ['criador'],
     items: [
-      { id: 'overview',   label: 'Visão Geral', icon: LayoutDashboard, roles: ['criador'] },
-      { id: 'relatorios', label: 'Relatórios',  icon: TrendingUp,      roles: ['criador'] },
+      { id: 'overview',     label: 'Visão Geral',        icon: LayoutDashboard, roles: ['criador'] },
+      { id: 'relatorios',   label: 'Relatórios',         icon: TrendingUp,      roles: ['criador'] },
+      { id: 'billing-key',  label: 'Configuração de API', icon: KeyRound,       roles: ['criador'] },
     ],
   },
   {
     section: 'Clientes', roles: ['criador', 'suporte'],
     items: [
-      { id: 'clientes',       label: 'Clientes',              icon: Users,       roles: ['criador'] },
-      { id: 'tickets',        label: 'Tickets',               icon: LifeBuoy,    roles: ['criador', 'suporte'] },
-      { id: 'cs-panel',       label: 'Painel CS',             icon: Headphones,  roles: ['criador', 'suporte'] },
-      { id: 'knowledge-base', label: 'Base de Conhecimento',  icon: BookOpen,    roles: ['criador', 'suporte'] },
-    ],
-  },
-  {
-    section: 'Tecnologia', roles: ['criador'],
-    items: [
-      { id: 'gateway',     label: 'Monitor Gateway',   icon: Wifi,     roles: ['criador'] },
-      { id: 'billing-key', label: 'Configuração de API', icon: KeyRound, roles: ['criador'] },
+      { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['criador', 'suporte'] },
+      { id: 'clientes',       label: 'Clientes',             icon: Users,      roles: ['criador'] },
+      { id: 'gateway',        label: 'Monitor Gateway',      icon: Wifi,       roles: ['criador'] },
+      { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['criador', 'suporte'] },
+      { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['criador', 'suporte'] },
     ],
   },
   {
     section: 'Marketing', roles: ['criador'],
     items: [
-      { id: 'design-system', label: 'Design System',         icon: Palette,    roles: ['criador'] },
-      { id: 'calculator',    label: 'Calculadora',           icon: Calculator, roles: ['criador'] },
-      { id: 'comunicados',   label: 'Comunicados',           icon: Megaphone,  roles: ['criador'] },
+      { id: 'calculator',         label: 'Calculadora',          icon: Calculator, roles: ['criador'] },
+      { id: 'comunicados',        label: 'Comunicados',          icon: Megaphone,  roles: ['criador'] },
+      { id: 'design-system',      label: 'Design System',        icon: Palette,    roles: ['criador'] },
+      { id: 'documento-produto',  label: 'Documento de Produto', icon: FileText,   roles: ['criador'] },
     ],
   },
 ];
 
 const TAB_TITLES: Record<string, string> = {
-  overview:        'Visão Geral',
-  relatorios:      'Relatórios',
-  clientes:        'Clientes',
-  tickets:         'Tickets',
-  'cs-panel':      'Painel CS',
-  'knowledge-base': 'Base de Conhecimento',
-  gateway:         'Monitor Gateway',
-  'billing-key':   'Configuração de API',
-  'design-system': 'Design System',
-  calculator:      'Calculadora',
-  comunicados:     'Comunicados',
+  overview:             'Visão Geral',
+  relatorios:           'Relatórios',
+  'billing-key':        'Configuração de API',
+  'knowledge-base':     'Base de Conhecimento',
+  clientes:             'Clientes',
+  gateway:              'Monitor Gateway',
+  'cs-panel':           'Painel CS',
+  tickets:              'Suporte',
+  calculator:           'Calculadora',
+  comunicados:          'Comunicados',
+  'design-system':      'Design System',
+  'documento-produto':  'Documento de Produto',
 };
 
 export default function AdminDashboard() {
@@ -213,17 +211,18 @@ export default function AdminDashboard() {
             <p className="text-sm text-muted-foreground mt-1">Central Tovia</p>
           </div>
 
-          {activeTab === 'overview'        && <AdminOverviewTab />}
-          {activeTab === 'relatorios'      && <AdminFinancialTab />}
-          {activeTab === 'clientes'        && <AdminClientesTab />}
-          {activeTab === 'tickets'         && <AdminTicketsTab />}
-          {activeTab === 'cs-panel'        && <AdminCSPanelTab />}
-          {activeTab === 'knowledge-base'  && <AdminKnowledgeBaseTab readOnly={role === 'suporte'} />}
-          {activeTab === 'gateway'         && <AdminGatewayTab />}
-          {activeTab === 'billing-key'     && <AdminBillingKeyTab />}
-          {activeTab === 'design-system'   && <DesignSystemTab />}
-          {activeTab === 'calculator'      && <AdminCalculatorTab />}
-          {activeTab === 'comunicados'     && <AdminComunicadosTab />}
+          {activeTab === 'overview'           && <AdminOverviewTab />}
+          {activeTab === 'relatorios'         && <AdminFinancialTab />}
+          {activeTab === 'billing-key'        && <AdminBillingKeyTab />}
+          {activeTab === 'knowledge-base'     && <AdminKnowledgeBaseTab readOnly={role === 'suporte'} />}
+          {activeTab === 'clientes'           && <AdminClientesTab />}
+          {activeTab === 'gateway'            && <AdminGatewayTab />}
+          {activeTab === 'cs-panel'           && <AdminCSPanelTab />}
+          {activeTab === 'tickets'            && <AdminTicketsTab />}
+          {activeTab === 'calculator'         && <AdminCalculatorTab />}
+          {activeTab === 'comunicados'        && <AdminComunicadosTab />}
+          {activeTab === 'design-system'      && <DesignSystemTab />}
+          {activeTab === 'documento-produto'  && <AdminDocumentoProdutoTab />}
         </main>
       </div>
     </div>

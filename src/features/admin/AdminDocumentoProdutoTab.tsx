@@ -1,0 +1,833 @@
+import React, { useRef } from 'react';
+import { FileDown } from 'lucide-react';
+
+const DOC_HTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia — Documento de Produto e Estratégia</title>
+<style>
+:root {
+  --g: #1a7a45; --g-dark: #0d5c32; --g-tint: #e8f5ee; --g-mid: #bbdeca;
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-0: #111110; --surface-1: #1c1c1a;
+    --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+    --border: #2e2e2a; --g-tint: #0d2e1a;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface-0); color: var(--text-primary); font-size: 15px; line-height: 1.7; }
+a { color: var(--g); text-decoration: none; }
+.ico { display: inline-block; width: 1em; height: 1em; vertical-align: -0.13em; overflow: visible; flex-shrink: 0; }
+.ico-sm { width: 14px; height: 14px; }
+.ico-lg { width: 20px; height: 20px; }
+.doc { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+.cover { border-bottom: 0.5px solid var(--border); padding-bottom: 40px; margin-bottom: 56px; }
+.cover-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--g-tint); color: var(--g); font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+.cover h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; letter-spacing: -1px; line-height: 1.1; color: var(--text-primary); margin-bottom: 16px; }
+.cover-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.75; max-width: 580px; margin-bottom: 28px; }
+.cover-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.cover-meta span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+.toc { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 56px; }
+.toc-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-item { font-size: 13px; color: var(--g); display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.toc-num { color: var(--text-muted); font-size: 11px; min-width: 18px; }
+section { margin-bottom: 64px; scroll-margin-top: 24px; }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--g); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+section h2 { font-size: 24px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 12px; line-height: 1.25; }
+section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+.divider { height: 0.5px; background: var(--border); margin: 48px 0; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+.feature-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; }
+.feature-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--g-tint); color: var(--g); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.feature-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.feature-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+.hebrew-explain { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.he-item { display: flex; flex-direction: column; gap: 2px; }
+.he-script { font-size: 16px; color: var(--g); font-weight: 400; letter-spacing: 1px; }
+.he-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.he-meaning { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+.plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 20px; }
+.plan-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 14px; position: relative; overflow: hidden; }
+.plan-card.featured { border-color: var(--g); border-width: 1.5px; }
+.plan-badge { position: absolute; top: 0; right: 0; background: var(--g); color: #fff; font-size: 9px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 0 10px 0 8px; }
+.plan-hebrew { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
+.plan-name { font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+.plan-price { font-size: 22px; font-weight: 500; color: var(--g); margin-bottom: 12px; line-height: 1.1; }
+.plan-price span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.plan-features li { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+.stack-row { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.stack-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 16px; display: grid; grid-template-columns: 120px 1fr auto; gap: 12px; align-items: center; }
+.stack-layer { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+.stack-tech { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.stack-role { font-size: 12px; color: var(--text-secondary); }
+.stack-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; background: var(--g-tint); color: var(--g); }
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; margin-top: 20px; }
+.swot-cell { background: var(--surface-1); padding: 20px; }
+.swot-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.swot-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.swot-label { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+.swot-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.swot-items li { font-size: 12px; color: var(--text-secondary); line-height: 1.5; padding-left: 12px; position: relative; }
+.swot-items li::before { content: '–'; position: absolute; left: 0; color: var(--text-muted); }
+.traction-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.traction-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+.traction-icon { color: var(--g); margin-top: 1px; }
+.traction-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+.traction-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+.pain-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.pain-item { border-left: 3px solid var(--border); padding: 10px 16px; }
+.pain-item.org { border-color: #ef4444; }
+.pain-item.part { border-color: #f59e0b; }
+.pain-item.fin { border-color: #3b82f6; }
+.pain-who { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.pain-text { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+.conv-sub { font-size: 13px; font-weight: 500; color: var(--text-primary); margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; }
+.conv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.conv-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 7px; }
+.conv-badge { display: inline-flex; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; width: fit-content; }
+.conv-badge.w { background: #fee2e2; color: #dc2626; }
+.conv-badge.t { background: #fef3c7; color: #b45309; }
+.conv-badge.ok { background: #dcfce7; color: #16a34a; }
+.conv-problem { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.3; }
+.conv-action { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.conv-result { font-size: 11px; color: var(--g); font-weight: 500; display: flex; align-items: center; gap: 5px; border-top: 0.5px solid var(--border); padding-top: 7px; margin-top: 2px; }
+.infra-stages { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.infra-stage { display: grid; grid-template-columns: 160px 1fr; gap: 16px; align-items: start; background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.infra-stage-label { font-size: 12px; font-weight: 500; }
+.infra-stage-scale { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.infra-tools { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.callout { background: var(--g-tint); border-left: 3px solid var(--g); border-radius: 0 8px 8px 0; padding: 14px 16px; margin: 20px 0; }
+.callout p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.65; }
+.callout strong { color: var(--g); }
+.diferencial-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.diferencial-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; gap: 10px; align-items: start; }
+.diferencial-icon { color: var(--g); margin-top: 1px; flex-shrink: 0; }
+.diferencial-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+.diferencial-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.roadmap-list { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+.roadmap-item { display: grid; grid-template-columns: 28px 1fr; gap: 16px; padding-bottom: 28px; position: relative; }
+.roadmap-item:last-child { padding-bottom: 0; }
+.roadmap-item:not(:last-child)::before { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 1px; background: var(--border); }
+.roadmap-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 700; margin-top: 0; }
+.roadmap-dot.done { background: var(--g); color: #fff; }
+.roadmap-dot.next { background: var(--g-tint); color: var(--g); border: 1.5px solid var(--g-mid); }
+.roadmap-dot.future { background: var(--surface-1); color: var(--text-muted); border: 1px solid var(--border); }
+.roadmap-phase { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.roadmap-phase.done { color: var(--g); }
+.roadmap-phase.next { color: #b45309; }
+.roadmap-phase.future { color: var(--text-muted); }
+.roadmap-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.roadmap-items { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.roadmap-items li { font-size: 12px; color: var(--text-secondary); padding-left: 14px; position: relative; line-height: 1.5; }
+.roadmap-items li::before { content: '·'; position: absolute; left: 4px; color: var(--text-muted); }
+@media (max-width: 560px) {
+  .toc-grid, .plan-grid, .diferencial-list, .swot-grid, .conv-grid, .hebrew-explain { grid-template-columns: 1fr; }
+  .stack-item { grid-template-columns: 1fr; gap: 4px; }
+  .infra-stage { grid-template-columns: 1fr; gap: 6px; }
+}
+@media print {
+  body { background: #fff; }
+  .doc { padding: 24px; }
+}
+</style>
+</head>
+<body>
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-3.87 3.13-7 7-7s7 3.13 7 7"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="1"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="22"/><line x1="15" y1="4" x2="15" y2="22"/></symbol>
+<symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l1.8 5.5 5.5 1.5-5.5 1.5L12 16l-1.8-5.5L4.5 9l5.7-1.5z"/><path d="M19 13l.6 1.9 1.9.6-1.9.6L19 18l-.6-1.9-1.9-.6 1.9-.6z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v12H3z"/><path d="M3 9L6 3h12l3 6"/><path d="M10 21v-5h4v5"/><path d="M3 9a3 3 0 0 0 6 0M9 9a3 3 0 0 0 6 0M15 9a3 3 0 0 0 6 0"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 8l10 6 10-6z"/><path d="M2 13l10 6 10-6"/><path d="M2 18l10 6 10-6"/></symbol>
+<symbol id="i-shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L5 6v6c0 4.4 3 8.1 7 9 4-.9 7-4.6 7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9L4 12l4 3"/><path d="M16 9l4 3-4 3"/><line x1="14" y1="5" x2="10" y2="19"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="6" rx="1"/><rect x="2" y="13" width="20" height="6" rx="1"/><circle cx="18" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="16" r="1" fill="currentColor" stroke="none"/><line x1="6" y1="6" x2="10" y2="6"/><line x1="6" y1="16" x2="10" y2="16"/></symbol>
+<symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l5-5"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-trending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 6-7"/><path d="M15 9h5v5"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor" stroke="currentColor" stroke-width="1"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L4 6v15l5-2 6 2 5-2V4l-5 2z"/><line x1="9" y1="4" x2="9" y2="19"/><line x1="15" y1="6" x2="15" y2="21"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><path d="M21 3l-5 5M18 3h3v3"/></symbol>
+<symbol id="i-cal-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4z"/><line x1="15" y1="5" x2="15" y2="19" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12" r="3"/><circle cx="6" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="9" y2="15"/><circle cx="15" cy="15" r="1.5"/><circle cx="17.5" cy="15" r="1.5" opacity=".5"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></symbol>
+<symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></symbol>
+<symbol id="i-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="4" height="4" rx=".5"/><path d="M5.3 7l.8.8 1.4-1.4"/><rect x="4" y="11" width="4" height="4" rx=".5"/><rect x="4" y="17" width="4" height="4" rx=".5"/><line x1="11" y1="7" x2="20" y2="7"/><line x1="11" y1="13" x2="20" y2="13"/><line x1="11" y1="19" x2="20" y2="19"/></symbol>
+<symbol id="i-bed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v11H3z"/><line x1="3" y1="14" x2="21" y2="14"/><line x1="3" y1="19" x2="3" y2="21"/><line x1="21" y1="19" x2="21" y2="21"/><rect x="7" y="9" width="4" height="4" rx="1"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 0 1 7.5-6.566 5 5 0 0 1 7.5 6.566z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.7 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.3z"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+<symbol id="i-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11c0-5 4-9 9-9s9 4 9 9"/><path d="M3 11v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H3z"/><path d="M21 11v3a2 2 0 0 1-2 2h-1a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3z"/><path d="M12 20a4 4 0 0 0 4-4"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/><path d="M19 8V6a2 2 0 0 0-2-2H7L5 8"/><circle cx="17" cy="15" r="2"/></symbol>
+<symbol id="i-puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v2a2 2 0 0 0 0 4v2H5a2 2 0 0 0-2 2v3h2a2 2 0 0 1 4 0h2v-2a2 2 0 0 0 4 0v-2h2a2 2 0 0 0 2-2V9h-2a2 2 0 0 1-4 0V7a2 2 0 0 0-2-2V3z"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="7" y1="6" x2="17" y2="6" stroke-width="1"/><line x1="11" y1="18" x2="13" y2="18"/></symbol>
+<symbol id="i-brazil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="M12 6L5 12l7 6 7-6z"/><circle cx="12" cy="12" r="2.2"/></symbol>
+<symbol id="i-shield-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L5 6v6c0 4.4 3 8.1 7 9 4-.9 7-4.6 7-9V6z"/><rect x="9" y="11" width="6" height="5" rx="1"/><path d="M10 11V9a2 2 0 0 1 4 0v2"/></symbol>
+<symbol id="i-dollar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="6" x2="12" y2="18"/><path d="M9 9.5h4a1.5 1.5 0 0 1 0 3H11a1.5 1.5 0 0 0 0 3h4"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="11" rx="1"/><path d="M3 10V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/><line x1="12" y1="6" x2="12" y2="21"/><path d="M12 6c-1-2-3-2.5-4-1.5s-.5 2.5 1 3.5h3z"/><path d="M12 6c1-2 3-2.5 4-1.5s.5 2.5-1 3.5h-3z"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none"/><path d="M14 14h2v2h-2zM18 14h3M14 18v3M18 18h2v2M21 18v.01M14 21h3"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2-2.96 0-7-1-8 0 3.04-1.77 4.74-3 6-1.23 1.26-2 3.24-2 5a6 6 0 0 0 12 0c0-1.53-1.06-3.94-2-5-1 2-1.5 3-3 2z"/></symbol>
+<symbol id="i-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></symbol>
+</defs></svg>
+
+<div class="doc">
+  <div class="cover">
+    <div class="cover-eyebrow"><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg> Documento interno</div>
+    <h1>Tovia — produto, estratégia<br>e infraestrutura</h1>
+    <p class="cover-sub">Uma visão completa do que é o Tovia, como foi construído, onde está hoje e para onde vai. Documento vivo, atualizado conforme o produto evolui.</p>
+    <div class="cover-meta">
+      <span><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg> Julho de 2026</span>
+      <span><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg> Henrique Olier</span>
+      <span><svg class="ico" aria-hidden="true"><use href="#i-brazil"/></svg> Mercado brasileiro</span>
+      <span><svg class="ico" aria-hidden="true"><use href="#i-building"/></svg> SaaS B2B</span>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Índice</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#produto"><span class="toc-num">01</span> O que é o Tovia</a>
+      <a class="toc-item" href="#funcionalidades"><span class="toc-num">02</span> Funcionalidades</a>
+      <a class="toc-item" href="#modelo"><span class="toc-num">03</span> Modelo de negócio</a>
+      <a class="toc-item" href="#planos"><span class="toc-num">04</span> Planos e preços</a>
+      <a class="toc-item" href="#diferenciais"><span class="toc-num">05</span> Diferenciais</a>
+      <a class="toc-item" href="#construcao"><span class="toc-num">06</span> Como foi construído</a>
+      <a class="toc-item" href="#infraestrutura"><span class="toc-num">07</span> Infraestrutura e segurança</a>
+      <a class="toc-item" href="#swot"><span class="toc-num">08</span> Análise SWOT</a>
+      <a class="toc-item" href="#tracao"><span class="toc-num">09</span> Pontos de tração</a>
+      <a class="toc-item" href="#dores"><span class="toc-num">10</span> Dores dos usuários</a>
+      <a class="toc-item" href="#conversao"><span class="toc-num">11</span> Plano de conversão</a>
+      <a class="toc-item" href="#roadmap"><span class="toc-num">12</span> Momento atual e roadmap</a>
+    </div>
+  </div>
+
+  <section id="produto">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkles"/></svg> Visão geral</div>
+    <h2>O que é o Tovia</h2>
+    <p>O Tovia é uma plataforma SaaS de gestão de eventos voltada para o mercado brasileiro. Ele resolve um problema comum entre organizadores: a fragmentação de ferramentas — inscrições em um lugar, controle financeiro em outro, equipe coordenada pelo WhatsApp, lista de presença em planilha.</p>
+    <p>O Tovia unifica tudo isso em um só lugar. O organizador cria o evento, configura ingressos, recebe inscrições, controla o financeiro, gerencia a equipe, faz check-in no dia e se comunica com participantes por email — sem sair da plataforma. Os participantes acessam suas inscrições via código OTP enviado por email, sem precisar criar conta.</p>
+    <div class="callout">
+      <p><strong>Modelo BYOG (Bring Your Own Gateway):</strong> cada organizador conecta o próprio gateway Asaas e recebe diretamente dos participantes. O Tovia cuida da gestão — o dinheiro é inteiramente do organizador, sem intermediação da plataforma.</p>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="funcionalidades">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-grid"/></svg> Produto</div>
+    <h2>Funcionalidades</h2>
+    <p>O Tovia é organizado em 13 módulos que cobrem o ciclo completo de um evento — da criação à comunicação pós-evento.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-cal-plus"/></svg></div>
+        <div class="feature-name">Gestão de eventos</div>
+        <div class="feature-desc">Criação, edição e publicação de eventos com datas, local, descrição e capacidade.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-ticket"/></svg></div>
+        <div class="feature-name">Ingressos e inscrições</div>
+        <div class="feature-desc">Tipos de ingresso (pago, gratuito, doação), formulários personalizados, cupons de desconto.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-cash"/></svg></div>
+        <div class="feature-name">Financeiro</div>
+        <div class="feature-desc">Controle de receitas, despesas, doações e resultado líquido por evento. Relatórios completos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-card"/></svg></div>
+        <div class="feature-name">Pagamentos automáticos</div>
+        <div class="feature-desc">PIX, boleto e cartão via gateway do organizador. Confirmação automática por webhook.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-users"/></svg></div>
+        <div class="feature-name">Equipe</div>
+        <div class="feature-desc">Convite de colaboradores com permissões por função. Cada membro acessa apenas o necessário.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-check-circle"/></svg></div>
+        <div class="feature-name">Check-in com QR code</div>
+        <div class="feature-desc">Leitura do QR code do ingresso na entrada. Confirma presença em tempo real.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-layout"/></svg></div>
+        <div class="feature-name">Páginas de venda</div>
+        <div class="feature-desc">Páginas públicas personalizadas para venda de ingressos, com branding do organizador.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-checklist"/></svg></div>
+        <div class="feature-name">Tarefas e produção</div>
+        <div class="feature-desc">Lista de tarefas por evento, atribuída a membros da equipe, com status e prazos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-bed"/></svg></div>
+        <div class="feature-name">Gestão de hospedagem</div>
+        <div class="feature-desc">Quartos, grupos e alocação de participantes em eventos com hospedagem incluída.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-heart"/></svg></div>
+        <div class="feature-name">Doações</div>
+        <div class="feature-desc">Módulo dedicado para eventos com coleta de doações, com alocação e relatório.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-search"/></svg></div>
+        <div class="feature-name">Consulta de inscrição</div>
+        <div class="feature-desc">Participante consulta a inscrição via email + código OTP. Exibe QR code para check-in.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-star"/></svg></div>
+        <div class="feature-name">Avaliação pós-evento</div>
+        <div class="feature-desc">Link de satisfação enviado após o evento. Coleta feedback diretamente do participante.</div>
+      </div>
+      <div class="feature-card" style="border-color:var(--g-mid)">
+        <div class="feature-icon" style="background:var(--g);color:#fff"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>
+        <div class="feature-name">Comunicados</div>
+        <div class="feature-desc">Email marketing com editor rico (Tiptap): negrito, itálico, hiperlinks, imagens, GIFs. Segmentação por grupo e histórico de envios.</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:20px">
+      <p><strong>Base de Conhecimento + Suporte:</strong> central de artigos de ajuda com sistema de tickets integrado. O organizador abre chamados diretamente na plataforma, a equipe Tovia responde, e uma notificação aparece no sidebar quando há resposta. Histórico completo de chamados com thread de conversação.</p>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="modelo">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-store"/></svg> Negócio</div>
+    <h2>Modelo de negócio</h2>
+    <p>O Tovia opera como SaaS B2B: os clientes são os organizadores de eventos, que pagam uma assinatura mensal para acessar as funcionalidades da plataforma.</p>
+    <p>Os participantes pagam os ingressos diretamente ao organizador, via gateway próprio (Asaas). O dinheiro cai na conta do organizador — o Tovia é a plataforma de gestão, não o intermediador financeiro.</p>
+    <p>Essa arquitetura BYOG tem três vantagens estratégicas: o Tovia não assume risco regulatório de intermediação financeira, o organizador mantém controle total sobre sua relação financeira com participantes, e a implantação é mais rápida — sem aprovação de conta de pagamentos para o Tovia.</p>
+    <div class="callout">
+      <p><strong>Ciclo de receita:</strong> organizador descobre o Tovia → usa o plano gratuito (Chinam) → sente a necessidade de funcionalidades avançadas → converte para um plano pago. O plano gratuito é a porta de entrada, não o destino.</p>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="planos">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-layers"/></svg> Preços</div>
+    <h2>Planos e preços</h2>
+    <p>Os planos têm nomes em hebraico, escolhidos para refletir uma jornada de crescimento — da gratuidade à completude.</p>
+    <div class="hebrew-explain">
+      <div class="he-item">
+        <div class="he-script">חִנָּם</div>
+        <div class="he-name">Chinam — Gratuito</div>
+        <div class="he-meaning">"Grátis, de graça." O ponto de partida — sem custo, sem compromisso.</div>
+      </div>
+      <div class="he-item">
+        <div class="he-script">פֶּתַח</div>
+        <div class="he-name">Pétach — Essencial</div>
+        <div class="he-meaning">"Porta, abertura." O primeiro passo real para além do gratuito.</div>
+      </div>
+      <div class="he-item">
+        <div class="he-script">כֹּחַ</div>
+        <div class="he-name">Koách — Profissional</div>
+        <div class="he-meaning">"Força, poder." Quando o evento se torna um negócio sério.</div>
+      </div>
+      <div class="he-item">
+        <div class="he-script">שָׁלֵם</div>
+        <div class="he-name">Chalém — Completo</div>
+        <div class="he-meaning">"Inteiro, perfeito, completo." A operação profissional sem limites.</div>
+      </div>
+    </div>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-hebrew">חִנָּם · Chinam</div>
+        <div class="plan-name">Gratuito</div>
+        <div class="plan-price">R$ 0 <span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 1 evento ativo</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Até 100 vagas</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Inscrições gratuitas</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Check-in por QR code</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Formulários básicos</li>
+        </ul>
+      </div>
+      <div class="plan-card">
+        <div class="plan-hebrew">פֶּתַח · Pétach</div>
+        <div class="plan-name">Essencial</div>
+        <div class="plan-price">R$ 49 <span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 3 eventos ativos</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Até 200 vagas</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 3 tipos de ingresso</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Módulo financeiro</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Relatórios</li>
+        </ul>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">Popular</div>
+        <div class="plan-hebrew">כֹּחַ · Koách</div>
+        <div class="plan-name">Profissional</div>
+        <div class="plan-price">R$ 129 <span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 5 eventos ativos</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Até 500 vagas</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 5 membros de equipe</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Gestão completa</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Tarefas e hospedagem</li>
+        </ul>
+      </div>
+      <div class="plan-card">
+        <div class="plan-hebrew">שָׁלֵם · Chalém</div>
+        <div class="plan-name">Completo</div>
+        <div class="plan-price">R$ 299 <span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Eventos ilimitados</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Vagas ilimitadas</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 10 membros de equipe</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Pagamentos automáticos</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Gateway próprio (BYOG)</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:14px">Trial de 14 dias com acesso completo ao Profissional, sem cartão de crédito. Reverte automaticamente para Chinam ao fim do período.</p>
+  </section>
+  <div class="divider"></div>
+
+  <section id="diferenciais">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-shield-check"/></svg> Posicionamento</div>
+    <h2>Diferenciais competitivos</h2>
+    <p>O Tovia não compete apenas em preço — compete em escopo, modelo e adequação ao mercado brasileiro.</p>
+    <div class="diferencial-list">
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-wallet"/></svg></div>
+        <div>
+          <div class="diferencial-name">BYOG — o organizador fica com o dinheiro</div>
+          <div class="diferencial-desc">Nenhuma taxa por transação. O organizador conecta o próprio Asaas e recebe diretamente, sem intermediação do Tovia.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-puzzle"/></svg></div>
+        <div>
+          <div class="diferencial-name">Suíte completa em um só lugar</div>
+          <div class="diferencial-desc">13 módulos integrados: inscrições, financeiro, equipe, check-in, hospedagem, tarefas, doações, comunicados. Não é só venda de ingresso.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-phone"/></svg></div>
+        <div>
+          <div class="diferencial-name">Acesso do participante sem login</div>
+          <div class="diferencial-desc">Participante consulta inscrição e acessa QR code via código OTP no email — sem criar conta.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-brazil"/></svg></div>
+        <div>
+          <div class="diferencial-name">Feito para o Brasil</div>
+          <div class="diferencial-desc">PIX, boleto, CPF/CNPJ, LGPD, Asaas — tudo pensado para o contexto regulatório e cultural brasileiro.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-shield-lock"/></svg></div>
+        <div>
+          <div class="diferencial-name">Segurança desde o início</div>
+          <div class="diferencial-desc">Rate limiting, OTP de uso único, chaves de gateway criptografadas AES-256-GCM, regras Firestore granulares, LGPD no produto.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-headset"/></svg></div>
+        <div>
+          <div class="diferencial-name">Suporte integrado na plataforma</div>
+          <div class="diferencial-desc">Sistema de tickets dentro do produto — o organizador abre chamados sem sair do Tovia e recebe notificações no sidebar quando há resposta.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-mail"/></svg></div>
+        <div>
+          <div class="diferencial-name">Comunicados com editor rico</div>
+          <div class="diferencial-desc">Email marketing com editor visual (Tiptap v3), suporte a imagens, GIFs, formatação e segmentação por grupo de destinatários.</div>
+        </div>
+      </div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-dollar"/></svg></div>
+        <div>
+          <div class="diferencial-name">Preço acessível para independentes</div>
+          <div class="diferencial-desc">A partir de R$ 49/mês, com plano gratuito funcional. Preço fixo mensal — o mesmo valor independente de quantos eventos ou participantes você tiver.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="construcao">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-code"/></svg> Tecnologia</div>
+    <h2>Como foi construído</h2>
+    <p>O Tovia foi construído por um único fundador do zero, sem experiência prévia em desenvolvimento de software — aprendendo as tecnologias enquanto construía o produto. Toda a stack foi escolhida para maximizar velocidade de desenvolvimento, minimizar custo fixo e garantir escalabilidade futura.</p>
+    <div class="stack-row">
+      <div class="stack-item">
+        <div><div class="stack-layer">Frontend</div><div class="stack-tech">React 19 + TypeScript</div></div>
+        <div class="stack-role">Interface do organizador, páginas públicas, editor rico de comunicados (Tiptap v3)</div>
+        <div class="stack-tag">Vite 6</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Estilo</div><div class="stack-tech">Tailwind CSS + shadcn/ui</div></div>
+        <div class="stack-role">Design system, componentes, responsividade, dark mode</div>
+        <div class="stack-tag">CSS Variables</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Autenticação</div><div class="stack-tech">Firebase Auth</div></div>
+        <div class="stack-role">Login, sessão, tokens. OTP próprio via Resend para participantes</div>
+        <div class="stack-tag">Email OTP</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Banco de dados</div><div class="stack-tech">Firestore</div></div>
+        <div class="stack-role">Todos os dados — eventos, inscrições, financeiro, tickets de suporte, notificações</div>
+        <div class="stack-tag">Regras granulares</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Deploy</div><div class="stack-tech">Vercel</div></div>
+        <div class="stack-role">Hosting, serverless functions, CI/CD automático via GitHub</div>
+        <div class="stack-tag">Edge functions</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Email transacional</div><div class="stack-tech">Resend</div></div>
+        <div class="stack-role">Todos os emails — boas-vindas, confirmações, comunicados, respostas de suporte</div>
+        <div class="stack-tag">DKIM + domínio</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Pagamentos</div><div class="stack-tech">Asaas (BYOG)</div></div>
+        <div class="stack-role">Gateway conectado pelo organizador, webhook de confirmação, PIX/boleto/cartão</div>
+        <div class="stack-tag">AES-256-GCM</div>
+      </div>
+      <div class="stack-item">
+        <div><div class="stack-layer">Código fonte</div><div class="stack-tech">GitHub</div></div>
+        <div class="stack-role">Repositório privado, histórico completo, deploy automático</div>
+        <div class="stack-tag">CI/CD</div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="infraestrutura">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-server"/></svg> Segurança</div>
+    <h2>Infraestrutura e segurança</h2>
+    <p>Mesmo sendo um produto construído por um fundador solo, o Tovia tem uma postura de segurança que vai além do esperado para o estágio atual. Isso foi uma escolha deliberada — construir certo desde o início é mais barato do que corrigir depois.</p>
+    <div class="infra-stages">
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Autenticação</div><div class="infra-stage-scale">Login seguro</div></div>
+        <div class="infra-tools">Firebase Auth com email/senha. OTP de uso único para participantes (não-usuários), gerado no backend, expirado em 10 minutos e invalidado após uso. Rate limiting no endpoint de verificação.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Banco de dados</div><div class="infra-stage-scale">Regras Firestore</div></div>
+        <div class="infra-tools">Regras granulares por coleção e subcoleção. Usuários acessam apenas os próprios dados. Tickets de suporte: owner pode criar/ler/atualizar/deletar os próprios chamados; admin acessa tudo. Notificações filtradas por userId.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Chaves de gateway</div><div class="infra-stage-scale">Criptografia AES</div></div>
+        <div class="infra-tools">Chaves da API Asaas criptografadas com AES-256-GCM antes de persistir no Firestore. Descriptografadas apenas em serverless function no momento do uso. Chave-mestra fica apenas no ambiente Vercel.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Email</div><div class="infra-stage-scale">Resend + DKIM</div></div>
+        <div class="infra-tools">Todos os emails via Resend com domínio próprio e DKIM configurado. Nenhum email via Firebase Auth (cai em spam). Templates HTML responsivos com marca Tovia.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Deploy</div><div class="infra-stage-scale">Vercel + GitHub</div></div>
+        <div class="infra-tools">CI/CD automático via GitHub. Variáveis de ambiente no Vercel, nunca no código. HTTPS forçado. Edge functions para operações sensíveis (email, webhook, criptografia).</div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="swot">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-radar"/></svg> Análise</div>
+    <h2>Análise SWOT</h2>
+    <div class="swot-grid">
+      <div class="swot-cell">
+        <div class="swot-header"><div class="swot-dot" style="background:#22c55e"></div><div class="swot-label" style="color:#16a34a">Forças</div></div>
+        <ul class="swot-items">
+          <li>Produto completo com 13 módulos integrados</li>
+          <li>Modelo BYOG sem risco regulatório</li>
+          <li>Stack moderna, rápida e escalável</li>
+          <li>Zero dívida técnica — construído com boas práticas desde o início</li>
+          <li>Custo operacional baixo (R$4–10/cliente/mês)</li>
+          <li>Segurança robusta para o estágio atual</li>
+          <li>Comunicados com editor rico integrado</li>
+          <li>Suporte ao organizador via tickets dentro da plataforma</li>
+          <li>Velocidade de execução: fundador solo com IA como parceiro</li>
+        </ul>
+      </div>
+      <div class="swot-cell">
+        <div class="swot-header"><div class="swot-dot" style="background:#ef4444"></div><div class="swot-label" style="color:#dc2626">Fraquezas</div></div>
+        <ul class="swot-items">
+          <li>Sem app mobile nativo (ainda é PWA)</li>
+          <li>Zero usuários pagantes — produto em pré-lançamento</li>
+          <li>Brand awareness inexistente</li>
+          <li>Dependência de uma única pessoa para suporte e desenvolvimento</li>
+          <li>Relatórios financeiros ainda limitados (sem análise histórica)</li>
+          <li>Sem integrações com Sympla, Even3 ou marketplaces</li>
+        </ul>
+      </div>
+      <div class="swot-cell">
+        <div class="swot-header"><div class="swot-dot" style="background:#3b82f6"></div><div class="swot-label" style="color:#2563eb">Oportunidades</div></div>
+        <ul class="swot-items">
+          <li>Mercado de eventos no Brasil em expansão pós-pandemia</li>
+          <li>Organizadores independentes carentes de ferramenta acessível</li>
+          <li>Nicho de eventos religiosos, comunitários e educacionais mal atendido</li>
+          <li>Crescimento via indicações (NPS alto = motor orgânico)</li>
+          <li>Landing page + SEO como canal de aquisição orgânica</li>
+          <li>Parcerias com produtoras locais e freelancers de eventos</li>
+        </ul>
+      </div>
+      <div class="swot-cell">
+        <div class="swot-header"><div class="swot-dot" style="background:#f59e0b"></div><div class="swot-label" style="color:#b45309">Ameaças</div></div>
+        <ul class="swot-items">
+          <li>Sympla e Eventbrite têm market share consolidado</li>
+          <li>Custo de aquisição pode ser alto sem tração inicial</li>
+          <li>Churn fácil se o organizador não escalar eventos</li>
+          <li>Mudanças na API do Asaas podem afetar o modelo BYOG</li>
+          <li>Concorrente bem financiado pode copiar o modelo rapidamente</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="tracao">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-trending"/></svg> Estratégia</div>
+    <h2>Pontos de tração</h2>
+    <p>O Tovia tem vantagens estruturais que facilitam a aquisição orgânica e a retenção, mesmo antes do lançamento formal.</p>
+    <div class="traction-list">
+      <div class="traction-item">
+        <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-gift"/></svg></div>
+        <div>
+          <div class="traction-name">Plano gratuito funcional</div>
+          <div class="traction-desc">O Chinam permite 1 evento com até 100 vagas. Organizadores testam sem barreira financeira — isso acelera adoção inicial e boca-a-boca.</div>
+        </div>
+      </div>
+      <div class="traction-item">
+        <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-qr"/></svg></div>
+        <div>
+          <div class="traction-name">Check-in no plano gratuito</div>
+          <div class="traction-desc">Oferecer check-in por QR code no plano Chinam cria um momento de "uau" no dia do evento — visível para toda a equipe e participantes. Marketing orgânico gratuito.</div>
+        </div>
+      </div>
+      <div class="traction-item">
+        <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>
+        <div>
+          <div class="traction-name">Emails com alta entregabilidade</div>
+          <div class="traction-desc">Resend com DKIM e domínio próprio garante que os emails chegam na caixa de entrada. O editor rico de comunicados permite campanhas profissionais sem ferramentas externas.</div>
+        </div>
+      </div>
+      <div class="traction-item">
+        <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-link"/></svg></div>
+        <div>
+          <div class="traction-name">Perfil público do organizador</div>
+          <div class="traction-desc">Cada organizador pode ter uma página pública com seu portfólio de eventos — gera SEO orgânico para o Tovia e incentiva o organizador a divulgar.</div>
+        </div>
+      </div>
+      <div class="traction-item">
+        <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-headset"/></svg></div>
+        <div>
+          <div class="traction-name">Suporte humanizado e ágil</div>
+          <div class="traction-desc">Canal de tickets integrado na Base de Conhecimento. Organizadores abrem chamados sem sair da plataforma e recebem notificações em tempo real. O suporte rápido de um produto small vira diferencial competitivo real.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="dores">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-alert"/></svg> Mercado</div>
+    <h2>Dores dos usuários</h2>
+    <p>O Tovia foi desenhado para resolver problemas reais identificados no mercado brasileiro de eventos independentes.</p>
+    <div class="pain-list">
+      <div class="pain-item org">
+        <div class="pain-who">Organizador</div>
+        <div class="pain-text">"Tenho as inscrições numa planilha, o financeiro em outro app, a equipe no WhatsApp e ainda preciso controlar a lista de presença na hora. É caótico."</div>
+      </div>
+      <div class="pain-item org">
+        <div class="pain-who">Organizador</div>
+        <div class="pain-text">"As plataformas grandes cobram comissão por ingresso. Para um evento de 300 pessoas, perco R$2–3 mil só em taxas."</div>
+      </div>
+      <div class="pain-item org">
+        <div class="pain-who">Organizador</div>
+        <div class="pain-text">"Quero mandar um comunicado profissional para todos os inscritos, mas não tenho como fazer isso sem uma ferramenta de email marketing separada."</div>
+      </div>
+      <div class="pain-item part">
+        <div class="pain-who">Participante</div>
+        <div class="pain-text">"Preciso criar conta em cada plataforma diferente para consultar minha inscrição. É burocrático demais."</div>
+      </div>
+      <div class="pain-item part">
+        <div class="pain-who">Participante</div>
+        <div class="pain-text">"Os emails de confirmação caem no spam ou chegam sem nenhuma informação útil."</div>
+      </div>
+      <div class="pain-item fin">
+        <div class="pain-who">Financeiro</div>
+        <div class="pain-text">"No final do evento, não sei exatamente quanto entrou, quanto saiu e se fui lucrativo. Não tenho dados para tomar decisões."</div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="conversao">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-target"/></svg> Crescimento</div>
+    <h2>Plano de conversão</h2>
+    <p>Quatro fraquezas foram priorizadas como bloqueadoras de conversão. O plano endereça cada uma com ação concreta e resultado esperado.</p>
+    <div class="conv-sub"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> Já resolvido nesta fase</div>
+    <div class="conv-grid">
+      <div class="conv-item">
+        <div class="conv-badge ok">Feito</div>
+        <div class="conv-problem">Comunicados sem recursos — só texto puro</div>
+        <div class="conv-action">Editor de texto rico implementado com Tiptap v3: negrito, itálico, sublinhado, hiperlinks, tamanho de fonte, imagens e GIFs inline.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: emails profissionais diretamente da plataforma</div>
+      </div>
+      <div class="conv-item">
+        <div class="conv-badge ok">Feito</div>
+        <div class="conv-problem">Suporte sem canal integrado — usuário sem acesso ao time</div>
+        <div class="conv-action">Sistema de tickets na Base de Conhecimento com histórico, thread de resposta, notificação no sidebar e marcação de lido automática ao visualizar.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: suporte humanizado sem sair da plataforma</div>
+      </div>
+    </div>
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Fraquezas ainda a endereçar</div>
+    <div class="conv-grid">
+      <div class="conv-item">
+        <div class="conv-badge w">Crítico</div>
+        <div class="conv-problem">Sem brand awareness — ninguém conhece o Tovia</div>
+        <div class="conv-action">Landing page com SEO, presença no Instagram, estratégia de conteúdo focada em dores do organizador, trial de 14 dias como CTA principal.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: primeiros usuários orgânicos</div>
+      </div>
+      <div class="conv-item">
+        <div class="conv-badge t">Em progresso</div>
+        <div class="conv-problem">Sem app mobile — experiência degradada no smartphone</div>
+        <div class="conv-action">O produto já é responsivo via web. Próximo passo: configurar PWA com ícone instalável e offline básico, sem necessidade de loja de apps.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: organizador usa no celular sem fricção</div>
+      </div>
+      <div class="conv-item">
+        <div class="conv-badge t">Planejado</div>
+        <div class="conv-problem">Relatórios financeiros limitados — sem análise histórica</div>
+        <div class="conv-action">Implementar relatórios cross-evento: evolução de receita por mês, comparativo entre edições, exportação para CSV/Excel.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: organizador toma decisões com dados</div>
+      </div>
+      <div class="conv-item">
+        <div class="conv-badge t">Planejado</div>
+        <div class="conv-problem">Sem integrações externas — ilha isolada</div>
+        <div class="conv-action">Webhooks para sistemas de terceiros, integração com Google Calendar, e API pública para parceiros no futuro.</div>
+        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: Tovia entra no ecossistema do organizador</div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <section id="roadmap">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-map"/></svg> Roadmap</div>
+    <h2>Momento atual e roadmap</h2>
+    <p>O Tovia está encerrando a fase de construção do produto. Todos os 13 módulos principais estão implementados. A estrutura técnica está quase completa. O foco agora muda de construção para captação.</p>
+    <div class="callout">
+      <p><strong>Ponto de virada — julho de 2026:</strong> o produto saiu da fase de "construir funcionalidades" para a fase de "levar para o mercado". O que falta agora é visibilidade, primeiros usuários e feedback real.</p>
+    </div>
+    <div class="roadmap-list">
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div>
+          <div class="roadmap-phase done">Fase 1 — Concluída</div>
+          <div class="roadmap-title">Estrutura técnica do produto</div>
+          <ul class="roadmap-items">
+            <li>13 módulos principais implementados e funcionando</li>
+            <li>Autenticação, Firestore com regras de segurança granulares</li>
+            <li>Pagamentos via BYOG (Asaas), webhook de confirmação automática</li>
+            <li>Email transacional via Resend com DKIM e templates HTML</li>
+            <li>Check-in por QR code, formulários personalizados, cupons de desconto</li>
+            <li>Equipe com convites, permissões por função e tarefas</li>
+            <li>Comunicados com editor de texto rico (Tiptap v3): imagens, GIFs, formatação</li>
+            <li>Base de Conhecimento com sistema completo de tickets de suporte</li>
+            <li>Notificações em tempo real — badge no sidebar para respostas de suporte</li>
+            <li>Perfil público do organizador com portfólio de eventos</li>
+            <li>Onboarding com tour guiado interativo</li>
+            <li>Criptografia AES-256-GCM para chaves de gateway</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot next">→</div>
+        <div>
+          <div class="roadmap-phase next">Fase 2 — Próxima prioridade</div>
+          <div class="roadmap-title">Presença de mercado e primeiros usuários</div>
+          <ul class="roadmap-items">
+            <li>Landing page com proposta de valor clara e SEO técnico</li>
+            <li>Trial de 14 dias como CTA principal, sem cartão de crédito</li>
+            <li>Domínio e identidade visual consolidados (toviaapp.com.br)</li>
+            <li>Beta fechado — primeiros 10 organizadores reais com feedback estruturado</li>
+            <li>Presença no Instagram com conteúdo focado em dores do organizador</li>
+            <li>PWA — ícone instalável e offline básico para mobile</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">3</div>
+        <div>
+          <div class="roadmap-phase future">Fase 3 — Crescimento</div>
+          <div class="roadmap-title">Consolidação e expansão</div>
+          <ul class="roadmap-items">
+            <li>Relatórios cross-evento e exportação de dados (CSV/Excel)</li>
+            <li>Canal de aquisição orgânica ativo (indicações, NPS, conteúdo)</li>
+            <li>Integrações externas: Google Calendar, webhooks públicos</li>
+            <li>Primeiros R$5k MRR como marco de viabilidade do negócio</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">4</div>
+        <div>
+          <div class="roadmap-phase future">Fase 4 — Visão de longo prazo</div>
+          <div class="roadmap-title">Escala</div>
+          <ul class="roadmap-items">
+            <li>App mobile nativo (React Native ou PWA avançado)</li>
+            <li>API pública para parceiros e integradores</li>
+            <li>Expansão para segmentos adjacentes: igrejas, associações, escolas</li>
+            <li>Possibilidade de marketplace de eventos com descoberta pública</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:32px">
+      <p><strong>Custo operacional estimado por cliente ativo:</strong> R$4–10/mês (Firebase + Vercel + Resend). Ponto de equilíbrio com aproximadamente 5–8 clientes pagantes no Essencial. O modelo é lucrativo desde os primeiros usuários pagantes.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>`;
+
+export default function AdminDocumentoProdutoTab() {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const handleExport = () => {
+    iframeRef.current?.contentWindow?.print();
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          Documento interno — visão completa do produto, estratégia e infraestrutura.
+        </p>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+        >
+          <FileDown className="w-4 h-4" />
+          Exportar PDF
+        </button>
+      </div>
+      <iframe
+        ref={iframeRef}
+        srcDoc={DOC_HTML}
+        title="Documento de Produto e Estratégia"
+        className="w-full border border-border rounded-xl"
+        style={{ height: 'calc(100vh - 220px)', minHeight: '600px' }}
+      />
+    </div>
+  );
+}
