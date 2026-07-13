@@ -22,7 +22,7 @@ const FEATURES = [
   {
     icon: Globe,
     title: 'Páginas de Inscrição',
-    description: 'Cada evento ganha uma página pública com link próprio, pronta para compartilhar em minutos — sem precisar de desenvolvedor ou ferramenta externa.',
+    description: 'Cada evento ganha uma página pública com link próprio — você cria, personaliza e compartilha em minutos, direto no Tovia.',
     color: 'bg-blue-50 text-blue-600',
   },
   {
@@ -445,7 +445,7 @@ function AnimDashboard() {
 const FAQ_ITEMS = [
   {
     q: 'O que é o Tovia?',
-    a: 'O Tovia é uma plataforma de gestão de eventos — você cria páginas de inscrição, gerencia participantes, controla o financeiro, organiza sua equipe e faz o check-in no dia do evento, tudo em um único lugar. Sem precisar de planilhas ou ferramentas separadas.',
+    a: 'O Tovia é uma plataforma de gestão de eventos — você cria páginas de inscrição, gerencia participantes, controla o financeiro, organiza sua equipe e faz o check-in no dia do evento, tudo centralizado em um único lugar.',
   },
   {
     q: 'Para quem é o Tovia?',
@@ -461,7 +461,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'O dinheiro das inscrições passa pelo Tovia?',
-    a: 'Nunca. O Tovia não intermedia pagamentos nem fica com nenhuma parte do valor. No Plano 2 - Pétach, você recebe pelos seus próprios meios e registra no painel. No Plano 4 - Chalém, você conecta seu próprio gateway (como o Asaas) e o dinheiro vai direto para a sua conta.',
+    a: 'O dinheiro vai direto para a sua conta. No Plano 2 - Pétach, você recebe pelos seus próprios meios e registra no painel. No Plano 4 - Chalém, você conecta seu próprio gateway (como o Asaas) — as transações acontecem entre o participante e o seu gateway, com o valor caindo direto na sua conta.',
   },
   {
     q: 'O que dá para controlar financeiramente?',
@@ -473,7 +473,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'O Tovia tem um plano gratuito?',
-    a: 'Sim. O Plano 1 - Chinám é gratuito e permanente — sem cartão, sem prazo, sem surpresa. Você organiza até 1 evento com até 100 participantes e 1 ingresso gratuito. Quando precisar de mais, basta fazer upgrade para o Plano 2 - Pétach ou superior a qualquer momento.',
+    a: 'Sim. O Plano 1 - Chinám é gratuito para sempre — cadastre-se agora e já comece a organizar. Você cria até 1 evento com até 100 participantes e 1 ingresso gratuito. Quando crescer, é só fazer upgrade para o Plano 2 - Pétach ou superior.',
   },
 ];
 
@@ -684,19 +684,19 @@ export default function LandingPage() {
           <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
         </svg>
         <div className="bg-[#f0fdf4]">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
               <CheckCircle className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
               <p className="font-black text-foreground text-base">Já se inscreveu em um evento?</p>
-              <p className="text-sm text-muted-foreground hidden sm:block">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
+              <p className="text-sm text-muted-foreground">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
             </div>
           </div>
           <Link
             to="/consultar"
-            className="shrink-0 bg-primary text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-2xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex items-center gap-2 whitespace-nowrap"
+            className="w-full md:w-auto shrink-0 bg-primary text-white text-sm font-black uppercase tracking-widest px-6 py-3 rounded-2xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 whitespace-nowrap"
           >
             Consultar minha inscrição <ArrowRight className="w-4 h-4" />
           </Link>
@@ -784,7 +784,7 @@ export default function LandingPage() {
               {
                 step: '01',
                 title: 'Crie sua conta',
-                desc: 'Cadastre-se gratuitamente em menos de 1 minuto, sem cartão de crédito necessário.',
+                desc: 'Cadastre-se em menos de 1 minuto e comece a organizar seu primeiro evento de graça.',
                 Anim: AnimConta,
               },
               {
@@ -923,10 +923,10 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-2xl font-black text-foreground mb-4">Controle de Doações</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    Registre doações livres — que entram direto no caixa do evento — ou vincule uma doação a um inscrito para cobrir o valor da inscrição dele. Tudo rastreado, sem intermediários.
+                    Registre doações livres — que entram direto no caixa do evento — ou vincule uma doação a um inscrito para cobrir o valor da inscrição dele. Tudo visível, tudo rastreado, tudo no caixa do evento.
                   </p>
                   <ul className="space-y-3">
-                    {['Doações livres ou vinculadas a inscritos', 'Saldo atualizado automaticamente', 'Histórico e status por doação', 'Nenhuma taxa da plataforma'].map(item => (
+                    {['Doações livres ou vinculadas a inscritos', 'Saldo atualizado automaticamente', 'Histórico e status por doação', '100% do valor vai para o seu caixa'].map(item => (
                       <li key={item} className="flex items-center gap-3 text-sm text-foreground">
                         <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                         {item}
@@ -1031,7 +1031,7 @@ export default function LandingPage() {
               Seu dinheiro vai direto para você
             </h2>
             <p className="text-muted-foreground mt-3 text-sm max-w-xl mx-auto">
-              O Tovia não cobra comissão por ingresso e não intermedia pagamentos. Você conecta seu próprio gateway — o dinheiro das inscrições cai direto na sua conta.
+              Você conecta seu próprio gateway de pagamento — o dinheiro das inscrições cai direto na sua conta, com a plataforma cobrando apenas a assinatura mensal.
             </p>
           </div>
 
@@ -1039,8 +1039,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[
               { step: '1', title: 'Você cria o evento', desc: 'Configure inscrições, valores e formas de pagamento no Tovia.' },
-              { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no Asaas — sem intermediário.' },
-              { step: '3', title: 'Dinheiro na sua conta', desc: 'O valor cai na sua conta conforme as regras do seu gateway. O Tovia nunca toca no seu dinheiro.' },
+              { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no Asaas — o valor vai para você.' },
+              { step: '3', title: 'Dinheiro na sua conta', desc: 'O valor cai na sua conta conforme as regras do seu gateway. Você tem controle total.' },
             ].map(item => (
               <div key={item.step} className="flex gap-4 items-start">
                 <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-black text-sm shrink-0">{item.step}</div>
@@ -1367,7 +1367,7 @@ export default function LandingPage() {
             Comece a organizar hoje,<br className="hidden md:block" /> no plano Chinám — gratuito.
           </h2>
           <p className="text-white/70 text-base mb-10 max-w-2xl mx-auto">
-            Crie sua conta, organize seu primeiro evento e faça upgrade quando precisar de mais recursos. Sem cartão, sem compromisso.
+            Crie sua conta agora, organize seu primeiro evento hoje e cresça no seu ritmo — o plano Chinám é gratuito para sempre.
           </p>
           <div className="flex justify-center">
             <Link
