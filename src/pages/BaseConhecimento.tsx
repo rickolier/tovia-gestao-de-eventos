@@ -181,11 +181,25 @@ export default function BaseConhecimento() {
     }
   };
 
+  const marcarNotificacoesTicketLidas = async () => {
+    if (!user) return;
+    try {
+      const notifs = await listDocuments<{ id: string; tipo: string; lida: boolean }>(
+        'notificacoes',
+        [where('userId', '==', user.uid), where('tipo', '==', 'ticket_respondido'), where('lida', '==', false)]
+      );
+      await Promise.all(notifs.map(n => updateDocument('notificacoes', n.id, { lida: true })));
+    } catch {
+      // silencioso — não bloqueia a abertura do painel
+    }
+  };
+
   const handleAbrirMeusTickets = () => {
     setMeusTicketsOpen(true);
     setTicketOpen(false);
     setTicketSent(false);
     loadMeusTickets();
+    marcarNotificacoesTicketLidas();
   };
 
   const handleAbrirChamado = () => {
