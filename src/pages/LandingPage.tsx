@@ -679,8 +679,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── Wave + Box strip: Consultar inscrição ── */}
-      <div className="-mt-16">
-        <svg viewBox="0 0 1440 62" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
+      <div className="md:-mt-16">
+        <svg viewBox="0 0 1440 62" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block h-8 md:h-auto">
           <path d="M0 62L1440 62L1440 30C1200 60 960 0 720 0C480 0 240 60 0 30L0 62Z" fill="#f0fdf4" />
         </svg>
         <div className="bg-[#f0fdf4]">
@@ -690,8 +690,8 @@ export default function LandingPage() {
               <CheckCircle className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
-              <p className="font-black text-foreground text-base">Já se inscreveu em um evento?</p>
-              <p className="text-sm text-muted-foreground">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
+              <p className="font-black text-[#1a2e1a] text-base">Já se inscreveu em um evento?</p>
+              <p className="text-sm text-[#3d5c3d]">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
             </div>
           </div>
           <Link
