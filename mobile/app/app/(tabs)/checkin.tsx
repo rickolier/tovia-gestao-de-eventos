@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, TextInput,
+  StyleSheet, ActivityIndicator, TextInput, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { QrCode, List, Search, Check, CloudDownload, WifiOff } from 'lucide-react-native';
+import { QrCode, List, Search, Check, CloudDownload, WifiOff, RefreshCw } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useEventos } from '../../hooks/useEventos';
 import { useCheckin, InscritoCheckin } from '../../hooks/useCheckin';
@@ -79,7 +79,7 @@ function ListaInscritos({
   eventoId, eventoNome, onBack,
 }: { eventoId: string; eventoNome: string; onBack: () => void }) {
   const { colors } = useTheme();
-  const { inscritos, presentes, total, loading, marcarPresenca } = useCheckin(eventoId);
+  const { inscritos, presentes, total, loading, offline, pendingSync, marcarPresenca, flushQueue } = useCheckin(eventoId);
   const [busca, setBusca] = useState('');
 
   const visiveis = useMemo(() =>
@@ -128,6 +128,24 @@ function ListaInscritos({
         <ProgressBar presentes={presentes} total={total} />
       </View>
 
+      {/* Banner offline */}
+      {offline && (
+        <View style={[styles.offlineBanner, { backgroundColor: '#fef3c7' }]}>
+          <WifiOff size={14} color="#92400e" strokeWidth={2} />
+          <Text style={[Typography.small, { color: '#92400e', flex: 1, marginLeft: 8 }]}>
+            Modo offline — exibindo lista salva
+          </Text>
+          {pendingSync > 0 && (
+            <TouchableOpacity onPress={flushQueue} style={styles.syncBtn}>
+              <RefreshCw size={13} color="#92400e" strokeWidth={2} />
+              <Text style={[Typography.caption, { color: '#92400e', marginLeft: 4, fontWeight: '700' }]}>
+                {pendingSync} pendente{pendingSync > 1 ? 's' : ''}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+
       {loading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
       ) : visiveis.length === 0 ? (
@@ -159,7 +177,23 @@ function ModoCheckin({
   eventoId, eventoNome, onBack, onLista,
 }: { eventoId: string; eventoNome: string; onBack: () => void; onLista: () => void }) {
   const { colors } = useTheme();
-  const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const { offline, syncedAt, downloadOffline } = useCheckin(eventoId);
+  const [downloading, setDownloading] = useState(false);
+
+  const syncLabel = syncedAt
+    ? new Date(syncedAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+    : 'Nunca sincronizado';
+
+  async function handleDownload() {
+    setDownloading(true);
+    const ok = await downloadOffline();
+    setDownloading(false);
+    if (ok) {
+      Alert.alert('Lista salva!', 'Você pode usar o check-in mesmo sem internet.');
+    } else {
+      Alert.alert('Erro', 'Não foi possível baixar a lista. Verifique sua conexão.');
+    }
+  }
 
   return (
     <View style={{ flex: 1, paddingHorizontal: 16 }}>
@@ -208,25 +242,34 @@ function ModoCheckin({
 
       {/* Box de sincronização */}
       <View style={[styles.syncBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <CloudDownload size={20} color={colors.mutedFg} strokeWidth={1.5} />
+        {offline
+          ? <WifiOff size={20} color="#f59e0b" strokeWidth={1.5} />
+          : <CloudDownload size={20} color={colors.mutedFg} strokeWidth={1.5} />
+        }
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text style={[Typography.body, { color: colors.foreground, fontWeight: '600' }]}>Dados Sincronizados</Text>
+          <Text style={[Typography.body, { color: colors.foreground, fontWeight: '600' }]}>
+            {offline ? 'Sem conexão' : 'Dados Sincronizados'}
+          </Text>
           <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 1 }]}>
-            Última atualização: Hoje, {agora}
+            Última sincronização: {syncLabel}
           </Text>
         </View>
-        <View style={styles.syncDot} />
+        <View style={[styles.syncDot, { backgroundColor: offline ? '#f59e0b' : '#22c55e' }]} />
       </View>
 
       {/* Baixar offline */}
       <TouchableOpacity
-        style={[styles.offlineBtn, { borderColor: colors.primary }]}
+        style={[styles.offlineBtn, { borderColor: colors.primary, opacity: downloading ? 0.6 : 1 }]}
         activeOpacity={0.8}
-        onPress={() => {/* TODO: download offline */}}
+        onPress={handleDownload}
+        disabled={downloading}
       >
-        <CloudDownload size={18} color={colors.primary} strokeWidth={2} />
+        {downloading
+          ? <ActivityIndicator size="small" color={colors.primary} />
+          : <CloudDownload size={18} color={colors.primary} strokeWidth={2} />
+        }
         <Text style={[Typography.body, { color: colors.primary, fontWeight: '600', marginLeft: 8 }]}>
-          Baixar lista para uso offline
+          {downloading ? 'Baixando lista…' : 'Baixar lista para uso offline'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -398,5 +441,22 @@ const styles = StyleSheet.create({
   letraHeader: {
     paddingHorizontal: 16,
     paddingVertical: 6,
+  },
+  offlineBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginTop: 8,
+    borderRadius: Radius.md,
+  },
+  syncBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.08)',
   },
 });
