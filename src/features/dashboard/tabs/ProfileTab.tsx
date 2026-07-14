@@ -11,8 +11,8 @@ import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as I
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
-import { auth } from '~/services/firebase';
-import { storageBucket } from '~/services/storageConfig';
+import { auth, storage } from '~/services/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import {
   maskTelefone, maskCEP, maskCPFouCNPJ,
@@ -56,26 +56,9 @@ export default function ProfileTab() {
     if (!user) return;
     setUploadingPhoto(true);
     try {
-      const token = await user.getIdToken(true);
-      const bucket = storageBucket;
-      const path = encodeURIComponent(`profiles/${user.uid}/foto`);
-      const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?uploadType=media&name=${path}`;
-
-      const uploadRes = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'image/jpeg',
-        },
-        body: croppedFile,
-      });
-
-      if (!uploadRes.ok) {
-        const errText = await uploadRes.text();
-        throw new Error(`Upload falhou: ${uploadRes.status} ${errText}`);
-      }
-
-      const url = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${path}?alt=media`;
+      const storageRef = ref(storage, `profiles/${user.uid}/foto`);
+      await uploadBytes(storageRef, croppedFile, { contentType: 'image/jpeg' });
+      const url = await getDownloadURL(storageRef);
       setFormData(prev => ({ ...prev, imagem_url: url }));
       await updateDocument('users', user.uid, { imagem_url: url });
       await refreshProfile();
