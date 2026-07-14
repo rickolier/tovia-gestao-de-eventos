@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#9bf6b5",
+                        "surface": "#f8faf8",
+                        "surface-tint": "#006d3a",
+                        "surface-container-highest": "#e1e3e1",
+                        "primary-fixed-dim": "#80d99a",
+                        "danger": "#ef4444",
+                        "surface-dim": "#d8dad9",
+                        "background": "#f8faf8",
+                        "on-error-container": "#93000a",
+                        "card-light": "#ffffff",
+                        "primary": "#006032",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "secondary-fixed": "#68fcbf",
+                        "primary-light": "#e8f5ee",
+                        "inverse-primary": "#80d99a",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-tertiary": "#ffffff",
+                        "border-light": "#d4e4da",
+                        "primary-container": "#1a7a45",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "primary-dark": "#0d5c32",
+                        "inverse-surface": "#2e3130",
+                        "border-dark": "#243328",
+                        "surface-bright": "#f8faf8",
+                        "warning": "#f59e0b",
+                        "on-secondary-fixed": "#002114",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#00210d",
+                        "surface-container-high": "#e6e9e7",
+                        "inverse-on-surface": "#eff1ef",
+                        "on-tertiary-container": "#ffe8d1",
+                        "on-surface-variant": "#3f4940",
+                        "outline-variant": "#becabd",
+                        "on-background": "#191c1b",
+                        "tertiary": "#754900",
+                        "secondary-container": "#64f9bc",
+                        "surface-variant": "#e1e3e1",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1b",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f2f4f2",
+                        "success": "#22c55e",
+                        "on-primary-container": "#abffc1",
+                        "card-dark": "#111a14",
+                        "tertiary-container": "#965e00",
+                        "surface-container": "#eceeec",
+                        "on-secondary-fixed-variant": "#005137",
+                        "on-secondary-container": "#00714e",
+                        "on-primary-fixed-variant": "#00522a",
+                        "secondary": "#006c4b",
+                        "secondary-fixed-dim": "#45dfa4",
+                        "on-tertiary-fixed": "#2a1700",
+                        "outline": "#6f7a6f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-gap-md": "12px",
+                        "card-padding": "16px",
+                        "touch-target-min": "44px",
+                        "stack-gap-lg": "16px",
+                        "stack-gap-sm": "8px",
+                        "container-margin": "16px"
+                    },
+                    "fontFamily": {
+                        "numeric-data": ["Inter"],
+                        "helper-text": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<!-- Header: Based on TopAppBar style from JSON but adapted for Onboarding -->
+<header class="fixed top-0 left-0 w-full z-50 h-16 flex items-center justify-between px-container-margin shadow-[0_2px_12px_rgba(0,60,20,0.08)]" style="background-color: rgb(22, 45, 32);"><div class="flex items-center justify-between w-full h-full relative">
+  <div class="flex items-center">
+    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGZEXP7Gm41rGM5ssD1hlGEVjLbgqSEEd98MQHXnmpmZ8O6JgaYlL4A797uDGOkvc95PShouJA2EpFvNQ7IK9Q3lf3wzcNrYkBdrvxvNTUtd4Wxvfp0A2561wDIVAIaJoG1jY8K_L_O-f7eUPJZB5NQsJIGMckgAf0Ewjbf_n3O7Buyf9VJKy60L9fAF4wr20vsUufQh9rJ6n7mRUnqR6h-nSV3IzNSiYX1yQiFJzsvD1rWfMOhpUB" class="w-8 h-8 rounded-full object-cover border border-white/20" alt="User Avatar">
+  </div>
+  <div class="absolute left-1/2 -translate-x-1/2">
+    <span class="text-white font-extrabold text-[24px] tracking-tight">tovia</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="material-symbols-outlined text-white">calendar_today</span>
+    <button class="text-white font-label-caps text-label-caps hover:bg-white/10 rounded-lg transition-colors active:scale-95">Pular</button>
+  </div>
+</div></header>
+<!-- Main Content Canvas -->
+<main class="h-screen w-full pt-16 pb-24 flex flex-col items-center justify-center px-container-margin">
+<!-- Illustration Area (Bento-style layout for modern feel) -->
+<div class="w-full max-w-sm flex flex-col gap-stack-gap-md animate-in fade-in slide-in-from-bottom-8 duration-700">
+<div class="relative w-full aspect-square bg-primary-light rounded-[24px] overflow-hidden flex items-center justify-center p-8">
+<!-- Abstract Checklist Illustration -->
+<div class="relative w-full h-full">
+<!-- Main Card -->
+<div class="absolute inset-0 bg-white shadow-xl rounded-xl p-6 border border-border-light rotate-2 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">assignment</span>
+</div>
+<div class="h-3 w-32 bg-surface-container-highest rounded-full"></div>
+</div>
+<div class="space-y-3 pt-4">
+<!-- Task Row 1 -->
+<div class="flex items-center gap-3 group">
+<div class="w-6 h-6 rounded-md border-2 border-primary flex items-center justify-center bg-primary">
+<span class="material-symbols-outlined text-white text-[16px]">check</span>
+</div>
+<div class="h-2.5 w-full bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Task Row 2 -->
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant"></div>
+<div class="h-2.5 w-4/5 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Task Row 3 -->
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant"></div>
+<div class="h-2.5 w-1/2 bg-surface-container-highest rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Floating Team Member -->
+<div class="absolute -right-2 -top-2 w-24 bg-white/95 backdrop-blur-sm shadow-lg rounded-lg p-2 flex items-center gap-2 -rotate-3 border border-border-light">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Close up portrait of a young professional event coordinator with a friendly smile, clean corporate modern aesthetic, soft natural lighting, high resolution photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGZEXP7Gm41rGM5ssD1hlGEVjLbgqSEEd98MQHXnmpmZ8O6JgaYlL4A797uDGOkvc95PShouJA2EpFvNQ7IK9Q3lf3wzcNrYkBdrvxvNTUtd4Wxvfp0A2561wDIVAIaJoG1jY8K_L_O-f7eUPJZB5NQsJIGMckgAf0Ewjbf_n3O7Buyf9VJKy60L9fAF4wr20vsUufQh9rJ6n7mRUnqR6h-nSV3IzNSiYX1yQiFJzsvD1rWfMOhpUB">
+<div class="space-y-1">
+<div class="h-1.5 w-12 bg-primary/20 rounded-full"></div>
+<div class="h-1 w-8 bg-surface-dim rounded-full"></div>
+</div>
+</div>
+<!-- Status Chip -->
+<div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-success text-white px-4 py-2 rounded-full shadow-lg font-bold text-[12px] flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<span class="">Tempo Real</span>
+</div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="text-center mt-8 space-y-4">
+<h1 class="font-display-lg text-display-lg text-on-surface">Tarefas</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[280px] mx-auto">
+                    Gerencie tarefas do evento e acompanhe sua equipe em tempo real.
+                </p>
+</div>
+</div>
+</main>
+<!-- Footer: Navigation and Progress -->
+<footer class="fixed bottom-0 left-0 w-full h-24 flex flex-col items-center justify-between px-container-margin pb-safe">
+<!-- -->
+<div class="flex items-center gap-2 h-10">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="active-dot h-2 bg-primary transition-all duration-300"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+<!-- Action Button -->
+<div class="w-full flex gap-4 pb-6">
+<button class="flex-1 h-touch-target-min bg-primary text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="">Continuar</span>
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</footer>
+<script>
+        // Micro-interaction: Subtle hover/float effect for illustration elements
+        document.addEventListener('mousemove', (e) => {
+            const amount = 10;
+            const x = (e.clientX / window.innerWidth - 0.5) * amount;
+            const y = (e.clientY / window.innerHeight - 0.5) * amount;
+            
+            const cards = document.querySelectorAll('.rotate-2, .-rotate-3');
+            cards.forEach((card, index) => {
+                const multiplier = (index + 1) * 0.5;
+                card.style.transform = `translate(${x * multiplier}px, ${y * multiplier}px) ${card.classList.contains('rotate-2') ? 'rotate(2deg)' : 'rotate(-3deg)'}`;
+            });
+        });
+
+        // Click interaction for checking the box
+        const checkIcon = document.querySelector('.material-symbols-outlined.text-white');
+        const checkContainer = checkIcon.parentElement;
+        
+        checkContainer.addEventListener('click', () => {
+            checkContainer.classList.toggle('bg-primary');
+            checkContainer.classList.toggle('border-primary');
+            checkContainer.classList.toggle('bg-white');
+            checkIcon.classList.toggle('opacity-0');
+        });
+    </script>
+
+</body></html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html><html lang="pt-BR" class="light" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#006c4b",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "primary": "#006032",
+                    "on-surface-variant": "#3f4940",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#64f9bc",
+                    "background": "#f8faf8",
+                    "on-primary-fixed": "#00210d",
+                    "primary-dark": "#0d5c32",
+                    "on-background": "#191c1b",
+                    "surface-container-highest": "#e1e3e1",
+                    "on-surface": "#191c1b",
+                    "surface": "#f8faf8",
+                    "inverse-primary": "#80d99a",
+                    "surface-container-low": "#f2f4f2",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#e1e3e1",
+                    "outline-variant": "#becabd",
+                    "surface-dim": "#d8dad9",
+                    "surface-container-high": "#e6e9e7",
+                    "secondary-fixed": "#68fcbf",
+                    "border-light": "#d4e4da",
+                    "primary-fixed": "#9bf6b5",
+                    "card-light": "#ffffff",
+                    "warning": "#f59e0b",
+                    "tertiary": "#754900",
+                    "surface-tint": "#006d3a",
+                    "surface-bright": "#f8faf8",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary-container": "#965e00",
+                    "on-secondary-fixed-variant": "#005137",
+                    "success": "#22c55e",
+                    "on-secondary": "#ffffff",
+                    "border-dark": "#243328",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#6f7a6f",
+                    "primary-container": "#1a7a45",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eceeec",
+                    "inverse-surface": "#2e3130",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#002114",
+                    "primary-light": "#e8f5ee",
+                    "error-container": "#ffdad6",
+                    "danger": "#ef4444",
+                    "on-primary-container": "#abffc1",
+                    "on-tertiary-container": "#ffe8d1",
+                    "inverse-on-surface": "#eff1ef",
+                    "on-primary-fixed-variant": "#00522a",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary-container": "#00714e",
+                    "card-dark": "#111a14",
+                    "secondary-fixed-dim": "#45dfa4",
+                    "primary-fixed-dim": "#80d99a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-gap-sm": "8px",
+                    "card-padding": "16px",
+                    "stack-gap-lg": "16px",
+                    "touch-target-min": "44px",
+                    "stack-gap-md": "12px",
+                    "container-margin": "16px"
+            },
+            "fontFamily": {
+                    "numeric-data": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "helper-text": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script></head><body class="font-body-md text-on-background">
+
+    <!-- Main Container -->
+    <main class="relative h-screen overflow-hidden"><header class="fixed top-0 left-0 w-full h-14 bg-[#162d20] flex items-center justify-between px-4 z-50">
+  <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center overflow-hidden">
+    <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+  </div>
+  <div class="font-display-lg text-white text-[20px] lowercase tracking-tight">tovia</div>
+  <div class="w-8 h-8 flex items-center justify-center">
+    <span class="material-symbols-outlined text-white">calendar_month</span>
+  </div>
+</header>
+        
+        <!-- Swiper Track -->
+        <div id="slider" class="onboarding-slider pt-14">
+            
+            <!-- Slide 1: Welcome -->
+            <section class="slide">
+                <div class="illustration-container">
+                    <div class="flex flex-col items-center">
+                        <div class="mb-8 p-6 bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,60,20,0.12)]">
+                            <span class="material-symbols-outlined text-[80px] text-primary" style="font-variation-settings: 'FILL' 1;" data-original-icon="event_available">event_available</span>
+                        </div>
+                        <h1 class="font-display-lg text-display-lg text-primary text-center mb-2">Tovia</h1>
+                        <p class="font-label-caps text-label-caps text-outline tracking-widest">EVENT MANAGEMENT</p>
+                    </div>
+                </div>
+                <div class="mb-24 px-4 text-center">
+                    <h2 class="font-headline-md text-display-lg text-on-surface mb-3">Olá, Mariana!</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant">Este é o seu app de campo para controle total dos seus eventos.</p>
+                </div>
+            </section>
+
+            <!-- Slide 2: Scanner -->
+            <section class="slide">
+                <div class="illustration-container">
+                    <div class="relative w-64 h-64 bg-primary-light rounded-full flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#006032 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        <span class="material-symbols-outlined text-[100px] text-primary">qr_code_scanner</span>
+                        <!-- Animated Scanning Line -->
+                        <div class="absolute w-full h-1 bg-primary/40 top-0 animate-[scan_2s_infinite_ease-in-out]"></div>
+                    </div>
+                </div>
+                <div class="mb-24 px-4 text-center">
+                    <h2 class="font-headline-md text-display-lg text-on-surface mb-3">Check-in Ágil</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant">Faça check-in por QR Code ou utilize a lista de presença inteligente.</p>
+                </div>
+            </section>
+
+            <!-- Slide 3: Tasks -->
+            <section class="slide">
+                <div class="illustration-container">
+                    <div class="relative w-full max-w-xs space-y-4">
+                        <div class="bg-white p-4 rounded-xl shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center gap-4 transform -rotate-2">
+                            <div class="w-6 h-6 rounded-md bg-success flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white text-[18px]">check</span>
+                            </div>
+                            <div class="h-2 w-32 bg-surface-container rounded-full"></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center gap-4 transform translate-x-4 rotate-1">
+                            <div class="w-6 h-6 rounded-md border-2 border-outline-variant"></div>
+                            <div class="h-2 w-48 bg-surface-container rounded-full"></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center gap-4 transform -translate-x-2 rotate-1">
+                            <div class="w-6 h-6 rounded-md bg-primary-light border-2 border-primary flex items-center justify-center">
+                                <div class="w-2 h-2 bg-primary rounded-full"></div>
+                            </div>
+                            <div class="h-2 w-40 bg-surface-container rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-24 px-4 text-center">
+                    <h2 class="font-headline-md text-display-lg text-on-surface mb-3">Gestão de Equipe</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant">Gerencie tarefas e acompanhe sua equipe de campo em tempo real.</p>
+                </div>
+            </section>
+
+            <!-- Slide 4: Ready -->
+            <section class="slide">
+                <div class="illustration-container">
+                    <div class="flex flex-col items-center">
+                        <div class="w-32 h-32 bg-success/10 rounded-full flex items-center justify-center mb-6 scale-110">
+                            <span class="material-symbols-outlined text-[64px] text-success" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="inline-block w-2 h-2 bg-success rounded-full animate-bounce"></span>
+                            <span class="inline-block w-2 h-2 bg-success rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                            <span class="inline-block w-2 h-2 bg-success rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-8 px-4 text-center">
+                    <h2 class="font-headline-md text-display-lg text-on-surface mb-3">Tudo certo!</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant mb-10">Você está pronta para começar a operar seus eventos com a Tovia.</p>
+                    
+                    <button id="start-btn" class="w-full h-touch-target-min bg-primary text-on-primary font-headline-md text-headline-md rounded-xl shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+                        Começar
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Pagination & Navigation Controls -->
+        <div class="fixed bottom-0 left-0 w-full p-container-margin flex flex-col items-center pointer-events-none">
+            
+            <!-- Indicators -->
+            <div id="dots-container" class="flex gap-2 mb-20 pointer-events-auto">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <!-- Swipe Instruction (Visible only on first slide) -->
+            <div id="swipe-hint" class="flex items-center gap-2 text-outline font-label-caps text-label-caps opacity-60 animate-pulse mb-4 transition-opacity duration-300">
+                <span class="material-symbols-outlined text-[16px]">swipe_left</span>
+                DESLIZE PARA CONTINUAR
+            </div>
+        </div>
+
+    </main>
+
+    <style>
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+
+    <script>
+        const slider = document.getElementById('slider');
+        const dots = document.querySelectorAll('.dot');
+        const swipeHint = document.getElementById('swipe-hint');
+        const startBtn = document.getElementById('start-btn');
+        
+        let currentSlide = 0;
+        let startX = 0;
+        let isDragging = false;
+        let startTranslate = 0;
+
+        // Touch Events
+        slider.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            slider.style.transition = 'none';
+        });
+
+        slider.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const move = -currentSlide * 25 + (diff / window.innerWidth * 25);
+            slider.style.transform = `translateX(${move}%)`;
+        });
+
+        slider.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            slider.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentSlide < 3) {
+                    currentSlide++;
+                } else if (diff < 0 && currentSlide > 0) {
+                    currentSlide--;
+                }
+            }
+            updateSlider();
+        });
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentSlide * 25}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // Update Swipe Hint
+            if (currentSlide > 0) {
+                swipeHint.style.opacity = '0';
+            } else {
+                swipeHint.style.opacity = '0.6';
+            }
+        }
+
+        // Start Button Interaction
+        startBtn.addEventListener('click', () => {
+            // Haptic Feedback simulation
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(20);
+            }
+            
+            // UI transition
+            startBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
+            setTimeout(() => {
+                startBtn.innerHTML = 'Carregando...';
+                // Transition to main dashboard (simulated)
+                document.body.style.opacity = '0';
+                document.body.style.transition = 'opacity 0.5s ease';
+            }, 800);
+        });
+
+        // Prevention of elastic scroll
+        document.body.addEventListener('touch</script></body></html>

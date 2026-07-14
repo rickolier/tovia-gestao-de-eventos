@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary-light": "#e8f5ee",
+                    "border-dark": "#243328",
+                    "primary-dark": "#0d5c32",
+                    "outline-variant": "#becabd",
+                    "card-light": "#ffffff",
+                    "border-light": "#d4e4da",
+                    "surface-tint": "#006d3a",
+                    "surface-bright": "#f8faf8",
+                    "surface-dim": "#d8dad9",
+                    "surface": "#f8faf8",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f2f4f2",
+                    "secondary-container": "#64f9bc",
+                    "inverse-on-surface": "#eff1ef",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2e3130",
+                    "primary-container": "#1a7a45",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "tertiary": "#754900",
+                    "primary-fixed": "#9bf6b5",
+                    "danger": "#ef4444",
+                    "background": "#f8faf8",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#00522a",
+                    "card-dark": "#111a14",
+                    "secondary": "#006c4b",
+                    "surface-variant": "#e1e3e1",
+                    "primary-fixed-dim": "#80d99a",
+                    "primary": "#006032",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-surface-variant": "#3f4940",
+                    "inverse-primary": "#80d99a",
+                    "secondary-fixed": "#68fcbf",
+                    "on-primary-container": "#abffc1",
+                    "on-secondary-container": "#00714e",
+                    "on-primary-fixed": "#00210d",
+                    "on-secondary-fixed": "#002114",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#6f7a6f",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#965e00",
+                    "secondary-fixed-dim": "#45dfa4",
+                    "surface-container-highest": "#e1e3e1",
+                    "on-surface": "#191c1b",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-tertiary-container": "#ffe8d1",
+                    "success": "#22c55e",
+                    "on-background": "#191c1b",
+                    "warning": "#f59e0b",
+                    "surface-container-high": "#e6e9e7",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eceeec"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-gap-md": "12px",
+                    "card-padding": "16px",
+                    "touch-target-min": "44px",
+                    "stack-gap-sm": "8px",
+                    "stack-gap-lg": "16px",
+                    "container-margin": "16px"
+            },
+            "fontFamily": {
+                    "numeric-data": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "helper-text": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: contain;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- Top App Bar (Custom Pattern) -->
+<header class="bg-[#162d20] h-touch-target-min flex justify-between items-center px-container-margin sticky top-0 z-50 shadow-[0_2px_12px_rgba(0,60,20,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary-fixed/20 active:scale-95 transition-transform duration-150">
+<img class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a young event coordinator with a friendly smile, set against a clean, blurred office background. The lighting is bright and natural, reflecting a modern light-mode aesthetic with soft green and neutral tones that match a corporate design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMWY166VUB9pkoFuHnlhLgusGpXUfnZeiLec5xsO9Ylrttqrw_vR6sCXDkm-u_HCrA_RcpXvUseselBKFqBlr5Qpne3HVwqJ3yBt4gcTQHpgGTtH4tnKffzw_x2rMuiwxf_uD1Fd3yK2QFYpczlP-Cx7jeA04nQvN1efWIQbumn90KHfOwzF8mkfCKlhriX1m7sPAt643HmtXW7ddaXdW__CScBCuC49eom7TRobs5ljeRbmoVmSOG"/>
+</div>
+</div>
+<div class="font-display-lg text-display-lg text-white lowercase tracking-tighter">tovia</div>
+<div class="w-8"></div> <!-- Spacer for symmetry -->
+</header>
+<main class="mt-stack-gap-lg px-container-margin">
+<!-- Screen Title -->
+<h1 class="font-display-lg text-display-lg text-on-surface mb-stack-gap-lg">Suporte</h1>
+<!-- Help Center Card Section -->
+<section class="bg-card-light rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,60,20,0.08)] mb-stack-gap-lg border border-border-light">
+<button class="w-full flex items-center justify-between p-card-padding hover:bg-primary-light active:scale-[0.98] transition-all duration-150 group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Base de Conhecimento</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<div class="h-px bg-surface-container mx-card-padding"></div>
+<button class="w-full flex items-center justify-between p-card-padding hover:bg-primary-light active:scale-[0.98] transition-all duration-150 group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Fale Conosco</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<div class="h-px bg-surface-container mx-card-padding"></div>
+<button class="w-full flex items-center justify-between p-card-padding hover:bg-primary-light active:scale-[0.98] transition-all duration-150 group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary-light flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">history_edu</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Rever tutorial</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+</section>
+<!-- Divider with Label -->
+<div class="flex items-center gap-4 mb-stack-gap-md px-2">
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-widest">Informações</span>
+<div class="flex-grow h-px bg-outline-variant/30"></div>
+</div>
+<!-- Legal and Version Section -->
+<section class="bg-card-light rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,60,20,0.08)] mb-stack-gap-lg border border-border-light">
+<div class="p-card-padding flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-body-lg text-body-lg text-on-surface">Sobre o Tovia Mobile</span>
+<span class="font-helper-text text-helper-text text-outline bg-surface-container px-2 py-0.5 rounded">v2.4.0</span>
+</div>
+</div>
+<div class="h-px bg-surface-container mx-card-padding"></div>
+<button class="w-full text-left p-card-padding hover:bg-primary-light active:bg-primary-light/50 transition-colors">
+<span class="font-body-lg text-body-lg text-on-surface">Política de Privacidade</span>
+</button>
+<div class="h-px bg-surface-container mx-card-padding"></div>
+<button class="w-full text-left p-card-padding hover:bg-primary-light active:bg-primary-light/50 transition-colors">
+<span class="font-body-lg text-body-lg text-on-surface">Termos de Uso</span>
+</button>
+</section>
+<!-- Logout Divider & Action -->
+<div class="h-px bg-outline-variant/30 mb-stack-gap-lg"></div>
+<button class="w-full flex items-center justify-center gap-2 p-card-padding text-danger font-headline-md text-headline-md active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">logout</span>
+            Sair
+        </button>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<!-- Início -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-caps text-label-caps">Início</span>
+</button>
+<!-- Check-in -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Check-in</span>
+</button>
+<!-- Tarefas -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1">assignment</span>
+<span class="font-label-caps text-label-caps">Tarefas</span>
+</button>
+<!-- Financeiro -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1">payments</span>
+<span class="font-label-caps text-label-caps">Financeiro</span>
+</button>
+<!-- Suporte (Active) -->
+<button class="flex flex-col items-center justify-center text-primary font-bold hover:opacity-80 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<span class="font-label-caps text-label-caps">Suporte</span>
+</button>
+</nav>
+<script>
+        // Simple haptic-like feedback simulation for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
+            });
+        });
+
+        // Dynamic transition for the "Sair" button
+        const logoutBtn = document.querySelector('button.text-danger');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                const confirmed = confirm("Deseja realmente sair da conta?");
+                if (confirmed) {
+                    logoutBtn.innerHTML = '<span class="animate-spin material-symbols-outlined">refresh</span> Saindo...';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+        }
+    </script>
+</body></html>

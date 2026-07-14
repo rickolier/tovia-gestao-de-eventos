@@ -1,0 +1,169 @@
+import {
+  View, Text, TouchableOpacity, StyleSheet,
+  Modal, Pressable, Linking,
+} from 'react-native';
+import { LogOut, ExternalLink } from 'lucide-react-native';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../hooks/useAuth';
+import { Typography, Radius, Shadow } from '../../constants/typography';
+
+const PLAN_LABEL: Record<string, string> = {
+  chinam: 'Chinám',
+  petach: 'Pétach',
+  koach: 'Koách',
+  chalem: 'Chalém',
+};
+
+const PLAN_COLOR: Record<string, { bg: string; text: string }> = {
+  chinam: { bg: '#f0f4f2', text: '#6b7280' },
+  petach: { bg: '#eff6ff', text: '#1e40af' },
+  koach: { bg: '#e8f5ee', text: '#1a7a45' },
+  chalem: { bg: '#fdf4ff', text: '#7e22ce' },
+};
+
+interface ProfileSheetProps {
+  visible: boolean;
+  onClose: () => void;
+}
+
+export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
+  const { colors } = useTheme();
+  const { profile } = useAuth();
+
+  const initials = profile?.name
+    ? profile.name.split(' ').slice(0, 2).map((p) => p[0]).join('').toUpperCase()
+    : '?';
+
+  const plan = profile?.plan ?? 'chinam';
+  const planStyle = PLAN_COLOR[plan] ?? PLAN_COLOR.chinam;
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <Pressable style={styles.backdrop} onPress={onClose} />
+      <View style={[styles.sheet, Shadow.floating, { backgroundColor: colors.card }]}>
+        {/* Handle */}
+        <View style={[styles.handle, { backgroundColor: colors.border }]} />
+
+        {/* Avatar + info */}
+        <View style={styles.header}>
+          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+            <Text style={styles.avatarText}>{initials}</Text>
+          </View>
+          <Text style={[Typography.h2, { color: colors.foreground, marginTop: 12 }]}>
+            {profile?.name ?? ''}
+          </Text>
+          <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
+            {profile?.email ?? ''}
+          </Text>
+
+          {/* Badge de plano */}
+          <View style={[styles.planBadge, { backgroundColor: planStyle.bg }]}>
+            <Text style={[Typography.caption, { color: planStyle.text }]}>
+              {PLAN_LABEL[plan]}
+            </Text>
+          </View>
+
+          {/* Trial */}
+          {profile?.trialDaysLeft !== undefined && profile.trialDaysLeft > 0 && (
+            <View style={[styles.trialBadge, { backgroundColor: '#fef9c3' }]}>
+              <Text style={[Typography.caption, { color: '#92400e' }]}>
+                Trial — {profile.trialDaysLeft} dias restantes
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Editar perfil */}
+        <TouchableOpacity
+          style={[styles.editBtn, { borderColor: colors.primary }]}
+          onPress={() => { onClose(); Linking.openURL('https://tovia.app/perfil'); }}
+          activeOpacity={0.8}
+        >
+          <ExternalLink size={15} color={colors.primary} strokeWidth={2} />
+          <Text style={[Typography.body, { color: colors.primary, fontWeight: '600' }]}>
+            Editar perfil
+          </Text>
+        </TouchableOpacity>
+
+        {/* Sair */}
+        <TouchableOpacity
+          style={styles.signOutBtn}
+          onPress={() => { onClose(); signOut(auth); }}
+          activeOpacity={0.7}
+        >
+          <LogOut size={15} color={colors.danger} strokeWidth={2} />
+          <Text style={[Typography.body, { color: colors.danger }]}>Sair</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  sheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 40,
+    paddingHorizontal: 24,
+  },
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  header: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  planBadge: {
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  trialBadge: {
+    marginTop: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  editBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1.5,
+    borderRadius: Radius.md,
+    paddingVertical: 13,
+    marginTop: 8,
+  },
+  signOutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
+    marginTop: 8,
+  },
+});

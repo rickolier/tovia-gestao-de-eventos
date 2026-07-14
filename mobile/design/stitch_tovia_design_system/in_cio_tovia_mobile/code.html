@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="pt-BR" class="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c1b",
+                        "border-dark": "#243328",
+                        "success": "#22c55e",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceeec",
+                        "inverse-on-surface": "#eff1ef",
+                        "on-surface-variant": "#3f4940",
+                        "on-primary-container": "#abffc1",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-light": "#e8f5ee",
+                        "danger": "#ef4444",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "primary-container": "#1a7a45",
+                        "on-secondary-fixed-variant": "#005137",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#becabd",
+                        "inverse-primary": "#80d99a",
+                        "secondary-fixed": "#68fcbf",
+                        "surface-tint": "#006d3a",
+                        "warning": "#f59e0b",
+                        "surface-bright": "#f8faf8",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "border-light": "#d4e4da",
+                        "card-light": "#ffffff",
+                        "primary": "#006032",
+                        "on-secondary-fixed": "#002114",
+                        "surface": "#f8faf8",
+                        "primary-fixed": "#9bf6b5",
+                        "outline": "#6f7a6f",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-secondary-container": "#00714e",
+                        "on-primary-fixed-variant": "#00522a",
+                        "surface-container-high": "#e6e9e7",
+                        "primary-dark": "#0d5c32",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-error-container": "#93000a",
+                        "secondary": "#006c4b",
+                        "primary-fixed-dim": "#80d99a",
+                        "on-tertiary-container": "#ffe8d1",
+                        "card-dark": "#111a14",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#45dfa4",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210d",
+                        "background": "#f8faf8",
+                        "tertiary-container": "#965e00",
+                        "tertiary": "#754900",
+                        "on-surface": "#191c1b",
+                        "surface-variant": "#e1e3e1",
+                        "surface-container-low": "#f2f4f2",
+                        "surface-container-highest": "#e1e3e1",
+                        "surface-dim": "#d8dad9",
+                        "inverse-surface": "#2e3130",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#64f9bc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "card": "14px"
+                    },
+                    "spacing": {
+                        "card-padding": "16px",
+                        "stack-gap-lg": "16px",
+                        "container-margin": "16px",
+                        "touch-target-min": "44px",
+                        "stack-gap-sm": "8px",
+                        "stack-gap-md": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "numeric-data": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "helper-text": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                        "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex justify-between items-center w-full px-container-margin h-touch-target-min">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="event_available" data-original-icon="event_available">event_available</span>
+<h1 class="text-primary font-extrabold text-headline-md">Tovia</h1>
+</div>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-border-light active:scale-95 transition-transform duration-150 cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate event manager, smiling confidently. The lighting is bright and airy, reflecting a modern office environment. The style is clean and high-end, utilizing a soft focus background to keep the emphasis on the individual, fitting the Tovia corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsc2bL8hCbS0znKqoeZLcAhzDJFs9plfGzzGZY86mw7nwomIUTrdAzog1Ll4Kfxvrj6-8cqf-D1A6P-v4fcr8yMwyRrc51Hqso_UnbQF-wZ9t7htR9gdym9uxw9tZzMu-gml671ulaePQqT5uzxzR2RUkSzr_dudU3eptsY0I0hygcbIhlYB1W63Dm5KPiRYSSuHeCTsi41qBuVyqAwaCih8xxO1pDdgtsYu9uXeEisd6-sblu3pu9">
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[60px] pb-32 px-container-margin">
+<!-- Welcome Header -->
+<div class="mt-stack-gap-lg mb-stack-gap-lg"><div class="mb-stack-gap-md"><h3 class="font-headline-md text-headline-md text-on-background">Olá, <span class="text-primary">Mariana</span>!</h3><p class="font-body-md text-body-md text-outline">Pronto para gerenciar seus eventos?</p></div>
+<h2 class="font-display-lg text-display-lg text-on-background">Meus Eventos</h2>
+<p class="font-helper-text text-helper-text text-outline">3 eventos ativos</p>
+</div>
+<!-- Event Sections -->
+<div class="flex flex-col gap-stack-gap-lg">
+<!-- SECTION: Em andamento -->
+<section>
+<h3 class="font-label-caps text-label-caps text-primary mb-stack-gap-md uppercase tracking-wider">Em andamento</h3>
+<div class="flex flex-col gap-stack-gap-md">
+<!-- Event Card 1 -->
+<div class="bg-card-light rounded-card p-card-padding shadow-[0_2px_12px_rgba(0,60,20,0.08)] border-l-4 border-primary flex justify-between items-start">
+<div class="flex-1">
+<h4 class="font-numeric-data text-numeric-data text-on-surface mb-1">Conferência Tech 2024</h4>
+<div class="flex items-center gap-1 text-outline mb-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+<p class="font-helper-text text-helper-text">Hoje, 09:00 - 18:00</p>
+</div>
+<div class="flex items-center gap-1 text-outline mb-3">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+<p class="font-helper-text text-helper-text">Centro de Convenções, SP</p>
+</div>
+<div class="inline-flex items-center px-2 py-1 bg-primary-light text-primary rounded-lg text-label-caps">
+<span class="material-symbols-outlined text-[12px] mr-1" data-icon="groups">groups</span>
+                                128 inscritos
+                            </div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="relative inline-block w-12 h-6 cursor-pointer" onclick="toggleSwitch(this)">
+<div class="toggle-bg w-full h-full rounded-full bg-success transition-colors duration-200"></div>
+<div class="toggle-dot absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transform translate-x-6 transition-transform duration-200"></div>
+</div>
+<span class="text-label-caps text-success font-bold">Ativo</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: Próximos eventos -->
+<section>
+<h3 class="font-label-caps text-label-caps text-outline mb-stack-gap-md uppercase tracking-wider">Próximos eventos</h3>
+<div class="flex flex-col gap-stack-gap-md">
+<!-- Event Card 2 -->
+<div class="bg-card-light rounded-card p-card-padding shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex justify-between items-start">
+<div class="flex-1">
+<h4 class="font-numeric-data text-numeric-data text-on-surface mb-1">Workshop Design Thinking</h4>
+<div class="flex items-center gap-1 text-outline mb-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+<p class="font-helper-text text-helper-text">15 Out, 14:00</p>
+</div>
+<div class="flex items-center gap-1 text-outline mb-3">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+<p class="font-helper-text text-helper-text">Hub de Inovação, RJ</p>
+</div>
+<div class="inline-flex items-center px-2 py-1 bg-surface-container text-outline rounded-lg text-label-caps">
+<span class="material-symbols-outlined text-[12px] mr-1" data-icon="groups">groups</span>
+                                45 inscritos
+                            </div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="relative inline-block w-12 h-6 cursor-pointer" onclick="toggleSwitch(this)">
+<div class="toggle-bg w-full h-full rounded-full bg-success transition-colors duration-200"></div>
+<div class="toggle-dot absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transform translate-x-6 transition-transform duration-200"></div>
+</div>
+<span class="text-label-caps text-success font-bold">Ativo</span>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-card-light rounded-card p-card-padding shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex justify-between items-start">
+<div class="flex-1">
+<h4 class="font-numeric-data text-numeric-data text-on-surface mb-1">Gala Beneficente Anual</h4>
+<div class="flex items-center gap-1 text-outline mb-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+<p class="font-helper-text text-helper-text">02 Nov, 20:00</p>
+</div>
+<div class="flex items-center gap-1 text-outline mb-3">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+<p class="font-helper-text text-helper-text">Palácio das Artes, MG</p>
+</div>
+<div class="inline-flex items-center px-2 py-1 bg-surface-container text-outline rounded-lg text-label-caps">
+<span class="material-symbols-outlined text-[12px] mr-1" data-icon="groups">groups</span>
+                                310 inscritos
+                            </div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="relative inline-block w-12 h-6 cursor-pointer" onclick="toggleSwitch(this)">
+<div class="toggle-bg w-full h-full rounded-full bg-outline transition-colors duration-200"></div>
+<div class="toggle-dot absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-200"></div>
+</div>
+<span class="text-label-caps text-outline font-bold">Inativo</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: Encerrados -->
+<section class="opacity-60">
+<h3 class="font-label-caps text-label-caps text-outline mb-stack-gap-md uppercase tracking-wider">Encerrados</h3>
+<div class="flex flex-col gap-stack-gap-md">
+<!-- Event Card 4 -->
+<div class="bg-surface-container rounded-card p-card-padding flex justify-between items-start grayscale">
+<div class="flex-1">
+<h4 class="font-numeric-data text-numeric-data text-on-surface mb-1">Meetup Marketing Digital</h4>
+<div class="flex items-center gap-1 text-outline mb-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+<p class="font-helper-text text-helper-text">20 Set, 19:00</p>
+</div>
+<div class="flex items-center gap-1 text-outline mb-3">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+<p class="font-helper-text text-helper-text">Auditório Central, DF</p>
+</div>
+<div class="inline-flex items-center px-2 py-1 bg-surface-variant text-outline rounded-lg text-label-caps">
+<span class="material-symbols-outlined text-[12px] mr-1" data-icon="groups">groups</span>
+                                85 inscritos
+                            </div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-label-caps text-outline font-bold">Concluído</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<!-- Início (Active) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps text-label-caps">Início</span>
+</a>
+<!-- Check-in -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Check-in</span>
+</a>
+<!-- Tarefas -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-caps text-label-caps">Tarefas</span>
+</a>
+<!-- Financeiro -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-caps text-label-caps">Financeiro</span>
+</a>
+<!-- Suporte -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-label-caps text-label-caps">Suporte</span>
+</a>
+</nav>
+<!-- Contextual FAB (Only on Home) -->
+<button class="fixed bottom-24 right-container-margin w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform duration-150 z-40">
+<span class="material-symbols-outlined text-[28px]" data-icon="add">add</span>
+</button>
+<script>
+        function toggleSwitch(el) {
+            const dot = el.querySelector('.toggle-dot');
+            const bg = el.querySelector('.toggle-bg');
+            const label = el.parentElement.querySelector('span');
+            
+            const isActive = dot.classList.contains('translate-x-6');
+            
+            if (isActive) {
+                dot.classList.remove('translate-x-6');
+                dot.classList.add('translate-x-0');
+                bg.classList.remove('bg-success');
+                bg.classList.add('bg-outline');
+                label.innerText = 'Inativo';
+                label.classList.remove('text-success');
+                label.classList.add('text-outline');
+            } else {
+                dot.classList.remove('translate-x-0');
+                dot.classList.add('translate-x-6');
+                bg.classList.remove('bg-outline');
+                bg.classList.add('bg-success');
+                label.innerText = 'Ativo';
+                label.classList.remove('text-outline');
+                label.classList.add('text-success');
+            }
+
+            // Haptic Feedback Simulation
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+    </script>
+
+</body></html>

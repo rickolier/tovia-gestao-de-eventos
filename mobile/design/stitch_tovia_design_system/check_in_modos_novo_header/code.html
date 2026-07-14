@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f8faf8",
+                    "primary-fixed": "#9bf6b5",
+                    "card-light": "#ffffff",
+                    "primary": "#006032",
+                    "on-secondary-fixed": "#002114",
+                    "surface-bright": "#f8faf8",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "border-light": "#d4e4da",
+                    "surface-tint": "#006d3a",
+                    "outline-variant": "#becabd",
+                    "inverse-primary": "#80d99a",
+                    "secondary-fixed": "#68fcbf",
+                    "warning": "#f59e0b",
+                    "primary-container": "#1a7a45",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-tertiary": "#ffffff",
+                    "primary-light": "#e8f5ee",
+                    "danger": "#ef4444",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#3f4940",
+                    "on-primary-container": "#abffc1",
+                    "border-dark": "#243328",
+                    "on-background": "#191c1b",
+                    "success": "#22c55e",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eceeec",
+                    "inverse-on-surface": "#eff1ef",
+                    "secondary-container": "#64f9bc",
+                    "surface-dim": "#d8dad9",
+                    "inverse-surface": "#2e3130",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e1e3e1",
+                    "surface-variant": "#e1e3e1",
+                    "surface-container-low": "#f2f4f2",
+                    "tertiary": "#754900",
+                    "tertiary-container": "#965e00",
+                    "on-surface": "#191c1b",
+                    "background": "#f8faf8",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#00210d",
+                    "card-dark": "#111a14",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffe8d1",
+                    "secondary-fixed-dim": "#45dfa4",
+                    "secondary": "#006c4b",
+                    "primary-fixed-dim": "#80d99a",
+                    "primary-dark": "#0d5c32",
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary-container": "#00714e",
+                    "outline": "#6f7a6f",
+                    "surface-container-high": "#e6e9e7",
+                    "on-primary-fixed-variant": "#00522a",
+                    "brand-dark": "#162d20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card-padding": "16px",
+                    "stack-gap-lg": "16px",
+                    "container-margin": "16px",
+                    "touch-target-min": "44px",
+                    "stack-gap-sm": "8px",
+                    "stack-gap-md": "12px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "numeric-data": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "helper-text": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f5f7f5;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .shadow-custom {
+            box-shadow: 0 2px 12px rgba(0, 60, 20, 0.08);
+        }
+
+        .glass-surface {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .animate-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex flex-col w-full">
+<!-- New Visual Standard Top Bar -->
+<div class="bg-brand-dark h-14 flex items-center px-container-margin justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate event manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJLuZWVCl__X4BrlGUnkjJ23Ixt0MWHBgyOehmeRnbhkinfgBm0ZrCPxGnAi5YppP3QEiRscKHlwM-YwV_LwgQMps_cTHubUja1gGBNptS4NbCc9cADjq1yY-JE45fiPdwAMFoLzCjkcLZ5uQ6ASGei1oxnIUwzx4tLGO3LVoHll4dzSPNMLlDjXwvbYIqXtauchrqUeCcVrtecmlP7-a-1n1_-fpSjDaojlyDwawd2n2WuHkWpgIK"/>
+</div>
+<div class="flex items-center">
+<span class="text-white font-extrabold text-display-lg lowercase tracking-tight">tovia</span>
+<div class="mx-3 h-4 w-px bg-white/40"></div>
+<div class="flex flex-col">
+<span class="text-white text-[9px] font-bold tracking-widest uppercase leading-none">GESTÃO DE</span>
+<span class="text-white text-[9px] font-bold tracking-widest uppercase leading-none">EVENTOS</span>
+</div>
+</div>
+</div>
+<button class="material-symbols-outlined text-white">menu</button>
+</div>
+<!-- Second Bar: Navigation and Title -->
+<div class="bg-surface px-container-margin py-3 shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center gap-3">
+<button class="material-symbols-outlined text-primary active:scale-95 transition-transform">arrow_back</button>
+<h1 class="text-headline-md font-headline-md font-extrabold text-primary truncate">Conferência Global Tech 2024</h1>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-container-margin pt-stack-gap-lg flex flex-col gap-stack-gap-lg pb-32">
+<!-- Instructional Header -->
+<div class="py-2">
+<h2 class="text-display-lg font-display-lg text-on-surface">Como deseja realizar o check-in?</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Selecione o método de entrada para os participantes.</p>
+</div>
+<!-- Mode Selection Bento Grid -->
+<div class="grid grid-cols-2 gap-stack-gap-md h-64">
+<!-- QR Code Mode -->
+<button class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-[14px] shadow-custom p-6 transition-all active:scale-95 hover:bg-primary-dark group">
+<div class="bg-primary-container/30 p-4 rounded-full mb-4">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+</div>
+<span class="text-headline-md font-headline-md">QR Code</span>
+<span class="text-label-caps font-label-caps mt-2 opacity-80 uppercase">Scanner Ativo</span>
+</button>
+<!-- List Mode -->
+<button class="flex flex-col items-center justify-center bg-card-light text-primary border-2 border-primary-light rounded-[14px] shadow-custom p-6 transition-all active:scale-95 hover:bg-primary-light group">
+<div class="bg-primary-light p-4 rounded-full mb-4">
+<span class="material-symbols-outlined text-5xl">assignment</span>
+</div>
+<span class="text-headline-md font-headline-md">Lista</span>
+<span class="text-label-caps font-label-caps mt-2 text-on-surface-variant uppercase">Busca Manual</span>
+</button>
+</div>
+<!-- Secondary Actions Section -->
+<section class="mt-4 flex flex-col gap-stack-gap-md">
+<!-- Offline Sync Card -->
+<div class="bg-surface-container-low p-card-padding rounded-[14px] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">cloud_done</span>
+<div>
+<h4 class="text-body-lg font-numeric-data text-on-surface">Dados Sincronizados</h4>
+<p class="text-helper-text font-helper-text text-on-surface-variant">Última atualização: Hoje, 08:45</p>
+</div>
+</div>
+<div class="w-2 h-2 rounded-full bg-success"></div>
+</div>
+<!-- Offline Download Button -->
+<button class="w-full bg-card-light border border-border-light py-4 px-6 rounded-[14px] flex items-center justify-center gap-3 text-primary font-bold shadow-custom active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">cloud_download</span>
+<span class="text-body-lg font-body-lg">Baixar lista para uso offline</span>
+</button>
+</section>
+<!-- Dynamic Status Area -->
+<div class="mt-auto bg-primary-light/50 border border-primary-light p-4 rounded-xl flex items-center gap-4">
+<div class="flex-1">
+<div class="flex justify-between items-center mb-2">
+<span class="text-label-caps font-label-caps text-primary">CAPACIDADE DO EVENTO</span>
+<span class="text-label-caps font-label-caps text-primary">64%</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 64%"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-headline-md font-headline-md text-primary">1,240</p>
+<p class="text-helper-text font-helper-text text-on-surface-variant">Check-ins</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-caps font-label-caps">Início</span>
+</a>
+<!-- Check-in (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined active-icon">qr_code_scanner</span>
+<span class="text-label-caps font-label-caps">Check-in</span>
+</a>
+<!-- Tarefas -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-caps font-label-caps">Tarefas</span>
+</a>
+<!-- Financeiro -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-label-caps font-label-caps">Financeiro</span>
+</a>
+<!-- Suporte -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="text-label-caps font-label-caps">Suporte</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for tactile feedback
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', () => {
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
+            });
+        });
+    </script>
+</body></html>

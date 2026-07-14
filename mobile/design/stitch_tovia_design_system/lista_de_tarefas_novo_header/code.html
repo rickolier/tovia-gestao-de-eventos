@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Tovia - Lista de Tarefas do Evento</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f8faf8",
+                    "primary-fixed": "#9bf6b5",
+                    "card-light": "#ffffff",
+                    "primary": "#006032",
+                    "on-secondary-fixed": "#002114",
+                    "surface-bright": "#f8faf8",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "border-light": "#d4e4da",
+                    "surface-tint": "#006d3a",
+                    "outline-variant": "#becabd",
+                    "inverse-primary": "#80d99a",
+                    "secondary-fixed": "#68fcbf",
+                    "warning": "#f59e0b",
+                    "primary-container": "#1a7a45",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-tertiary": "#ffffff",
+                    "primary-light": "#e8f5ee",
+                    "danger": "#ef4444",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#3f4940",
+                    "on-primary-container": "#abffc1",
+                    "border-dark": "#243328",
+                    "on-background": "#191c1b",
+                    "success": "#22c55e",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eceeec",
+                    "inverse-on-surface": "#eff1ef",
+                    "secondary-container": "#64f9bc",
+                    "surface-dim": "#d8dad9",
+                    "inverse-surface": "#2e3130",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e1e3e1",
+                    "surface-variant": "#e1e3e1",
+                    "surface-container-low": "#f2f4f2",
+                    "tertiary": "#754900",
+                    "tertiary-container": "#965e00",
+                    "on-surface": "#191c1b",
+                    "background": "#f8faf8",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#00210d",
+                    "card-dark": "#111a14",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffe8d1",
+                    "secondary-fixed-dim": "#45dfa4",
+                    "secondary": "#006c4b",
+                    "primary-fixed-dim": "#80d99a",
+                    "primary-dark": "#0d5c32",
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary-container": "#00714e",
+                    "outline": "#6f7a6f",
+                    "surface-container-high": "#e6e9e7",
+                    "on-primary-fixed-variant": "#00522a",
+                    "brand-dark": "#162d20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card-padding": "16px",
+                    "stack-gap-lg": "16px",
+                    "container-margin": "16px",
+                    "touch-target-min": "44px",
+                    "stack-gap-sm": "8px",
+                    "stack-gap-md": "12px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "numeric-data": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "helper-text": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f5f7f5;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .shadow-soft {
+            box-shadow: 0 2px 12px rgba(0, 60, 20, 0.08);
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface shadow-soft">
+<!-- Top Row: Logo, Tagline and Profile Picture on Left -->
+<div class="bg-brand-dark flex items-center justify-between px-container-margin h-16">
+<div class="flex items-center gap-4">
+<div class="w-9 h-9 rounded-full bg-primary-container overflow-hidden border-2 border-white/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young event coordinator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWIKQJjXqNTglfsn_iquqKDzbNsHxxlSelZ1eZiGRa2j-ux0hoVWCX9YYCtE4Ai8IK3kRwlArWZEt3SbkADWJw8TzjkqHO653EWpgQtGQKVKzD8eVAO90hLMLIljeIOp0mQPiXZjQ9aKOaNq4ZfzuTsV2By3Ori_ZyHx7JwWU882oY9T-AmntsHXzZXJhlaxIXm30e5-avJXmUJjk7ifdcZGxNKYwAjueo_hAldvXSsi5T1JTGwy-M"/>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-white font-extrabold text-2xl tracking-tighter">tovia</span>
+<div class="h-6 w-[1px] bg-white/30"></div>
+<span class="text-white text-[10px] font-bold tracking-[0.1em] leading-tight">GESTÃO DE<br/>EVENTOS</span>
+</div>
+</div>
+<button class="text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Second Row: Back Button and Event Name -->
+<div class="flex items-center px-container-margin h-14 bg-surface">
+<button class="mr-4 text-on-surface-variant active:scale-90 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Conferência Tech 2024</h1>
+</div>
+</header>
+<main class="pb-32 px-container-margin pt-36">
+<!-- Filter Chips Section -->
+<section class="mt-4 flex gap-stack-sm overflow-x-auto custom-scrollbar pb-2">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform">Todas</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform hover:bg-primary-light">Pendentes</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform hover:bg-primary-light">Em andamento</button>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform hover:bg-primary-light">Concluídas</button>
+</section>
+<!-- Task List Content -->
+<div class="mt-6 space-y-stack-md">
+<!-- Task Item 1: Em Andamento -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-soft flex items-start gap-3 border-l-4 border-primary">
+<div class="flex items-center h-touch-target-min">
+<input class="w-6 h-6 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex justify-between items-start">
+<h3 class="font-numeric-data text-numeric-data text-on-surface">Checagem do Som</h3>
+<span class="px-2 py-0.5 bg-warning text-on-background text-[10px] font-bold rounded-full uppercase tracking-wider">Em andamento</span>
+</div>
+<p class="font-helper-text text-helper-text text-on-surface-variant">Hoje, 09:00 • Palco Principal</p>
+<div class="flex items-center justify-between pt-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-primary-container border-2 border-card-light overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Sound technician" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWcRfembNwCPb4o9BYZ7XqtH1smZnix95GhN6haYtjf77kZ5xE_VQOdYlty_FTez0DIXyyp4HyRHy4VBeWIwKfNjWsWSMTuZrCZXplw9a8Xoktgdz3ntneza6lCgRQmB4hvMsnxH1oKtXQlW78RKXtc3x1QciY5yr0_kWY03h8Il_66f2IQggCZyE25M6z6ZtAEEOFBc1y84KzguszffGoN_Rvmb3ezsTfM6xQVu5qIAld7qtBGZNZ"/>
+</div>
+<div class="w-6 h-6 rounded-full bg-secondary-container border-2 border-card-light flex items-center justify-center text-[10px] font-bold text-on-secondary-container">
+                                +2
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Item 2: Pendente -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-soft flex items-start gap-3">
+<div class="flex items-center h-touch-target-min">
+<input class="w-6 h-6 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex justify-between items-start">
+<h3 class="font-numeric-data text-numeric-data text-on-surface">Entrega dos Crachás</h3>
+<span class="px-2 py-0.5 bg-danger text-on-primary text-[10px] font-bold rounded-full uppercase tracking-wider">Atrasado</span>
+</div>
+<p class="font-helper-text text-helper-text text-on-surface-variant">Ontem, 18:00 • Recepção</p>
+<div class="flex items-center justify-between pt-2">
+<div class="w-6 h-6 rounded-full bg-tertiary-container border-2 border-card-light overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Identification badges" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHHHr329OI5UHLGQdmIykm3sqCdLZDNsAMo1AnPuWrTg8CKEc5xvU889Ego9FxZ065NMC4DyKxgetHNqUJpeNApiw9EAGiX82D4TfgJwrhzmFdbF8Ybxdni_UObOkraLN85T7kCVS8Haa_b0lVisGCmXZByZpwSg0ShzP8oT-cGOwsBp3eKd9_wkB13m9MqGqr8Vjdsga8LWg-QYec1yV6BUmJQVlIpz45zDz3cFSiYPbhnxf39o_C"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Item 3: Concluída -->
+<div class="bg-primary-light p-card-padding rounded-[14px] shadow-soft flex items-start gap-3 opacity-80">
+<div class="flex items-center h-touch-target-min">
+<input checked="" class="w-6 h-6 rounded border-primary text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex justify-between items-start">
+<h3 class="font-numeric-data text-numeric-data text-on-surface line-through">Teste de Conectividade Wi-Fi</h3>
+<span class="px-2 py-0.5 bg-success text-on-primary text-[10px] font-bold rounded-full uppercase tracking-wider">Concluído</span>
+</div>
+<p class="font-helper-text text-helper-text text-on-surface-variant">Concluído às 07:45 por Ana Souza</p>
+</div>
+</div>
+<!-- Task Item 4: Pendente -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-soft flex items-start gap-3">
+<div class="flex items-center h-touch-target-min">
+<input class="w-6 h-6 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex justify-between items-start">
+<h3 class="font-numeric-data text-numeric-data text-on-surface">Briefing dos Palestrantes</h3>
+<span class="px-2 py-0.5 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full uppercase tracking-wider">Pendente</span>
+</div>
+<p class="font-helper-text text-helper-text text-on-surface-variant">Hoje, 11:30 • Sala VIP</p>
+<div class="flex items-center justify-between pt-2">
+<div class="w-6 h-6 rounded-full bg-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Speaker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAymWJJUQRsTpAulJgo9fmR9PPfV1FAzyXReMBjc0PM4T0WkYoP-Rj7ZgeQUFQ1BHmvsZ5loaY5jlTaOEHgg59jZGo--bC6qA0B75xa77dex819M_AjErWAv6PcCxzMXeixdYnjU_MrJkoZVwVi4HZeTmInB0Nv4_H-Frg_1ceNQOdoGUaINBSAEVc3Jes-f6X88KIziKg1rNR2_SyzaGr9velCax81nQtfz9J6bbQ-CYbJF19NH6kx"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Item 5: Pendente -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-soft flex items-start gap-3">
+<div class="flex items-center h-touch-target-min">
+<input class="w-6 h-6 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex justify-between items-start">
+<h3 class="font-numeric-data text-numeric-data text-on-surface">Validar Buffet Almoço</h3>
+<span class="px-2 py-0.5 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full uppercase tracking-wider">Pendente</span>
+</div>
+<p class="font-helper-text text-helper-text text-on-surface-variant">Hoje, 12:00 • Refeitório</p>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB: Create New Task -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-xl shadow-lg flex items-center justify-center active:scale-90 transition-transform duration-200 z-40">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Check-in</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-label-caps text-label-caps">Tarefas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-caps text-label-caps">Financeiro</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-caps text-label-caps">Suporte</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const card = this.closest('.bg-card-light, .bg-primary-light');
+                const title = card.querySelector('h3');
+                if (this.checked) {
+                    card.classList.add('opacity-80', 'bg-primary-light');
+                    card.classList.remove('bg-card-light', 'border-l-4', 'border-primary');
+                    title.classList.add('line-through');
+                    
+                    if (window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                    }
+                } else {
+                    card.classList.remove('opacity-80', 'bg-primary-light');
+                    card.classList.add('bg-card-light');
+                    title.classList.remove('line-through');
+                }
+            });
+        });
+
+        // Filter chip selection logic
+        const filterChips = document.querySelectorAll('section button');
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary');
+                    c.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+                });
+                chip.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+                chip.classList.add('bg-primary', 'text-on-primary');
+            });
+        });
+    </script>
+</body></html>

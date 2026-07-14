@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="pt-BR" class="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#006c4b",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "primary": "#006032",
+                        "on-surface-variant": "#3f4940",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#64f9bc",
+                        "background": "#f8faf8",
+                        "on-primary-fixed": "#00210d",
+                        "primary-dark": "#0d5c32",
+                        "on-background": "#191c1b",
+                        "surface-container-highest": "#e1e3e1",
+                        "on-surface": "#191c1b",
+                        "surface": "#f8faf8",
+                        "inverse-primary": "#80d99a",
+                        "surface-container-low": "#f2f4f2",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e3e1",
+                        "outline-variant": "#becabd",
+                        "surface-dim": "#d8dad9",
+                        "surface-container-high": "#e6e9e7",
+                        "secondary-fixed": "#68fcbf",
+                        "border-light": "#d4e4da",
+                        "primary-fixed": "#9bf6b5",
+                        "card-light": "#ffffff",
+                        "warning": "#f59e0b",
+                        "tertiary": "#754900",
+                        "surface-tint": "#006d3a",
+                        "surface-bright": "#f8faf8",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-container": "#965e00",
+                        "on-secondary-fixed-variant": "#005137",
+                        "success": "#22c55e",
+                        "on-secondary": "#ffffff",
+                        "border-dark": "#243328",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6f7a6f",
+                        "primary-container": "#1a7a45",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceeec",
+                        "inverse-surface": "#2e3130",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002114",
+                        "primary-light": "#e8f5ee",
+                        "error-container": "#ffdad6",
+                        "danger": "#ef4444",
+                        "on-primary-container": "#abffc1",
+                        "on-tertiary-container": "#ffe8d1",
+                        "inverse-on-surface": "#eff1ef",
+                        "on-primary-fixed-variant": "#00522a",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-secondary-container": "#00714e",
+                        "card-dark": "#111a14",
+                        "secondary-fixed-dim": "#45dfa4",
+                        "primary-fixed-dim": "#80d99a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-gap-sm": "8px",
+                        "card-padding": "16px",
+                        "stack-gap-lg": "16px",
+                        "touch-target-min": "44px",
+                        "stack-gap-md": "12px",
+                        "container-margin": "16px"
+                    },
+                    "fontFamily": {
+                        "numeric-data": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "helper-text": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                        "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="font-body-md text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex justify-between items-center w-full px-container-margin h-touch-target-min" style="background-color: rgb(22, 45, 32);"><div class="flex items-center w-full justify-between h-full"><div class="h-8 w-8 rounded-full bg-surface-container-highest overflow-hidden border border-white/20"><img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlmUANjk_Gt_5mfCeSfkPOpb7yU63lEXlVxMQakc1jAPUr5gh6L652PPZ8ashKwzofMOt13pIVVEma5lE4iVruDyxV34BTiKbldI9L-iMCr2rCkxDMMMMK8K1xRaF9BJKbO4x2nTz33SlPRTCPpGDExEnClJXZqyCutp2SNrbtFZ8oIh1HXS0Ac1vz4zQMgdgbHDTtpnRMgEHatRaAXvnYvZb1wc0Poym2TqBPwCMVyaueQoM2VvqQ"></div><span class="text-white font-bold text-xl lowercase tracking-tight">tovia</span><button class="text-white h-touch-target-min w-touch-target-min flex items-center justify-center"><span class="material-symbols-outlined">calendar_today</span></button></div></header><div class="fixed top-[44px] left-0 right-0 z-40 bg-surface border-b border-border-light flex items-center px-container-margin h-touch-target-min"><button class="text-primary active:scale-95 transition-transform duration-150 h-touch-target-min w-touch-target-min flex items-center justify-center mr-2" onclick="history.back()"><span class="material-symbols-outlined">arrow_back</span></button><h1 class="text-headline-md font-headline-md font-extrabold text-primary">Editar Tarefa</h1></div>
+<!-- Content Canvas -->
+<main class="pt-28 px-container-margin max-w-lg mx-auto space-y-stack-gap-lg">
+<!-- Decoration / Context Card -->
+<div class="relative w-full h-32 rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,60,20,0.08)] mb-4">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated abstract background featuring minimalist architectural elements with a soft green and white color palette. The scene is bright and airy, representing operational efficiency and professional event management. Light shadows and clean lines create a sense of structure and high-utility design, perfectly matching the Tovia brand identity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAY_T--wo9KjfJVeBBoVG3Zh4EGl9OyPc2J-hVpXdWy1KC2FDRHK9HtBsX5CClHF1fIPXihpbCn4MUPccQlfg8eSj8hivEE54k7JbLj9CZlvHL8cghtkBYhWJ8sZMt4h7CI9ls1s2Hjlr_qAPsBF3tVjqAsjmTVyXklhtlBVWm-6P8_tpxD4AGTQfno2CDx38hk98u-1ai1lpqIRY_FszyXQw8lBh5xz7HJGR5jQByf0Yfyk-GkxmHv')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
+<span class="text-white font-headline-md font-bold">ID: #TV-88210</span>
+</div>
+</div>
+<form class="space-y-stack-gap-lg" id="task-form">
+<!-- Title Field -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Título da Tarefa</label>
+<input class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-lg font-body-lg placeholder:text-outline" placeholder="Digite o título..." type="text" value="Credenciamento VIP - Lounge Sul">
+</div>
+<!-- Description Field -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Descrição Detalhada</label>
+<textarea class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md font-body-md min-h-[120px] resize-none" placeholder="O que precisa ser feito?">Organizar a lista de convidados premium e garantir que os kits de boas-vindas estejam posicionados na bancada principal antes das 08:00.</textarea>
+</div>
+<!-- Date Picker -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Data de Entrega</label>
+<div class="relative">
+<input class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md font-body-md appearance-none" type="date" value="2023-11-25">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary">calendar_today</span>
+</div>
+</div>
+<!-- Assignee Selector -->
+<div class="space-y-3">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Responsável</label>
+<div class="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+<!-- User 1 -->
+<button class="flex-shrink-0 flex flex-col items-center gap-1 group" onclick="selectAssignee(this)" type="button">
+<div class="h-14 w-14 rounded-full ring-primary/20 transition-all avatar-ring-selected border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a young professional woman with a friendly smile, set against a clean, minimal white background. Her attire is business casual, fitting a corporate environment. The overall aesthetic is bright and optimistic, aligned with high-end mobile UI design standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo1dxi5rhIKiSWDjwbb7WRBh_MU6gCWtySjkBt62WvdDROeCvXQquXuBKIQ7ExvX9knXcgKXOfJM20LOmamf07PDv9Srk8WZED9CbCObMF3ElmFL1TAbLMD61IK5DGfbAeQrgoDMSEz8ah1jMU0y42CBMk1CAiA1ZDQosxzwDl4OmiVCpmVZlpj75s7GMJ28ebnFBPe9pzz0se6jCUbdcBcB01jCoqyeEUSE_h5R7Z22gHGEtt8kbm">
+</div>
+<span class="text-[10px] font-semibold text-primary">Ana P.</span>
+</button>
+<!-- User 2 -->
+<button class="flex-shrink-0 flex flex-col items-center gap-1 group" onclick="selectAssignee(this)" type="button">
+<div class="h-14 w-14 rounded-full ring-transparent transition-all border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait of a diverse male team member in a corporate setting. The lighting is professional and the colors are muted with a focus on deep greens and whites. The style is clean, representing efficiency and modern workspace dynamics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjGgQsVT6lYxnua_4_lO3BfYbj4pcFlIbc-QeAb9GwxI1CN2AYZjoNbNXTt3FSx5lYIcicKyiFAfBoXJhbNL0wPIiywCGaLn6IOc1f2Lgr-Zig-ZdWcOUS9aJgq-VtsZEfI1j3oMLfjygN4Ow-FJUFNBfUS8rCTiyjGtUd2lNz8cJTopHnNIu1_3dBh8QgtNY-Ka61c2TDxNxjsG_Lr6cLkjvrZ62fYTTZWZWeuD9FlPgpbrn6SCfZ">
+</div>
+<span class="text-[10px] font-semibold text-outline">Carlos M.</span>
+</button>
+<!-- User 3 -->
+<button class="flex-shrink-0 flex flex-col items-center gap-1 group" onclick="selectAssignee(this)" type="button">
+<div class="h-14 w-14 rounded-full ring-transparent transition-all border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A portrait of an experienced event coordinator with grey hair and glasses, smiling warmly. The backdrop is a blurred conference hall with bright ambient lighting. The image evokes expertise and reliability within a professional operational framework." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfhHx1VVvxpapqygSkBin0RGg8rDXJEyWv4XGNzkrWrZZQMtLwfyqQkX1bCH-YvFOk4kH9L73Djyz67lsYiUmEUoiLkPpdUCwHjJELuCPSIuPXL9W1WIOto9YBqO5gr5Xi_LhrAGHae_bsVx-pdtHOu7pXNWtOiISO2wcdj3krHUxbPgGwyD3QisfZNNN2p8oITcKE1gDbuPWbQMWYU6azbF7E0naTBnHYN57dhtxLexi80f09hdBo">
+</div>
+<span class="text-[10px] font-semibold text-outline">Roberto L.</span>
+</button>
+<!-- User 4 -->
+<button class="flex-shrink-0 flex flex-col items-center gap-1 group" onclick="selectAssignee(this)" type="button">
+<div class="h-14 w-14 rounded-full ring-transparent transition-all border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Close up face of a female event producer with a focused expression. The visual style is crisp and modern, featuring high-key lighting that emphasizes clarity and professionalism. The background is a clean, neutral surface that complements the UI's green-tinted palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8kJuRHeXyC-BXHhObmtETXdwWhKbunmlCJEQjTvSgvsLhP9_1I1TJsORoKA5BpNuuM0FzOrr7gc2c1S66yGVXu_AWrW7HnRFKMTwrRn87X9LuSC0R7WNfWh9yWfULoUt64nMLz4NTo19BkRKABXpctgW2kaa61hcKR-BmfhTiHOZ-F68cVEOY0ZFdUn-UfXrkjyTirbCMxYwKFHhjbc_JGjAaV5_7SS5PAZMER9q_WVHBeFHAcDRi">
+</div>
+<span class="text-[10px] font-semibold text-outline">Juliana S.</span>
+</button>
+<!-- Add Button -->
+<button class="flex-shrink-0 h-14 w-14 rounded-full bg-surface-container-highest flex items-center justify-center border-2 border-dashed border-outline-variant text-outline active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Status Selector -->
+<div class="space-y-3">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Status da Operação</label>
+<div class="bg-surface-container-low p-1 rounded-xl flex gap-1 shadow-inner">
+<button class="flex-1 py-3 text-[13px] font-bold rounded-lg transition-all duration-200 text-outline" onclick="setStatus(this)" type="button">
+                        Pendente
+                    </button>
+<button class="flex-1 py-3 text-[13px] font-bold rounded-lg transition-all duration-200 bg-primary text-white shadow-md" onclick="setStatus(this)" type="button">
+                        Em andamento
+                    </button>
+<button class="flex-1 py-3 text-[13px] font-bold rounded-lg transition-all duration-200 text-outline" onclick="setStatus(this)" type="button">
+                        Concluída
+                    </button>
+</div>
+</div>
+</form>
+</main>
+<!-- Bottom Actions Container -->
+<div class="fixed bottom-0 left-0 right-0 p-container-margin bg-surface/80 backdrop-blur-md flex flex-col gap-3">
+<button class="w-full h-14 bg-primary text-on-primary font-bold rounded-xl shadow-[0_4px_14px_rgba(0,96,50,0.3)] active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">save</span>
+            Salvar Alterações
+        </button>
+<button class="w-full h- touch-target-min text-danger font-bold text-helper-text uppercase tracking-widest active:opacity-70 transition-opacity">
+            Excluir Tarefa
+        </button>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        function selectAssignee(element) {
+            // Reset all rings
+            document.querySelectorAll('.avatar-ring-selected').forEach(el => {
+                el.classList.remove('avatar-ring-selected');
+                el.classList.add('ring-transparent');
+                el.nextElementSibling.classList.replace('text-primary', 'text-outline');
+            });
+            
+            // Add ring to selected
+            const ringDiv = element.querySelector('div');
+            ringDiv.classList.remove('ring-transparent');
+            ringDiv.classList.add('avatar-ring-selected');
+            element.querySelector('span').classList.replace('text-outline', 'text-primary');
+
+            // Haptic-like feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate(5);
+            }
+        }
+
+        function setStatus(element) {
+            const buttons = element.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'shadow-md');
+                btn.classList.add('text-outline');
+            });
+            
+            element.classList.remove('text-outline');
+            element.classList.add('bg-primary', 'text-white', 'shadow-md');
+
+            // Haptic-like feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate(10);
+            }
+        }
+
+        // Handle focus states for inputs
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label')?.classList.replace('text-on-surface-variant', 'text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label')?.classList.replace('text-primary', 'text-on-surface-variant');
+            });
+        });
+    </script>
+
+</body></html>

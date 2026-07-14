@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Tovia - Financeiro</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary-light": "#e8f5ee",
+                    "border-dark": "#243328",
+                    "primary-dark": "#0d5c32",
+                    "outline-variant": "#becabd",
+                    "card-light": "#ffffff",
+                    "border-light": "#d4e4da",
+                    "surface-tint": "#006d3a",
+                    "surface-bright": "#f8faf8",
+                    "surface-dim": "#d8dad9",
+                    "surface": "#f8faf8",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f2f4f2",
+                    "secondary-container": "#64f9bc",
+                    "inverse-on-surface": "#eff1ef",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2e3130",
+                    "primary-container": "#1a7a45",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "tertiary": "#754900",
+                    "primary-fixed": "#9bf6b5",
+                    "danger": "#ef4444",
+                    "background": "#f8faf8",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#00522a",
+                    "card-dark": "#111a14",
+                    "secondary": "#006c4b",
+                    "surface-variant": "#e1e3e1",
+                    "primary-fixed-dim": "#80d99a",
+                    "primary": "#006032",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-surface-variant": "#3f4940",
+                    "inverse-primary": "#80d99a",
+                    "secondary-fixed": "#68fcbf",
+                    "on-primary-container": "#abffc1",
+                    "on-secondary-container": "#00714e",
+                    "on-primary-fixed": "#00210d",
+                    "on-secondary-fixed": "#002114",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#6f7a6f",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#965e00",
+                    "secondary-fixed-dim": "#45dfa4",
+                    "surface-container-highest": "#e1e3e1",
+                    "on-surface": "#191c1b",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-tertiary-container": "#ffe8d1",
+                    "success": "#22c55e",
+                    "on-background": "#191c1b",
+                    "warning": "#f59e0b",
+                    "surface-container-high": "#e6e9e7",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eceeec"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-gap-md": "12px",
+                    "card-padding": "16px",
+                    "touch-target-min": "44px",
+                    "stack-gap-sm": "8px",
+                    "stack-gap-lg": "16px",
+                    "container-margin": "16px"
+            },
+            "fontFamily": {
+                    "numeric-data": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "helper-text": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background-color: #006032;
+            border-radius: 3px 3px 0 0;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface antialiased mb-20 overflow-x-hidden">
+<!-- Screen Wrapper -->
+<div class="max-w-md mx-auto min-h-screen bg-surface relative">
+<!-- Custom Header (Requirement: #162d20 green bar, tovia logo, avatar left) -->
+<header class="bg-[#162d20] h-touch-target-min flex items-center justify-between px-container-margin sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-[#ffffff20]">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a corporate event manager with a friendly smile, wearing a modern minimalist outfit. The background is a blurred high-end office with soft ambient lighting in shades of deep green and warm white, matching the Tovia brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfmMZRRC6bz4rkFKn7fAhkoMazBhdDWDzzhoIChC4qhHjyoq1x2QvhCsMNgUERPrni2f4mlGyPIMkXK4RLzU4lNQEnkoTxNahKIE4DikSjd_0lafaXW6Is4xPVWjh68GKPgUuJe6EUVBurawe6FjFXbhxQQ57AIKbBQI3_91yb2cGRsz1dVUisg_JQud_C0ZQf6ShT_952zWLUmAWjqi300_pgpvPzNpX18Oz2OFS4gr_CxuX5Ke9W"/>
+</div>
+<span class="text-white font-display-lg text-[20px] lowercase tracking-tight">tovia</span>
+</div>
+<div class="flex items-center gap-4 text-white">
+<span class="material-symbols-outlined">notifications</span>
+<span class="material-symbols-outlined">settings</span>
+</div>
+</header>
+<!-- Page Content -->
+<main class="py-stack-gap-lg">
+<!-- Page Title -->
+<div class="px-container-margin mb-stack-gap-lg">
+<h1 class="font-display-lg text-display-lg text-on-surface">Financeiro</h1>
+</div>
+<!-- Sub-Tabs Navigation -->
+<div class="px-container-margin mb-stack-gap-lg">
+<div class="flex gap-6 border-b border-surface-variant relative">
+<button class="pb-3 relative font-numeric-data text-primary" id="tab-pagamentos" onclick="switchTab('pagamentos')">
+                        Pagamentos
+                        <div class="active-tab-indicator" id="indicator-pagamentos"></div>
+</button>
+<button class="pb-3 relative font-numeric-data text-on-surface-variant" id="tab-relatorios" onclick="switchTab('relatorios')">
+                        Relatórios
+                        <div class="active-tab-indicator hidden" id="indicator-relatorios"></div>
+</button>
+</div>
+</div>
+<!-- Tab Content: Pagamentos -->
+<section class="block" id="content-pagamentos">
+<!-- Search & Filters -->
+<div class="px-container-margin space-y-stack-gap-md mb-stack-gap-lg">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-11 pl-10 pr-4 bg-surface-container rounded-lg border-none focus:ring-2 focus:ring-primary transition-all font-body-md" placeholder="Buscar inscrito..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-label-caps font-label-caps shrink-0">Todos</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-label-caps font-label-caps shrink-0 border border-outline-variant">Pago</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-label-caps font-label-caps shrink-0 border border-outline-variant">Pendente</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-label-caps font-label-caps shrink-0 border border-outline-variant">Gratuito</button>
+</div>
+</div>
+<!-- Inscription List -->
+<div class="px-container-margin space-y-3">
+<!-- Item 1 (Pago) -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)] border-l-4 border-success flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold">
+                                AC
+                            </div>
+<div>
+<p class="font-numeric-data text-on-surface">Ana Clara Oliveira</p>
+<p class="text-helper-text text-on-surface-variant">ID: #4582</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-success text-white text-[10px] font-bold uppercase tracking-wider">Pago</span>
+</div>
+<!-- Item 2 (Pendente) -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold">
+                                RM
+                            </div>
+<div>
+<p class="font-numeric-data text-on-surface">Ricardo Mendonça</p>
+<p class="text-helper-text text-on-surface-variant">ID: #4590</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-warning text-on-surface text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+</div>
+<!-- Item 3 (Gratuito) -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold">
+                                LS
+                            </div>
+<div>
+<p class="font-numeric-data text-on-surface">Lucas Silva</p>
+<p class="text-helper-text text-on-surface-variant">ID: #4591</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-outline text-white text-[10px] font-bold uppercase tracking-wider">Gratuito</span>
+</div>
+<!-- Item 4 (Pago) -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)] border-l-4 border-success flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold">
+                                BE
+                            </div>
+<div>
+<p class="font-numeric-data text-on-surface">Beatriz Esteves</p>
+<p class="text-helper-text text-on-surface-variant">ID: #4595</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-success text-white text-[10px] font-bold uppercase tracking-wider">Pago</span>
+</div>
+</div>
+</section>
+<!-- Tab Content: Relatórios -->
+<section class="hidden" id="content-relatorios">
+<div class="px-container-margin space-y-4">
+<!-- Summary Cards Grid -->
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)]">
+<p class="text-label-caps text-on-surface-variant uppercase mb-1">Total arrecadado</p>
+<p class="text-display-lg font-bold text-success">R$ 14.280</p>
+</div>
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)]">
+<p class="text-label-caps text-on-surface-variant uppercase mb-1">Pendente</p>
+<p class="text-display-lg font-bold text-warning">R$ 2.450</p>
+</div>
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)] col-span-2 flex justify-between items-center">
+<div>
+<p class="text-label-caps text-on-surface-variant uppercase mb-1">Presença</p>
+<p class="text-display-lg font-bold text-primary">82%</p>
+</div>
+<div class="w-12 h-12 rounded-full border-4 border-primary-light border-t-primary flex items-center justify-center">
+<span class="text-[10px] font-bold">82%</span>
+</div>
+</div>
+</div>
+<!-- Sparkline Chart -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)]">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md">Inscrições por dia</h3>
+<span class="text-helper-text text-on-surface-variant">Últimos 7 dias</span>
+</div>
+<!-- Simple Sparkline using SVG -->
+<div class="w-full h-32 relative">
+<svg class="w-full h-full drop-shadow-md" viewbox="0 0 100 30">
+<defs>
+<lineargradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#22c55e;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#22c55e;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,25 Q15,5 25,20 T50,10 T75,25 T100,5" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-width="1.5"></path>
+<path d="M0,25 Q15,5 25,20 T50,10 T75,25 T100,5 V30 H0 Z" fill="url(#gradient)"></path>
+</svg>
+</div>
+<div class="flex justify-between mt-4 px-1">
+<span class="text-[10px] text-on-surface-variant font-bold">SEG</span>
+<span class="text-[10px] text-on-surface-variant font-bold">TER</span>
+<span class="text-[10px] text-on-surface-variant font-bold">QUA</span>
+<span class="text-[10px] text-on-surface-variant font-bold">QUI</span>
+<span class="text-[10px] text-on-surface-variant font-bold">SEX</span>
+<span class="text-[10px] text-on-surface-variant font-bold">SAB</span>
+<span class="text-[10px] text-on-surface-variant font-bold">DOM</span>
+</div>
+</div>
+<!-- Transaction Summary -->
+<div class="bg-card-light p-card-padding rounded-[14px] shadow-[0_2px_12px_rgba(0,60,20,0.08)]">
+<h3 class="font-headline-md text-headline-md mb-4">Métodos de Pagamento</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-container">
+<span class="material-symbols-outlined text-primary">qr_code</span>
+</div>
+<span class="font-numeric-data">PIX</span>
+</div>
+<span class="font-numeric-data">65%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="w-[65%] h-full bg-primary"></div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-container">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+</div>
+<span class="font-numeric-data">Cartão de Crédito</span>
+</div>
+<span class="font-numeric-data">35%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="w-[35%] h-full bg-primary opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom NavBar (Shared Component Logic applied) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps mt-1">Check-in</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps mt-1">Tarefas</span>
+</a>
+<!-- Active Tab: Financeiro -->
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-caps text-label-caps mt-1">Financeiro</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label-caps text-label-caps mt-1">Suporte</span>
+</a>
+</nav>
+<!-- Contextual FAB (Hidden on financeiro details usually, but available for quick registration) -->
+<button class="fixed bottom-24 right-4 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<script>
+        function switchTab(tab) {
+            const contentPagamentos = document.getElementById('content-pagamentos');
+            const contentRelatorios = document.getElementById('content-relatorios');
+            const indicatorPagamentos = document.getElementById('indicator-pagamentos');
+            const indicatorRelatorios = document.getElementById('indicator-relatorios');
+            const tabPagamentos = document.getElementById('tab-pagamentos');
+            const tabRelatorios = document.getElementById('tab-relatorios');
+
+            if (tab === 'pagamentos') {
+                contentPagamentos.classList.remove('hidden');
+                contentRelatorios.classList.add('hidden');
+                indicatorPagamentos.classList.remove('hidden');
+                indicatorRelatorios.classList.add('hidden');
+                tabPagamentos.classList.add('text-primary');
+                tabPagamentos.classList.remove('text-on-surface-variant');
+                tabRelatorios.classList.remove('text-primary');
+                tabRelatorios.classList.add('text-on-surface-variant');
+            } else {
+                contentPagamentos.classList.add('hidden');
+                contentRelatorios.classList.remove('hidden');
+                indicatorPagamentos.classList.add('hidden');
+                indicatorRelatorios.classList.remove('hidden');
+                indicatorRelatorios.classList.remove('hidden');
+                indicatorRelatorios.classList.add('block');
+                tabPagamentos.classList.remove('text-primary');
+                tabPagamentos.classList.add('text-on-surface-variant');
+                tabRelatorios.classList.add('text-primary');
+                tabRelatorios.classList.remove('text-on-surface-variant');
+            }
+        }
+    </script>
+</body></html>

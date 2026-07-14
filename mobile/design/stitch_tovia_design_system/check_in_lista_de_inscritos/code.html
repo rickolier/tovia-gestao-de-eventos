@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="pt-br" class="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#64f9bc",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d8dad9",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#9bf6b5",
+                    "warning": "#f59e0b",
+                    "on-surface-variant": "#3f4940",
+                    "on-primary-container": "#abffc1",
+                    "outline": "#6f7a6f",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#80d99a",
+                    "success": "#22c55e",
+                    "inverse-on-surface": "#eff1ef",
+                    "surface-container-high": "#e6e9e7",
+                    "card-light": "#ffffff",
+                    "outline-variant": "#becabd",
+                    "border-dark": "#243328",
+                    "tertiary": "#754900",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "primary-dark": "#0d5c32",
+                    "primary-container": "#1a7a45",
+                    "background": "#f8faf8",
+                    "on-background": "#191c1b",
+                    "primary": "#006032",
+                    "tertiary-fixed": "#ffddb8",
+                    "danger": "#ef4444",
+                    "border-light": "#d4e4da",
+                    "surface-container-low": "#f2f4f2",
+                    "secondary": "#006c4b",
+                    "on-surface": "#191c1b",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "surface-container": "#eceeec",
+                    "tertiary-container": "#965e00",
+                    "inverse-surface": "#2e3130",
+                    "surface": "#f8faf8",
+                    "on-secondary-container": "#00714e",
+                    "primary-fixed-dim": "#80d99a",
+                    "surface-bright": "#f8faf8",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "card-dark": "#111a14",
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#00210d",
+                    "surface-variant": "#e1e3e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-gap-sm": "8px",
+                    "touch-target-min": "44px",
+                    "container-margin": "16px",
+                    "card-padding": "16px",
+                    "stack-gap-md": "12px",
+                    "stack-gap-lg": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "numeric-data": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "helper-text": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "display-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "numeric-data": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "helper-text": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50">
+  <!-- Primary Green Header -->
+  <div class="bg-primary-dark h-[56px] flex items-center justify-between px-container-margin">
+    <div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0OMWBEYMm8IAR8xqEeVFmPziul9MQDhk_mzhTngcEzTCLQpOZNe5EUd3H5vXM3b3h9HvWqmcGf-r8ZkYWbKzNeaVSNf1QGuR8GzosEnMFEwB3iS4Houl6MSotRvaeVTLJ_B1H8XQCYQ8lCe9ZIXSMXpTdo8NaHe5F_ySixDjo1Ss5AMPWCNqUxENywF_P6EI0ZR-IovASpGcSW9P-Aqh237Do1Rr-9ZztAEjz2s-eEa3we-eZY-8q" alt="User Avatar">
+    </div>
+    <span class="text-white text-[20px] font-black lowercase tracking-tight">tovia</span>
+    <span class="material-symbols-outlined text-white" data-icon="calendar_today">calendar_today</span>
+  </div>
+  <!-- Secondary Sub-header -->
+  <div class="bg-surface h-[48px] flex items-center px-container-margin border-b border-outline-variant shadow-sm">
+    <button class="mr-4 active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-on-surface" data-icon="arrow_back">arrow_back</span>
+    </button>
+    <h1 class="text-headline-md font-headline-md text-on-surface">Check-in</h1>
+  </div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 mt-[104px] mb-[72px] relative overflow-hidden flex flex-col">
+<!-- Fixed Search & Counter Section -->
+<section class="bg-surface/90 backdrop-blur-md sticky top-0 z-40 px-container-margin pt-4 pb-2">
+<div class="relative mb-3">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full h-[48px] pl-10 pr-4 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary text-body-md font-body-md transition-shadow shadow-sm" placeholder="Buscar por nome…" type="text">
+</div>
+<div class="flex items-center justify-between">
+<p class="text-primary font-numeric-data text-numeric-data">48 / 120 presentes</p>
+<button class="flex items-center gap-1 text-primary text-label-caps font-label-caps active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                    FILTRAR
+                </button>
+</div>
+</section>
+<!-- Alphabetical List Content -->
+<div class="flex-1 overflow-y-auto px-container-margin pt-2 pb-20 scrollbar-hide">
+<!-- Section A -->
+<div class="mb-6">
+<h2 class="text-outline font-label-caps text-label-caps mb-2 sticky top-[108px] bg-background/80 py-1">A</h2>
+<div class="space-y-1">
+<!-- Row Checked -->
+<label class="flex items-center justify-between p-3 rounded-xl row-checked transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-body-md">
+                                AA
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Adriana Amaral</span>
+</div>
+<div class="relative w-6 h-6">
+<input checked="" class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-primary transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-body-md">
+                                AS
+                            </div>
+<span class="font-bold text-body-md text-on-surface">André Souza</span>
+</div>
+<div class="relative w-6 h-6">
+<input class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-outline-variant transition-all"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Section B -->
+<div class="mb-6">
+<h2 class="text-outline font-label-caps text-label-caps mb-2 sticky top-[108px] bg-background/80 py-1">B</h2>
+<div class="space-y-1">
+<label class="flex items-center justify-between p-3 rounded-xl row-checked transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-white font-bold text-body-md">
+                                BM
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Beatriz Mendes</span>
+</div>
+<div class="relative w-6 h-6">
+<input checked="" class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-primary transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-dark flex items-center justify-center text-white font-bold text-body-md">
+                                BO
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Bruno Oliveira</span>
+</div>
+<div class="relative w-6 h-6">
+<input class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-outline-variant transition-all"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Section C -->
+<div class="mb-6">
+<h2 class="text-outline font-label-caps text-label-caps mb-2 sticky top-[108px] bg-background/80 py-1">C</h2>
+<div class="space-y-1">
+<label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-body-md">
+                                CR
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Carlos Rocha</span>
+</div>
+<div class="relative w-6 h-6">
+<input class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-outline-variant transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between p-3 rounded-xl row-checked transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-body-md">
+                                CF
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Camila Ferreira</span>
+</div>
+<div class="relative w-6 h-6">
+<input checked="" class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-primary transition-all"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Section D -->
+<div class="mb-6">
+<h2 class="text-outline font-label-caps text-label-caps mb-2 sticky top-[108px] bg-background/80 py-1">D</h2>
+<div class="space-y-1">
+<label class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-body-md">
+                                DS
+                            </div>
+<span class="font-bold text-body-md text-on-surface">Daniel Santos</span>
+</div>
+<div class="relative w-6 h-6">
+<input class="custom-checkbox absolute inset-0 opacity-0 cursor-pointer z-10" type="checkbox">
+<div class="checkbox-visual w-6 h-6 rounded border-2 border-outline-variant transition-all"></div>
+</div>
+</label>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB: Camera / QR -->
+<button class="fixed bottom-24 right-container-margin z-50 flex items-center gap-2 bg-primary text-white px-6 py-4 rounded-full shadow-lg hover:bg-primary-dark transition-all active:scale-95 active:shadow-md">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-bold text-body-md">Usar QR</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-surface dark:bg-card-dark shadow-[0_-2px_12px_rgba(0,60,20,0.08)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Check-in</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-caps text-label-caps">Tarefas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-caps text-label-caps">Financeiro</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-label-caps text-label-caps">Suporte</span>
+</a>
+</nav>
+<script>
+        // Simple logic for row background toggle on checkbox change
+        document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('label');
+                const visual = row.querySelector('.checkbox-visual');
+                if (this.checked) {
+                    row.classList.add('row-checked');
+                    visual.classList.remove('border-outline-variant');
+                    visual.classList.add('border-primary');
+                } else {
+                    row.classList.remove('row-checked');
+                    visual.classList.add('border-outline-variant');
+                    visual.classList.remove('border-primary');
+                }
+            });
+        });
+    </script>
+
+</body></html>

@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Tovia Mobile",
+    "slug": "tovia-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "tovia",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.tovia.mobile"
+    },
+    "android": {
+      "package": "app.tovia.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#1a7a45",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O Tovia precisa da câmera para fazer check-in por QR Code."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
