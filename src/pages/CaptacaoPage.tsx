@@ -196,12 +196,12 @@ export default function CaptacaoPage() {
         </section>
 
         {/* ── A Solução ── */}
-        <section id="solucao" className="py-16 px-6 bg-white text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#1a7a45] mb-3">A Solução</p>
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">
+        <section id="solucao" className="py-10 px-6 bg-white text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1a7a45] mb-2">A Solução</p>
+          <h2 className="text-xl md:text-2xl font-black text-gray-900 mb-4">
             Tovia — <span className="font-normal" style={{ fontFamily: 'serif' }}>טוֹבִיָּה</span>
           </h2>
-          <div className="max-w-2xl mx-auto space-y-4 text-gray-600 text-base leading-relaxed">
+          <div className="max-w-xl mx-auto space-y-2 text-gray-500 text-sm leading-relaxed">
             <p>
               O nome vem do hebraico antigo <strong>Toviyah</strong>, formado por duas raízes:{' '}
               <strong>Tov</strong> (טוֹב), que significa bondade, e <strong>Yah</strong> (יָהּ),
