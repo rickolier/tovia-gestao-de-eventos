@@ -37,32 +37,48 @@ function NotifRow({
   );
 }
 
-function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, date: string) => void; onCancel: () => void }) {
+function HoursPicker({ value, onChange }: { value: number; onChange: (h: number) => void }) {
+  const { colors } = useTheme();
+  const options = [1, 2, 3, 6, 12, 24, 36, 48];
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }} contentContainerStyle={{ gap: 6, paddingHorizontal: 2 }}>
+      {options.map((h) => (
+        <TouchableOpacity
+          key={h}
+          style={[
+            styles.hourBtn,
+            {
+              backgroundColor: value === h ? colors.primary : colors.card,
+              borderColor: value === h ? colors.primary : colors.border,
+            },
+          ]}
+          onPress={() => onChange(h)}
+        >
+          <Text style={[Typography.caption, {
+            color: value === h ? '#fff' : colors.mutedFg,
+            fontWeight: '600',
+          }]}>{h}h</Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+}
+
+function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, hours: number, before: boolean) => void; onCancel: () => void }) {
   const { colors } = useTheme();
   const [message, setMessage] = useState('');
-  const [dateStr, setDateStr] = useState('');
+  const [hours, setHours] = useState(2);
+  const [before, setBefore] = useState(true);
 
   function handleAdd() {
     if (!message.trim()) { Alert.alert('Atenção', 'Digite uma mensagem.'); return; }
-    if (!dateStr.trim()) { Alert.alert('Atenção', 'Informe a data e hora (DD/MM/AAAA HH:MM).'); return; }
-
-    const [datePart, timePart] = dateStr.trim().split(' ');
-    const [day, month, year] = (datePart ?? '').split('/').map(Number);
-    const [hour, minute] = (timePart ?? '00:00').split(':').map(Number);
-
-    if (!day || !month || !year) { Alert.alert('Formato inválido', 'Use DD/MM/AAAA HH:MM'); return; }
-    const dt = new Date(year, month - 1, day, hour ?? 0, minute ?? 0);
-    if (isNaN(dt.getTime()) || dt <= new Date()) {
-      Alert.alert('Data inválida', 'A data precisa ser no futuro.');
-      return;
-    }
-
-    onAdd(message.trim(), dt.toISOString());
+    onAdd(message.trim(), hours, before);
   }
 
   return (
     <View style={[styles.form, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
       <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 6 }]}>Nova notificação</Text>
+
       <TextInput
         style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
         placeholder="Mensagem…"
@@ -71,14 +87,35 @@ function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, date: string) 
         onChangeText={setMessage}
         multiline
       />
-      <TextInput
-        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground, marginTop: 8 }]}
-        placeholder="Data e hora: DD/MM/AAAA HH:MM"
-        placeholderTextColor={colors.mutedFg}
-        value={dateStr}
-        onChangeText={setDateStr}
-        keyboardType="numbers-and-punctuation"
-      />
+
+      {/* Horas */}
+      <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 12, marginBottom: 2 }]}>Quantas horas:</Text>
+      <HoursPicker value={hours} onChange={setHours} />
+
+      {/* Antes / Depois */}
+      <View style={[styles.toggleRow, { borderColor: colors.border, marginTop: 12 }]}>
+        <TouchableOpacity
+          style={[styles.toggleBtn, before && { backgroundColor: colors.primary }]}
+          onPress={() => setBefore(true)}
+        >
+          <Text style={[Typography.caption, { color: before ? '#fff' : colors.mutedFg, fontWeight: '600' }]}>
+            Antes do evento
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleBtn, !before && { backgroundColor: colors.primary }]}
+          onPress={() => setBefore(false)}
+        >
+          <Text style={[Typography.caption, { color: !before ? '#fff' : colors.mutedFg, fontWeight: '600' }]}>
+            Após o evento
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 8 }]}>
+        A notificação será enviada {hours}h {before ? 'antes' : 'após'} o início do evento selecionado.
+      </Text>
+
       <View style={styles.formActions}>
         <TouchableOpacity onPress={onCancel} style={[styles.formBtn, { borderColor: colors.border }]}>
           <Text style={[Typography.body, { color: colors.mutedFg }]}>Cancelar</Text>
@@ -118,20 +155,20 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
     else updateOfflineReminder(value);
   }
 
-  async function handleAddCustom(message: string, scheduledAt: string) {
+  async function handleAddCustom(message: string, hours: number, before: boolean) {
     if (!permGranted) {
       const granted = await requestPermission();
       if (!granted) { Alert.alert('Permissão necessária', 'Ative as notificações para continuar.'); return; }
     }
-    await addCustom({ message, scheduledAt });
+    // Usa o próximo evento ativo como referência — para o MVP, usa agora + 7 dias como placeholder
+    const refDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await addCustom({ message, hours, before }, refDate);
     setShowForm(false);
-    Alert.alert('Notificação agendada!', 'Você receberá um aviso na data e hora informados.');
+    Alert.alert('Notificação criada!', `Você será avisado ${hours}h ${before ? 'antes' : 'após'} o evento.`);
   }
 
-  function formatDate(iso: string) {
-    try {
-      return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
-    } catch { return iso; }
+  function formatCustom(c: { hours: number; before: boolean }) {
+    return `${c.hours}h ${c.before ? 'antes' : 'após'} o evento`;
   }
 
   return (
@@ -199,7 +236,7 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
             <NotifRow
               icon={<WifiOff size={14} color={colors.primary} strokeWidth={2} />}
               title="Lembrete de lista offline"
-              subtitle="24h antes: avisa para baixar a lista de inscritos"
+              subtitle="3h antes: avisa para baixar a lista de inscritos"
               right={
                 <Switch
                   value={settings.offlineReminder.enabled}
@@ -228,7 +265,7 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
                 key={c.id}
                 icon={<Bell size={14} color={colors.primary} strokeWidth={2} />}
                 title={c.message}
-                subtitle={formatDate(c.scheduledAt)}
+                subtitle={formatCustom(c)}
                 right={
                   <TouchableOpacity
                     onPress={() => Alert.alert('Remover', 'Excluir esta notificação?', [
@@ -325,5 +362,12 @@ const styles = StyleSheet.create({
   formBtn: {
     flex: 1, alignItems: 'center', paddingVertical: 10,
     borderRadius: Radius.md, borderWidth: 1,
+  },
+  toggleRow: {
+    flexDirection: 'row', borderWidth: 1,
+    borderRadius: Radius.md, overflow: 'hidden',
+  },
+  toggleBtn: {
+    flex: 1, alignItems: 'center', paddingVertical: 9,
   },
 });

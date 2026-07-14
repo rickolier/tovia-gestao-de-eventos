@@ -7,7 +7,9 @@ const STORAGE_KEY = 'notif_settings_v1';
 export interface CustomNotif {
   id: string;
   message: string;
-  scheduledAt: string; // ISO string
+  hours: number;        // 1–48
+  before: boolean;      // true = before event, false = after
+  scheduledAt: string;  // ISO — computed at schedule time
   eventoNome?: string;
 }
 
@@ -66,14 +68,14 @@ export async function scheduleOfflineReminder(
   eventoNome: string,
   dataInicio: Date,
 ): Promise<string | null> {
-  const triggerDate = new Date(dataInicio.getTime() - 24 * 60 * 60 * 1000);
+  const triggerDate = new Date(dataInicio.getTime() - 3 * 60 * 60 * 1000);
   if (triggerDate <= new Date()) return null;
 
   try {
     return await Notifications.scheduleNotificationAsync({
       content: {
         title: 'Prepare o check-in offline',
-        body: `${eventoNome} começa amanhã. Baixe a lista de inscritos para usar sem internet.`,
+        body: `${eventoNome} começa em 3 horas. Baixe a lista de inscritos para usar sem internet.`,
         data: { eventoId, type: 'offline_reminder' },
       },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: triggerDate },
@@ -123,20 +125,29 @@ export function useNotifications() {
     await save(next);
   }, [settings, save]);
 
-  const addCustom = useCallback(async (notif: Omit<CustomNotif, 'id'>) => {
+  const addCustom = useCallback(async (notif: Omit<CustomNotif, 'id' | 'scheduledAt'>, eventoDataInicio: Date) => {
     const id = Date.now().toString();
-    try {
-      await Notifications.scheduleNotificationAsync({
-        identifier: id,
-        content: {
-          title: 'Tovia',
-          body: notif.message,
-          data: { type: 'custom' },
-        },
-        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(notif.scheduledAt) },
-      });
-    } catch {}
-    const next = { ...settings, custom: [...settings.custom, { ...notif, id }] };
+    const delta = notif.hours * 60 * 60 * 1000;
+    const scheduledAt = new Date(
+      notif.before
+        ? eventoDataInicio.getTime() - delta
+        : eventoDataInicio.getTime() + delta,
+    );
+    if (scheduledAt > new Date()) {
+      try {
+        await Notifications.scheduleNotificationAsync({
+          identifier: id,
+          content: {
+            title: 'Tovia',
+            body: notif.message,
+            data: { type: 'custom' },
+          },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: scheduledAt },
+        });
+      } catch {}
+    }
+    const full: CustomNotif = { ...notif, id, scheduledAt: scheduledAt.toISOString() };
+    const next = { ...settings, custom: [...settings.custom, full] };
     await save(next);
   }, [settings, save]);
 
