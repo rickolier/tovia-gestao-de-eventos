@@ -292,6 +292,11 @@ export default function ProfileTab() {
                     Remover foto
                   </button>
                 )}
+                <div className="mt-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-center max-w-[160px]">
+                  <p className="text-[10px] text-amber-700 leading-snug font-medium">
+                    Use o <strong>logo da sua instituição</strong> — ele aparece nas páginas de inscrição dos seus eventos.
+                  </p>
+                </div>
               </div>
 
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
