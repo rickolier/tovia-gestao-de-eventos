@@ -35,50 +35,50 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
     dotTX.setValue(toviaShift); // dot starts where tovia center is
 
     Animated.sequence([
-      // Phase 1 — tovia + dot fade in (centered)
+      // Phase 1 — tovia + dot fade in suave (centralizado)
       Animated.parallel([
-        Animated.timing(toviaOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
-        Animated.timing(dotOpacity,   { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.timing(toviaOpacity, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(dotOpacity,   { toValue: 1, duration: 700, useNativeDriver: true }),
       ]),
-      Animated.delay(150),
+      Animated.delay(300),
 
-      // Phase 2 — tovia slides left, mobile appears, dot follows tovia
+      // Phase 2 — tovia desliza esquerda, mobile aparece, ponto acompanha
       Animated.parallel([
         Animated.timing(toviaTX, {
-          toValue: 0, duration: 500,
+          toValue: 0, duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(dotTX, {
-          toValue: dotUnderTovia, duration: 500,
+          toValue: dotUnderTovia, duration: 800,
           useNativeDriver: true,
         }),
         Animated.sequence([
-          Animated.delay(120),
+          Animated.delay(200),
           Animated.parallel([
-            Animated.timing(mobileOpacity, { toValue: 1, duration: 380, useNativeDriver: true }),
-            Animated.timing(mobileTX,      { toValue: 0, duration: 380, useNativeDriver: true }),
+            Animated.timing(mobileOpacity, { toValue: 1, duration: 650, useNativeDriver: true }),
+            Animated.timing(mobileTX,      { toValue: 0, duration: 650, useNativeDriver: true }),
           ]),
         ]),
       ]),
-      Animated.delay(80),
+      Animated.delay(180),
 
-      // Phase 3 — dot slides to under "mobile"
+      // Phase 3 — ponto vai para baixo de "mobile"
       Animated.timing(dotTX, {
-        toValue: dotUnderMobile, duration: 320,
+        toValue: dotUnderMobile, duration: 500,
         useNativeDriver: true,
       }),
-      Animated.delay(60),
+      Animated.delay(150),
 
-      // Phase 4 — dot centers under full "toviamobile"
+      // Phase 4 — ponto centraliza sob "toviamobile"
       Animated.timing(dotTX, {
-        toValue: 0, duration: 280,
+        toValue: 0, duration: 450,
         useNativeDriver: true,
       }),
 
-      Animated.delay(550),
+      Animated.delay(800),
 
-      // Phase 5 — fade out
-      Animated.timing(containerFade, { toValue: 0, duration: 380, useNativeDriver: true }),
+      // Phase 5 — fade out suave
+      Animated.timing(containerFade, { toValue: 0, duration: 600, useNativeDriver: true }),
     ]).start(() => onFinish());
   }, [ready]);
 
