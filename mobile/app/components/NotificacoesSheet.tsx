@@ -211,6 +211,7 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
   const eventoMaisProximo = todosEventos[0] ?? null;
 
   const [showForm, setShowForm] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   async function handleToggle(type: 'event' | 'offline', value: boolean) {
     if (value && !permGranted) {
@@ -342,23 +343,32 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
             )}
 
             {settings.custom.map((c) => (
-              <NotifRow
-                key={c.id}
-                icon={<Bell size={14} color={colors.primary} strokeWidth={2} />}
-                title={c.message}
-                subtitle={formatCustom(c)}
-                right={
-                  <TouchableOpacity
-                    onPress={() => Alert.alert('Remover', 'Excluir esta notificação?', [
-                      { text: 'Cancelar', style: 'cancel' },
-                      { text: 'Excluir', style: 'destructive', onPress: () => removeCustom(c.id) },
-                    ])}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  >
-                    <Trash2 size={16} color={colors.danger} strokeWidth={2} />
-                  </TouchableOpacity>
-                }
-              />
+              <View key={c.id}>
+                <NotifRow
+                  icon={<Bell size={14} color={colors.primary} strokeWidth={2} />}
+                  title={c.message}
+                  subtitle={formatCustom(c)}
+                  right={
+                    <TouchableOpacity
+                      onPress={() => setConfirmDeleteId(confirmDeleteId === c.id ? null : c.id)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Trash2 size={16} color={colors.danger} strokeWidth={2} />
+                    </TouchableOpacity>
+                  }
+                />
+                {confirmDeleteId === c.id && (
+                  <View style={[styles.confirmRow, { backgroundColor: '#fff1f2', borderColor: '#fecdd3' }]}>
+                    <Text style={[Typography.small, { color: colors.danger, flex: 1 }]}>Excluir esta notificação?</Text>
+                    <TouchableOpacity onPress={() => setConfirmDeleteId(null)} style={styles.confirmBtn}>
+                      <Text style={[Typography.small, { color: colors.mutedFg, fontWeight: '600' }]}>Cancelar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { removeCustom(c.id); setConfirmDeleteId(null); }} style={[styles.confirmBtn, { backgroundColor: colors.danger }]}>
+                      <Text style={[Typography.small, { color: '#fff', fontWeight: '700' }]}>Excluir</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             ))}
 
             {showForm
@@ -462,6 +472,15 @@ const styles = StyleSheet.create({
   dropdownItem: {
     paddingHorizontal: 12, paddingVertical: 10,
     borderBottomWidth: 1,
+  },
+  confirmRow: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 16, paddingVertical: 8,
+    gap: 8, borderTopWidth: 1,
+  },
+  confirmBtn: {
+    paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: Radius.md,
   },
   toggleRow: {
     flexDirection: 'row', borderWidth: 1,

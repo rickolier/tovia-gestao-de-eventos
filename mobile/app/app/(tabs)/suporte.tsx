@@ -8,7 +8,10 @@ import {
   Shield, FileText, LogOut, ChevronRight, Moon, Sun, Smartphone, Bell,
 } from 'lucide-react-native';
 import { signOut } from 'firebase/auth';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../lib/firebase';
+import { ONBOARDING_KEY } from '../onboarding';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeMode } from '../../contexts/ThemeContext';
 import { Typography, Radius, Shadow } from '../../constants/typography';
@@ -88,8 +91,14 @@ function ThemeToggle() {
 
 export default function SuporteScreen() {
   const { colors } = useTheme();
+  const router = useRouter();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+
+  async function openOnboarding() {
+    await AsyncStorage.removeItem(ONBOARDING_KEY);
+    router.push('/onboarding');
+  }
 
   function confirmSignOut() {
     Alert.alert('Sair', 'Tem certeza que deseja sair?', [
@@ -122,7 +131,7 @@ export default function SuporteScreen() {
           <Row
             icon={<RefreshCw size={16} color={colors.primary} strokeWidth={2} />}
             label="Rever tutorial"
-            onPress={() => {/* TODO: abrir onboarding */}}
+            onPress={openOnboarding}
             showChevron={false}
           />
         </View>

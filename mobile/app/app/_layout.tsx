@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../hooks/useAuth';
 import { AppInitSkeleton } from '../components/ui/Skeleton';
 import { ThemeProvider, useThemeContext } from '../contexts/ThemeContext';
 import { PermissoesProvider } from '../contexts/PermissoesContext';
 import SplashScreen from '../components/SplashScreen';
+import { ONBOARDING_KEY } from './onboarding';
 
 function RootLayoutInner() {
   const { user, profile, loading } = useAuth();
@@ -25,7 +27,13 @@ function RootLayoutInner() {
     } else if (user && profile?.isAdmin) {
       router.replace('/admin-block');
     } else if (user && inAuth) {
-      router.replace('/(tabs)');
+      AsyncStorage.getItem(ONBOARDING_KEY).then((done) => {
+        if (done) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/onboarding');
+        }
+      });
     }
   }, [user, profile, loading]);
 
