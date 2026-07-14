@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -6,12 +6,14 @@ import { useAuth } from '../hooks/useAuth';
 import { AppInitSkeleton } from '../components/ui/Skeleton';
 import { ThemeProvider, useThemeContext } from '../contexts/ThemeContext';
 import { PermissoesProvider } from '../contexts/PermissoesContext';
+import SplashScreen from '../components/SplashScreen';
 
 function RootLayoutInner() {
   const { user, profile, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
   const { scheme } = useThemeContext();
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     if (loading) return;
@@ -30,7 +32,7 @@ function RootLayoutInner() {
   if (loading) {
     return (
       <>
-        <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar style="light" />
         <AppInitSkeleton />
       </>
     );
@@ -40,6 +42,7 @@ function RootLayoutInner() {
     <>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }} />
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
     </>
   );
 }

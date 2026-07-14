@@ -10,6 +10,10 @@ type UserProfile = {
   plan: 'chinam' | 'petach' | 'koach' | 'chalem';
   isAdmin: boolean;
   trialDaysLeft?: number;
+  instituicao?: string;
+  bio?: string;
+  codigo?: string;
+  imagem_url?: string;
 };
 
 export function useAuth() {
@@ -31,6 +35,10 @@ export function useAuth() {
             plan: data.plan ?? 'chinam',
             isAdmin: data.isAdmin ?? false,
             trialDaysLeft: data.trialDaysLeft,
+            instituicao: data.instituicao,
+            bio: data.bio,
+            codigo: data.codigo,
+            imagem_url: data.imagem_url,
           });
         }
       } else {

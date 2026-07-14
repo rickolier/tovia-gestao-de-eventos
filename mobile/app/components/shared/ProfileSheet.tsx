@@ -1,8 +1,9 @@
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  Modal, Pressable, Linking,
+  Modal, Pressable, Linking, Alert,
 } from 'react-native';
-import { LogOut, ExternalLink } from 'lucide-react-native';
+import { LogOut, ExternalLink, Copy, Building2, User, FileText } from 'lucide-react-native';
+import * as Clipboard from 'expo-clipboard';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import { useTheme } from '../../hooks/useTheme';
@@ -28,6 +29,21 @@ interface ProfileSheetProps {
   onClose: () => void;
 }
 
+function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  const { colors } = useTheme();
+  return (
+    <View style={styles.infoRow}>
+      <View style={[styles.infoIcon, { backgroundColor: colors.primaryLight }]}>
+        {icon}
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={[Typography.caption, { color: colors.mutedFg, marginBottom: 1 }]}>{label}</Text>
+        <Text style={[Typography.body, { color: colors.foreground, fontWeight: '500' }]} numberOfLines={2}>{value}</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
   const { colors } = useTheme();
   const { profile } = useAuth();
@@ -38,6 +54,18 @@ export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
 
   const plan = profile?.plan ?? 'chinam';
   const planStyle = PLAN_COLOR[plan] ?? PLAN_COLOR.chinam;
+
+  const publicUrl = profile?.codigo
+    ? `https://toviaapp.com.br/${profile.codigo}`
+    : profile?.uid
+    ? `https://toviaapp.com.br/o/${profile.uid}`
+    : null;
+
+  const copyLink = async () => {
+    if (!publicUrl) return;
+    await Clipboard.setStringAsync(publicUrl);
+    Alert.alert('Link copiado!', publicUrl);
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -58,14 +86,12 @@ export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
             {profile?.email ?? ''}
           </Text>
 
-          {/* Badge de plano */}
           <View style={[styles.planBadge, { backgroundColor: planStyle.bg }]}>
-            <Text style={[Typography.caption, { color: planStyle.text }]}>
+            <Text style={[Typography.caption, { color: planStyle.text, fontWeight: '700' }]}>
               {PLAN_LABEL[plan]}
             </Text>
           </View>
 
-          {/* Trial */}
           {profile?.trialDaysLeft !== undefined && profile.trialDaysLeft > 0 && (
             <View style={[styles.trialBadge, { backgroundColor: '#fef9c3' }]}>
               <Text style={[Typography.caption, { color: '#92400e' }]}>
@@ -75,10 +101,51 @@ export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
           )}
         </View>
 
+        {/* Campos do perfil */}
+        <View style={[styles.fields, { borderColor: colors.border }]}>
+          {!!profile?.instituicao && (
+            <InfoRow
+              icon={<Building2 size={14} color={colors.primary} strokeWidth={2} />}
+              label="Instituição"
+              value={profile.instituicao}
+            />
+          )}
+          {!!profile?.name && (
+            <InfoRow
+              icon={<User size={14} color={colors.primary} strokeWidth={2} />}
+              label="Nome do Produtor"
+              value={profile.name}
+            />
+          )}
+          {!!profile?.bio && (
+            <InfoRow
+              icon={<FileText size={14} color={colors.primary} strokeWidth={2} />}
+              label="Bio"
+              value={profile.bio}
+            />
+          )}
+
+          {/* Link copiável */}
+          {publicUrl && (
+            <TouchableOpacity style={styles.linkRow} onPress={copyLink} activeOpacity={0.7}>
+              <View style={[styles.infoIcon, { backgroundColor: colors.primaryLight }]}>
+                <ExternalLink size={14} color={colors.primary} strokeWidth={2} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[Typography.caption, { color: colors.mutedFg, marginBottom: 1 }]}>Página do organizador</Text>
+                <Text style={[Typography.small, { color: colors.primary, fontWeight: '600' }]} numberOfLines={1}>{publicUrl}</Text>
+              </View>
+              <View style={[styles.copyBtn, { backgroundColor: colors.primaryLight }]}>
+                <Copy size={13} color={colors.primary} strokeWidth={2} />
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Editar perfil */}
         <TouchableOpacity
           style={[styles.editBtn, { borderColor: colors.primary }]}
-          onPress={() => { onClose(); Linking.openURL('https://tovia.app/perfil'); }}
+          onPress={() => { onClose(); Linking.openURL('https://toviaapp.com.br/desenvolvimento/login?redirect=/desenvolvimento/dashboard'); }}
           activeOpacity={0.8}
         >
           <ExternalLink size={15} color={colors.primary} strokeWidth={2} />
@@ -148,6 +215,43 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 999,
   },
+  fields: {
+    borderWidth: 1,
+    borderRadius: Radius.card,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  infoIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  copyBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   editBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -156,7 +260,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: Radius.md,
     paddingVertical: 13,
-    marginTop: 8,
+    marginTop: 4,
   },
   signOutBtn: {
     flexDirection: 'row',
