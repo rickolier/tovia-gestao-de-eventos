@@ -3,12 +3,67 @@ import {
   View, Text, TouchableOpacity, StyleSheet,
   Modal, Pressable, Switch, TextInput, ScrollView, Alert,
 } from 'react-native';
-import { Bell, BellOff, Plus, Trash2, Clock, WifiOff } from 'lucide-react-native';
+import { Bell, BellOff, Plus, Trash2, Clock, WifiOff, Calendar, ChevronDown } from 'lucide-react-native';
 import { useTheme } from '../hooks/useTheme';
 import { useNotifications } from '../hooks/useNotifications';
+import { useEventos, Evento } from '../hooks/useEventos';
 import { Typography, Radius, Shadow } from '../constants/typography';
 
 const HOURS_OPTIONS = [1, 2, 6, 24];
+
+function formatEventDate(evento: Evento) {
+  try {
+    return new Date(evento.data_inicio).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  } catch { return ''; }
+}
+
+function EventSelector({
+  eventos, selected, onSelect,
+}: { eventos: Evento[]; selected: Evento | null; onSelect: (e: Evento) => void }) {
+  const { colors } = useTheme();
+  const [open, setOpen] = useState(false);
+
+  if (eventos.length === 0) {
+    return (
+      <View style={[styles.eventBtn, { borderColor: colors.border, backgroundColor: colors.secondary }]}>
+        <Calendar size={14} color={colors.mutedFg} strokeWidth={2} />
+        <Text style={[Typography.small, { color: colors.mutedFg, flex: 1, marginLeft: 8 }]}>
+          Nenhum evento disponível
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View>
+      <TouchableOpacity
+        style={[styles.eventBtn, { borderColor: selected ? colors.primary : colors.border, backgroundColor: colors.card }]}
+        onPress={() => setOpen((o) => !o)}
+        activeOpacity={0.8}
+      >
+        <Calendar size={14} color={selected ? colors.primary : colors.mutedFg} strokeWidth={2} />
+        <Text style={[Typography.body, { flex: 1, marginLeft: 8, color: selected ? colors.foreground : colors.mutedFg }]} numberOfLines={1}>
+          {selected ? `${selected.nome} · ${formatEventDate(selected)}` : 'Selecionar evento…'}
+        </Text>
+        <ChevronDown size={14} color={colors.mutedFg} strokeWidth={2} />
+      </TouchableOpacity>
+      {open && (
+        <View style={[styles.dropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {eventos.map((ev) => (
+            <TouchableOpacity
+              key={ev.id}
+              style={[styles.dropdownItem, { borderBottomColor: colors.border }]}
+              onPress={() => { onSelect(ev); setOpen(false); }}
+            >
+              <Text style={[Typography.body, { color: colors.foreground }]} numberOfLines={1}>{ev.nome}</Text>
+              <Text style={[Typography.small, { color: colors.mutedFg }]}>{formatEventDate(ev)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
 
 function SectionLabel({ label }: { label: string }) {
   const { colors } = useTheme();
@@ -64,15 +119,19 @@ function HoursPicker({ value, onChange }: { value: number; onChange: (h: number)
   );
 }
 
-function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, hours: number, before: boolean) => void; onCancel: () => void }) {
+function NewNotifForm({
+  eventos, onAdd, onCancel,
+}: { eventos: Evento[]; onAdd: (msg: string, hours: number, before: boolean, evento: Evento) => void; onCancel: () => void }) {
   const { colors } = useTheme();
   const [message, setMessage] = useState('');
   const [hours, setHours] = useState(2);
   const [before, setBefore] = useState(true);
+  const [evento, setEvento] = useState<Evento | null>(eventos[0] ?? null);
 
   function handleAdd() {
     if (!message.trim()) { Alert.alert('Atenção', 'Digite uma mensagem.'); return; }
-    onAdd(message.trim(), hours, before);
+    if (!evento) { Alert.alert('Atenção', 'Selecione um evento.'); return; }
+    onAdd(message.trim(), hours, before, evento);
   }
 
   return (
@@ -87,6 +146,10 @@ function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, hours: number,
         onChangeText={setMessage}
         multiline
       />
+
+      {/* Evento */}
+      <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 12, marginBottom: 4 }]}>Evento:</Text>
+      <EventSelector eventos={eventos} selected={evento} onSelect={setEvento} />
 
       {/* Horas */}
       <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 12, marginBottom: 2 }]}>Quantas horas:</Text>
@@ -112,9 +175,11 @@ function NewNotifForm({ onAdd, onCancel }: { onAdd: (msg: string, hours: number,
         </TouchableOpacity>
       </View>
 
-      <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 8 }]}>
-        A notificação será enviada {hours}h {before ? 'antes' : 'após'} o início do evento selecionado.
-      </Text>
+      {evento && (
+        <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 8 }]}>
+          Aviso {hours}h {before ? 'antes' : 'após'} "{evento.nome}" ({formatEventDate(evento)}).
+        </Text>
+      )}
 
       <View style={styles.formActions}>
         <TouchableOpacity onPress={onCancel} style={[styles.formBtn, { borderColor: colors.border }]}>
@@ -133,10 +198,17 @@ interface Props { visible: boolean; onClose: () => void; }
 export default function NotificacoesSheet({ visible, onClose }: Props) {
   const { colors } = useTheme();
   const {
-    settings, permGranted, loading,
+    settings, permGranted,
     requestPermission, updateEventReminder, updateOfflineReminder,
     addCustom, removeCustom,
   } = useNotifications();
+  const { hoje, proximos } = useEventos();
+
+  // Todos os eventos ativos ordenados por data — hoje primeiro, depois próximos
+  const todosEventos: Evento[] = [...hoje, ...proximos].sort(
+    (a, b) => new Date(a.data_inicio).getTime() - new Date(b.data_inicio).getTime()
+  );
+  const eventoMaisProximo = todosEventos[0] ?? null;
 
   const [showForm, setShowForm] = useState(false);
 
@@ -144,10 +216,7 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
     if (value && !permGranted) {
       const granted = await requestPermission();
       if (!granted) {
-        Alert.alert(
-          'Permissão necessária',
-          'Ative as notificações nas configurações do dispositivo para usar este recurso.',
-        );
+        Alert.alert('Permissão necessária', 'Ative as notificações nas configurações do dispositivo para usar este recurso.');
         return;
       }
     }
@@ -155,16 +224,14 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
     else updateOfflineReminder(value);
   }
 
-  async function handleAddCustom(message: string, hours: number, before: boolean) {
+  async function handleAddCustom(message: string, hours: number, before: boolean, evento: Evento) {
     if (!permGranted) {
       const granted = await requestPermission();
       if (!granted) { Alert.alert('Permissão necessária', 'Ative as notificações para continuar.'); return; }
     }
-    // Usa o próximo evento ativo como referência — para o MVP, usa agora + 7 dias como placeholder
-    const refDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await addCustom({ message, hours, before }, refDate);
+    await addCustom({ message, hours, before, eventoNome: evento.nome }, new Date(evento.data_inicio));
     setShowForm(false);
-    Alert.alert('Notificação criada!', `Você será avisado ${hours}h ${before ? 'antes' : 'após'} o evento.`);
+    Alert.alert('Notificação criada!', `Você será avisado ${hours}h ${before ? 'antes' : 'após'} "${evento.nome}".`);
   }
 
   function formatCustom(c: { hours: number; before: boolean }) {
@@ -193,6 +260,24 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
 
           {/* Pré-programadas */}
           <SectionLabel label="PRÉ-PROGRAMADAS" />
+
+          {/* Evento mais próximo */}
+          {eventoMaisProximo ? (
+            <View style={[styles.nextEventBanner, { backgroundColor: colors.primaryLight, borderColor: colors.primary }]}>
+              <Calendar size={13} color={colors.primary} strokeWidth={2} />
+              <Text style={[Typography.small, { color: colors.primary, flex: 1, marginLeft: 6, fontWeight: '600' }]} numberOfLines={1}>
+                Próximo: {eventoMaisProximo.nome} · {formatEventDate(eventoMaisProximo)}
+              </Text>
+            </View>
+          ) : (
+            <View style={[styles.nextEventBanner, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
+              <Calendar size={13} color={colors.mutedFg} strokeWidth={2} />
+              <Text style={[Typography.small, { color: colors.mutedFg, flex: 1, marginLeft: 6 }]}>
+                Nenhum evento próximo encontrado
+              </Text>
+            </View>
+          )}
+
           <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.border }]}>
             <NotifRow
               icon={<Clock size={14} color={colors.primary} strokeWidth={2} />}
@@ -281,7 +366,7 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
             ))}
 
             {showForm
-              ? <NewNotifForm onAdd={handleAddCustom} onCancel={() => setShowForm(false)} />
+              ? <NewNotifForm eventos={todosEventos} onAdd={handleAddCustom} onCancel={() => setShowForm(false)} />
               : (
                 <TouchableOpacity
                   style={[styles.addBtn, { borderColor: colors.primary }]}
@@ -362,6 +447,25 @@ const styles = StyleSheet.create({
   formBtn: {
     flex: 1, alignItems: 'center', paddingVertical: 10,
     borderRadius: Radius.md, borderWidth: 1,
+  },
+  nextEventBanner: {
+    flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderRadius: Radius.md,
+    paddingHorizontal: 12, paddingVertical: 8,
+    marginBottom: 8,
+  },
+  eventBtn: {
+    flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderRadius: Radius.md,
+    paddingHorizontal: 12, paddingVertical: 10,
+  },
+  dropdown: {
+    borderWidth: 1, borderRadius: Radius.md,
+    marginTop: 4, overflow: 'hidden',
+  },
+  dropdownItem: {
+    paddingHorizontal: 12, paddingVertical: 10,
+    borderBottomWidth: 1,
   },
   toggleRow: {
     flexDirection: 'row', borderWidth: 1,
