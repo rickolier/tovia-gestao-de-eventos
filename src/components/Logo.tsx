@@ -17,7 +17,7 @@ export default function Logo({ className, variant = 'default', showTagline = tru
   const colorClass = variant === 'white' ? 'text-white' : 'text-primary';
   
   return (
-    <Link to="/#planos" className={cn("flex items-center gap-3 transition-opacity hover:opacity-80", className)}>
+    <Link to="/desenvolvimento" className={cn("flex items-center gap-3 transition-opacity hover:opacity-80", className)}>
       <div className={cn("font-logo font-bold text-5xl tracking-tight leading-none", colorClass)}>
         tovia
       </div>
