@@ -57,7 +57,7 @@ export default function ProfileTab() {
     setUploadingPhoto(true);
     try {
       const token = await user.getIdToken(true);
-      const bucket = firebaseConfig.storageBucket;
+      const bucket = storageBucket;
       const path = encodeURIComponent(`profiles/${user.uid}/foto`);
       const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?uploadType=media&name=${path}`;
 
