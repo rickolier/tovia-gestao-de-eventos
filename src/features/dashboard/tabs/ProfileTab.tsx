@@ -11,9 +11,10 @@ import { User, Mail, Phone, Globe, Instagram, Link as LinkIcon, Save, Image as I
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
-import { auth, storage } from '~/services/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth } from '~/services/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '~/services/firebase';
 import {
   maskTelefone, maskCEP, maskCPFouCNPJ,
   validateEmail, validateTelefone, validateCEP,
@@ -56,11 +57,17 @@ export default function ProfileTab() {
     if (!user) return;
     setUploadingPhoto(true);
     try {
-      const storageRef = ref(storage, `profiles/${user.uid}/foto`);
-      await uploadBytes(storageRef, croppedFile, { contentType: 'image/jpeg' });
-      const url = await getDownloadURL(storageRef);
+      const imageBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(croppedFile);
+      });
+      const fns = getFunctions(app, 'us-central1');
+      const uploadFn = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadProfilePhoto');
+      const result = await uploadFn({ imageBase64, contentType: croppedFile.type || 'image/jpeg' });
+      const url = result.data.downloadUrl;
       setFormData(prev => ({ ...prev, imagem_url: url }));
-      await updateDocument('users', user.uid, { imagem_url: url });
       await refreshProfile();
       toast.success('Foto atualizada!');
     } catch (err) {

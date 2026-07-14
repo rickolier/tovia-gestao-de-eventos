@@ -5,6 +5,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import axios from "axios";
 import { createHash } from "crypto";
+import sharp from "sharp";
 import {
   encrypt,
   decrypt,
@@ -819,6 +820,68 @@ export const lembreteEvento = onSchedule(
 
     await Promise.allSettled(emailPromises);
     console.log(`[lembreteEvento] processados ${eventosSnap.size} eventos.`);
+  }
+);
+
+// ─── Upload seguro de foto de perfil ─────────────────────────────────────────
+// Valida magic bytes, redimensiona para 300×300px e grava via Admin SDK.
+export const uploadProfilePhoto = functions.onCall(
+  { region: "us-central1" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+
+    const uid = request.auth.uid;
+    const { imageBase64, contentType } = request.data as {
+      imageBase64?: string;
+      contentType?: string;
+    };
+
+    if (!imageBase64 || !contentType) {
+      throw new functions.HttpsError("invalid-argument", "imageBase64 e contentType são obrigatórios.");
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(contentType)) {
+      throw new functions.HttpsError("invalid-argument", "Tipo inválido. Use JPEG, PNG ou WebP.");
+    }
+
+    // Tamanho máximo: base64 de 5MB real ≈ 6.7MB de string
+    if (imageBase64.length > 7 * 1024 * 1024) {
+      throw new functions.HttpsError("invalid-argument", "Imagem muito grande. Máximo 5MB.");
+    }
+
+    const buffer = Buffer.from(imageBase64, "base64");
+
+    // Valida magic bytes (assinatura real do arquivo)
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+    const isPng  = buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
+    const isWebp = buffer.slice(0, 4).toString("ascii") === "RIFF" && buffer.slice(8, 12).toString("ascii") === "WEBP";
+    if (!isJpeg && !isPng && !isWebp) {
+      throw new functions.HttpsError("invalid-argument", "O arquivo enviado não é uma imagem válida.");
+    }
+
+    await checkRateLimit(uid, "uploadProfilePhoto", 10);
+
+    // Redimensiona para 300×300px (cover, sem distorção) e converte para JPEG
+    const resized = await sharp(buffer)
+      .resize(300, 300, { fit: "cover", position: "centre" })
+      .jpeg({ quality: 85 })
+      .toBuffer();
+
+    const path = `profiles/${uid}/foto`;
+    const bucket = getStorage().bucket("ai-studio-applet-webapp-84f64.firebasestorage.app");
+    const file = bucket.file(path);
+    await file.save(resized, { contentType: "image/jpeg", resumable: false });
+    await file.makePublic();
+
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}?t=${Date.now()}`;
+
+    await db.collection("users").doc(uid).update({ imagem_url: downloadUrl });
+
+    console.log(`[uploadProfilePhoto] uid=${uid}`);
+    return { downloadUrl };
   }
 );
 

@@ -12,6 +12,7 @@ import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
+import CaptacaoPage from './pages/CaptacaoPage';
 import PublicRegistration, { PublicRegistrationByCodigo } from '~/features/public-pages/PublicRegistration';
 import PublicSalesPage, { PublicSalesPageByCodigo } from '~/features/public-pages/PublicSalesPage';
 import PublicOrganizerProfile, { PublicOrganizerProfileByCodigo } from '~/features/public-pages/PublicOrganizerProfile';
@@ -40,7 +41,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/desenvolvimento" replace />;
 
   // Admin nunca vai para onboarding
   if (isAdminEmail(user.email)) return <Navigate to="/admin" replace />;
@@ -80,7 +81,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isAuthReady } = useAuth();
   if (!isAuthReady) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/desenvolvimento" replace />;
   if (!isAdminEmail(user.email)) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
@@ -91,8 +92,11 @@ export default function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<CaptacaoPage />} />
+            <Route path="/sobre" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/entrar" element={<Login />} />
+            <Route path="/desenvolvimento" element={<Login />} />
             <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
             <Route path="/verificar-email" element={<VerificarEmail />} />
             <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />

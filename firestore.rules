@@ -75,6 +75,17 @@ service cloud.firestore {
     // Collection Rules
     // ===============================================================
 
+    // Leads de captação — escrita pública (formulário), leitura apenas admin
+    match /leads/{leadId} {
+      allow create: if request.resource.data.keys().hasAll(['nome', 'email', 'whatsapp', 'instituicao', 'tipo_evento', 'tamanho_publico', 'lgpd_consent'])
+                   && request.resource.data.lgpd_consent == true
+                   && request.resource.data.nome is string
+                   && request.resource.data.nome.size() <= 100
+                   && request.resource.data.email is string
+                   && request.resource.data.email.size() <= 200;
+      allow read, update, delete: if isAdmin();
+    }
+
     match /users/{userId} {
       allow get: if isOwner(userId) || isAdmin() || resource.data.get('pagina_publica', false) == true;
       allow create: if isOwner(userId) && isValidUser(incoming());

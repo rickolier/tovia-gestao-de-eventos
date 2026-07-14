@@ -32,7 +32,7 @@ export default function VerificarEmail() {
 
   // Redirect if already verified or not logged in
   useEffect(() => {
-    if (!user) { navigate('/login', { replace: true }); return; }
+    if (!user) { navigate('/desenvolvimento', { replace: true }); return; }
     if (user.emailVerified) { doRedirect(); }
   }, [user]);
 
@@ -88,7 +88,7 @@ export default function VerificarEmail() {
   const handleResend = () => {
     if (!user) {
       toast.error('Sessão expirada. Faça login novamente.');
-      navigate('/login', { replace: true });
+      navigate('/desenvolvimento', { replace: true });
       return;
     }
     if (resendCooldown > 0) return;
@@ -126,7 +126,7 @@ export default function VerificarEmail() {
   const handleVerify = async () => {
     const fullCode = digits.join('');
     if (fullCode.length !== 6) { setError('Digite os 6 dígitos do código.'); return; }
-    if (!user) { toast.error('Sessão expirada.'); navigate('/login', { replace: true }); return; }
+    if (!user) { toast.error('Sessão expirada.'); navigate('/desenvolvimento', { replace: true }); return; }
     setVerifying(true);
     setError('');
     try {

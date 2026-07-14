@@ -37,13 +37,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestDataDeletion = exports.validateBillingKey = exports.uploadEventCover = exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
+exports.requestDataDeletion = exports.uploadProfilePhoto = exports.lembreteEvento = exports.processarInscricoesPendentes = exports.validateBillingKey = exports.uploadEventCover = exports.createEventCharge = exports.saveGatewayConfig = exports.asaasWebhook = exports.suspendUser = exports.createCheckout = void 0;
 const functions = __importStar(require("firebase-functions/v2/https"));
+const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = __importStar(require("firebase-admin"));
 const firestore_1 = require("firebase-admin/firestore");
 const storage_1 = require("firebase-admin/storage");
 const axios_1 = __importDefault(require("axios"));
 const crypto_1 = require("crypto");
+const sharp_1 = __importDefault(require("sharp"));
 const gateway_utils_1 = require("./gateway-utils");
 admin.initializeApp();
 const db = (0, firestore_1.getFirestore)(admin.app(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
@@ -451,6 +453,228 @@ exports.validateBillingKey = functions.onCall({ region: "us-central1" }, async (
         last_validated_at: new Date().toISOString(),
     });
     return { valid };
+});
+// ─── E-mail via Resend ────────────────────────────────────────────────────────
+async function sendEmailResend(to, subject, html) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+        console.warn("[email] RESEND_API_KEY não configurada — e-mail ignorado.");
+        return;
+    }
+    await axios_1.default.post("https://api.resend.com/emails", { from: "Tovia <noreply@tovia.app>", to, subject, html }, { headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" } });
+}
+function emailLembrete(nome, eventoNome, tipo, paymentUrl) {
+    const urgencia = tipo === "final"
+        ? "⚠️ Último aviso: sua inscrição será cancelada em breve."
+        : "Sua inscrição ainda está pendente de pagamento.";
+    const cta = paymentUrl
+        ? `<a href="${paymentUrl}" style="display:inline-block;margin-top:20px;padding:14px 28px;background:#22c55e;color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;">Concluir pagamento</a>`
+        : `<p style="margin-top:16px;color:#6b7280;font-size:14px;">Acesse o link que recebeu no momento da inscrição para concluir o pagamento.</p>`;
+    return `
+    <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#111827">
+      <h2 style="color:#22c55e;margin-bottom:4px">Tovia</h2>
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0"/>
+      <p style="font-size:16px">Olá, <strong>${nome}</strong>!</p>
+      <p style="font-size:15px;color:#374151">${urgencia}</p>
+      <p style="font-size:15px;color:#374151">
+        Você se inscreveu em <strong>${eventoNome}</strong> mas o pagamento ainda não foi confirmado.
+        ${tipo === "final" ? "Após 10 dias sem confirmação, a inscrição é <strong>cancelada automaticamente</strong>." : "Você ainda tem alguns dias para concluir."}
+      </p>
+      ${cta}
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0"/>
+      <p style="font-size:12px;color:#9ca3af">Este é um e-mail automático do Tovia. Caso já tenha pago, aguarde até 3 dias úteis para a confirmação aparecer.</p>
+    </div>`;
+}
+// ─── Processamento diário de inscrições pendentes ────────────────────────────
+// Roda às 08h (horário de Brasília). Regras:
+//   Dia  4 → 1º lembrete por e-mail
+//   Dia  7 → lembrete final por e-mail
+//   Dia 10 → cancela automaticamente
+exports.processarInscricoesPendentes = (0, scheduler_1.onSchedule)({
+    schedule: "every day 08:00",
+    timeZone: "America/Sao_Paulo",
+    region: "us-central1",
+    secrets: ["RESEND_API_KEY"],
+}, async () => {
+    var _a, _b, _c, _d, _e;
+    const now = new Date();
+    const snapshot = await db
+        .collectionGroup("inscricoes")
+        .where("status", "in", ["pendente", "pagamento_iniciado"])
+        .get();
+    if (snapshot.empty)
+        return;
+    // Agrupa por eventoId para buscar nomes dos eventos de uma vez
+    const eventoIds = new Set();
+    snapshot.docs.forEach(doc => {
+        var _a;
+        const eventoId = (_a = doc.ref.parent.parent) === null || _a === void 0 ? void 0 : _a.id;
+        if (eventoId)
+            eventoIds.add(eventoId);
+    });
+    const eventoNomes = {};
+    await Promise.all(Array.from(eventoIds).map(async (id) => {
+        var _a, _b;
+        const snap = await db.collection("eventos").doc(id).get();
+        eventoNomes[id] = (_b = (_a = snap.data()) === null || _a === void 0 ? void 0 : _a.nome) !== null && _b !== void 0 ? _b : "Evento";
+    }));
+    const emailPromises = [];
+    // Processa em lotes de 500 (limite do Firestore batch)
+    const chunks = [];
+    for (let i = 0; i < snapshot.docs.length; i += 499) {
+        chunks.push(snapshot.docs.slice(i, i + 499));
+    }
+    for (const chunk of chunks) {
+        const batch = db.batch();
+        for (const doc of chunk) {
+            const data = doc.data();
+            const dataInscricao = data.data_inscricao
+                ? new Date(data.data_inscricao)
+                : null;
+            if (!dataInscricao)
+                continue;
+            const diffDays = Math.floor((now.getTime() - dataInscricao.getTime()) / (1000 * 60 * 60 * 24));
+            const eventoId = (_b = (_a = doc.ref.parent.parent) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : "";
+            const eventoNome = (_c = eventoNomes[eventoId]) !== null && _c !== void 0 ? _c : "Evento";
+            const email = (_d = data.email) !== null && _d !== void 0 ? _d : "";
+            const nome = (_e = data.nome) !== null && _e !== void 0 ? _e : "Participante";
+            const paymentUrl = data.gateway_payment_url;
+            if (diffDays >= 10) {
+                batch.update(doc.ref, { status: "cancelada", cancelada_automaticamente: true, cancelada_em: now.toISOString() });
+            }
+            else if (diffDays >= 7 && !data.lembrete_7d_enviado) {
+                batch.update(doc.ref, { lembrete_7d_enviado: true });
+                if (email) {
+                    emailPromises.push(sendEmailResend(email, `⚠️ Último aviso — inscrição em ${eventoNome}`, emailLembrete(nome, eventoNome, "final", paymentUrl)).catch(e => console.error("[email] lembrete_7d falhou:", e)));
+                }
+            }
+            else if (diffDays >= 4 && !data.lembrete_4d_enviado) {
+                batch.update(doc.ref, { lembrete_4d_enviado: true });
+                if (email) {
+                    emailPromises.push(sendEmailResend(email, `Lembrete — sua inscrição em ${eventoNome} está pendente`, emailLembrete(nome, eventoNome, "primeiro", paymentUrl)).catch(e => console.error("[email] lembrete_4d falhou:", e)));
+                }
+            }
+        }
+        await batch.commit();
+    }
+    await Promise.allSettled(emailPromises);
+    console.log(`[processarInscricoesPendentes] processadas ${snapshot.size} inscrições.`);
+});
+// ─── Lembrete de evento (config_comunicacao.lembrete_evento) ─────────────────
+// Roda às 08h BRT. Para cada evento com lembrete ativo, no dia certo,
+// envia e-mail customizado a todos os inscritos confirmados.
+exports.lembreteEvento = (0, scheduler_1.onSchedule)({
+    schedule: "every day 08:00",
+    timeZone: "America/Sao_Paulo",
+    region: "us-central1",
+    secrets: ["RESEND_API_KEY"],
+}, async () => {
+    var _a, _b, _c, _d, _e;
+    const now = new Date();
+    // Busca eventos com lembrete ativo
+    const eventosSnap = await db
+        .collection("eventos")
+        .where("config_comunicacao.lembrete_evento.ativo", "==", true)
+        .get();
+    if (eventosSnap.empty)
+        return;
+    const emailPromises = [];
+    for (const eventoDoc of eventosSnap.docs) {
+        const ev = eventoDoc.data();
+        const cfg = (_a = ev.config_comunicacao) === null || _a === void 0 ? void 0 : _a.lembrete_evento;
+        if (!(cfg === null || cfg === void 0 ? void 0 : cfg.ativo) || !cfg.corpo)
+            continue;
+        const dataInicio = ev.data_inicio ? new Date(ev.data_inicio) : null;
+        if (!dataInicio)
+            continue;
+        const daysUntil = Math.round((dataInicio.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        if (daysUntil !== cfg.dias_antes)
+            continue;
+        // Evita reenvio no mesmo dia
+        const jaEnviado = ev.lembrete_evento_enviado_em;
+        if (jaEnviado && jaEnviado.startsWith(now.toISOString().split("T")[0]))
+            continue;
+        // Marca como enviado
+        await eventoDoc.ref.update({ lembrete_evento_enviado_em: now.toISOString() });
+        // Busca inscritos confirmados
+        const inscritos = await db
+            .collection(`eventos/${eventoDoc.id}/inscricoes`)
+            .where("status", "in", ["pago"])
+            .get();
+        for (const inscDoc of inscritos.docs) {
+            const insc = inscDoc.data();
+            const emailTo = (_b = insc.email) !== null && _b !== void 0 ? _b : "";
+            if (!emailTo)
+                continue;
+            const vars = {
+                nome: (_c = insc.nome) !== null && _c !== void 0 ? _c : "Participante",
+                evento: (_d = ev.nome) !== null && _d !== void 0 ? _d : "Evento",
+                data: dataInicio.toLocaleDateString("pt-BR"),
+                local: (_e = ev.local) !== null && _e !== void 0 ? _e : "",
+            };
+            const subject = cfg.assunto
+                ? cfg.assunto.replace(/\{(\w+)\}/g, (_, k) => { var _a; return (_a = vars[k]) !== null && _a !== void 0 ? _a : `{${k}}`; })
+                : `Lembrete: ${ev.nome} em ${cfg.dias_antes} dia(s)`;
+            const corpo = cfg.corpo.replace(/\{(\w+)\}/g, (_, k) => { var _a; return (_a = vars[k]) !== null && _a !== void 0 ? _a : `{${k}}`; });
+            const corpoHtml = corpo
+                .split("\n")
+                .map(l => l.trim() ? `<p style="font-size:15px;color:#374151;margin:0 0 14px">${l}</p>` : "")
+                .join("");
+            const bodyHtml = `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+          <h2 style="color:#22c55e">Tovia</h2><hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0"/>
+          ${corpoHtml}
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0"/>
+          <p style="font-size:12px;color:#9ca3af">Este é um e-mail automático do Tovia.</p>
+        </div>`;
+            emailPromises.push(sendEmailResend(emailTo, subject, bodyHtml)
+                .catch(e => console.error("[lembreteEvento] falhou:", e)));
+        }
+    }
+    await Promise.allSettled(emailPromises);
+    console.log(`[lembreteEvento] processados ${eventosSnap.size} eventos.`);
+});
+// ─── Upload seguro de foto de perfil ─────────────────────────────────────────
+// Valida magic bytes, redimensiona para 300×300px e grava via Admin SDK.
+exports.uploadProfilePhoto = functions.onCall({ region: "us-central1" }, async (request) => {
+    if (!request.auth) {
+        throw new functions.HttpsError("unauthenticated", "Não autenticado.");
+    }
+    const uid = request.auth.uid;
+    const { imageBase64, contentType } = request.data;
+    if (!imageBase64 || !contentType) {
+        throw new functions.HttpsError("invalid-argument", "imageBase64 e contentType são obrigatórios.");
+    }
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(contentType)) {
+        throw new functions.HttpsError("invalid-argument", "Tipo inválido. Use JPEG, PNG ou WebP.");
+    }
+    // Tamanho máximo: base64 de 5MB real ≈ 6.7MB de string
+    if (imageBase64.length > 7 * 1024 * 1024) {
+        throw new functions.HttpsError("invalid-argument", "Imagem muito grande. Máximo 5MB.");
+    }
+    const buffer = Buffer.from(imageBase64, "base64");
+    // Valida magic bytes (assinatura real do arquivo)
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+    const isPng = buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
+    const isWebp = buffer.slice(0, 4).toString("ascii") === "RIFF" && buffer.slice(8, 12).toString("ascii") === "WEBP";
+    if (!isJpeg && !isPng && !isWebp) {
+        throw new functions.HttpsError("invalid-argument", "O arquivo enviado não é uma imagem válida.");
+    }
+    await checkRateLimit(uid, "uploadProfilePhoto", 10);
+    // Redimensiona para 300×300px (cover, sem distorção) e converte para JPEG
+    const resized = await (0, sharp_1.default)(buffer)
+        .resize(300, 300, { fit: "cover", position: "centre" })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+    const path = `profiles/${uid}/foto`;
+    const bucket = (0, storage_1.getStorage)().bucket("ai-studio-applet-webapp-84f64.firebasestorage.app");
+    const file = bucket.file(path);
+    await file.save(resized, { contentType: "image/jpeg", resumable: false });
+    await file.makePublic();
+    const downloadUrl = `https://storage.googleapis.com/ai-studio-applet-webapp-84f64.firebasestorage.app/${path}?t=${Date.now()}`;
+    await db.collection("users").doc(uid).update({ imagem_url: downloadUrl });
+    console.log(`[uploadProfilePhoto] uid=${uid}`);
+    return { downloadUrl };
 });
 // ─── LGPD Art. 18 — Solicitação de exclusão de dados pessoais ────────────────
 // Anonimiza os dados imediatamente e marca a conta para exclusão completa.

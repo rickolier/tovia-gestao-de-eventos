@@ -130,7 +130,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    navigate('/login');
+    navigate('/desenvolvimento');
   };
 
   const isAdmin = isAdminEmail(user?.email);
