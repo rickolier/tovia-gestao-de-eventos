@@ -109,7 +109,7 @@ export default function SuporteScreen() {
           <Row
             icon={<BookOpen size={16} color={colors.primary} strokeWidth={2} />}
             label="Base de Conhecimento"
-            onPress={() => Linking.openURL('https://toviaapp.com.br/base-de-conhecimento')}
+            onPress={() => Linking.openURL('https://toviaapp.com.br/desenvolvimento/login?redirect=/desenvolvimento/base-de-conhecimento')}
           />
           <Row
             icon={<MessageCircle size={16} color={colors.primary} strokeWidth={2} />}
