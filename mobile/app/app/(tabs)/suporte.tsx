@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   BookOpen, MessageCircle, RefreshCw, Info,
-  Shield, FileText, LogOut, ChevronRight, Moon, Sun, Smartphone,
+  Shield, FileText, LogOut, ChevronRight, Moon, Sun, Smartphone, Bell,
 } from 'lucide-react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
@@ -14,6 +14,7 @@ import { ThemeMode } from '../../contexts/ThemeContext';
 import { Typography, Radius, Shadow } from '../../constants/typography';
 import TopBar from '../../components/shared/TopBar';
 import ProfileSheet from '../../components/shared/ProfileSheet';
+import NotificacoesSheet from '../../components/NotificacoesSheet';
 import { useState } from 'react';
 
 const APP_VERSION = '1.0.0';
@@ -88,6 +89,7 @@ function ThemeToggle() {
 export default function SuporteScreen() {
   const { colors } = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   function confirmSignOut() {
     Alert.alert('Sair', 'Tem certeza que deseja sair?', [
@@ -100,6 +102,7 @@ export default function SuporteScreen() {
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]} edges={['top']}>
       <TopBar onAvatarPress={() => setProfileOpen(true)} />
       <ProfileSheet visible={profileOpen} onClose={() => setProfileOpen(false)} />
+      <NotificacoesSheet visible={notifOpen} onClose={() => setNotifOpen(false)} />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={[Typography.display, { color: colors.foreground, marginBottom: 20 }]}>Suporte</Text>
 
@@ -126,6 +129,19 @@ export default function SuporteScreen() {
 
         {/* Aparência */}
         <ThemeToggle />
+
+        {/* Notificações */}
+        <TouchableOpacity
+          style={[styles.notifRow, Shadow.flat, { backgroundColor: colors.card, borderColor: colors.border }]}
+          onPress={() => setNotifOpen(true)}
+          activeOpacity={0.8}
+        >
+          <View style={[styles.notifIcon, { backgroundColor: colors.primaryLight }]}>
+            <Bell size={16} color={colors.primary} strokeWidth={2} />
+          </View>
+          <Text style={[Typography.body, { flex: 1, color: colors.foreground, fontWeight: '500' }]}>Notificações</Text>
+          <ChevronRight size={16} color={colors.mutedFg} strokeWidth={2} />
+        </TouchableOpacity>
 
         {/* Sobre */}
         <Text style={[Typography.label, { color: colors.mutedFg, marginTop: 24, marginBottom: 8 }]}>Sobre</Text>
@@ -180,6 +196,23 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1,
     overflow: 'hidden',
+  },
+  notifRow: {
+    borderRadius: Radius.card,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  notifIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   themeOption: {
     flexDirection: 'row',
