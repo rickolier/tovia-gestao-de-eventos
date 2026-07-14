@@ -139,7 +139,7 @@ export default function ArtigoBaseConhecimento() {
         <BookOpen className="w-16 h-16 text-muted-foreground/30" />
         <h1 className="text-2xl font-black text-foreground">Artigo não encontrado</h1>
         <p className="text-muted-foreground max-w-sm text-sm">Este artigo não existe ou foi removido.</p>
-        <Link to="/base-de-conhecimento" className="text-sm font-semibold text-primary hover:underline">
+        <Link to="/desenvolvimento/base-de-conhecimento" className="text-sm font-semibold text-primary hover:underline">
           Voltar à Base de Conhecimento
         </Link>
       </div>
@@ -336,7 +336,7 @@ export default function ArtigoBaseConhecimento() {
             Voltar
           </button>
           <Link
-            to="/base-de-conhecimento"
+            to="/desenvolvimento/base-de-conhecimento"
             className="text-sm font-semibold text-primary hover:underline"
           >
             Ver todos os artigos

@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function () {
+        var h = window.location.hostname;
+        if (h !== 'toviaapp.com.br' && h !== 'www.toviaapp.com.br' && h !== 'localhost') {
+          window.location.replace('https://toviaapp.com.br' + window.location.pathname + window.location.search);
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tovia — Gestão de Eventos</title>

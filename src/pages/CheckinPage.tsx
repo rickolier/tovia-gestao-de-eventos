@@ -37,11 +37,11 @@ export default function CheckinPage() {
     if (!eventoId || !user) return;
     (async () => {
       const ev = await getDocument<Evento>('eventos', eventoId);
-      if (!ev) { navigate('/dashboard'); return; }
+      if (!ev) { navigate('/desenvolvimento/dashboard'); return; }
 
       const isOwner = ev.criado_por === user.uid;
       const isTeam  = (ev.equipeIds ?? []).includes(user.uid);
-      if (!isOwner && !isTeam) { navigate('/dashboard'); return; }
+      if (!isOwner && !isTeam) { navigate('/desenvolvimento/dashboard'); return; }
 
       setEvento(ev);
       setAuthorized(true);

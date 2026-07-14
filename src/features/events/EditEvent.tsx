@@ -54,7 +54,7 @@ export default function EditEvent() {
           const data = await getDocument<Evento>('eventos', id);
           if (!data) {
             toast.error('Evento não encontrado');
-            navigate('/dashboard');
+            navigate('/desenvolvimento/dashboard');
             return;
           }
           
@@ -109,7 +109,7 @@ export default function EditEvent() {
     try {
       await removeDocument('eventos', id);
       toast.success('Evento excluído com sucesso!');
-      navigate('/dashboard');
+      navigate('/desenvolvimento/dashboard');
     } catch (error) {
       console.error(error);
       toast.error('Erro ao excluir evento.');

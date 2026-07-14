@@ -33,9 +33,9 @@ export default function Login() {
     if (eventoIdParam && !isAdminEmail(user.email)) {
       processEquipeJoin(eventoIdParam)
         .catch((err: any) => toast.error('Erro ao entrar na equipe: ' + err.message))
-        .finally(() => navigate('/dashboard'));
+        .finally(() => navigate('/desenvolvimento/dashboard'));
     } else {
-      navigate(isAdminEmail(user.email) ? '/admin' : '/dashboard');
+      navigate(isAdminEmail(user.email) ? '/desenvolvimento/admin' : '/desenvolvimento/dashboard');
     }
   }, [user, isAuthReady]);
 
@@ -71,7 +71,7 @@ export default function Login() {
           toast.error('Erro ao entrar na equipe: ' + joinErr.message);
         }
       }
-      navigate('/dashboard');
+      navigate('/desenvolvimento/dashboard');
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }

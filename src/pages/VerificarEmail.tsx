@@ -32,7 +32,7 @@ export default function VerificarEmail() {
 
   // Redirect if already verified or not logged in
   useEffect(() => {
-    if (!user) { navigate('/desenvolvimento', { replace: true }); return; }
+    if (!user) { navigate('/desenvolvimento/login', { replace: true }); return; }
     if (user.emailVerified) { doRedirect(); }
   }, [user]);
 
@@ -53,9 +53,9 @@ export default function VerificarEmail() {
 
   function doRedirect() {
     if (profileRef.current?.planoPendente) {
-      navigate('/planos/aguardando', { replace: true });
+      navigate('/desenvolvimento/planos/aguardando', { replace: true });
     } else {
-      navigate('/onboarding', { replace: true });
+      navigate('/desenvolvimento/onboarding', { replace: true });
     }
   }
 
@@ -88,7 +88,7 @@ export default function VerificarEmail() {
   const handleResend = () => {
     if (!user) {
       toast.error('Sessão expirada. Faça login novamente.');
-      navigate('/desenvolvimento', { replace: true });
+      navigate('/desenvolvimento/login', { replace: true });
       return;
     }
     if (resendCooldown > 0) return;
@@ -126,7 +126,7 @@ export default function VerificarEmail() {
   const handleVerify = async () => {
     const fullCode = digits.join('');
     if (fullCode.length !== 6) { setError('Digite os 6 dígitos do código.'); return; }
-    if (!user) { toast.error('Sessão expirada.'); navigate('/desenvolvimento', { replace: true }); return; }
+    if (!user) { toast.error('Sessão expirada.'); navigate('/desenvolvimento/login', { replace: true }); return; }
     setVerifying(true);
     setError('');
     try {
@@ -231,7 +231,7 @@ export default function VerificarEmail() {
                     : 'Não recebi o código — reenviar'}
                 </button>
                 <button
-                  onClick={() => navigate('/onboarding', { replace: true })}
+                  onClick={() => navigate('/desenvolvimento/onboarding', { replace: true })}
                   className="text-white/30 hover:text-white/60 text-xs transition-colors flex items-center justify-center gap-1"
                 >
                   Voltar à escolha de plano <ArrowRight className="w-3 h-3" />

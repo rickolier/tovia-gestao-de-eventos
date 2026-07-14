@@ -547,10 +547,10 @@ export default function LandingPage() {
 
           {/* CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
+            <Link to="/desenvolvimento/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
               Entrar
             </Link>
-            <Link to="/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
+            <Link to="/desenvolvimento/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
               Criar meu evento
             </Link>
           </div>
@@ -575,8 +575,8 @@ export default function LandingPage() {
               </Link>
             ))}
             <div className="pt-2 flex flex-col gap-3">
-              <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
-              <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
+              <Link to="/desenvolvimento/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
+              <Link to="/desenvolvimento/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
             </div>
           </div>
         )}
@@ -603,7 +603,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/login?cadastro=true"
+                to="/desenvolvimento/login?cadastro=true"
                 className="inline-flex items-center justify-center gap-2 bg-white text-primary font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
               >
                 Criar meu evento <ArrowRight className="w-4 h-4" />
@@ -741,7 +741,7 @@ export default function LandingPage() {
             <p className="text-muted-foreground leading-relaxed mb-8">
               Simples para o organizador. Claro para o participante. Completo para o evento.
             </p>
-            <Link to="/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
+            <Link to="/desenvolvimento/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
               Criar minha conta <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -1161,7 +1161,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link
-                to="/login?cadastro=true"
+                to="/desenvolvimento/login?cadastro=true"
                 className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
               >
                 Começar grátis
@@ -1206,7 +1206,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link
-                to="/login?cadastro=true"
+                to="/desenvolvimento/login?cadastro=true"
                 className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all"
               >
                 Assinar Pétach
@@ -1267,7 +1267,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link
-                to="/login?cadastro=true"
+                to="/desenvolvimento/login?cadastro=true"
                 className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-primary hover:bg-primary/90 text-white transition-all shadow-md shadow-primary/20"
               >
                 Assinar Koách
@@ -1329,7 +1329,7 @@ export default function LandingPage() {
               </ul>
 
               <Link
-                to="/login?cadastro=true"
+                to="/desenvolvimento/login?cadastro=true"
                 className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-white text-primary hover:bg-white/90 transition-all shadow-lg"
               >
                 Assinar Chalém
@@ -1371,7 +1371,7 @@ export default function LandingPage() {
           </p>
           <div className="flex justify-center">
             <Link
-              to="/login?cadastro=true"
+              to="/desenvolvimento/login?cadastro=true"
               className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
             >
               Criar conta grátis <ArrowRight className="w-4 h-4" />

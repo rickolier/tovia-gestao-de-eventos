@@ -130,7 +130,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    navigate('/desenvolvimento');
+    navigate('/desenvolvimento/login');
   };
 
   const isAdmin = isAdminEmail(user?.email);
@@ -209,7 +209,7 @@ export default function Dashboard() {
 
           {/* Criar Evento — destaque */}
           <div className="pt-6 pb-2 px-3">
-            <Link to="/eventos/novo">
+            <Link to="/desenvolvimento/eventos/novo">
               <button
                 data-tour="criar-evento"
                 className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white font-black text-sm rounded-2xl py-3 shadow-lg shadow-primary/30 transition-all"
@@ -223,7 +223,7 @@ export default function Dashboard() {
 
         {/* Base de Conhecimento + Tutorial + Logout */}
         <div className="px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0 space-y-0.5">
-          <Link to="/base-de-conhecimento">
+          <Link to="/desenvolvimento/base-de-conhecimento">
             <button className="sidebar-nav-item w-full text-white/60 hover:text-white hover:bg-white/10">
               <BookOpen className="w-[18px] h-[18px]" />
               Base de Conhecimento
