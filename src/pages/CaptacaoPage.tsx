@@ -394,12 +394,12 @@ export default function CaptacaoPage() {
 
       {/* ── Footer ── */}
       <footer className="bg-[#0f3d22] text-white/70 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
             <span className="text-white font-bold text-lg">tovia</span>
             <p className="text-xs mt-1">Do zero ao check-in, tudo em um lugar.</p>
           </div>
-          <div className="flex flex-col md:flex-row gap-4 text-sm text-center">
+          <div className="flex flex-col md:flex-row items-center gap-4 text-sm">
             <a href="mailto:suporte@toviaapp.com.br" className="hover:text-white transition-colors">
               suporte@toviaapp.com.br
             </a>
