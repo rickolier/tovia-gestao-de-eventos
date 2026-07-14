@@ -25,7 +25,7 @@ export default function EventoSelectorCard({ evento, onPress, destaque }: Props)
         styles.card,
         Shadow.flat,
         { backgroundColor: colors.card, borderColor: colors.border },
-        destaque && { borderLeftColor: colors.primary, borderLeftWidth: 3 },
+        { borderLeftColor: evento.cor_tema ?? colors.primary, borderLeftWidth: destaque ? 5 : 3 },
       ]}
       onPress={() => onPress(evento)}
       activeOpacity={0.82}
