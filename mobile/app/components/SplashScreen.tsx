@@ -10,7 +10,6 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const [mobileW, setMobileW] = useState(0);
   const ready = toviaW > 0 && mobileW > 0;
 
-  // Animated values
   const toviaOpacity  = useRef(new Animated.Value(0)).current;
   const toviaTX       = useRef(new Animated.Value(0)).current;
   const mobileOpacity = useRef(new Animated.Value(0)).current;
@@ -22,36 +21,23 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   useEffect(() => {
     if (!ready) return;
 
-    // Positions:
-    // "tovia" centered = shifted right by mobileW/2 from its final position
-    const toviaShift  = mobileW / 2;
-    // dot under tovia (final pos) = left of combined center = -(mobileW/2)
+    const toviaShift     = mobileW / 2;
     const dotUnderTovia  = -(mobileW / 2);
-    // dot under mobile center = right of combined center = toviaW/2
     const dotUnderMobile = toviaW / 2;
 
-    // Set tovia initial X (appears centered on screen)
     toviaTX.setValue(toviaShift);
-    dotTX.setValue(toviaShift); // dot starts where tovia center is
+    dotTX.setValue(toviaShift);
 
     Animated.sequence([
-      // Phase 1 — tovia + dot fade in suave (centralizado)
       Animated.parallel([
         Animated.timing(toviaOpacity, { toValue: 1, duration: 700, useNativeDriver: true }),
         Animated.timing(dotOpacity,   { toValue: 1, duration: 700, useNativeDriver: true }),
       ]),
       Animated.delay(300),
 
-      // Phase 2 — tovia desliza esquerda, mobile aparece, ponto acompanha
       Animated.parallel([
-        Animated.timing(toviaTX, {
-          toValue: 0, duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(dotTX, {
-          toValue: dotUnderTovia, duration: 800,
-          useNativeDriver: true,
-        }),
+        Animated.timing(toviaTX, { toValue: 0, duration: 800, useNativeDriver: true }),
+        Animated.timing(dotTX,   { toValue: dotUnderTovia, duration: 800, useNativeDriver: true }),
         Animated.sequence([
           Animated.delay(200),
           Animated.parallel([
@@ -62,29 +48,18 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       ]),
       Animated.delay(180),
 
-      // Phase 3 — ponto vai para baixo de "mobile"
-      Animated.timing(dotTX, {
-        toValue: dotUnderMobile, duration: 500,
-        useNativeDriver: true,
-      }),
+      Animated.timing(dotTX, { toValue: dotUnderMobile, duration: 500, useNativeDriver: true }),
       Animated.delay(150),
 
-      // Phase 4 — ponto centraliza sob "toviamobile"
-      Animated.timing(dotTX, {
-        toValue: 0, duration: 450,
-        useNativeDriver: true,
-      }),
-
+      Animated.timing(dotTX, { toValue: 0, duration: 450, useNativeDriver: true }),
       Animated.delay(800),
 
-      // Phase 5 — fade out suave
       Animated.timing(containerFade, { toValue: 0, duration: 600, useNativeDriver: true }),
     ]).start(() => onFinish());
   }, [ready]);
 
   return (
     <Animated.View style={[styles.container, { opacity: containerFade }]}>
-      {/* Logo row */}
       <View style={styles.logoRow}>
         <Animated.Text
           style={[styles.tovia, { opacity: toviaOpacity, transform: [{ translateX: toviaTX }] }]}
@@ -100,12 +75,8 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
         </Animated.Text>
       </View>
 
-      {/* Dot — absolutely positioned, controlled by dotTX */}
       <Animated.View
-        style={[
-          styles.dot,
-          { opacity: dotOpacity, transform: [{ translateX: dotTX }] },
-        ]}
+        style={[styles.dot, { opacity: dotOpacity, transform: [{ translateX: dotTX }] }]}
       />
     </Animated.View>
   );
