@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { listDocuments, updateDocument } from '~/services/firestore';
+import { listDocuments } from '~/services/firestore';
 import { limit } from 'firebase/firestore';
 import { Inscricao } from '~/types';
 import { Button } from '@/components/ui/button';
-import { UserCheck, UserX, Download, Loader2 } from 'lucide-react';
+import { UserCheck, UserX, Download, Smartphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 
 interface Props {
   eventoId: string;
@@ -14,7 +13,6 @@ interface Props {
 export default function CheckinTab({ eventoId }: Props) {
   const [inscricoes, setInscricoes] = useState<Inscricao[]>([]);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState<string | null>(null);
 
   useEffect(() => {
     listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)])
@@ -30,24 +28,6 @@ export default function CheckinTab({ eventoId }: Props) {
 
   const presentes = inscricoes.filter(i => i.presenca);
   const ausentes  = inscricoes.filter(i => !i.presenca);
-
-  const togglePresenca = async (insc: Inscricao) => {
-    setUpdating(insc.id);
-    const novoValor = !insc.presenca;
-    try {
-      await updateDocument(`eventos/${eventoId}/inscricoes`, insc.id, {
-        presenca: novoValor,
-        ...(novoValor ? { checkin_at: new Date().toISOString() } : { checkin_at: null }),
-      });
-      setInscricoes(prev =>
-        prev.map(i => i.id === insc.id ? { ...i, presenca: novoValor, checkin_at: novoValor ? new Date().toISOString() : undefined } : i)
-      );
-    } catch {
-      toast.error('Erro ao atualizar presença.');
-    } finally {
-      setUpdating(null);
-    }
-  };
 
   const exportCSV = () => {
     const header = 'Nome,Ingresso,Presença,Horário Checkin\n';
@@ -76,7 +56,7 @@ export default function CheckinTab({ eventoId }: Props) {
       <div className="tab-page-header">
         <div>
           <h2>Check-in</h2>
-          <p>Lista de presença dos participantes confirmados.</p>
+          <p>Relatório de presença dos participantes confirmados.</p>
         </div>
         <Button onClick={exportCSV} variant="outline" className="rounded-xl h-10 px-5 font-bold gap-2 shrink-0">
           <Download className="w-4 h-4" /> Exportar CSV
@@ -105,7 +85,18 @@ export default function CheckinTab({ eventoId }: Props) {
         </div>
       </div>
 
-      {/* List */}
+      {/* Mobile app banner */}
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-4">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <Smartphone className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <p className="text-sm font-black text-foreground">Faça o check-in pelo Tovia Mobile</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Use a câmera do celular para escanear os QR Codes dos ingressos em tempo real.</p>
+        </div>
+      </div>
+
+      {/* Read-only list */}
       {inscricoes.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-16 flex flex-col items-center gap-2 text-center">
           <UserCheck className="w-10 h-10 text-muted-foreground/30" />
@@ -117,41 +108,27 @@ export default function CheckinTab({ eventoId }: Props) {
             <div
               key={insc.id}
               className={cn(
-                'flex items-center gap-4 px-5 py-3.5 transition-colors',
+                'flex items-center gap-4 px-5 py-3.5',
                 idx !== inscricoes.length - 1 && 'border-b border-border/60',
                 insc.presenca ? 'bg-emerald-50/40' : 'bg-background',
               )}
             >
-              {/* Checkbox */}
-              <button
-                onClick={() => togglePresenca(insc)}
-                disabled={updating === insc.id}
-                className={cn(
-                  'w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                  insc.presenca
-                    ? 'bg-emerald-500 border-emerald-500'
-                    : 'border-border hover:border-primary',
+              <div className={cn(
+                'w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0',
+                insc.presenca ? 'bg-emerald-500 border-emerald-500' : 'border-border',
+              )}>
+                {insc.presenca && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                    <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 )}
-              >
-                {updating === insc.id
-                  ? <Loader2 className="w-3 h-3 animate-spin text-white" />
-                  : insc.presenca && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )
-                }
-              </button>
-
-              {/* Name + ticket */}
+              </div>
               <div className="flex-1 min-w-0">
                 <p className={cn('text-sm font-semibold truncate', insc.presenca ? 'text-emerald-700' : 'text-foreground')}>
                   {insc.nome ?? '—'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{insc.ticket_nome ?? '—'}</p>
               </div>
-
-              {/* Checkin time */}
               {insc.presenca && insc.checkin_at ? (
                 <span className="text-[11px] font-black text-emerald-600 shrink-0">
                   {new Date(insc.checkin_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
