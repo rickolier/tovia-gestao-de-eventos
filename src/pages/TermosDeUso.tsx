@@ -34,7 +34,7 @@ export default function TermosDeUso() {
             Ao criar uma conta ou utilizar a plataforma <strong className="font-semibold text-gray-800">Tovia</strong>, você concorda com estes Termos de Uso. Se não concordar com qualquer parte destes termos, não utilize a plataforma.
           </p>
           <p>
-            A Tovia é operada pela <strong className="font-semibold text-gray-800">BIGLAB Solutions</strong>. Dúvidas podem ser enviadas para: <a href="mailto:suporte@toviapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviapp.com.br</a>
+            A Tovia é operada pela <strong className="font-semibold text-gray-800">BIGLAB Solutions</strong>. Dúvidas podem ser enviadas para: <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a>
           </p>
         </Section>
 
@@ -129,7 +129,7 @@ export default function TermosDeUso() {
         <div className="pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-400">
             Para dúvidas sobre estes Termos, entre em contato:{' '}
-            <a href="mailto:suporte@toviapp.com.br" className="text-primary hover:underline">suporte@toviapp.com.br</a>
+            <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline">suporte@toviaapp.com.br</a>
           </p>
         </div>
       </main>

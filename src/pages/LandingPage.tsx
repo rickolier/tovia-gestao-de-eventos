@@ -1346,7 +1346,7 @@ export default function LandingPage() {
               </p>
             </div>
             <a
-              href="mailto:contato@toviaapp.com.br"
+              href="mailto:suporte@toviaapp.com.br"
               className="shrink-0 bg-white hover:bg-white/90 text-primary text-sm font-black uppercase tracking-widest px-7 py-3.5 rounded-xl transition-all shadow-md whitespace-nowrap"
             >
               Fale com a gente →
@@ -1385,8 +1385,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center md:items-start gap-1">
             <span className="text-2xl font-black text-white tracking-tight">tovia</span>
-            <a href="mailto:suporte@toviapp.com.br" className="text-xs text-white/40 hover:text-white/70 transition-colors">
-              suporte@toviapp.com.br
+            <a href="mailto:suporte@toviaapp.com.br" className="text-xs text-white/40 hover:text-white/70 transition-colors">
+              suporte@toviaapp.com.br
             </a>
           </div>
           <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
