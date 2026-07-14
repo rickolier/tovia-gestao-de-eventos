@@ -234,7 +234,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
                 >
-                  <Link to={`/eventos/${evento.id}`}>
+                  <Link to={`/desenvolvimento/eventos/${evento.id}`}>
                     <div className={cn(
                       'group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer',
                       evento.ativo === false && 'opacity-70 grayscale-[40%]',

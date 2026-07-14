@@ -63,7 +63,7 @@ export default function OverviewTab({ evento }: { evento: Evento }) {
             <Info className="w-5 h-5 text-primary" />
             Informações do Evento
           </CardTitle>
-          <Link to={`/eventos/${evento.id}/editar`}>
+          <Link to={`/desenvolvimento/eventos/${evento.id}/editar`}>
             <Button variant="outline" size="sm" className="rounded-xl border-border text-muted-foreground hover:bg-accent hover:text-foreground">
               <Edit2 className="w-4 h-4 mr-2" />
               Editar Evento

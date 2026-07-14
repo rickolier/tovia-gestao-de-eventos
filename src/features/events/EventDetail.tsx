@@ -400,7 +400,7 @@ export default function EventDetail() {
               </div>
               {(activeTab === 'overview' || activeTab === 'checkin-list') && (
                 <Link
-                  to={`/eventos/${evento.id}/checkin`}
+                  to={`/desenvolvimento/eventos/${evento.id}/checkin`}
                   className="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl transition-all shrink-0"
                 >
                   <ScanLine className="w-4 h-4" />

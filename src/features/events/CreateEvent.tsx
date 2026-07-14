@@ -241,7 +241,7 @@ export default function CreateEvent() {
       } else {
         toast.success('Evento criado com sucesso!');
       }
-      navegar(`/eventos/${id}`);
+      navegar(`/desenvolvimento/eventos/${id}`);
     } catch (erro: any) {
       console.error('Error creating event:', erro);
       let mensagemErro = 'Erro ao criar evento.';
