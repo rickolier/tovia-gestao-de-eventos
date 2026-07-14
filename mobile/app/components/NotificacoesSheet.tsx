@@ -225,13 +225,9 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
   }
 
   async function handleAddCustom(message: string, hours: number, before: boolean, evento: Evento) {
-    if (!permGranted) {
-      const granted = await requestPermission();
-      if (!granted) { Alert.alert('Permissão necessária', 'Ative as notificações para continuar.'); return; }
-    }
+    if (!permGranted) await requestPermission();
     await addCustom({ message, hours, before, eventoNome: evento.nome }, new Date(evento.data_inicio));
     setShowForm(false);
-    Alert.alert('Notificação criada!', `Você será avisado ${hours}h ${before ? 'antes' : 'após'} "${evento.nome}".`);
   }
 
   function formatCustom(c: { hours: number; before: boolean }) {
