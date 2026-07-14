@@ -109,12 +109,12 @@ export default function SuporteScreen() {
           <Row
             icon={<BookOpen size={16} color={colors.primary} strokeWidth={2} />}
             label="Base de Conhecimento"
-            onPress={() => Linking.openURL('https://tovia.app/base-conhecimento')}
+            onPress={() => Linking.openURL('https://toviaapp.com.br/base-de-conhecimento')}
           />
           <Row
             icon={<MessageCircle size={16} color={colors.primary} strokeWidth={2} />}
             label="Fale Conosco"
-            onPress={() => Linking.openURL('mailto:suporte@tovia.app')}
+            onPress={() => Linking.openURL('mailto:suporte@toviaapp.com.br')}
           />
           <Row
             icon={<RefreshCw size={16} color={colors.primary} strokeWidth={2} />}
@@ -139,12 +139,12 @@ export default function SuporteScreen() {
           <Row
             icon={<Shield size={16} color={colors.primary} strokeWidth={2} />}
             label="Política de Privacidade"
-            onPress={() => Linking.openURL('https://tovia.app/privacidade')}
+            onPress={() => Linking.openURL('https://toviaapp.com.br/privacidade')}
           />
           <Row
             icon={<FileText size={16} color={colors.primary} strokeWidth={2} />}
             label="Termos de Uso"
-            onPress={() => Linking.openURL('https://tovia.app/termos-de-uso')}
+            onPress={() => Linking.openURL('https://toviaapp.com.br/termos-de-uso')}
           />
         </View>
 
