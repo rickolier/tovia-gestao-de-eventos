@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, RefreshControl,
-  ActivityIndicator, StyleSheet,
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Sparkles } from 'lucide-react-native';
@@ -24,30 +24,9 @@ function saudacao(nome: string) {
   return `${period}, ${primeiro}!`;
 }
 
-function GreetingBox() {
-  const { colors } = useTheme();
-  const { profile } = useAuth();
-  if (!profile?.name) return null;
-
-  return (
-    <View style={[styles.greetBox, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
-      <View style={[styles.greetIcon, { backgroundColor: colors.primary }]}>
-        <Sparkles size={16} color="#fff" strokeWidth={2} />
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={[Typography.h3, { color: colors.foreground }]}>
-          {`${saudacao(profile.name)}`}
-        </Text>
-        <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
-          {'Tudo pronto para o seu próximo evento?'}
-        </Text>
-      </View>
-    </View>
-  );
-}
-
 export default function HomeScreen() {
   const { colors } = useTheme();
+  const { profile } = useAuth();
   const { hoje, proximos, encerrados, loading, toggleAtivo } = useEventos();
   const [refreshing, setRefreshing] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -59,10 +38,12 @@ export default function HomeScreen() {
   }, []);
 
   const totalAtivos = [...hoje, ...proximos].length;
+  const isEmpty = hoje.length === 0 && proximos.length === 0 && encerrados.length === 0;
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]} edges={['top']}>
-      <TopBar onAvatarPress={() => setProfileOpen(true)} />
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.primary }]} edges={['top']}>
+      {/* Top bar sobre fundo verde */}
+      <TopBar onAvatarPress={() => setProfileOpen(true)} transparent />
       <ProfileSheet visible={profileOpen} onClose={() => setProfileOpen(false)} />
       {eventoSel && (
         <EventoDetailModal
@@ -76,63 +57,74 @@ export default function HomeScreen() {
         <HomeSkeleton />
       ) : (
         <ScrollView
-          contentContainerStyle={[
-            styles.scroll,
-            hoje.length === 0 && proximos.length === 0 && encerrados.length === 0 && styles.scrollEmpty,
-          ]}
+          contentContainerStyle={[styles.scroll, isEmpty && styles.scrollEmpty]}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor={colors.primary}
+              tintColor="#fff"
               colors={[colors.primary]}
             />
           }
         >
-          <GreetingBox />
+          {/* Saudação — sobre o verde */}
+          {profile?.name && (
+            <View style={styles.greetSection}>
+              <View style={[styles.greetIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
+                <Sparkles size={16} color="#fff" strokeWidth={2} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[Typography.h3, { color: '#fff' }]}>{saudacao(profile.name)}</Text>
+                <Text style={[Typography.small, { color: 'rgba(255,255,255,0.7)', marginTop: 2 }]}>
+                  Tudo pronto para o seu próximo evento?
+                </Text>
+              </View>
+            </View>
+          )}
 
-          <View style={styles.pageHeader}>
-            <Text style={[Typography.display, { color: colors.foreground }]}>Meus Eventos</Text>
-            {totalAtivos > 0 && (
-              <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
-                {totalAtivos} evento{totalAtivos !== 1 ? 's' : ''} ativo{totalAtivos !== 1 ? 's' : ''}
-              </Text>
+          {/* Ficha branca com bordas arredondadas no topo */}
+          <View style={[styles.sheet, { backgroundColor: colors.background }]}>
+            <View style={styles.pageHeader}>
+              <Text style={[Typography.display, { color: colors.foreground }]}>Meus Eventos</Text>
+              {totalAtivos > 0 && (
+                <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
+                  {totalAtivos} evento{totalAtivos !== 1 ? 's' : ''} ativo{totalAtivos !== 1 ? 's' : ''}
+                </Text>
+              )}
+            </View>
+
+            {isEmpty && <EmptyState />}
+
+            {hoje.length > 0 && (
+              <>
+                <SectionHeader title="Em andamento" count={hoje.length} />
+                {hoje.map((ev) => (
+                  <EventCard key={ev.id} evento={ev} destaque onPress={setEventoSel} />
+                ))}
+              </>
             )}
-          </View>
 
-          {hoje.length === 0 && proximos.length === 0 && encerrados.length === 0 && (
-            <EmptyState />
-          )}
-
-          {hoje.length > 0 && (
-            <>
-              <SectionHeader title="Em andamento" count={hoje.length} />
-              {hoje.map((ev) => (
-                <EventCard key={ev.id} evento={ev} destaque onPress={setEventoSel} />
-              ))}
-            </>
-          )}
-
-          {proximos.length > 0 && (
-            <>
-              <SectionHeader title="Próximos eventos" count={proximos.length} />
-              {proximos.map((ev) => (
-                <EventCard key={ev.id} evento={ev} onPress={setEventoSel} />
-              ))}
-            </>
-          )}
-
-          {encerrados.length > 0 && (
-            <>
-              <SectionHeader title="Encerrados" count={encerrados.length} />
-              <View style={{ opacity: 0.65 }}>
-                {encerrados.map((ev) => (
+            {proximos.length > 0 && (
+              <>
+                <SectionHeader title="Próximos eventos" count={proximos.length} />
+                {proximos.map((ev) => (
                   <EventCard key={ev.id} evento={ev} onPress={setEventoSel} />
                 ))}
-              </View>
-            </>
-          )}
+              </>
+            )}
+
+            {encerrados.length > 0 && (
+              <>
+                <SectionHeader title="Encerrados" count={encerrados.length} />
+                <View style={{ opacity: 0.65 }}>
+                  {encerrados.map((ev) => (
+                    <EventCard key={ev.id} evento={ev} onPress={setEventoSel} />
+                  ))}
+                </View>
+              </>
+            )}
+          </View>
         </ScrollView>
       )}
     </SafeAreaView>
@@ -141,18 +133,15 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  loader: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  scroll: { paddingHorizontal: 16, paddingBottom: 32 },
+  scroll: { flexGrow: 1 },
   scrollEmpty: { flex: 1 },
-  pageHeader: { paddingTop: 16, paddingBottom: 4 },
-  greetBox: {
+  greetSection: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginTop: 16,
-    borderRadius: Radius.card,
-    borderWidth: 1,
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
   greetIcon: {
     width: 36,
@@ -161,4 +150,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 32,
+    flexGrow: 1,
+  },
+  pageHeader: { paddingTop: 16, paddingBottom: 4 },
 });

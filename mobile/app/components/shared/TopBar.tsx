@@ -4,9 +4,10 @@ import { useAuth } from '../../hooks/useAuth';
 
 interface TopBarProps {
   onAvatarPress: () => void;
+  transparent?: boolean;
 }
 
-export default function TopBar({ onAvatarPress }: TopBarProps) {
+export default function TopBar({ onAvatarPress, transparent }: TopBarProps) {
   const { colors } = useTheme();
   const { profile } = useAuth();
 
@@ -15,7 +16,7 @@ export default function TopBar({ onAvatarPress }: TopBarProps) {
     : '?';
 
   return (
-    <View style={[styles.bar, { backgroundColor: colors.sidebar, borderBottomColor: colors.sidebarBorder }]}>
+    <View style={[styles.bar, { backgroundColor: transparent ? 'transparent' : colors.sidebar, borderBottomColor: transparent ? 'transparent' : colors.sidebarBorder }]}>
       {/* Logo */}
       <Text style={styles.logo}>
         tovia<Text style={[styles.logoAccent, { color: colors.primary }]}>mobile</Text>
