@@ -20,6 +20,7 @@ export interface Evento {
   descricao?: string;
   hora_inicio?: string;
   hora_fim?: string;
+  cor_tema?: string;
 }
 
 export interface EventoComInscritos extends Evento {
