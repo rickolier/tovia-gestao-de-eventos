@@ -124,13 +124,7 @@ export default function CaptacaoPage() {
                   href="#formulario"
                   className="inline-flex items-center justify-center gap-2 bg-white text-[#0f3d22] font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
                 >
-                  Criar meu evento <ArrowRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="#solucao"
-                  className="inline-flex items-center justify-center gap-2 border border-white/30 text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/10 transition-all text-sm"
-                >
-                  Ver como funciona <ChevronDown className="w-4 h-4" />
+                  Quero receber um contato! <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </div>
