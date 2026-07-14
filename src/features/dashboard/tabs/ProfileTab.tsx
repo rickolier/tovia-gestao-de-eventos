@@ -56,6 +56,7 @@ export default function ProfileTab() {
     if (!user) return;
     setUploadingPhoto(true);
     try {
+      await user.getIdToken(true);
       const storageRef = ref(storage, `profiles/${user.uid}/foto`);
       await uploadBytes(storageRef, croppedFile);
       const url = await getDownloadURL(storageRef);
@@ -63,8 +64,9 @@ export default function ProfileTab() {
       await updateDocument('users', user.uid, { imagem_url: url });
       await refreshProfile();
       toast.success('Foto atualizada!');
-    } catch {
-      toast.error('Erro ao fazer upload da foto.');
+    } catch (err) {
+      console.error('[upload foto]', err);
+      toast.error('Erro ao fazer upload da foto. Tente novamente.');
     } finally {
       setUploadingPhoto(false);
     }
