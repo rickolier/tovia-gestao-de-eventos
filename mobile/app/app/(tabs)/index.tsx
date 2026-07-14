@@ -41,7 +41,7 @@ export default function HomeScreen() {
   const isEmpty = hoje.length === 0 && proximos.length === 0 && encerrados.length === 0;
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.primary }]} edges={['top']}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.sidebar }]} edges={['top']}>
       {/* Top bar sobre fundo verde */}
       <TopBar onAvatarPress={() => setProfileOpen(true)} transparent />
       <ProfileSheet visible={profileOpen} onClose={() => setProfileOpen(false)} />
