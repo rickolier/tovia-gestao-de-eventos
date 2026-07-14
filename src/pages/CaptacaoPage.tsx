@@ -265,8 +265,8 @@ export default function CaptacaoPage() {
               </div>
 
               {/* Copy */}
-              <h2 className="text-2xl font-black text-[#0f3d22] mb-3">
-                Organize com propósito.
+              <h2 className="text-2xl font-black text-[#0f3d22] mb-3 uppercase">
+                Tudo que seu evento precisa, em um só lugar!
               </h2>
               <p className="text-gray-600 leading-relaxed text-sm mb-5">
                 O Tovia nasceu para quem organiza conferências, retiros, cultos e eventos com propósito.
