@@ -26,6 +26,7 @@ export default function Login() {
 
   const eventoIdParam = searchParams.get('eventoId');
   const inviteEmailParam = searchParams.get('inviteEmail') || '';
+  const redirectParam = searchParams.get('redirect');
 
   // Usuário já logado acessando o link de equipe: processa o join diretamente
   React.useEffect(() => {
@@ -33,9 +34,9 @@ export default function Login() {
     if (eventoIdParam && !isAdminEmail(user.email)) {
       processEquipeJoin(eventoIdParam)
         .catch((err: any) => toast.error('Erro ao entrar na equipe: ' + err.message))
-        .finally(() => navigate('/desenvolvimento/dashboard'));
+        .finally(() => navigate(redirectParam || '/desenvolvimento/dashboard'));
     } else {
-      navigate(isAdminEmail(user.email) ? '/desenvolvimento/admin' : '/desenvolvimento/dashboard');
+      navigate(isAdminEmail(user.email) ? '/desenvolvimento/admin' : (redirectParam || '/desenvolvimento/dashboard'));
     }
   }, [user, isAuthReady]);
 
@@ -71,7 +72,7 @@ export default function Login() {
           toast.error('Erro ao entrar na equipe: ' + joinErr.message);
         }
       }
-      navigate('/desenvolvimento/dashboard');
+      navigate(redirectParam || '/desenvolvimento/dashboard');
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }
@@ -136,7 +137,7 @@ export default function Login() {
         setLoginAttempts(0);
         setResetSent(false);
         toast.success('Bem-vindo de volta!');
-        navigate(isAdminEmail(cred.user.email) ? '/admin' : '/dashboard');
+        navigate(isAdminEmail(cred.user.email) ? '/desenvolvimento/admin' : (redirectParam || '/desenvolvimento/dashboard'));
       }
     } catch (error: any) {
       if (!isRegistering) {
