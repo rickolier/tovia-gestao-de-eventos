@@ -103,82 +103,92 @@ export default function CaptacaoPage() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section className="bg-[#0f3d22] text-white px-6 pt-12 pb-16 overflow-hidden">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#0f3d22] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-16 px-6">
+          {/* Decorative circles */}
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
+          <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
+          <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] rounded-full bg-emerald-400/20" />
 
-            {/* Left: copy */}
-            <div>
-              <h1 className="font-extrabold leading-[1.05] tracking-tight mb-5" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.5rem)' }}>
-                DO ZERO AO<br />
-                CHECK-IN{' '}
-                <span className="text-[#4ade80]">TUDO</span>
-                <br />
-                <span className="text-[#4ade80]">EM UMA</span>
-                <br />
-                <span className="text-[#4ade80]">PLATAFORMA.</span>
+          <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
+            {/* Texto */}
+            <div className="flex-1 max-w-2xl">
+              <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
+                Do zero ao check-in{' '}
+                <span className="text-emerald-400">tudo em uma plataforma.</span>
               </h1>
-              <p className="text-white/70 text-base leading-relaxed mb-8 max-w-md">
-                Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar.
-                Feito para igrejas, conferências, retiros e quem organiza com propósito.
+              <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
+                Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar. Feito para igrejas, conferências, retiros e quem organiza com propósito.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <a
                   href="#formulario"
-                  className="inline-flex items-center gap-2 bg-white text-[#0f3d22] font-black text-sm px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0f3d22] font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
                 >
-                  CRIAR MEU EVENTO <ArrowRight className="w-4 h-4" />
+                  Criar meu evento <ArrowRight className="w-4 h-4" />
                 </a>
                 <a
                   href="#solucao"
-                  className="inline-flex items-center gap-2 border border-white/30 text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 border border-white/30 text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/10 transition-all text-sm"
                 >
                   Ver como funciona <ChevronDown className="w-4 h-4" />
                 </a>
               </div>
             </div>
 
-            {/* Right: photo + floating cards */}
-            <div className="relative flex justify-center">
-              {/* Floating card: Inscrições */}
-              <div className="absolute top-4 -left-4 z-10 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+            {/* Hero visual — foto + elipse + cards flutuantes */}
+            <div className="hidden md:flex flex-1 justify-center items-end relative" style={{ minHeight: '420px' }}>
+              {/* Círculo de contraste */}
+              <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-emerald-400/20 border border-emerald-400/30" />
+              <div className="absolute bottom-6 right-10 w-64 h-64 rounded-full bg-white/5" />
+
+              {/* Foto dentro da elipse */}
+              <div
+                className="relative z-10 overflow-hidden border-4 border-white/10"
+                style={{
+                  width: '420px',
+                  height: '520px',
+                  borderRadius: '50% 50% 50% 50% / 45% 45% 55% 55%',
+                  boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
+                }}
+              >
+                <img
+                  src="/foto-hero.jpg"
+                  alt="Organizador de eventos"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center 20%', transform: 'scale(1.15)', transformOrigin: 'center 30%' }}
+                />
+              </div>
+
+              {/* Card flutuante — inscrições */}
+              <div className="absolute top-6 left-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-gray-100">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
                   <Users className="w-4 h-4 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Inscrições</p>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Inscrições</p>
                   <p className="text-lg font-black text-gray-900 leading-none">142</p>
                 </div>
               </div>
 
-              {/* Floating card: Doações */}
-              <div className="absolute top-8 -right-2 z-10 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
+              {/* Card flutuante — doações */}
+              <div className="absolute top-28 right-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-gray-100">
+                <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
                   <Heart className="w-4 h-4 text-violet-500" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Doações</p>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Doações</p>
                   <p className="text-lg font-black text-gray-900 leading-none">R$ 4.320</p>
                 </div>
               </div>
 
-              {/* Photo */}
-              <div className="relative w-72 h-80 md:w-80 md:h-96">
-                <div className="w-full h-full rounded-3xl overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
-                    alt="Organizador de eventos"
-                    className="w-full h-full object-cover"
-                  />
+              {/* Card flutuante — evento criado */}
+              <div className="absolute bottom-12 left-2 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-gray-100">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-4 h-4 text-blue-500" />
                 </div>
-                {/* Floating card: Evento criado */}
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white rounded-2xl shadow-xl px-5 py-3 flex items-center gap-3 whitespace-nowrap">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-emerald-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-black text-gray-900">Evento criado!</p>
-                    <p className="text-[10px] text-gray-400">Em menos de 1 minuto</p>
-                  </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">Evento criado!</p>
+                  <p className="text-[10px] text-gray-400">Em menos de 1 minuto</p>
                 </div>
               </div>
             </div>
