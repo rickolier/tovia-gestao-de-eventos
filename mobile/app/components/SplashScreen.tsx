@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 
 interface SplashScreenProps {
@@ -6,45 +6,107 @@ interface SplashScreenProps {
 }
 
 export default function SplashScreen({ onFinish }: SplashScreenProps) {
-  const scale = useRef(new Animated.Value(0.7)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-  const fadeOut = useRef(new Animated.Value(1)).current;
+  const [toviaW, setToviaW]   = useState(0);
+  const [mobileW, setMobileW] = useState(0);
+  const ready = toviaW > 0 && mobileW > 0;
+
+  // Animated values
+  const toviaOpacity  = useRef(new Animated.Value(0)).current;
+  const toviaTX       = useRef(new Animated.Value(0)).current;
+  const mobileOpacity = useRef(new Animated.Value(0)).current;
+  const mobileTX      = useRef(new Animated.Value(18)).current;
+  const dotOpacity    = useRef(new Animated.Value(0)).current;
+  const dotTX         = useRef(new Animated.Value(0)).current;
+  const containerFade = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    if (!ready) return;
+
+    // Positions:
+    // "tovia" centered = shifted right by mobileW/2 from its final position
+    const toviaShift  = mobileW / 2;
+    // dot under tovia (final pos) = left of combined center = -(mobileW/2)
+    const dotUnderTovia  = -(mobileW / 2);
+    // dot under mobile center = right of combined center = toviaW/2
+    const dotUnderMobile = toviaW / 2;
+
+    // Set tovia initial X (appears centered on screen)
+    toviaTX.setValue(toviaShift);
+    dotTX.setValue(toviaShift); // dot starts where tovia center is
+
     Animated.sequence([
-      // Aparece com spring
+      // Phase 1 — tovia + dot fade in (centered)
       Animated.parallel([
-        Animated.spring(scale, {
-          toValue: 1,
-          tension: 60,
-          friction: 7,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 400,
-          useNativeDriver: true,
-        }),
+        Animated.timing(toviaOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.timing(dotOpacity,   { toValue: 1, duration: 350, useNativeDriver: true }),
       ]),
-      // Pausa
-      Animated.delay(900),
-      // Fade out
-      Animated.timing(fadeOut, {
-        toValue: 0,
-        duration: 350,
+      Animated.delay(150),
+
+      // Phase 2 — tovia slides left, mobile appears, dot follows tovia
+      Animated.parallel([
+        Animated.timing(toviaTX, {
+          toValue: 0, duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dotTX, {
+          toValue: dotUnderTovia, duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.sequence([
+          Animated.delay(120),
+          Animated.parallel([
+            Animated.timing(mobileOpacity, { toValue: 1, duration: 380, useNativeDriver: true }),
+            Animated.timing(mobileTX,      { toValue: 0, duration: 380, useNativeDriver: true }),
+          ]),
+        ]),
+      ]),
+      Animated.delay(80),
+
+      // Phase 3 — dot slides to under "mobile"
+      Animated.timing(dotTX, {
+        toValue: dotUnderMobile, duration: 320,
         useNativeDriver: true,
       }),
+      Animated.delay(60),
+
+      // Phase 4 — dot centers under full "toviamobile"
+      Animated.timing(dotTX, {
+        toValue: 0, duration: 280,
+        useNativeDriver: true,
+      }),
+
+      Animated.delay(550),
+
+      // Phase 5 — fade out
+      Animated.timing(containerFade, { toValue: 0, duration: 380, useNativeDriver: true }),
     ]).start(() => onFinish());
-  }, []);
+  }, [ready]);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeOut }]}>
-      <Animated.View style={[styles.logoWrap, { opacity, transform: [{ scale }] }]}>
-        <Text style={styles.logo}>
-          tovia<Text style={styles.logoAccent}>mobile</Text>
-        </Text>
-        <View style={styles.dot} />
-      </Animated.View>
+    <Animated.View style={[styles.container, { opacity: containerFade }]}>
+      {/* Logo row */}
+      <View style={styles.logoRow}>
+        <Animated.Text
+          style={[styles.tovia, { opacity: toviaOpacity, transform: [{ translateX: toviaTX }] }]}
+          onLayout={e => setToviaW(e.nativeEvent.layout.width)}
+        >
+          tovia
+        </Animated.Text>
+        <Animated.Text
+          style={[styles.mobile, { opacity: mobileOpacity, transform: [{ translateX: mobileTX }] }]}
+          onLayout={e => setMobileW(e.nativeEvent.layout.width)}
+        >
+          mobile
+        </Animated.Text>
+      </View>
+
+      {/* Dot — absolutely positioned, controlled by dotTX */}
+      <Animated.View
+        style={[
+          styles.dot,
+          { opacity: dotOpacity, transform: [{ translateX: dotTX }] },
+        ]}
+      />
     </Animated.View>
   );
 }
@@ -57,25 +119,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 999,
   },
-  logoWrap: {
-    alignItems: 'center',
-    gap: 16,
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
-  logo: {
-    fontSize: 36,
+  tovia: {
+    fontSize: 38,
     fontWeight: '900',
     letterSpacing: -1,
     color: '#ffffff',
   },
-  logoAccent: {
-    color: '#4ade80',
+  mobile: {
+    fontSize: 38,
     fontWeight: '900',
+    letterSpacing: -1,
+    color: '#4ade80',
   },
   dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    marginTop: 14,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
     backgroundColor: '#4ade80',
-    opacity: 0.7,
   },
 });
