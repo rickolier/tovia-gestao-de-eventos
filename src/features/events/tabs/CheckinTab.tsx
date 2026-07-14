@@ -64,24 +64,16 @@ export default function CheckinTab({ eventoId }: Props) {
       </div>
 
       {/* Stat boxes */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-            <UserCheck className="w-5 h-5 text-emerald-600" />
-          </div>
-          <div>
-            <p className="text-3xl font-black text-emerald-700 leading-none">{presentes.length}</p>
-            <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mt-1">Presentes</p>
-          </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 flex items-center gap-3">
+          <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span className="text-xl font-black text-emerald-700">{presentes.length}</span>
+          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Presentes</span>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-            <UserX className="w-5 h-5 text-slate-500" />
-          </div>
-          <div>
-            <p className="text-3xl font-black text-slate-600 leading-none">{ausentes.length}</p>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Ausentes</p>
-          </div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center gap-3">
+          <UserX className="w-4 h-4 text-slate-500 shrink-0" />
+          <span className="text-xl font-black text-slate-600">{ausentes.length}</span>
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Ausentes</span>
         </div>
       </div>
 
