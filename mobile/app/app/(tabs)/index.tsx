@@ -4,7 +4,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Sparkles } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useAuth } from '../../hooks/useAuth';
 import { useEventos, EventoComInscritos } from '../../hooks/useEventos';
@@ -71,9 +70,7 @@ export default function HomeScreen() {
           {/* Saudação — sobre o verde */}
           {profile?.name && (
             <View style={styles.greetSection}>
-              <View style={[styles.greetIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-                <Sparkles size={16} color="#fff" strokeWidth={2} />
-              </View>
+              <Text style={styles.greetEmoji}>😄</Text>
               <View style={{ flex: 1 }}>
                 <Text style={[Typography.h3, { color: '#fff' }]}>{saudacao(profile.name)}</Text>
                 <Text style={[Typography.small, { color: 'rgba(255,255,255,0.7)', marginTop: 2 }]}>
@@ -143,13 +140,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 24,
   },
-  greetIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  greetEmoji: { fontSize: 32 },
   sheet: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
