@@ -90,11 +90,11 @@ export default function CaptacaoPage() {
     <div className="min-h-screen flex flex-col bg-white font-sans">
 
       {/* ── Header ── */}
-      <header className="bg-[#0f3d22] px-6 py-4">
+      <header className="bg-white border-b border-gray-100 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-center gap-3">
-          <span className="text-white font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
-          <div className="w-px h-7 bg-white/20" />
-          <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.2em] leading-tight">
+          <span className="text-[#0f3d22] font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
+          <div className="w-px h-7 bg-gray-300" />
+          <span className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] leading-tight">
             Gestão de<br />Eventos
           </span>
         </div>
