@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '~/services/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2, Users, Heart, Zap, ChevronDown, ArrowRight } from 'lucide-react';
 
 const TIPOS_EVENTO = [
   'Conferência / Congresso',
@@ -29,7 +29,7 @@ function maskWhatsapp(value: string) {
 }
 
 const inputClass =
-  'w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a7a45] focus:border-transparent';
+  'w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a7a45] focus:border-transparent bg-white';
 
 export default function CaptacaoPage() {
   const [form, setForm] = useState({
@@ -88,51 +88,182 @@ export default function CaptacaoPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans">
-      {/* Header */}
+
+      {/* ── Header ── */}
       <header className="bg-[#0f3d22] px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center gap-3">
-          <span className="text-white text-2xl font-bold tracking-tight">tovia</span>
-          <span className="text-[#4ade80] text-xs font-medium uppercase tracking-widest mt-1">Gestão de Eventos</span>
+        <div className="max-w-6xl mx-auto flex items-center justify-center gap-3">
+          <span className="text-white font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
+          <div className="w-px h-7 bg-white/20" />
+          <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.2em] leading-tight">
+            Gestão de<br />Eventos
+          </span>
         </div>
       </header>
 
-      {/* Hero */}
       <main className="flex-1">
-        <section className="bg-[#0f3d22] text-white pb-16 pt-10 px-6">
-          <div className="max-w-5xl mx-auto text-center">
-            <span className="inline-block bg-[#4ade80]/20 text-[#4ade80] text-xs font-semibold px-3 py-1 rounded-full mb-4 tracking-wide uppercase">
-              Em breve
-            </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-              A plataforma que vai mudar<br className="hidden md:block" /> a forma de gerir seus eventos
-            </h1>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Do zero ao check-in, tudo em um só lugar. Inscrições, financeiro, equipe e relatórios — simples, rápido e sem complicação.
+
+        {/* ── Hero ── */}
+        <section className="bg-[#0f3d22] text-white px-6 pt-12 pb-16 overflow-hidden">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+            {/* Left: copy */}
+            <div>
+              <h1 className="font-extrabold leading-[1.05] tracking-tight mb-5" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.5rem)' }}>
+                DO ZERO AO<br />
+                CHECK-IN{' '}
+                <span className="text-[#4ade80]">TUDO</span>
+                <br />
+                <span className="text-[#4ade80]">EM UMA</span>
+                <br />
+                <span className="text-[#4ade80]">PLATAFORMA.</span>
+              </h1>
+              <p className="text-white/70 text-base leading-relaxed mb-8 max-w-md">
+                Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar.
+                Feito para igrejas, conferências, retiros e quem organiza com propósito.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="#formulario"
+                  className="inline-flex items-center gap-2 bg-white text-[#0f3d22] font-black text-sm px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  CRIAR MEU EVENTO <ArrowRight className="w-4 h-4" />
+                </a>
+                <a
+                  href="#solucao"
+                  className="inline-flex items-center gap-2 border border-white/30 text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  Ver como funciona <ChevronDown className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+            {/* Right: photo + floating cards */}
+            <div className="relative flex justify-center">
+              {/* Floating card: Inscrições */}
+              <div className="absolute top-4 -left-4 z-10 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <Users className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Inscrições</p>
+                  <p className="text-lg font-black text-gray-900 leading-none">142</p>
+                </div>
+              </div>
+
+              {/* Floating card: Doações */}
+              <div className="absolute top-8 -right-2 z-10 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
+                  <Heart className="w-4 h-4 text-violet-500" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Doações</p>
+                  <p className="text-lg font-black text-gray-900 leading-none">R$ 4.320</p>
+                </div>
+              </div>
+
+              {/* Photo */}
+              <div className="relative w-72 h-80 md:w-80 md:h-96">
+                <div className="w-full h-full rounded-3xl overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+                    alt="Organizador de eventos"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Floating card: Evento criado */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white rounded-2xl shadow-xl px-5 py-3 flex items-center gap-3 whitespace-nowrap">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-gray-900">Evento criado!</p>
+                    <p className="text-[10px] text-gray-400">Em menos de 1 minuto</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── A Solução ── */}
+        <section id="solucao" className="py-16 px-6 bg-white text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#1a7a45] mb-3">A Solução</p>
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">
+            Tovia — <span className="font-normal" style={{ fontFamily: 'serif' }}>טוֹבִיָּה</span>
+          </h2>
+          <div className="max-w-2xl mx-auto space-y-4 text-gray-600 text-base leading-relaxed">
+            <p>
+              O nome vem do hebraico antigo <strong>Toviyah</strong>, formado por duas raízes:{' '}
+              <strong>Tov</strong> (טוֹב), que significa bondade, e <strong>Yah</strong> (יָהּ),
+              forma abreviada do nome de Deus.
+            </p>
+            <p>
+              Mas o que nos inspira vai além da tradução literal. Em hebraico, <em>tov</em> descreve algo
+              que está cumprindo exatamente o propósito para o qual foi criado — uma ideia mais próxima de{' '}
+              <strong>"funcionando como deveria"</strong> do que simplesmente "bom".
+            </p>
+            <p>
+              É isso que o Tovia quer ser: uma plataforma que cumpre o seu propósito para que o seu evento
+              cumpra o dele.
             </p>
           </div>
         </section>
 
-        {/* Main section: image + form */}
-        <section className="py-12 px-6 bg-gray-50">
-          <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-            {/* Left: image + copy */}
+        {/* ── Imagens + Formulário ── */}
+        <section id="formulario" className="py-12 px-6 bg-gray-50">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+
+            {/* Left: collage + copy */}
             <div>
-              <div className="rounded-2xl overflow-hidden shadow-lg mb-6 aspect-[4/3]">
-                <img
-                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80"
-                  alt="Evento organizado"
-                  className="w-full h-full object-cover"
-                />
+              {/* Image collage */}
+              <div className="relative mb-8">
+                <div className="grid grid-cols-2 gap-2">
+                  <img
+                    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80"
+                    alt="Evento"
+                    className="rounded-2xl object-cover w-full h-44"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&q=80"
+                    alt="Evento"
+                    className="rounded-2xl object-cover w-full h-44"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80"
+                    alt="Evento"
+                    className="rounded-2xl object-cover w-full h-44"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=400&q=80"
+                    alt="Evento"
+                    className="rounded-2xl object-cover w-full h-44"
+                  />
+                </div>
+                {/* Badge: inscrições */}
+                <div className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg px-3 py-2 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-600" />
+                  <div>
+                    <p className="text-xs font-black text-gray-900 leading-none">127 inscrições</p>
+                    <p className="text-[10px] text-gray-400">confirmadas</p>
+                  </div>
+                </div>
+                {/* Badge: receita */}
+                <div className="absolute bottom-4 right-4 bg-[#0f3d22] rounded-xl shadow-lg px-3 py-2">
+                  <p className="text-xs font-black text-white leading-none">R$ 4.320</p>
+                  <p className="text-[10px] text-white/60">arrecadados</p>
+                </div>
               </div>
-              <h2 className="text-2xl font-bold text-[#0f3d22] mb-3">
+
+              {/* Copy */}
+              <h2 className="text-2xl font-black text-[#0f3d22] mb-3">
                 Organize com propósito.
               </h2>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed text-sm mb-5">
                 O Tovia nasceu para quem organiza conferências, retiros, cultos e eventos com propósito.
                 Uma ferramenta completa, pensada para igrejas, ministérios e instituições que precisam
                 de eficiência sem perder o cuidado com as pessoas.
               </p>
-              <ul className="mt-4 space-y-2">
+              <ul className="space-y-2">
                 {[
                   'Inscrições e ingressos online',
                   'Controle financeiro por evento',
@@ -148,7 +279,7 @@ export default function CaptacaoPage() {
             </div>
 
             {/* Right: form */}
-            <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 sticky top-6">
               {enviado ? (
                 <div className="text-center py-8">
                   <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
@@ -162,13 +293,13 @@ export default function CaptacaoPage() {
               ) : (
                 <>
                   <h3 className="text-xl font-bold text-gray-900 mb-1">Quero conhecer o Tovia</h3>
-                  <p className="text-gray-500 text-sm mb-6">Preencha o formulário e entraremos em contato.</p>
+                  <p className="text-gray-500 text-sm mb-5">Preencha o formulário e entraremos em contato.</p>
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Nome</label>
                       <input name="nome" value={form.nome} onChange={handleChange} placeholder="Seu nome completo" className={inputClass} />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">E-mail</label>
                         <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="seu@email.com" className={inputClass} />
@@ -209,18 +340,17 @@ export default function CaptacaoPage() {
                       </div>
                     </div>
 
-                    {/* LGPD consent */}
                     <div className="flex items-start gap-3 pt-1">
                       <input
                         id="lgpd"
                         type="checkbox"
                         checked={lgpdConsent}
                         onChange={e => setLgpdConsent(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#1a7a45] accent-[#1a7a45] cursor-pointer flex-shrink-0"
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#1a7a45] cursor-pointer flex-shrink-0"
                       />
                       <label htmlFor="lgpd" className="text-xs text-gray-500 leading-relaxed cursor-pointer">
-                        Autorizo o Tovia a usar meus dados (nome, e-mail, WhatsApp e instituição) para entrar em contato sobre a plataforma.
-                        Seus dados não serão compartilhados com terceiros e podem ser removidos a qualquer momento.{' '}
+                        Autorizo o Tovia a usar meus dados para entrar em contato sobre a plataforma.
+                        Seus dados não serão compartilhados com terceiros.{' '}
                         <a href="/privacidade" target="_blank" className="text-[#1a7a45] underline hover:text-[#155e36]">
                           Política de Privacidade
                         </a>.
@@ -228,10 +358,11 @@ export default function CaptacaoPage() {
                     </div>
 
                     {erro && <p className="text-red-500 text-xs">{erro}</p>}
+
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-[#1a7a45] hover:bg-[#155e36] text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                      className="w-full bg-[#1a7a45] hover:bg-[#155e36] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
                     >
                       {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                       {loading ? 'Enviando...' : 'Quero saber mais'}
@@ -251,14 +382,14 @@ export default function CaptacaoPage() {
         </section>
       </main>
 
-      {/* Footer */}
+      {/* ── Footer ── */}
       <footer className="bg-[#0f3d22] text-white/70 py-8 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <span className="text-white font-bold text-lg">tovia</span>
             <p className="text-xs mt-1">Do zero ao check-in, tudo em um lugar.</p>
           </div>
-          <div className="flex flex-col md:flex-row gap-3 text-sm text-center">
+          <div className="flex flex-col md:flex-row gap-4 text-sm text-center">
             <a href="mailto:suporte@toviaapp.com.br" className="hover:text-white transition-colors">
               suporte@toviaapp.com.br
             </a>
@@ -267,7 +398,7 @@ export default function CaptacaoPage() {
             </a>
           </div>
         </div>
-        <div className="max-w-5xl mx-auto mt-6 pt-4 border-t border-white/10 text-xs text-center text-white/40">
+        <div className="max-w-6xl mx-auto mt-6 pt-4 border-t border-white/10 text-xs text-center text-white/40">
           © {new Date().getFullYear()} Tovia. Todos os direitos reservados. · CNPJ (em breve)
         </div>
       </footer>
