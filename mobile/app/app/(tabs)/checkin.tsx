@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, TextInput, Alert,
+  StyleSheet, ActivityIndicator, TextInput, Alert, Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { QrCode, List, Search, Check, CloudDownload, WifiOff, RefreshCw } from 'lucide-react-native';
+import { QrCode, List, Search, Check, CloudDownload, WifiOff, RefreshCw, X, UserCheck, UserX, AlertCircle } from 'lucide-react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '../../hooks/useTheme';
 import { useEventos } from '../../hooks/useEventos';
 import { useCheckin, InscritoCheckin } from '../../hooks/useCheckin';
@@ -173,8 +174,8 @@ function ListaInscritos({
 
 // ── Seleção de modo ────────────────────────────────────────────────────────────
 function ModoCheckin({
-  eventoId, eventoNome, onBack, onLista,
-}: { eventoId: string; eventoNome: string; onBack: () => void; onLista: () => void }) {
+  eventoId, eventoNome, onBack, onLista, onScanner,
+}: { eventoId: string; eventoNome: string; onBack: () => void; onLista: () => void; onScanner: () => void }) {
   const { colors } = useTheme();
   const { offline, syncedAt, downloadOffline } = useCheckin(eventoId);
   const [downloading, setDownloading] = useState(false);
@@ -212,7 +213,7 @@ function ModoCheckin({
         <TouchableOpacity
           style={[styles.modoCardGrande, { backgroundColor: colors.primary }]}
           activeOpacity={0.85}
-          onPress={() => {/* TODO: scanner QR */}}
+          onPress={onScanner}
         >
           <View style={styles.modoIconCircle}>
             <QrCode size={44} color="#fff" strokeWidth={1.5} />
@@ -275,6 +276,168 @@ function ModoCheckin({
   );
 }
 
+// ── Scanner QR ────────────────────────────────────────────────────────────────
+type ScanResultado = { tipo: 'ok' | 'repetido' | 'naoEncontrado'; nome: string } | null;
+
+function ScannerQR({ eventoId, eventoNome, onBack }: {
+  eventoId: string; eventoNome: string; onBack: () => void;
+}) {
+  const { colors } = useTheme();
+  const { inscritos, marcarPresenca } = useCheckin(eventoId);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [resultado, setResultado] = useState<ScanResultado>(null);
+  const bloqueado = useRef(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  function mostrarResultado(r: ScanResultado) {
+    setResultado(r);
+    bloqueado.current = true;
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.delay(2500),
+      Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+    ]).start(() => {
+      setResultado(null);
+      bloqueado.current = false;
+    });
+  }
+
+  const onScanned = useCallback(({ data }: { data: string }) => {
+    if (bloqueado.current) return;
+    bloqueado.current = true;
+
+    const inscrito = inscritos.find((i) => i.id === data.trim());
+    if (!inscrito) {
+      mostrarResultado({ tipo: 'naoEncontrado', nome: '' });
+      return;
+    }
+    if (inscrito.presenca) {
+      mostrarResultado({ tipo: 'repetido', nome: inscrito.nome ?? inscrito.email ?? 'Inscrito' });
+      return;
+    }
+    marcarPresenca(inscrito.id, true);
+    mostrarResultado({ tipo: 'ok', nome: inscrito.nome ?? inscrito.email ?? 'Inscrito' });
+  }, [inscritos, marcarPresenca]);
+
+  if (!permission) return <ActivityIndicator color={colors.primary} style={{ flex: 1 }} />;
+
+  if (!permission.granted) {
+    return (
+      <View style={[sc.center, { backgroundColor: colors.background }]}>
+        <QrCode size={48} color={colors.mutedFg} strokeWidth={1.5} />
+        <Text style={[Typography.h2, { color: colors.foreground, marginTop: 20, marginBottom: 8, textAlign: 'center' }]}>
+          Câmera necessária
+        </Text>
+        <Text style={[Typography.body, { color: colors.mutedFg, textAlign: 'center', marginBottom: 28, paddingHorizontal: 32 }]}>
+          O Tovia precisa de acesso à câmera para ler os QR Codes.
+        </Text>
+        <TouchableOpacity
+          style={[sc.permBtn, { backgroundColor: colors.primary }]}
+          onPress={requestPermission}
+          activeOpacity={0.85}
+        >
+          <Text style={[Typography.body, { color: '#fff', fontWeight: '700' }]}>Permitir câmera</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onBack} style={{ marginTop: 16 }}>
+          <Text style={[Typography.body, { color: colors.mutedFg }]}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const resultadoCfg = resultado
+    ? resultado.tipo === 'ok'
+      ? { bg: '#1a7a45', icon: <UserCheck size={22} color="#fff" strokeWidth={2} />, msg: `✓ ${resultado.nome}`, sub: 'Check-in confirmado!' }
+      : resultado.tipo === 'repetido'
+      ? { bg: '#d97706', icon: <AlertCircle size={22} color="#fff" strokeWidth={2} />, msg: resultado.nome, sub: 'Já havia feito check-in' }
+      : { bg: '#dc2626', icon: <UserX size={22} color="#fff" strokeWidth={2} />, msg: 'QR Code não reconhecido', sub: 'Inscrito não encontrado' }
+    : null;
+
+  return (
+    <View style={sc.root}>
+      <CameraView
+        style={StyleSheet.absoluteFill}
+        facing="back"
+        onBarcodeScanned={onScanned}
+        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+      />
+
+      {/* Escurecimento ao redor do frame */}
+      <View style={sc.overlay} pointerEvents="none">
+        <View style={sc.darkRow} />
+        <View style={sc.middleRow}>
+          <View style={sc.darkCol} />
+          <View style={sc.frame}>
+            <View style={[sc.corner, sc.cornerTL]} />
+            <View style={[sc.corner, sc.cornerTR]} />
+            <View style={[sc.corner, sc.cornerBL]} />
+            <View style={[sc.corner, sc.cornerBR]} />
+          </View>
+          <View style={sc.darkCol} />
+        </View>
+        <View style={sc.darkRow} />
+      </View>
+
+      {/* Header */}
+      <SafeAreaView edges={['top']} style={sc.header}>
+        <TouchableOpacity onPress={onBack} style={sc.backBtn} hitSlop={8}>
+          <X size={22} color="#fff" strokeWidth={2.5} />
+        </TouchableOpacity>
+        <Text style={sc.headerTitle} numberOfLines={1}>{eventoNome}</Text>
+        <View style={{ width: 38 }} />
+      </SafeAreaView>
+
+      {/* Dica */}
+      <View style={sc.hint}>
+        <Text style={sc.hintText}>Aponte a câmera para o QR Code do inscrito</Text>
+      </View>
+
+      {/* Resultado */}
+      {resultado && resultadoCfg && (
+        <Animated.View style={[sc.resultado, { backgroundColor: resultadoCfg.bg, opacity: fadeAnim }]}>
+          {resultadoCfg.icon}
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={sc.resultadoNome} numberOfLines={1}>{resultadoCfg.msg}</Text>
+            <Text style={sc.resultadoSub}>{resultadoCfg.sub}</Text>
+          </View>
+        </Animated.View>
+      )}
+    </View>
+  );
+}
+
+const FRAME = 240;
+const CORNER = 20;
+const BORDER = 3;
+
+const sc = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#000' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  permBtn: { paddingHorizontal: 32, paddingVertical: 14, borderRadius: Radius.pill },
+  overlay: { ...StyleSheet.absoluteFillObject, flexDirection: 'column' },
+  darkRow: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+  middleRow: { flexDirection: 'row', height: FRAME },
+  darkCol: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+  frame: { width: FRAME, height: FRAME },
+  corner: { position: 'absolute', width: CORNER, height: CORNER, borderColor: '#fff' },
+  cornerTL: { top: 0, left: 0, borderTopWidth: BORDER, borderLeftWidth: BORDER, borderTopLeftRadius: 4 },
+  cornerTR: { top: 0, right: 0, borderTopWidth: BORDER, borderRightWidth: BORDER, borderTopRightRadius: 4 },
+  cornerBL: { bottom: 0, left: 0, borderBottomWidth: BORDER, borderLeftWidth: BORDER, borderBottomLeftRadius: 4 },
+  cornerBR: { bottom: 0, right: 0, borderBottomWidth: BORDER, borderRightWidth: BORDER, borderBottomRightRadius: 4 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12 },
+  backBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: 19 },
+  headerTitle: { flex: 1, color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginHorizontal: 8 },
+  hint: { position: 'absolute', bottom: 100, left: 0, right: 0, alignItems: 'center' },
+  hintText: { color: 'rgba(255,255,255,0.8)', fontSize: 14, textAlign: 'center', paddingHorizontal: 32 },
+  resultado: {
+    position: 'absolute', bottom: 40, left: 24, right: 24,
+    flexDirection: 'row', alignItems: 'center',
+    borderRadius: Radius.card, padding: 16,
+  },
+  resultadoNome: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  resultadoSub:  { color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 2 },
+});
+
 // ── Seleção de evento ──────────────────────────────────────────────────────────
 function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => void }) {
   const { hoje, loading } = useEventos();
@@ -299,7 +462,7 @@ function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => 
 }
 
 // ── Tela raiz ──────────────────────────────────────────────────────────────────
-type Etapa = 'selecao' | 'modo' | 'lista';
+type Etapa = 'selecao' | 'modo' | 'lista' | 'scanner';
 
 export default function CheckinScreen() {
   const { colors } = useTheme();
@@ -310,6 +473,16 @@ export default function CheckinScreen() {
   function selecionarEvento(id: string, nome: string) {
     setEventoSel({ id, nome });
     setEtapa('modo');
+  }
+
+  if (etapa === 'scanner' && eventoSel) {
+    return (
+      <ScannerQR
+        eventoId={eventoSel.id}
+        eventoNome={eventoSel.nome}
+        onBack={() => setEtapa('modo')}
+      />
+    );
   }
 
   return (
@@ -330,6 +503,7 @@ export default function CheckinScreen() {
           eventoNome={eventoSel.nome}
           onBack={() => setEtapa('selecao')}
           onLista={() => setEtapa('lista')}
+          onScanner={() => setEtapa('scanner')}
         />
       )}
 
