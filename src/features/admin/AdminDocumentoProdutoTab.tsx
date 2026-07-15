@@ -55,8 +55,17 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
 .he-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
 .he-meaning { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
 .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 20px; }
-.plan-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 14px; position: relative; overflow: hidden; }
-.plan-card.featured { border-color: var(--g); border-width: 1.5px; }
+.plan-card { border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 14px; position: relative; overflow: hidden; }
+.plan-card.chinam  { background: #f0f4f8; border-color: #c8d8e8; }
+.plan-card.petach  { background: #fff2eb; border-color: #f5c9a0; }
+.plan-card.koach   { background: var(--g-tint); border-color: var(--g-mid); }
+.plan-card.chalem  { background: #fefbe8; border-color: #e8d97a; }
+@media (prefers-color-scheme: dark) {
+  .plan-card.chinam  { background: #141c24; border-color: #2a3a4a; }
+  .plan-card.petach  { background: #241608; border-color: #4a2e10; }
+  .plan-card.koach   { background: #0d2e1a; border-color: #1a5a30; }
+  .plan-card.chalem  { background: #1e1c08; border-color: #3a3610; }
+}
 .plan-badge { position: absolute; top: 0; right: 0; background: var(--g); color: #fff; font-size: 9px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 0 10px 0 8px; }
 .plan-hebrew { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
 .plan-name { font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
@@ -71,7 +80,25 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
 .stack-role { font-size: 12px; color: var(--text-secondary); }
 .stack-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; background: var(--g-tint); color: var(--g); }
 .swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; margin-top: 20px; }
-.swot-cell { background: var(--surface-1); padding: 20px; }
+.swot-cell { padding: 20px; }
+.swot-cell.s { background: #0d2e1a; }
+.swot-cell.w { background: #2a0f0f; }
+.swot-cell.o { background: #0d1e38; }
+.swot-cell.t { background: #2a1f08; }
+@media (prefers-color-scheme: light) {
+  .swot-cell.s { background: #e8f5ee; }
+  .swot-cell.w { background: #fef2f2; }
+  .swot-cell.o { background: #eff6ff; }
+  .swot-cell.t { background: #fffbeb; }
+}
+:root[data-theme="dark"] .swot-cell.s { background: #0d2e1a; }
+:root[data-theme="dark"] .swot-cell.w { background: #2a0f0f; }
+:root[data-theme="dark"] .swot-cell.o { background: #0d1e38; }
+:root[data-theme="dark"] .swot-cell.t { background: #2a1f08; }
+:root[data-theme="light"] .swot-cell.s { background: #e8f5ee; }
+:root[data-theme="light"] .swot-cell.w { background: #fef2f2; }
+:root[data-theme="light"] .swot-cell.o { background: #eff6ff; }
+:root[data-theme="light"] .swot-cell.t { background: #fffbeb; }
 .swot-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .swot-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .swot-label { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
@@ -212,7 +239,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       <a class="toc-item" href="#swot"><span class="toc-num">08</span> Análise SWOT</a>
       <a class="toc-item" href="#tracao"><span class="toc-num">09</span> Pontos de tração</a>
       <a class="toc-item" href="#dores"><span class="toc-num">10</span> Dores dos usuários</a>
-      <a class="toc-item" href="#conversao"><span class="toc-num">11</span> Plano de conversão</a>
+      <a class="toc-item" href="#mobile"><span class="toc-num">11</span> Tovia Mobile</a>
       <a class="toc-item" href="#roadmap"><span class="toc-num">12</span> Momento atual e roadmap</a>
     </div>
   </div>
@@ -231,76 +258,117 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
   <section id="funcionalidades">
     <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-grid"/></svg> Produto</div>
     <h2>Funcionalidades</h2>
-    <p>O Tovia é organizado em 13 módulos que cobrem o ciclo completo de um evento — da criação à comunicação pós-evento.</p>
-    <div class="feature-grid">
+    <p>O Tovia cobre o ciclo completo de um evento em três módulos — <strong>Inscrições</strong>, <strong>Financeiro</strong> e <strong>Gestão</strong> — mais suporte integrado e app mobile nativo.</p>
+
+    <div class="conv-sub" style="margin-top:16px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-ticket"/></svg> Inscrições</div>
+    <div class="feature-grid" style="margin-top:12px">
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-cal-plus"/></svg></div>
-        <div class="feature-name">Gestão de eventos</div>
-        <div class="feature-desc">Criação, edição e publicação de eventos com datas, local, descrição e capacidade.</div>
+        <div class="feature-name">Criação de eventos</div>
+        <div class="feature-desc">Evento criado em minutos: datas, local, capacidade, descrição e imagem. Publicação com um clique.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-ticket"/></svg></div>
-        <div class="feature-name">Ingressos e inscrições</div>
-        <div class="feature-desc">Tipos de ingresso (pago, gratuito, doação), formulários personalizados, cupons de desconto.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-cash"/></svg></div>
-        <div class="feature-name">Financeiro</div>
-        <div class="feature-desc">Controle de receitas, despesas, doações e resultado líquido por evento. Relatórios completos.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-card"/></svg></div>
-        <div class="feature-name">Pagamentos automáticos</div>
-        <div class="feature-desc">PIX, boleto e cartão via gateway do organizador. Confirmação automática por webhook.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-users"/></svg></div>
-        <div class="feature-name">Equipe</div>
-        <div class="feature-desc">Convite de colaboradores com permissões por função. Cada membro acessa apenas o necessário.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-check-circle"/></svg></div>
-        <div class="feature-name">Check-in com QR code</div>
-        <div class="feature-desc">Leitura do QR code do ingresso na entrada. Confirma presença em tempo real.</div>
+        <div class="feature-name">Tipos de ingresso</div>
+        <div class="feature-desc">Ingressos gratuitos, pagos ou por doação. Cupons de desconto. Formulários personalizados por tipo.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-layout"/></svg></div>
         <div class="feature-name">Páginas de venda</div>
-        <div class="feature-desc">Páginas públicas personalizadas para venda de ingressos, com branding do organizador.</div>
+        <div class="feature-desc">Página pública personalizada por evento, com branding do organizador e formulário de inscrição embutido.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-checklist"/></svg></div>
-        <div class="feature-name">Tarefas e produção</div>
-        <div class="feature-desc">Lista de tarefas por evento, atribuída a membros da equipe, com status e prazos.</div>
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-users"/></svg></div>
+        <div class="feature-name">Participantes</div>
+        <div class="feature-desc">Lista completa de inscritos com busca, filtros, exportação e histórico de pagamento por pessoa.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-bed"/></svg></div>
-        <div class="feature-name">Gestão de hospedagem</div>
-        <div class="feature-desc">Quartos, grupos e alocação de participantes em eventos com hospedagem incluída.</div>
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-check-circle"/></svg></div>
+        <div class="feature-name">Check-in com QR code</div>
+        <div class="feature-desc">Leitura do QR do ingresso na entrada. Confirma presença em tempo real. Disponível também via app mobile com modo offline.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-search"/></svg></div>
+        <div class="feature-name">Consulta pelo participante</div>
+        <div class="feature-desc">O inscrito acessa sua inscrição via email + código OTP, sem criar conta. Exibe QR code para check-in.</div>
+      </div>
+    </div>
+
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-cash"/></svg> Financeiro</div>
+    <div class="feature-grid" style="margin-top:12px">
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-cash"/></svg></div>
+        <div class="feature-name">Pagamentos manuais</div>
+        <div class="feature-desc">Registre transferências, dinheiro e outros meios manualmente. Controle total das entradas mesmo sem gateway.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-card"/></svg></div>
+        <div class="feature-name">Pagamentos automáticos (BYOG)</div>
+        <div class="feature-desc">PIX, boleto e cartão via gateway próprio do organizador (Asaas). Confirmação automática por webhook. O dinheiro vai direto para o organizador.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-heart"/></svg></div>
         <div class="feature-name">Doações</div>
-        <div class="feature-desc">Módulo dedicado para eventos com coleta de doações, com alocação e relatório.</div>
+        <div class="feature-desc">Módulo dedicado para eventos com coleta de doações, com controle de alocação e relatório separado.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-search"/></svg></div>
-        <div class="feature-name">Consulta de inscrição</div>
-        <div class="feature-desc">Participante consulta a inscrição via email + código OTP. Exibe QR code para check-in.</div>
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-trending"/></svg></div>
+        <div class="feature-name">Relatórios</div>
+        <div class="feature-desc">Visão financeira do evento por plano: quanto mais avançado o plano, mais completo o relatório. Receitas, despesas, resultado líquido e histórico de transações.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-star"/></svg></div>
-        <div class="feature-name">Avaliação pós-evento</div>
-        <div class="feature-desc">Link de satisfação enviado após o evento. Coleta feedback diretamente do participante.</div>
-      </div>
-      <div class="feature-card" style="border-color:var(--g-mid)">
-        <div class="feature-icon" style="background:var(--g);color:#fff"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>
-        <div class="feature-name">Comunicados</div>
-        <div class="feature-desc">Email marketing com editor rico (Tiptap): negrito, itálico, hiperlinks, imagens, GIFs. Segmentação por grupo e histórico de envios.</div>
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-dollar"/></svg></div>
+        <div class="feature-name">Calculadora de evento</div>
+        <div class="feature-desc">Simule a viabilidade do evento antes de abrir inscrições. Calcule taxas, valor ideal de ingresso e margem de segurança para cobrir os custos de produção.</div>
       </div>
     </div>
-    <div class="callout" style="margin-top:20px">
-      <p><strong>Base de Conhecimento + Suporte:</strong> central de artigos de ajuda com sistema de tickets integrado. O organizador abre chamados diretamente na plataforma, a equipe Tovia responde, e uma notificação aparece no sidebar quando há resposta. Histórico completo de chamados com thread de conversação.</p>
+
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-layout"/></svg> Gestão</div>
+    <div class="feature-grid" style="margin-top:12px">
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-users"/></svg></div>
+        <div class="feature-name">Equipe</div>
+        <div class="feature-desc">Convide colaboradores com permissões por função. Cada membro acessa só o que precisa — sem expor dados sensíveis.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-checklist"/></svg></div>
+        <div class="feature-name">Tarefas</div>
+        <div class="feature-desc">Lista de tarefas por evento, atribuída a membros da equipe, com status e prazos. Disponível também no app mobile.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-wallet"/></svg></div>
+        <div class="feature-name">Recursos do evento</div>
+        <div class="feature-desc">Registre entradas, saídas e contratações vinculadas ao evento. Controle de orçamento operacional separado do financeiro de inscrições.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-bed"/></svg></div>
+        <div class="feature-name">Hospedagem e grupos</div>
+        <div class="feature-desc">Quartos, grupos e alocação de participantes para eventos com hospedagem.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-phone"/></svg></div>
+        <div class="feature-name">App Mobile (iOS &amp; Android)</div>
+        <div class="feature-desc">Check-in, tarefas, financeiro e equipe na palma da mão. Modo offline nativo. Mesmo login e dados da plataforma web.</div>
+      </div>
+    </div>
+
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-headset"/></svg> Suporte integrado</div>
+    <div class="feature-grid" style="margin-top:12px">
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-puzzle"/></svg></div>
+        <div class="feature-name">Base de Conhecimento</div>
+        <div class="feature-desc">Central de artigos de ajuda integrada à plataforma. Organizadores encontram respostas sem sair do painel.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-headset"/></svg></div>
+        <div class="feature-name">Tickets de suporte</div>
+        <div class="feature-desc">Chamados abertos diretamente na plataforma. Notificação no sidebar quando há resposta. Histórico completo de conversação.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>
+        <div class="feature-name">Comunicados (Tovia → organizadores)</div>
+        <div class="feature-desc">Canal da Tovia para avisos e novidades com editor rico: negrito, itálico, hiperlinks, imagens e GIFs. Histórico de envios.</div>
+      </div>
     </div>
   </section>
   <div class="divider"></div>
@@ -324,29 +392,29 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <div class="hebrew-explain">
       <div class="he-item">
         <div class="he-script">חִנָּם</div>
-        <div class="he-name">Chinam — Gratuito</div>
+        <div class="he-name">Plano 1 · Chinám</div>
         <div class="he-meaning">"Grátis, de graça." O ponto de partida — sem custo, sem compromisso.</div>
       </div>
       <div class="he-item">
         <div class="he-script">פֶּתַח</div>
-        <div class="he-name">Pétach — Essencial</div>
+        <div class="he-name">Plano 2 · Pétach</div>
         <div class="he-meaning">"Porta, abertura." O primeiro passo real para além do gratuito.</div>
       </div>
       <div class="he-item">
         <div class="he-script">כֹּחַ</div>
-        <div class="he-name">Koách — Profissional</div>
+        <div class="he-name">Plano 3 · Koách</div>
         <div class="he-meaning">"Força, poder." Quando o evento se torna um negócio sério.</div>
       </div>
       <div class="he-item">
         <div class="he-script">שָׁלֵם</div>
-        <div class="he-name">Chalém — Completo</div>
+        <div class="he-name">Plano 4 · Chalém</div>
         <div class="he-meaning">"Inteiro, perfeito, completo." A operação profissional sem limites.</div>
       </div>
     </div>
     <div class="plan-grid">
-      <div class="plan-card">
+      <div class="plan-card chinam">
         <div class="plan-hebrew">חִנָּם · Chinam</div>
-        <div class="plan-name">Gratuito</div>
+        <div class="plan-name">Plano 1 - Chinám</div>
         <div class="plan-price">R$ 0 <span>/mês</span></div>
         <ul class="plan-features">
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 1 evento ativo</li>
@@ -356,9 +424,9 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Formulários básicos</li>
         </ul>
       </div>
-      <div class="plan-card">
+      <div class="plan-card petach">
         <div class="plan-hebrew">פֶּתַח · Pétach</div>
-        <div class="plan-name">Essencial</div>
+        <div class="plan-name">Plano 2 - Pétach</div>
         <div class="plan-price">R$ 49 <span>/mês</span></div>
         <ul class="plan-features">
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 3 eventos ativos</li>
@@ -368,10 +436,9 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Relatórios</li>
         </ul>
       </div>
-      <div class="plan-card featured">
-        <div class="plan-badge">Popular</div>
+      <div class="plan-card koach">
         <div class="plan-hebrew">כֹּחַ · Koách</div>
-        <div class="plan-name">Profissional</div>
+        <div class="plan-name">Plano 3 - Koách</div>
         <div class="plan-price">R$ 129 <span>/mês</span></div>
         <ul class="plan-features">
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 5 eventos ativos</li>
@@ -381,12 +448,12 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Tarefas e hospedagem</li>
         </ul>
       </div>
-      <div class="plan-card">
+      <div class="plan-card chalem">
         <div class="plan-hebrew">שָׁלֵם · Chalém</div>
-        <div class="plan-name">Completo</div>
+        <div class="plan-name">Plano 4 - Chalém</div>
         <div class="plan-price">R$ 299 <span>/mês</span></div>
         <ul class="plan-features">
-          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Eventos ilimitados</li>
+          <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 10 eventos ativos</li>
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Vagas ilimitadas</li>
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> 10 membros de equipe</li>
           <li><svg width="14" height="14" class="ico"><use href="#i-check"/></svg> Pagamentos automáticos</li>
@@ -394,7 +461,6 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         </ul>
       </div>
     </div>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:14px">Trial de 14 dias com acesso completo ao Profissional, sem cartão de crédito. Reverte automaticamente para Chinam ao fim do período.</p>
   </section>
   <div class="divider"></div>
 
@@ -414,7 +480,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-puzzle"/></svg></div>
         <div>
           <div class="diferencial-name">Suíte completa em um só lugar</div>
-          <div class="diferencial-desc">13 módulos integrados: inscrições, financeiro, equipe, check-in, hospedagem, tarefas, doações, comunicados. Não é só venda de ingresso.</div>
+          <div class="diferencial-desc">Três módulos integrados (Inscrições, Financeiro, Gestão) com mais de 15 funcionalidades. Não é só venda de ingresso — é operação completa do evento.</div>
         </div>
       </div>
       <div class="diferencial-item">
@@ -449,7 +515,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-mail"/></svg></div>
         <div>
           <div class="diferencial-name">Comunicados com editor rico</div>
-          <div class="diferencial-desc">Email marketing com editor visual (Tiptap v3), suporte a imagens, GIFs, formatação e segmentação por grupo de destinatários.</div>
+          <div class="diferencial-desc">Canal da Tovia para avisos aos organizadores, com editor visual (Tiptap v3), suporte a imagens, GIFs e formatação completa.</div>
         </div>
       </div>
       <div class="diferencial-item">
@@ -545,10 +611,11 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-radar"/></svg> Análise</div>
     <h2>Análise SWOT</h2>
     <div class="swot-grid">
-      <div class="swot-cell">
+      <div class="swot-cell s">
         <div class="swot-header"><div class="swot-dot" style="background:#22c55e"></div><div class="swot-label" style="color:#16a34a">Forças</div></div>
         <ul class="swot-items">
-          <li>Produto completo com 13 módulos integrados</li>
+          <li>Produto completo: Inscrições, Financeiro e Gestão + app mobile nativo</li>
+          <li>App mobile nativo (React Native/Expo) com check-in QR offline</li>
           <li>Modelo BYOG sem risco regulatório</li>
           <li>Stack moderna, rápida e escalável</li>
           <li>Zero dívida técnica — construído com boas práticas desde o início</li>
@@ -559,18 +626,18 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li>Velocidade de execução: fundador solo com IA como parceiro</li>
         </ul>
       </div>
-      <div class="swot-cell">
+      <div class="swot-cell w">
         <div class="swot-header"><div class="swot-dot" style="background:#ef4444"></div><div class="swot-label" style="color:#dc2626">Fraquezas</div></div>
         <ul class="swot-items">
-          <li>Sem app mobile nativo (ainda é PWA)</li>
           <li>Zero usuários pagantes — produto em pré-lançamento</li>
           <li>Brand awareness inexistente</li>
           <li>Dependência de uma única pessoa para suporte e desenvolvimento</li>
           <li>Relatórios financeiros ainda limitados (sem análise histórica)</li>
+          <li>Fluxo de pagamentos ainda não testado em produção real</li>
           <li>Sem integrações com Sympla, Even3 ou marketplaces</li>
         </ul>
       </div>
-      <div class="swot-cell">
+      <div class="swot-cell o">
         <div class="swot-header"><div class="swot-dot" style="background:#3b82f6"></div><div class="swot-label" style="color:#2563eb">Oportunidades</div></div>
         <ul class="swot-items">
           <li>Mercado de eventos no Brasil em expansão pós-pandemia</li>
@@ -581,7 +648,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li>Parcerias com produtoras locais e freelancers de eventos</li>
         </ul>
       </div>
-      <div class="swot-cell">
+      <div class="swot-cell t">
         <div class="swot-header"><div class="swot-dot" style="background:#f59e0b"></div><div class="swot-label" style="color:#b45309">Ameaças</div></div>
         <ul class="swot-items">
           <li>Sympla e Eventbrite têm market share consolidado</li>
@@ -618,7 +685,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="traction-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>
         <div>
           <div class="traction-name">Emails com alta entregabilidade</div>
-          <div class="traction-desc">Resend com DKIM e domínio próprio garante que os emails chegam na caixa de entrada. O editor rico de comunicados permite campanhas profissionais sem ferramentas externas.</div>
+          <div class="traction-desc">Resend com DKIM e domínio próprio garante entregabilidade. O editor rico permite que a Tovia se comunique com organizadores de forma profissional, sem ferramentas externas.</div>
         </div>
       </div>
       <div class="traction-item">
@@ -652,10 +719,6 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="pain-who">Organizador</div>
         <div class="pain-text">"As plataformas grandes cobram comissão por ingresso. Para um evento de 300 pessoas, perco R$2–3 mil só em taxas."</div>
       </div>
-      <div class="pain-item org">
-        <div class="pain-who">Organizador</div>
-        <div class="pain-text">"Quero mandar um comunicado profissional para todos os inscritos, mas não tenho como fazer isso sem uma ferramenta de email marketing separada."</div>
-      </div>
       <div class="pain-item part">
         <div class="pain-who">Participante</div>
         <div class="pain-text">"Preciso criar conta em cada plataforma diferente para consultar minha inscrição. É burocrático demais."</div>
@@ -672,50 +735,110 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
   </section>
   <div class="divider"></div>
 
-  <section id="conversao">
-    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-target"/></svg> Crescimento</div>
-    <h2>Plano de conversão</h2>
-    <p>Quatro fraquezas foram priorizadas como bloqueadoras de conversão. O plano endereça cada uma com ação concreta e resultado esperado.</p>
-    <div class="conv-sub"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> Já resolvido nesta fase</div>
-    <div class="conv-grid">
-      <div class="conv-item">
-        <div class="conv-badge ok">Feito</div>
-        <div class="conv-problem">Comunicados sem recursos — só texto puro</div>
-        <div class="conv-action">Editor de texto rico implementado com Tiptap v3: negrito, itálico, sublinhado, hiperlinks, tamanho de fonte, imagens e GIFs inline.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: emails profissionais diretamente da plataforma</div>
+  <section id="mobile">
+    <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-phone"/></svg> Produto</div>
+    <div style="display:flex;align-items:baseline;gap:0;margin-bottom:12px;margin-top:2px">
+      <span style="font-size:clamp(22px,4vw,36px);font-weight:700;letter-spacing:-0.5px;color:var(--text-primary);line-height:1.15">tovia</span><span style="font-size:clamp(22px,4vw,36px);font-weight:700;letter-spacing:-0.5px;color:#1a7a45;line-height:1.15">mobile</span>
+    </div>
+    <p>App nativo para organizadores operarem eventos no dia-a-dia — check-in, tarefas, equipe e financeiro na palma da mão. React Native (Expo), mesmo backend Firebase da plataforma web.</p>
+
+    <div class="conv-sub" style="margin-top:16px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-grid"/></svg> 5 funcionalidades</div>
+    <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top:12px">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#162d20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="feature-name">Início</div>
+        <div class="feature-desc">Cards dos eventos com toggle ativo/inativo. Foco em operação — edição completa fica na web.</div>
       </div>
-      <div class="conv-item">
-        <div class="conv-badge ok">Feito</div>
-        <div class="conv-problem">Suporte sem canal integrado — usuário sem acesso ao time</div>
-        <div class="conv-action">Sistema de tickets na Base de Conhecimento com histórico, thread de resposta, notificação no sidebar e marcação de lido automática ao visualizar.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: suporte humanizado sem sair da plataforma</div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#162d20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+        </div>
+        <div class="feature-name">Check-in</div>
+        <div class="feature-desc">Scanner QR Code com 3 estados de resultado. Lista de inscritos com busca e checkbox. Modo offline com download explícito.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#162d20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+        </div>
+        <div class="feature-name">Tarefas</div>
+        <div class="feature-desc">Paridade total com a web. FAB para criar rapidamente. Acessível a membros de equipe.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#162d20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="feature-name">Financeiro</div>
+        <div class="feature-desc">Somente leitura — resumo de arrecadado e pendente por evento. Visão rápida sem abrir a web.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#162d20">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </div>
+        <div class="feature-name">Suporte</div>
+        <div class="feature-desc">Links externos, sobre o Tovia, LGPD e logout. Acesso ao atendimento sem sair do app.</div>
       </div>
     </div>
-    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Fraquezas ainda a endereçar</div>
-    <div class="conv-grid">
-      <div class="conv-item">
-        <div class="conv-badge w">Crítico</div>
-        <div class="conv-problem">Sem brand awareness — ninguém conhece o Tovia</div>
-        <div class="conv-action">Landing page com SEO, presença no Instagram, estratégia de conteúdo focada em dores do organizador, trial de 14 dias como CTA principal.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: primeiros usuários orgânicos</div>
+
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-star"/></svg> Diferenciais técnicos</div>
+    <div class="diferencial-list" style="margin-top:12px">
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg></div>
+        <div>
+          <div class="diferencial-name">Check-in offline nativo</div>
+          <div class="diferencial-desc">Download explícito da lista de inscritos (botão nuvem+seta). Estratégia "Presença Vence": sync via <code>setDoc merge:true</code>, nunca sobrescreve <code>present:true</code>. Desfazer check-in exige conexão.</div>
+        </div>
       </div>
-      <div class="conv-item">
-        <div class="conv-badge t">Em progresso</div>
-        <div class="conv-problem">Sem app mobile — experiência degradada no smartphone</div>
-        <div class="conv-action">O produto já é responsivo via web. Próximo passo: configurar PWA com ícone instalável e offline básico, sem necessidade de loja de apps.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: organizador usa no celular sem fricção</div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></div>
+        <div>
+          <div class="diferencial-name">Perfil integrado com a web</div>
+          <div class="diferencial-desc">Mesmo <code>uid</code> Firebase. Plano, instituição, bio e código público sincronizados. Perfil acessível via avatar no topo — não ocupa aba.</div>
+        </div>
       </div>
-      <div class="conv-item">
-        <div class="conv-badge t">Planejado</div>
-        <div class="conv-problem">Relatórios financeiros limitados — sem análise histórica</div>
-        <div class="conv-action">Implementar relatórios cross-evento: evolução de receita por mês, comparativo entre edições, exportação para CSV/Excel.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: organizador toma decisões com dados</div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg></div>
+        <div>
+          <div class="diferencial-name">Evento na palma da mão</div>
+          <div class="diferencial-desc">Inscritos, equipe, tarefas e financeiro do evento acessíveis a qualquer momento. O organizador sai da frente do computador e opera o evento inteiro pelo celular.</div>
+        </div>
       </div>
-      <div class="conv-item">
-        <div class="conv-badge t">Planejado</div>
-        <div class="conv-problem">Sem integrações externas — ilha isolada</div>
-        <div class="conv-action">Webhooks para sistemas de terceiros, integração com Google Calendar, e API pública para parceiros no futuro.</div>
-        <div class="conv-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-arrow"/></svg> Resultado: Tovia entra no ecossistema do organizador</div>
+      <div class="diferencial-item">
+        <div class="diferencial-icon"><svg class="ico" aria-hidden="true"><use href="#i-ticket"/></svg></div>
+        <div>
+          <div class="diferencial-name">Páginas de venda no app</div>
+          <div class="diferencial-desc">EventoDetailModal exibe a página de venda completa do evento com botão de cópia de link — organizador compartilha o evento diretamente do celular.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conv-sub" style="margin-top:28px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-layout"/></svg> Stack técnica</div>
+    <div class="stack-row" style="margin-top:12px">
+      <div class="stack-item">
+        <div class="stack-layer">Framework</div>
+        <div class="stack-tech">React Native + Expo SDK 57</div>
+        <div class="stack-tag">Produção</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-layer">Backend</div>
+        <div class="stack-tech">Firebase Auth + Firestore</div>
+        <div class="stack-tag">Compartilhado com web</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-layer">Câmera / QR</div>
+        <div class="stack-tech">expo-camera CameraView</div>
+        <div class="stack-tag">Produção</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-layer">Notificações</div>
+        <div class="stack-tech">expo-notifications</div>
+        <div class="stack-tag">Produção</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-layer">Offline</div>
+        <div class="stack-tech">AsyncStorage + Firestore cache</div>
+        <div class="stack-tag">Produção</div>
       </div>
     </div>
   </section>
@@ -724,7 +847,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
   <section id="roadmap">
     <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-map"/></svg> Roadmap</div>
     <h2>Momento atual e roadmap</h2>
-    <p>O Tovia está encerrando a fase de construção do produto. Todos os 13 módulos principais estão implementados. A estrutura técnica está quase completa. O foco agora muda de construção para captação.</p>
+    <p>O Tovia concluiu a fase de construção do produto. Todos os módulos principais estão implementados — incluindo o app mobile nativo. O foco agora muda de construção para captação.</p>
     <div class="callout">
       <p><strong>Ponto de virada — julho de 2026:</strong> o produto saiu da fase de "construir funcionalidades" para a fase de "levar para o mercado". O que falta agora é visibilidade, primeiros usuários e feedback real.</p>
     </div>
@@ -735,13 +858,13 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <div class="roadmap-phase done">Fase 1 — Concluída</div>
           <div class="roadmap-title">Estrutura técnica do produto</div>
           <ul class="roadmap-items">
-            <li>13 módulos principais implementados e funcionando</li>
+            <li>Todos os módulos implementados: Inscrições, Financeiro e Gestão + suporte integrado</li>
             <li>Autenticação, Firestore com regras de segurança granulares</li>
             <li>Pagamentos via BYOG (Asaas), webhook de confirmação automática</li>
             <li>Email transacional via Resend com DKIM e templates HTML</li>
-            <li>Check-in por QR code, formulários personalizados, cupons de desconto</li>
+            <li>Check-in QR, formulários personalizados, cupons de desconto, calculadora financeira</li>
             <li>Equipe com convites, permissões por função e tarefas</li>
-            <li>Comunicados com editor de texto rico (Tiptap v3): imagens, GIFs, formatação</li>
+            <li>Comunicados da Tovia para organizadores com editor rico (Tiptap v3): imagens, GIFs, formatação</li>
             <li>Base de Conhecimento com sistema completo de tickets de suporte</li>
             <li>Notificações em tempo real — badge no sidebar para respostas de suporte</li>
             <li>Perfil público do organizador com portfólio de eventos</li>
@@ -757,11 +880,10 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <div class="roadmap-title">Presença de mercado e primeiros usuários</div>
           <ul class="roadmap-items">
             <li>Landing page com proposta de valor clara e SEO técnico</li>
-            <li>Trial de 14 dias como CTA principal, sem cartão de crédito</li>
             <li>Domínio e identidade visual consolidados (toviaapp.com.br)</li>
             <li>Beta fechado — primeiros 10 organizadores reais com feedback estruturado</li>
             <li>Presença no Instagram com conteúdo focado em dores do organizador</li>
-            <li>PWA — ícone instalável e offline básico para mobile</li>
+            <li>App mobile nativo (React Native + Expo) — iOS e Android, check-in offline</li>
           </ul>
         </div>
       </div>
@@ -793,7 +915,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       </div>
     </div>
     <div class="callout" style="margin-top:32px">
-      <p><strong>Custo operacional estimado por cliente ativo:</strong> R$4–10/mês (Firebase + Vercel + Resend). Ponto de equilíbrio com aproximadamente 5–8 clientes pagantes no Essencial. O modelo é lucrativo desde os primeiros usuários pagantes.</p>
+      <p><strong>Custo operacional estimado por cliente ativo:</strong> R$4–10/mês (Firebase + Vercel + Resend). Ponto de equilíbrio com aproximadamente 5–8 clientes pagantes no Pétach. O modelo é lucrativo desde os primeiros usuários pagantes.</p>
     </div>
   </section>
 </div>
