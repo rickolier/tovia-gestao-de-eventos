@@ -115,6 +115,11 @@ export default function TabsLayout() {
           fontWeight: '600',
           marginTop: 4,
         },
+        tabBarItemStyle: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       }}
     >
       {/* 1 — Início */}

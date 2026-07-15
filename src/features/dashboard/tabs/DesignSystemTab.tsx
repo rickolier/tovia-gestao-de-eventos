@@ -645,6 +645,154 @@ export default function DesignSystemTab() {
         </p>
       </Section>
 
+      {/* ──────────────────────────────────────
+          13. TOVIA MOBILE
+      ────────────────────────────────────── */}
+      <Section title="13. Tovia Mobile" subtitle="Identidade, paleta e padrões do app React Native">
+
+        {/* Logo Mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          {/* Light */}
+          <div className="bg-white border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
+            <div className="flex items-baseline gap-0 leading-none">
+              <span className="font-black text-5xl tracking-tight text-[#111827]">tovia</span>
+              <span className="font-black text-5xl tracking-tight text-[#1a7a45]">mobile</span>
+            </div>
+            <Label>Logo — Fundo Claro</Label>
+          </div>
+          {/* Dark */}
+          <div className="bg-[#111827] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
+            <div className="flex items-baseline gap-0 leading-none">
+              <span className="font-black text-5xl tracking-tight text-white">tovia</span>
+              <span className="font-black text-5xl tracking-tight text-[#22c55e]">mobile</span>
+            </div>
+            <Label>Logo — Fundo Escuro</Label>
+          </div>
+          {/* Sidebar dark */}
+          <div className="bg-[#162d20] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
+            <div className="flex items-baseline gap-0 leading-none">
+              <span className="font-black text-5xl tracking-tight text-white">tovia</span>
+              <span className="font-black text-5xl tracking-tight text-[#22c55e]">mobile</span>
+            </div>
+            <Label>Logo — Header do App</Label>
+          </div>
+        </div>
+
+        <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
+          <p className="text-xs text-muted-foreground">
+            <strong className="text-foreground">Regra do logo mobile:</strong> As duas palavras são coladas, sempre em caixa baixa e peso Black (700+).
+            {' '}<span className="text-foreground font-semibold">tovia</span> usa a cor do texto principal do tema; <span className="text-[#1a7a45] font-semibold">mobile</span> usa <code className="bg-muted px-1 rounded text-[11px]">colors.primary</code> — verde no claro, verde vivo no escuro.
+          </p>
+        </div>
+
+        {/* Paleta Mobile */}
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Paleta de Cores — Mobile</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <Swatch color="bg-[#1a7a45]" label="Primary (light)" hex="#1a7a45" />
+          <Swatch color="bg-[#22c55e]" label="Primary (dark)" hex="#22c55e" textClass="text-[#14532d]" />
+          <Swatch color="bg-[#162d20]" label="Header / Sidebar" hex="#162d20" />
+          <Swatch color="bg-[#111827]" label="Background Dark" hex="#111827" />
+        </div>
+        <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
+          <p className="text-xs text-muted-foreground">
+            <strong className="text-foreground">Shared com a web:</strong> O Primary <code className="bg-muted px-1 rounded text-[11px]">#1a7a45</code> e o Sidebar <code className="bg-muted px-1 rounded text-[11px]">#162d20</code> são idênticos entre web e mobile — garantindo coerência visual entre as plataformas.
+            No tema escuro do app, o Primary sobe para <code className="bg-muted px-1 rounded text-[11px]">#22c55e</code> para manter contraste adequado.
+          </p>
+        </div>
+
+        {/* Bottom Tab Bar */}
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Bottom Tab Bar</p>
+        <div className="flex gap-4 mb-6">
+          {/* Simulação do tab bar */}
+          <div className="flex-1 bg-[#111827] rounded-2xl p-4">
+            <div className="flex items-end justify-around border-t border-white/10 pt-3">
+              {[
+                { Icon: House,       label: 'Início',     active: true  },
+                { Icon: DollarSign,  label: 'Financeiro', active: false },
+                { Icon: CheckCircle2,label: 'Check-in',   active: false },
+                { Icon: Layers,      label: 'Tarefas',    active: false },
+                { Icon: MessageCircle,label:'Suporte',    active: false },
+              ].map(({ Icon, label, active }) => (
+                <div key={label} className="flex flex-col items-center gap-1">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${active ? 'bg-[#22c55e]/15' : ''}`}>
+                    <Icon className={`w-5 h-5 ${active ? 'text-[#22c55e]' : 'text-white/40'}`} />
+                  </div>
+                  <span className={`text-[9px] font-semibold ${active ? 'text-[#22c55e]' : 'text-white/40'}`}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Tokens */}
+          <div className="flex-1 bg-card border border-border rounded-2xl p-5 flex flex-col justify-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Abas — ícones (Lucide RN)</p>
+            <div className="space-y-1.5 text-[11px] font-mono">
+              {[
+                ['Início',     'House'],
+                ['Financeiro', 'DollarSign'],
+                ['Check-in',  'CheckSquare (FAB)'],
+                ['Tarefas',    'List'],
+                ['Suporte',    'HelpCircle'],
+              ].map(([tab, icon]) => (
+                <div key={tab} className="flex items-center gap-2">
+                  <span className="text-primary bg-primary/5 px-2 py-0.5 rounded w-24 text-center">{tab}</span>
+                  <span className="text-muted-foreground">{icon}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Top Bar / Header */}
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Top Bar — Header</p>
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1 bg-[#162d20] rounded-2xl p-4">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-baseline gap-0">
+                <span className="font-black text-xl text-white">tovia</span>
+                <span className="font-black text-xl text-[#22c55e]">mobile</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-white/70" />
+                </div>
+                <div className="w-8 h-8 rounded-full bg-[#1a7a45] flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">OR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 bg-card border border-border rounded-2xl p-5 flex flex-col justify-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Elementos</p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li><span className="text-foreground font-semibold">Esquerda:</span> Logo toviamobile (fundo sidebar)</li>
+              <li><span className="text-foreground font-semibold">Direita:</span> Ícone de notificação + avatar circular com iniciais</li>
+              <li><span className="text-foreground font-semibold">Tap no avatar:</span> Abre bottom sheet com perfil e plano</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Shared tokens entre web e mobile */}
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Tokens Compartilhados — Web & Mobile</p>
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] font-mono">
+            {[
+              ['Primary',         '#1a7a45', 'colors.primary (light)'],
+              ['Primary Dark',    '#22c55e', 'colors.primary (dark theme)'],
+              ['Sidebar',         '#162d20', 'colors.sidebar / sidebar web'],
+              ['Danger',          '#ef4444', 'colors.danger / destructive'],
+              ['Sucesso',         '#10b981', 'emerald-500 / colors.success'],
+              ['Aviso',           '#f59e0b', 'amber-400 / colors.warning'],
+            ].map(([label, hex, token]) => (
+              <div key={label} className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-md shrink-0 border border-border" style={{ background: hex }} />
+                <span className="text-foreground w-24">{label}</span>
+                <span className="text-muted-foreground">{token}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* Footer */}
       <div className="border-t border-border pt-8 text-center print:pt-6">
         <p className="text-xs text-muted-foreground">
