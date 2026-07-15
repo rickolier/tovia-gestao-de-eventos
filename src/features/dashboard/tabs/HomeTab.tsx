@@ -166,7 +166,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
             <Star className="w-5 h-5 text-violet-500" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-base font-bold text-foreground leading-none capitalize truncate">{profile?.plano ?? 'Start'}</p>
+            <p className="text-base font-bold text-foreground leading-none capitalize truncate">{profile?.plano ?? 'chinam'}</p>
             <p className="text-xs text-muted-foreground mt-0.5 truncate">Plano atual</p>
           </div>
           <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors" />

@@ -163,7 +163,7 @@ export default function AdminBillingKeyTab() {
         <div>
           <p className="text-sm font-bold text-foreground">Chave API Asaas — Plataforma Tovia</p>
           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-            Esta chave é usada pelo Tovia para cobrar os planos dos organizadores (Start, Essencial, Pro).
+            Esta chave é usada pelo Tovia para cobrar os planos dos organizadores (Pétach, Koách, Chalém).
             É diferente da chave que cada organizador conecta na própria conta para receber pagamentos dos participantes.
           </p>
         </div>

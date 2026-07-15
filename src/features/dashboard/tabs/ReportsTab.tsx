@@ -68,7 +68,7 @@ function KpiCard({
         {locked && (
           <div className="absolute inset-0 bg-muted/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-2 rounded-2xl">
             <Lock className="w-5 h-5 text-muted-foreground" />
-            <span className="text-xs font-bold text-muted-foreground text-center px-4">Disponível no plano Essencial ou Pro</span>
+            <span className="text-xs font-bold text-muted-foreground text-center px-4">Disponível no plano Pétach ou Koách</span>
           </div>
         )}
         <div className="flex items-start gap-3">

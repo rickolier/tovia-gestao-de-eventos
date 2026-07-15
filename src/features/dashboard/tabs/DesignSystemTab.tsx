@@ -405,9 +405,9 @@ export default function DesignSystemTab() {
               { label: 'Pago', cls: 'bg-emerald-100 text-emerald-700 border border-emerald-300' },
               { label: 'Cancelado', cls: 'bg-red-50 text-red-600 border border-red-200' },
               { label: 'Convidado', cls: 'bg-amber-50 text-amber-600 border border-amber-200' },
-              { label: 'Pro', cls: 'bg-violet-50 text-violet-600 border border-violet-200' },
-              { label: 'Essencial', cls: 'bg-blue-50 text-blue-600 border border-blue-200' },
-              { label: 'Start', cls: 'bg-muted text-muted-foreground border border-border' },
+              { label: 'Koách', cls: 'bg-violet-50 text-violet-600 border border-violet-200' },
+              { label: 'Pétach', cls: 'bg-blue-50 text-blue-600 border border-blue-200' },
+              { label: 'Chinám', cls: 'bg-muted text-muted-foreground border border-border' },
               { label: 'Novo', cls: 'bg-primary text-white' },
             ].map(({ label, cls }) => (
               <span key={label} className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${cls}`}>{label}</span>
@@ -462,9 +462,9 @@ export default function DesignSystemTab() {
               <label className="text-xs font-semibold text-foreground">Select / Dropdown</label>
               <select className="w-full h-10 px-3 text-sm bg-muted/60 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-foreground appearance-none">
                 <option>Selecione uma opção</option>
-                <option>Plano Start</option>
-                <option>Plano Essencial</option>
-                <option>Plano Pro</option>
+                <option>Plano 1 - Chinám</option>
+                <option>Plano 2 - Pétach</option>
+                <option>Plano 3 - Koách</option>
               </select>
             </div>
 

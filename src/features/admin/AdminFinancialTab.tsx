@@ -245,7 +245,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Assinantes pagos',
             value: payingUsers,
-            sub: 'Start + Essencial + Pro ativos',
+            sub: 'Pétach + Koách + Chalém ativos',
             icon: Users,
             color: 'text-violet-600',
             bg: 'bg-violet-50',
@@ -253,7 +253,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Conversão',
             value: `${conversionRate}%`,
-            sub: 'Start → Essencial/Pro',
+            sub: 'Chinám → Pétach/Koách',
             icon: Percent,
             color: 'text-orange-600',
             bg: 'bg-orange-50',

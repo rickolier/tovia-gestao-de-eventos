@@ -282,7 +282,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                     </SelectContent>
                   </Select>
                   {onlyFreeTickets && (
-                    <p className="text-xs text-muted-foreground mt-1">Ingressos pagos disponíveis no plano Essencial ou superior.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Ingressos pagos disponíveis no plano Pétach ou superior.</p>
                   )}
                 </div>
                 <div className="space-y-2">
