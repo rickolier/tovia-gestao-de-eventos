@@ -92,13 +92,6 @@ export default function ProfileSheet({ visible, onClose }: ProfileSheetProps) {
             </Text>
           </View>
 
-          {profile?.trialDaysLeft !== undefined && profile.trialDaysLeft > 0 && (
-            <View style={[styles.trialBadge, { backgroundColor: '#fef9c3' }]}>
-              <Text style={[Typography.caption, { color: '#92400e' }]}>
-                Trial — {profile.trialDaysLeft} dias restantes
-              </Text>
-            </View>
-          )}
         </View>
 
         {/* Campos do perfil */}
@@ -205,12 +198,6 @@ const styles = StyleSheet.create({
   },
   planBadge: {
     marginTop: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 999,
-  },
-  trialBadge: {
-    marginTop: 6,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 999,

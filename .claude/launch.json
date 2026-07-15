@@ -19,6 +19,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "3456", "--directory", "/Users/cga-sec/Desktop/BigLabCode"],
       "port": 3456
+    },
+    {
+      "name": "Tovia Mobile Web",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/cga-sec/Desktop/tovia/mobile/app && npx expo start --web --port 8081"],
+      "port": 8081
     }
   ]
 }
