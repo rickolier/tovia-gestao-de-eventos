@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
-  View, Text, ScrollView, RefreshControl,
+  View, Text, ScrollView,
   StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -27,14 +27,8 @@ export default function HomeScreen() {
   const { colors } = useTheme();
   const { profile } = useAuth();
   const { hoje, proximos, encerrados, loading, toggleAtivo } = useEventos();
-  const [refreshing, setRefreshing] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [eventoSel, setEventoSel] = useState<EventoComInscritos | null>(null);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 800);
-  }, []);
 
   const totalAtivos = [...hoje, ...proximos].length;
   const isEmpty = hoje.length === 0 && proximos.length === 0 && encerrados.length === 0;
@@ -58,14 +52,7 @@ export default function HomeScreen() {
         <ScrollView
           contentContainerStyle={[styles.scroll, isEmpty && styles.scrollEmpty]}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#fff"
-              colors={[colors.primary]}
-            />
-          }
+
         >
           {/* Saudação — sobre o verde */}
           {profile?.name && (

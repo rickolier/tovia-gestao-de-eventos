@@ -82,7 +82,7 @@ function ListaInscritos({ eventoId, eventoNome, onBack }: {
   eventoId: string; eventoNome: string; onBack: () => void;
 }) {
   const { colors } = useTheme();
-  const { inscricoes, loading } = useFinanceiro(eventoId);
+  const { inscricoes, resumo, loading } = useFinanceiro(eventoId);
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState<Filtro>('todos');
 
@@ -120,6 +120,14 @@ function ListaInscritos({ eventoId, eventoNome, onBack }: {
           {'  ·  '}
           <Text style={{ color: colors.primary, fontWeight: '700' }}>{totalPago} pagos</Text>
         </Text>
+        {resumo.totalArrecadado > 0 && (
+          <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
+            <Text style={{ color: '#1a7a45', fontWeight: '700' }}>{moeda(resumo.totalArrecadado)}</Text> arrecadado
+            {resumo.totalPendente > 0 && (
+              <Text>{'  ·  '}<Text style={{ color: '#92400e', fontWeight: '700' }}>{moeda(resumo.totalPendente)}</Text> pendente</Text>
+            )}
+          </Text>
+        )}
       </View>
 
       {/* Busca */}

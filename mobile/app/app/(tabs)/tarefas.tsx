@@ -2,9 +2,10 @@ import { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, ActivityIndicator, Modal, Pressable,
+  TextInput, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CheckSquare, Square, Calendar, User, AlertTriangle, X } from 'lucide-react-native';
+import { CheckSquare, Square, Calendar, User, AlertTriangle, X, Plus } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useEventos } from '../../hooks/useEventos';
 import { useTarefas, Tarefa } from '../../hooks/useTarefas';
@@ -164,6 +165,169 @@ function TarefaRow({ tarefa, onToggle, onDetalhes }: {
   );
 }
 
+type Prioridade = 'baixa' | 'media' | 'alta';
+
+const PRIORIDADES: { key: Prioridade; label: string; color: string }[] = [
+  { key: 'baixa', label: 'Baixa',  color: '#6b7280' },
+  { key: 'media', label: 'Média',  color: '#d97706' },
+  { key: 'alta',  label: 'Alta',   color: '#dc2626' },
+];
+
+function NovaTarefaModal({ eventoId, onClose, onCreate }: {
+  eventoId: string;
+  onClose: () => void;
+  onCreate: (dados: { eventoId: string; titulo: string; descricao: string; responsavel: string; dataLimite: string; status: 'pendente'; prioridade: Prioridade }) => Promise<void>;
+}) {
+  const { colors } = useTheme();
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [responsavel, setResponsavel] = useState('');
+  const [prazo, setPrazo] = useState('');
+  const [prioridade, setPrioridade] = useState<Prioridade>('media');
+  const [saving, setSaving] = useState(false);
+  const [erro, setErro] = useState('');
+
+  function parsePrazo(texto: string): string {
+    if (!texto.trim()) return '';
+    const partes = texto.trim().split('/');
+    if (partes.length === 3) {
+      const [d, m, a] = partes;
+      const iso = `${a}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+      if (!isNaN(Date.parse(iso))) return iso;
+    }
+    return '';
+  }
+
+  async function salvar() {
+    if (!titulo.trim()) { setErro('O título é obrigatório.'); return; }
+    setSaving(true);
+    setErro('');
+    try {
+      await onCreate({
+        eventoId,
+        titulo: titulo.trim(),
+        descricao: descricao.trim(),
+        responsavel: responsavel.trim(),
+        dataLimite: parsePrazo(prazo),
+        status: 'pendente',
+        prioridade,
+      });
+      onClose();
+    } catch {
+      setErro('Erro ao salvar. Tente novamente.');
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Modal visible animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={styles.overlay} onPress={onClose} />
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <View style={[styles.sheet, { backgroundColor: colors.card }]}>
+          <View style={[styles.handle, { backgroundColor: colors.border }]} />
+
+          <View style={styles.sheetHeader}>
+            <Text style={[Typography.h2, { color: colors.foreground, flex: 1 }]}>Nova tarefa</Text>
+            <TouchableOpacity onPress={onClose} hitSlop={8}>
+              <X size={20} color={colors.mutedFg} strokeWidth={2} />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            {/* Título */}
+            <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 6 }]}>Título *</Text>
+            <TextInput
+              style={[styles.input, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary }]}
+              placeholder="Ex: Montar credenciamento"
+              placeholderTextColor={colors.mutedFg}
+              value={titulo}
+              onChangeText={(t) => { setTitulo(t); setErro(''); }}
+              returnKeyType="next"
+            />
+
+            {/* Descrição */}
+            <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 6, marginTop: 16 }]}>Descrição</Text>
+            <TextInput
+              style={[styles.input, styles.inputMulti, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary }]}
+              placeholder="Detalhes opcionais…"
+              placeholderTextColor={colors.mutedFg}
+              value={descricao}
+              onChangeText={setDescricao}
+              multiline
+              numberOfLines={3}
+              textAlignVertical="top"
+            />
+
+            {/* Responsável */}
+            <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 6, marginTop: 16 }]}>Responsável</Text>
+            <TextInput
+              style={[styles.input, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary }]}
+              placeholder="Nome do responsável"
+              placeholderTextColor={colors.mutedFg}
+              value={responsavel}
+              onChangeText={setResponsavel}
+            />
+
+            {/* Prazo */}
+            <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 6, marginTop: 16 }]}>Prazo</Text>
+            <TextInput
+              style={[styles.input, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary }]}
+              placeholder="dd/mm/aaaa"
+              placeholderTextColor={colors.mutedFg}
+              value={prazo}
+              onChangeText={setPrazo}
+              keyboardType="numeric"
+            />
+
+            {/* Prioridade */}
+            <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 8, marginTop: 16 }]}>Prioridade</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 24 }}>
+              {PRIORIDADES.map((p) => {
+                const ativo = prioridade === p.key;
+                return (
+                  <TouchableOpacity
+                    key={p.key}
+                    style={[
+                      styles.prioChip,
+                      { borderColor: ativo ? p.color : colors.border, backgroundColor: ativo ? p.color + '18' : colors.secondary },
+                    ]}
+                    onPress={() => setPrioridade(p.key)}
+                    activeOpacity={0.75}
+                  >
+                    <AlertTriangle size={11} color={ativo ? p.color : colors.mutedFg} strokeWidth={2} />
+                    <Text style={[Typography.caption, { color: ativo ? p.color : colors.mutedFg, marginLeft: 4, fontWeight: ativo ? '700' : '400' }]}>
+                      {p.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {erro ? (
+              <Text style={[Typography.small, { color: '#dc2626', marginBottom: 12 }]}>{erro}</Text>
+            ) : null}
+
+            <TouchableOpacity
+              style={[styles.toggleBtn, { backgroundColor: saving ? colors.secondary : colors.primary }]}
+              onPress={salvar}
+              disabled={saving}
+              activeOpacity={0.85}
+            >
+              {saving
+                ? <ActivityIndicator color={colors.mutedFg} size="small" />
+                : <>
+                    <Plus size={18} color="#fff" strokeWidth={2} />
+                    <Text style={[Typography.body, { fontWeight: '700', color: '#fff', marginLeft: 8 }]}>Criar tarefa</Text>
+                  </>
+              }
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
 function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => void }) {
   const { colors } = useTheme();
   const { hoje, proximos, loading } = useEventos();
@@ -197,9 +361,10 @@ function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => 
 
 function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; eventoNome: string; onBack: () => void }) {
   const { colors } = useTheme();
-  const { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida } = useTarefas(eventoId);
+  const { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, criarTarefa } = useTarefas(eventoId);
   const [filtro, setFiltro] = useState<'todas' | 'pendente' | 'em_progresso' | 'concluida'>('todas');
   const [tarefaSel, setTarefaSel] = useState<Tarefa | null>(null);
+  const [novaAberta, setNovaAberta] = useState(false);
 
   const FILTROS = [
     { key: 'todas', label: 'Todas' },
@@ -222,6 +387,13 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
           onToggle={() => toggleConcluida(tarefaSel)}
         />
       )}
+      {novaAberta && (
+        <NovaTarefaModal
+          eventoId={eventoId}
+          onClose={() => setNovaAberta(false)}
+          onCreate={criarTarefa}
+        />
+      )}
 
       {/* Sub-header */}
       <TouchableOpacity onPress={onBack} style={[styles.backRow, { borderBottomColor: colors.border }]}>
@@ -229,6 +401,13 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
         <Text style={[Typography.h3, { color: colors.foreground, flex: 1, marginLeft: 8 }]} numberOfLines={1}>
           {eventoNome}
         </Text>
+        <TouchableOpacity
+          onPress={() => setNovaAberta(true)}
+          style={[styles.addBtn, { backgroundColor: colors.primary }]}
+          hitSlop={4}
+        >
+          <Plus size={16} color="#fff" strokeWidth={2.5} />
+        </TouchableOpacity>
       </TouchableOpacity>
 
       {/* Chips de filtro — grid 2×2 */}
@@ -351,6 +530,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
+  },
+  addBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+  },
+  inputMulti: {
+    minHeight: 80,
+    paddingTop: 10,
+  },
+  prioChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: Radius.md,
+    borderWidth: 1,
   },
   chipGrid: {
     flexDirection: 'row',

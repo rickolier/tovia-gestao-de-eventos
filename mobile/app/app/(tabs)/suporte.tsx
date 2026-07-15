@@ -126,7 +126,7 @@ export default function SuporteScreen() {
           <Row
             icon={<MessageCircle size={16} color={colors.primary} strokeWidth={2} />}
             label="Fale Conosco"
-            onPress={() => Linking.openURL('mailto:suporte@toviaapp.com.br')}
+            onPress={() => Linking.openURL('mailto:suporte@toviaapp.com.br?subject=Suporte%20Tovia%20Mobile')}
           />
           <Row
             icon={<RefreshCw size={16} color={colors.primary} strokeWidth={2} />}
@@ -155,12 +155,14 @@ export default function SuporteScreen() {
         {/* Sobre */}
         <Text style={[Typography.label, { color: colors.mutedFg, marginTop: 24, marginBottom: 8 }]}>Sobre</Text>
         <View style={[styles.card, Shadow.flat, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Row
-            icon={<Info size={16} color={colors.primary} strokeWidth={2} />}
-            label={`Sobre o Tovia Mobile  v${APP_VERSION}`}
-            onPress={() => {}}
-            showChevron={false}
-          />
+          <View style={[styles.row, { borderBottomColor: colors.border }]}>
+            <View style={[styles.rowIcon, { backgroundColor: colors.primaryLight }]}>
+              <Info size={16} color={colors.primary} strokeWidth={2} />
+            </View>
+            <Text style={[Typography.body, styles.rowLabel, { color: colors.foreground }]}>
+              {`Tovia Mobile  v${APP_VERSION}`}
+            </Text>
+          </View>
           <Row
             icon={<Shield size={16} color={colors.primary} strokeWidth={2} />}
             label="Política de Privacidade"

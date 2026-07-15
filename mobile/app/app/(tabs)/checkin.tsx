@@ -8,10 +8,9 @@ import { QrCode, List, Search, Check, CloudDownload, WifiOff, RefreshCw } from '
 import { useTheme } from '../../hooks/useTheme';
 import { useEventos } from '../../hooks/useEventos';
 import { useCheckin, InscritoCheckin } from '../../hooks/useCheckin';
-import { Typography, Radius, Shadow } from '../../constants/typography';
+import { Typography, Radius } from '../../constants/typography';
 import TopBar from '../../components/shared/TopBar';
 import ProfileSheet from '../../components/shared/ProfileSheet';
-import SectionHeader from '../../components/ui/SectionHeader';
 import EmptyState from '../../components/ui/EmptyState';
 import { CheckinSkeleton } from '../../components/ui/Skeleton';
 import EventoSelectorCard from '../../components/ui/EventoSelectorCard';
