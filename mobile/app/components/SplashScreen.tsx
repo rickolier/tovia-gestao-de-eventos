@@ -18,6 +18,15 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const dotTX         = useRef(new Animated.Value(0)).current;
   const containerFade = useRef(new Animated.Value(1)).current;
 
+  // Fallback: se onLayout não disparar (web), força com dimensões estimadas
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (toviaW === 0) setToviaW(108);
+      if (mobileW === 0) setMobileW(124);
+    }, 600);
+    return () => clearTimeout(t);
+  }, []);
+
   useEffect(() => {
     if (!ready) return;
 
