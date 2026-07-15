@@ -9,7 +9,6 @@ import { ArtigoBC } from '~/types';
 import { orderBy, setDoc, doc } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { toast } from 'sonner';
-import { SEED_ARTIGOS } from '~/data/knowledgeBaseSeeds';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '~/services/firebase';
 import ImageCropper from '~/components/ImageCropper';
@@ -233,6 +232,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   const handleSeed = async () => {
     setSeeding(true);
     try {
+      const { SEED_ARTIGOS } = await import('~/data/knowledgeBaseSeeds');
       await Promise.all(
         SEED_ARTIGOS.map(({ banner_url, video_url, ...textFields }) =>
           setDoc(doc(db, 'base_conhecimento', textFields.id), textFields, { merge: true })
