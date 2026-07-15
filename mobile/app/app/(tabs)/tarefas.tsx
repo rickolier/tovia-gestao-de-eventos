@@ -401,13 +401,6 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
         <Text style={[Typography.h3, { color: colors.foreground, flex: 1, marginLeft: 8 }]} numberOfLines={1}>
           {eventoNome}
         </Text>
-        <TouchableOpacity
-          onPress={() => setNovaAberta(true)}
-          style={[styles.addBtn, { backgroundColor: colors.primary }]}
-          hitSlop={4}
-        >
-          <Plus size={16} color="#fff" strokeWidth={2.5} />
-        </TouchableOpacity>
       </TouchableOpacity>
 
       {/* Chips de filtro — grid 2×2 */}
@@ -444,6 +437,15 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
           ))}
         </ScrollView>
       )}
+
+      {/* FAB */}
+      <TouchableOpacity
+        style={[styles.fab, { backgroundColor: colors.primary }]}
+        onPress={() => setNovaAberta(true)}
+        activeOpacity={0.85}
+      >
+        <Plus size={24} color="#fff" strokeWidth={2.5} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -531,12 +533,20 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  addBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   input: {
     borderWidth: 1,

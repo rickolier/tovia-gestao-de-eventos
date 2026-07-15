@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, Modal, Pressable, ScrollView,
-  Switch, StyleSheet, TouchableOpacity, Dimensions,
+  Switch, StyleSheet, TouchableOpacity, Dimensions, Clipboard, ToastAndroid, Platform, Alert,
 } from 'react-native';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -9,11 +9,20 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import {
   X, MapPin, Calendar, Users, Ticket,
-  CheckSquare, AlignLeft, Shield,
+  CheckSquare, AlignLeft, Shield, Link, Copy, CheckCheck,
 } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../hooks/useAuth';
 import { Typography, Radius } from '../../constants/typography';
 import type { EventoComInscritos } from '../../hooks/useEventos';
+
+interface PaginaVenda {
+  id: string;
+  nome: string;
+  slug: string;
+  codigo?: string;
+  ativa: boolean;
+}
 
 interface Props {
   evento: EventoComInscritos;
@@ -42,19 +51,41 @@ function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string;
 
 export default function EventoDetailModal({ evento, onClose, onToggleAtivo }: Props) {
   const { colors } = useTheme();
+  const { profile } = useAuth();
   const [vagasValidas, setVagasValidas] = useState<number | null>(null);
   const [membros, setMembros] = useState<number | null>(null);
+  const [paginas, setPaginas] = useState<PaginaVenda[]>([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Inscrições válidas para check-in (status pago)
     getDocs(query(
       collection(db, 'eventos', evento.id, 'inscricoes'),
       where('status', '==', 'pago'),
     )).then((s) => setVagasValidas(s.size)).catch(() => setVagasValidas(0));
 
-    // Membros da equipe
     setMembros(evento.equipeIds?.length ?? 0);
+
+    getDocs(collection(db, 'eventos', evento.id, 'paginas_venda'))
+      .then((s) => setPaginas(s.docs.map((d) => ({ id: d.id, ...d.data() } as PaginaVenda))))
+      .catch(() => {});
   }, [evento.id]);
+
+  function urlDaPagina(p: PaginaVenda): string {
+    if (profile?.codigo && evento.codigo && p.codigo) {
+      return `https://toviaapp.com.br/${profile.codigo}/${evento.codigo}/${p.codigo}`;
+    }
+    return `https://toviaapp.com.br/e/${evento.id}/${p.slug}`;
+  }
+
+  function copiarLink(p: PaginaVenda) {
+    const url = urlDaPagina(p);
+    Clipboard.setString(url);
+    setCopiedId(p.id);
+    setTimeout(() => setCopiedId(null), 2000);
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Link copiado!', ToastAndroid.SHORT);
+    }
+  }
 
   const dataInicio = evento.data_inicio ? formatDate(evento.data_inicio) : '—';
   const dataFim = evento.data_fim && evento.data_fim !== evento.data_inicio
@@ -160,6 +191,48 @@ export default function EventoDetailModal({ evento, onClose, onToggleAtivo }: Pr
               thumbColor={evento.ativo ? colors.primary : colors.mutedFg}
             />
           </View>
+
+          {/* Páginas de venda */}
+          {paginas.length > 0 && (
+            <View style={{ marginTop: 12 }}>
+              <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 8 }]}>
+                Páginas de venda
+              </Text>
+              <View style={[styles.card, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
+                {paginas.map((p, i) => (
+                  <View
+                    key={p.id}
+                    style={[
+                      styles.paginaRow,
+                      i < paginas.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                    ]}
+                  >
+                    <View style={[styles.infoIcon, { backgroundColor: colors.card }]}>
+                      <Link size={13} color={p.ativa ? colors.primary : colors.mutedFg} strokeWidth={2} />
+                    </View>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={[Typography.body, { color: colors.foreground, fontWeight: '600' }]} numberOfLines={1}>
+                        {p.nome}
+                      </Text>
+                      <Text style={[Typography.caption, { color: colors.mutedFg, marginTop: 1 }]} numberOfLines={1}>
+                        {urlDaPagina(p)}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => copiarLink(p)}
+                      hitSlop={8}
+                      style={[styles.copyBtn, { backgroundColor: copiedId === p.id ? colors.primaryLight : colors.card, borderColor: colors.border }]}
+                    >
+                      {copiedId === p.id
+                        ? <CheckCheck size={14} color={colors.primary} strokeWidth={2.5} />
+                        : <Copy size={14} color={colors.mutedFg} strokeWidth={2} />
+                      }
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </ScrollView>
       </View>
     </Modal>
@@ -173,7 +246,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     padding: 20,
     paddingBottom: 0,
-    height: SCREEN_HEIGHT * 0.58,
+    maxHeight: SCREEN_HEIGHT * 0.82,
   },
   handle: {
     width: 36, height: 4, borderRadius: 2,
@@ -212,5 +285,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginTop: 10,
     gap: 12,
+  },
+  paginaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  copyBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
 });
