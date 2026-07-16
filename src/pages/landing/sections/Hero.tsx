@@ -43,31 +43,31 @@ export function Hero() {
           >
             <img src="/foto-hero.jpg" alt="Organizador de eventos" className="w-full h-full object-cover" style={{ objectPosition: 'center 20%', transform: 'scale(1.15)', transformOrigin: 'center 30%' }} />
           </div>
-          <div className="absolute top-6 left-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
-            <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+          <div className="absolute top-6 left-0 z-20 rounded-2xl px-4 py-3 flex items-center gap-3" style={{background:'linear-gradient(160deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.22) 100%)',backdropFilter:'blur(48px) saturate(180%)',WebkitBackdropFilter:'blur(48px) saturate(180%)',border:'1px solid rgba(255,255,255,.7)',boxShadow:'inset 0 2px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(0,0,0,.06),0 20px 48px rgba(30,11,75,.18),0 4px 12px rgba(30,11,75,.10)'}}>
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
               <Users className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Inscrições</p>
-              <p className="text-lg font-black text-foreground leading-none">142</p>
+              <p className="text-[10px] text-white/70 font-medium uppercase tracking-widest">Inscrições</p>
+              <p className="text-lg font-black text-white leading-none">142</p>
             </div>
           </div>
-          <div className="absolute top-28 right-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
-            <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center shrink-0">
-              <Heart className="w-4 h-4 text-violet-500" />
+          <div className="absolute top-28 right-0 z-20 rounded-2xl px-4 py-3 flex items-center gap-3" style={{background:'linear-gradient(160deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.22) 100%)',backdropFilter:'blur(48px) saturate(180%)',WebkitBackdropFilter:'blur(48px) saturate(180%)',border:'1px solid rgba(255,255,255,.7)',boxShadow:'inset 0 2px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(0,0,0,.06),0 20px 48px rgba(30,11,75,.18),0 4px 12px rgba(30,11,75,.10)'}}>
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Heart className="w-4 h-4 text-violet-300" />
             </div>
             <div>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Doações</p>
-              <p className="text-lg font-black text-foreground leading-none">R$ 4.320</p>
+              <p className="text-[10px] text-white/70 font-medium uppercase tracking-widest">Doações</p>
+              <p className="text-lg font-black text-white leading-none">R$ 4.320</p>
             </div>
           </div>
-          <div className="absolute bottom-12 left-2 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-              <CheckCircle className="w-4 h-4 text-blue-500" />
+          <div className="absolute bottom-12 left-2 z-20 rounded-2xl px-4 py-3 flex items-center gap-3" style={{background:'linear-gradient(160deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.22) 100%)',backdropFilter:'blur(48px) saturate(180%)',WebkitBackdropFilter:'blur(48px) saturate(180%)',border:'1px solid rgba(255,255,255,.7)',boxShadow:'inset 0 2px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(0,0,0,.06),0 20px 48px rgba(30,11,75,.18),0 4px 12px rgba(30,11,75,.10)'}}>
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-4 h-4 text-blue-300" />
             </div>
             <div>
-              <p className="text-sm font-bold text-foreground">Evento criado!</p>
-              <p className="text-[10px] text-muted-foreground">Em menos de 1 minuto</p>
+              <p className="text-sm font-bold text-white">Evento criado!</p>
+              <p className="text-[10px] text-white/70">Em menos de 1 minuto</p>
             </div>
           </div>
         </div>

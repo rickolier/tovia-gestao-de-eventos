@@ -11,8 +11,8 @@ export function Sobre() {
             <img src="/foto-sobre.jpg" alt="Organizador de eventos usando o Tovia" className="w-full h-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-t from-sidebar/40 to-transparent" />
           </div>
-          <div className="absolute -bottom-6 -right-6 bg-white border border-border rounded-2xl shadow-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+          <div className="absolute -bottom-6 -right-6 rounded-2xl p-4 flex items-center gap-3" style={{background:'linear-gradient(160deg,rgba(255,255,255,.80) 0%,rgba(255,255,255,.55) 100%)',backdropFilter:'blur(48px) saturate(180%)',WebkitBackdropFilter:'blur(48px) saturate(180%)',border:'1px solid rgba(255,255,255,.9)',boxShadow:'inset 0 2px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(0,0,0,.04),0 20px 48px rgba(30,11,75,.12),0 4px 12px rgba(30,11,75,.08)'}}>
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <Users className="w-5 h-5 text-primary" />
             </div>
             <div>

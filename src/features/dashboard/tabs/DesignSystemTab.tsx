@@ -11,6 +11,7 @@ import {
   PartyPopper, Calculator, User, House,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ToviaLogo } from '../../../components/ToviaLogo';
 
 /* ─────────────────────────────────────────
    Helpers
@@ -98,31 +99,35 @@ export default function DesignSystemTab() {
       <Section title="01. Logo & Marca" subtitle="Versões e aplicações do logotipo Tovia">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Default */}
-          <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
-            <div className="font-black text-5xl tracking-tight text-primary leading-none">tovia</div>
-            <div className="text-xs font-bold tracking-widest uppercase text-primary/60 border-l-2 border-primary/20 pl-3 leading-tight">
-              Gestão de<br />Eventos
+          <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3">
+              <ToviaLogo className="h-8 w-auto text-primary" />
+              <div className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground border-l border-border pl-3 leading-tight">
+                Gestão de<br />Eventos
+              </div>
             </div>
-            <Label>Versão Principal</Label>
+            <Label>Versão Principal — Fundo Claro</Label>
           </div>
           {/* Dark bg */}
-          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
-            <div className="font-black text-5xl tracking-tight text-white leading-none">tovia</div>
-            <div className="text-xs font-bold tracking-widest uppercase text-white/60 border-l-2 border-white/20 pl-3 leading-tight">
-              Gestão de<br />Eventos
+          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3">
+              <ToviaLogo className="h-8 w-auto text-white" />
+              <div className="text-[10px] font-semibold tracking-widest uppercase text-white/50 border-l border-white/20 pl-3 leading-tight">
+                Gestão de<br />Eventos
+              </div>
             </div>
             <Label>Versão Fundo Escuro</Label>
           </div>
           {/* Wordmark only */}
-          <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center justify-center gap-3">
-            <div className="font-black text-6xl tracking-tight text-primary leading-none">tovia</div>
-            <Label>Wordmark</Label>
+          <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center justify-center gap-4">
+            <ToviaLogo className="h-10 w-auto text-primary" />
+            <Label>Wordmark Isolado</Label>
           </div>
         </div>
 
         <div className="mt-4 bg-muted/50 rounded-xl p-4 border border-border">
           <p className="text-xs text-muted-foreground">
-            <strong className="text-foreground">Tipografia do logo:</strong> Fonte personalizada minúscula, peso Black (900), letra-espaçamento apertado (<code className="bg-muted px-1 rounded text-[11px]">tracking-tight</code>). Sempre em caixa baixa — nunca use "Tovia" com maiúscula no logotipo.
+            <strong className="text-foreground">Logo SVG vetorial:</strong> Arquivo <code className="bg-muted px-1 rounded text-[11px]">logo-tovia.svg</code> com <code className="bg-muted px-1 rounded text-[11px]">fill="currentColor"</code> — a cor é controlada via CSS (<code className="bg-muted px-1 rounded text-[11px]">text-primary</code>, <code className="bg-muted px-1 rounded text-[11px]">text-white</code>, etc.). Componente React: <code className="bg-muted px-1 rounded text-[11px]">{'<ToviaLogo />'}</code>. Nunca distorcer proporções ou usar em versão capitalizada.
           </p>
         </div>
       </Section>
@@ -653,50 +658,39 @@ export default function DesignSystemTab() {
         {/* Logo Mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           {/* Light */}
-          <div className="bg-white border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
-            <div className="flex items-baseline gap-0 leading-none">
-              <span className="font-black text-5xl tracking-tight text-[#111827]">tovia</span>
-              <span className="font-black text-5xl tracking-tight text-[#FF6B1A]">mobile</span>
-            </div>
+          <div className="bg-white border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
+            <ToviaLogo variant="mobile" className="h-8 w-auto text-[#1d1d1b]" />
             <Label>Logo — Fundo Claro</Label>
           </div>
           {/* Dark */}
-          <div className="bg-[#111827] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
-            <div className="flex items-baseline gap-0 leading-none">
-              <span className="font-black text-5xl tracking-tight text-white">tovia</span>
-              <span className="font-black text-5xl tracking-tight text-[#22c55e]">mobile</span>
-            </div>
+          <div className="bg-[#1E0B4B] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
+            <ToviaLogo variant="mobile" className="h-8 w-auto text-white" />
             <Label>Logo — Fundo Escuro</Label>
           </div>
           {/* Sidebar dark */}
-          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
-            <div className="flex items-baseline gap-0 leading-none">
-              <span className="font-black text-5xl tracking-tight text-white">tovia</span>
-              <span className="font-black text-5xl tracking-tight text-[#22c55e]">mobile</span>
-            </div>
+          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
+            <ToviaLogo variant="mobile" className="h-8 w-auto text-[#FF6B1A]" />
             <Label>Logo — Header do App</Label>
           </div>
         </div>
 
         <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
           <p className="text-xs text-muted-foreground">
-            <strong className="text-foreground">Regra do logo mobile:</strong> As duas palavras são coladas, sempre em caixa baixa e peso Black (700+).
-            {' '}<span className="text-foreground font-semibold">tovia</span> usa a cor do texto principal do tema; <span className="text-[#FF6B1A] font-semibold">mobile</span> usa <code className="bg-muted px-1 rounded text-[11px]">colors.primary</code> — verde no claro, verde vivo no escuro.
+            <strong className="text-foreground">Lockup "tovia | mobile":</strong> Wordmark original + separador + sufixo "mobile" na mesma linha. Implementado como SVG vetorial via <code className="bg-muted px-1 rounded text-[11px]">{'<ToviaLogo variant="mobile" />'}</code>. A cor é controlada por <code className="bg-muted px-1 rounded text-[11px]">currentColor</code> — use <code className="bg-muted px-1 rounded text-[11px]">text-primary</code> no header do app (laranja), <code className="bg-muted px-1 rounded text-[11px]">text-white</code> em fundos escuros.
           </p>
         </div>
 
         {/* Paleta Mobile */}
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Paleta de Cores — Mobile</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          <Swatch color="bg-[#FF6B1A]" label="Primary (light)" hex="#FF6B1A" />
-          <Swatch color="bg-[#22c55e]" label="Primary (dark)" hex="#22c55e" textClass="text-[#14532d]" />
+          <Swatch color="bg-[#FF6B1A]" label="Primary" hex="#FF6B1A" />
+          <Swatch color="bg-[#9B5FFF]" label="Accent / Violet" hex="#9B5FFF" />
           <Swatch color="bg-[#2D1470]" label="Header / Sidebar" hex="#2D1470" />
-          <Swatch color="bg-[#111827]" label="Background Dark" hex="#111827" />
+          <Swatch color="bg-[#1E0B4B]" label="Background Dark" hex="#1E0B4B" />
         </div>
         <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
           <p className="text-xs text-muted-foreground">
-            <strong className="text-foreground">Shared com a web:</strong> O Primary <code className="bg-muted px-1 rounded text-[11px]">#FF6B1A</code> e o Sidebar <code className="bg-muted px-1 rounded text-[11px]">#2D1470</code> são idênticos entre web e mobile — garantindo coerência visual entre as plataformas.
-            No tema escuro do app, o Primary sobe para <code className="bg-muted px-1 rounded text-[11px]">#22c55e</code> para manter contraste adequado.
+            <strong className="text-foreground">Paleta unificada web + mobile:</strong> Primary <code className="bg-muted px-1 rounded text-[11px]">#FF6B1A</code>, Sidebar <code className="bg-muted px-1 rounded text-[11px]">#2D1470</code> e Accent <code className="bg-muted px-1 rounded text-[11px]">#9B5FFF</code> são idênticos entre plataformas. Não existe primary verde — o verde é reservado exclusivamente para status de sucesso/pagamento.
           </p>
         </div>
 
@@ -714,10 +708,10 @@ export default function DesignSystemTab() {
                 { Icon: MessageCircle,label:'Suporte',    active: false },
               ].map(({ Icon, label, active }) => (
                 <div key={label} className="flex flex-col items-center gap-1">
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${active ? 'bg-[#22c55e]/15' : ''}`}>
-                    <Icon className={`w-5 h-5 ${active ? 'text-[#22c55e]' : 'text-white/40'}`} />
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${active ? 'bg-[#FF6B1A]/15' : ''}`}>
+                    <Icon className={`w-5 h-5 ${active ? 'text-[#FF6B1A]' : 'text-white/40'}`} />
                   </div>
-                  <span className={`text-[9px] font-semibold ${active ? 'text-[#22c55e]' : 'text-white/40'}`}>{label}</span>
+                  <span className={`text-[9px] font-semibold ${active ? 'text-[#FF6B1A]' : 'text-white/40'}`}>{label}</span>
                 </div>
               ))}
             </div>
@@ -749,7 +743,7 @@ export default function DesignSystemTab() {
             <div className="flex items-center justify-between px-1">
               <div className="flex items-baseline gap-0">
                 <span className="font-black text-xl text-white">tovia</span>
-                <span className="font-black text-xl text-[#22c55e]">mobile</span>
+                <span className="font-black text-xl text-[#FF6B1A]">mobile</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
@@ -776,8 +770,8 @@ export default function DesignSystemTab() {
         <div className="bg-card border border-border rounded-2xl p-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] font-mono">
             {[
-              ['Primary',         '#FF6B1A', 'colors.primary (light)'],
-              ['Primary Dark',    '#22c55e', 'colors.primary (dark theme)'],
+              ['Primary',         '#FF6B1A', 'colors.primary'],
+              ['Accent / Violet', '#9B5FFF', 'colors.accent'],
               ['Sidebar',         '#2D1470', 'colors.sidebar / sidebar web'],
               ['Danger',          '#ef4444', 'colors.danger / destructive'],
               ['Sucesso',         '#10b981', 'emerald-500 / colors.success'],
