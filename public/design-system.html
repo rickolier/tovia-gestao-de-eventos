@@ -1,0 +1,1113 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tovia — Design System</title>
+<style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS — NOVA PALETA Roxo + Laranja + Creme
+═══════════════════════════════════════════════ */
+:root {
+  color-scheme: light;
+  /* Brand */
+  --primary:        #FF6B1A;
+  --primary-fg:     #ffffff;
+  --primary-light:  #FFF4EE;
+  --primary-dark:   #E55A08;
+
+  --accent:         #9B5FFF;
+  --accent-light:   #F0E8FF;
+  --accent-fg:      #ffffff;
+
+  /* Surfaces */
+  --background:     #F5F0E8;
+  --foreground:     #1E0B4B;
+  --card:           #ffffff;
+  --card-fg:        #1E0B4B;
+  --secondary:      #EDE8DE;
+  --secondary-fg:   #1E0B4B;
+  --muted:          #EDE8DE;
+  --muted-fg:       #6b5fa0;
+
+  /* Semantic */
+  --destructive:    #ef4444;
+  --destructive-fg: #ffffff;
+  --success:        #16a34a;
+  --success-light:  #dcfce7;
+  --warning:        #d97706;
+  --warning-light:  #fef3c7;
+  --info:           #2563eb;
+  --info-light:     #eff6ff;
+
+  /* Chrome */
+  --border:         #E0D8CC;
+  --input:          #E0D8CC;
+  --ring:           #FF6B1A;
+  --radius:         0.75rem;
+
+  /* Sidebar / dark surface */
+  --sb:             #2D1470;
+  --sb-fg:          #F5F0E8;
+  --sb-muted:       rgba(245,240,232,.55);
+  --sb-active:      rgba(245,240,232,.13);
+  --sb-hover:       rgba(245,240,232,.07);
+  --sb-border:      rgba(245,240,232,.08);
+
+  /* Elevations */
+  --shadow-flat:    0 1px 3px rgba(30,11,75,.07);
+  --shadow-raised:  0 4px 16px rgba(30,11,75,.09);
+  --shadow-floating:0 8px 32px rgba(30,11,75,.12);
+
+  /* Layout */
+  --nav-w: 220px;
+}
+
+/* DARK MODE */
+:root[data-theme="dark"],
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --primary:        #FF8C47;
+  --primary-light:  #3D1506;
+  --accent:         #B07FFF;
+  --accent-light:   #1E0B4B;
+  --background:     #0C0720;
+  --foreground:     #F5F0E8;
+  --card:           #160A38;
+  --card-fg:        #F5F0E8;
+  --secondary:      #1E1050;
+  --secondary-fg:   #F5F0E8;
+  --muted:          #1E1050;
+  --muted-fg:       #A899CC;
+  --destructive:    #7f1d1d;
+  --destructive-fg: #fecaca;
+  --success:        #16a34a;
+  --success-light:  #052e16;
+  --warning:        #d97706;
+  --warning-light:  #1c0f00;
+  --info:           #3b82f6;
+  --info-light:     #0d1f3c;
+  --border:         #2A1660;
+  --input:          #2A1660;
+  --ring:           #FF8C47;
+  --sb:             #1A0B40;
+  --shadow-flat:    0 1px 3px rgba(0,0,0,.3);
+  --shadow-raised:  0 4px 16px rgba(0,0,0,.4);
+  --shadow-floating:0 8px 32px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --primary: #FF8C47; --primary-light: #3D1506; --accent: #B07FFF; --accent-light: #1E0B4B;
+  --background: #0C0720; --foreground: #F5F0E8; --card: #160A38; --card-fg: #F5F0E8;
+  --secondary: #1E1050; --secondary-fg: #F5F0E8; --muted: #1E1050; --muted-fg: #A899CC;
+  --destructive: #7f1d1d; --destructive-fg: #fecaca; --success-light: #052e16; --warning-light: #1c0f00; --info-light: #0d1f3c;
+  --border: #2A1660; --input: #2A1660; --ring: #FF8C47; --sb: #1A0B40;
+  --shadow-flat: 0 1px 3px rgba(0,0,0,.3); --shadow-raised: 0 4px 16px rgba(0,0,0,.4); --shadow-floating: 0 8px 32px rgba(0,0,0,.5);
+}
+
+/* ── RESET ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  background: var(--background); color: var(--foreground);
+  font-size: 14px; line-height: 1.6;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+.top-bar {
+  position: sticky; top: 0; z-index: 50;
+  height: 52px; background: var(--sb); border-bottom: 1px solid var(--sb-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+}
+.logo-mark { font-size: 22px; font-weight: 900; letter-spacing: -.03em; color: #fff; line-height: 1; }
+.logo-mark span { color: var(--primary); }
+.ds-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sb-muted); border-left: 1px solid var(--sb-border); padding-left: 12px; margin-left: 8px;
+}
+.top-right { display: flex; align-items: center; gap: 10px; }
+.version-chip {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--primary); background: rgba(255,107,26,.18); border: 1px solid rgba(255,107,26,.3);
+  padding: 3px 9px; border-radius: 999px;
+}
+.theme-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--sb-hover); border: 1px solid var(--sb-border);
+  color: var(--sb-muted); border-radius: 999px;
+  padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.theme-btn:hover { background: var(--sb-active); color: #fff; }
+.theme-btn svg { width: 13px; height: 13px; }
+
+/* ── LAYOUT ─────────────────────────────────────── */
+.layout { display: flex; flex: 1; }
+.side-nav {
+  width: var(--nav-w); min-width: var(--nav-w); background: var(--sb);
+  border-right: 1px solid var(--sb-border);
+  position: sticky; top: 52px; height: calc(100vh - 52px);
+  overflow-y: auto; padding: 20px 10px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.nav-section {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--sb-muted); padding: 12px 10px 6px;
+}
+.nav-section:first-child { padding-top: 0; }
+.nav-link {
+  display: block; padding: 7px 10px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--sb-muted);
+  text-decoration: none; cursor: pointer; transition: all .12s;
+}
+.nav-link:hover { background: var(--sb-hover); color: #fff; }
+.nav-link.active { background: var(--sb-active); color: #fff; font-weight: 600; }
+main { flex: 1; overflow-x: hidden; padding: 40px 48px 80px; max-width: 860px; }
+
+/* ── SECTION ─────────────────────────────────────── */
+.ds-section { margin-bottom: 72px; scroll-margin-top: 72px; }
+.section-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+.section-title { font-size: 26px; font-weight: 900; letter-spacing: -.02em; color: var(--foreground); margin-bottom: 6px; }
+.section-desc { font-size: 14px; color: var(--muted-fg); margin-bottom: 28px; max-width: 580px; line-height: 1.7; }
+.sub-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 12px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+code { font-family: 'SF Mono','Fira Code',monospace; font-size: 12px; background: var(--secondary); padding: 2px 6px; border-radius: 4px; color: var(--primary); }
+
+/* ── SWATCHES ─────────────────────────────────────── */
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 10px; }
+.swatch { border-radius: 10px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); transition: transform .12s, box-shadow .12s; user-select: none; }
+.swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-raised); }
+.swatch-color { height: 64px; }
+.swatch-info { padding: 8px 10px; background: var(--card); }
+.swatch-name { font-size: 11px; font-weight: 700; color: var(--foreground); }
+.swatch-val { font-size: 10px; color: var(--muted-fg); font-family: 'SF Mono','Fira Code',monospace; margin-top: 2px; }
+.swatch-copy { font-size: 9px; color: var(--primary); font-weight: 700; margin-top: 2px; opacity: 0; transition: opacity .12s; }
+.swatch:hover .swatch-copy, .swatch.copied .swatch-copy { opacity: 1; }
+.dark-swatch-wrap { background: var(--sb); padding: 16px; border-radius: 12px; }
+.dark-swatch .swatch-info { background: rgba(245,240,232,.06); }
+.dark-swatch .swatch-name { color: rgba(245,240,232,.85); }
+.dark-swatch .swatch-val { color: rgba(245,240,232,.5); }
+.dark-swatch { border-color: rgba(245,240,232,.1) !important; }
+
+/* ── PALETTE VISUAL ──────────────────────────────── */
+.palette-strip { display: flex; border-radius: 12px; overflow: hidden; height: 80px; border: 1px solid var(--border); margin-bottom: 20px; }
+.palette-strip div { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-size: 9px; font-weight: 800; letter-spacing: .06em; }
+
+/* ── TYPE SCALE ──────────────────────────────────── */
+.type-scale { display: flex; flex-direction: column; }
+.type-row { display: grid; grid-template-columns: 150px 1fr; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--border); gap: 20px; }
+.type-row:last-child { border-bottom: none; }
+.type-meta { font-size: 10px; color: var(--muted-fg); font-family: monospace; line-height: 1.5; }
+.type-meta strong { color: var(--foreground); font-family: -apple-system,sans-serif; font-size: 11px; }
+
+/* ── RADIUS & SHADOW ─────────────────────────────── */
+.radius-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.radius-box { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; color: var(--muted-fg); }
+.radius-sample { background: var(--primary-light); border: 2px solid var(--primary); width: 80px; height: 56px; }
+.shadow-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+.shadow-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; width: 120px; height: 72px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted-fg); flex-direction: column; gap: 4px; }
+.shadow-name { font-weight: 700; font-size: 10px; color: var(--foreground); }
+
+/* ── COMPONENTS ──────────────────────────────────── */
+.component-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+.component-preview { padding: 28px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.component-preview.col { flex-direction: column; align-items: flex-start; }
+.component-code { background: var(--secondary); border-top: 1px solid var(--border); padding: 11px 16px; font-family: 'SF Mono','Fira Code',monospace; font-size: 11px; color: var(--muted-fg); overflow-x: auto; white-space: nowrap; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 600; border-radius: var(--radius); padding: 8px 18px; cursor: pointer; border: none; transition: all .15s; line-height: 1; white-space: nowrap; font-family: inherit; }
+.btn-primary { background: var(--primary); color: var(--primary-fg); box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 35%, transparent); }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-accent { background: var(--accent); color: var(--accent-fg); box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent); }
+.btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-secondary { background: var(--secondary); color: var(--foreground); }
+.btn-secondary:hover { filter: brightness(.96); }
+.btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-fg); }
+.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-ghost:hover { background: var(--secondary); }
+.btn-sm { font-size: 12px; padding: 5px 12px; }
+.btn-lg { font-size: 15px; padding: 12px 24px; }
+.btn-icon { padding: 8px; }
+.btn svg { width: 15px; height: 15px; }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; }
+.badge-orange  { background: var(--primary-light); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); }
+.badge-purple  { background: var(--accent-light); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
+.badge-gray    { background: var(--muted); color: var(--muted-fg); border: 1px solid var(--border); }
+.badge-red     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.badge-yellow  { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
+.badge-blue    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.badge-green   { background: var(--success-light); color: var(--success); border: 1px solid color-mix(in srgb, var(--success) 25%, transparent); }
+:root[data-theme="dark"] .badge-red { background: #2d0d0d; color: #fecaca; border-color: #7f1d1d; }
+:root[data-theme="dark"] .badge-yellow { background: var(--warning-light); color: #fde68a; border-color: #b45309; }
+:root[data-theme="dark"] .badge-blue { background: var(--info-light); color: #bfdbfe; border-color: #2563eb; }
+:root[data-theme="dark"] .badge-green { background: var(--success-light); color: #86efac; border-color: #16a34a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .badge-red { background: #2d0d0d; color: #fecaca; border-color: #7f1d1d; }
+  :root:not([data-theme="light"]) .badge-yellow { background: var(--warning-light); color: #fde68a; border-color: #b45309; }
+  :root:not([data-theme="light"]) .badge-blue { background: var(--info-light); color: #bfdbfe; border-color: #2563eb; }
+  :root:not([data-theme="light"]) .badge-green { background: var(--success-light); color: #86efac; border-color: #16a34a; }
+}
+/* Plan badges */
+.plan-chinam { background: var(--muted); color: var(--muted-fg); border: 1px solid var(--border); }
+.plan-petach  { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.plan-koach   { background: var(--primary-light); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); }
+.plan-chalem  { background: var(--accent-light); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
+:root[data-theme="dark"] .plan-petach { background: var(--info-light); color: #bfdbfe; border-color: #2563eb; }
+:root[data-theme="dark"] .plan-chalem { background: var(--accent-light); color: #d8b4fe; border-color: #7c3aed; }
+
+/* CARDS */
+.card-demo { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.card-title { font-size: 15px; font-weight: 700; color: var(--foreground); margin-bottom: 4px; }
+.card-body { font-size: 13px; color: var(--muted-fg); }
+
+/* GLASS CARD (iOS Vision Pro style) */
+.glass-card-demo {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.22) 100%);
+  backdrop-filter: blur(48px) saturate(180%); -webkit-backdrop-filter: blur(48px) saturate(180%);
+  border-radius: 20px; padding: 20px 22px;
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,.9) inset,   /* top edge shine */
+    0 -1px 0 rgba(0,0,0,.06) inset,       /* bottom inner shadow */
+    0 20px 48px rgba(30,11,75,.18),        /* ambient shadow */
+    0 4px 12px rgba(30,11,75,.10);
+  overflow: hidden;
+}
+.glass-card-demo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(170deg, rgba(255,255,255,.35) 0%, transparent 50%);
+  border-radius: inherit; pointer-events: none;
+}
+.glass-card-demo-dark {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.05) 100%);
+  backdrop-filter: blur(48px) saturate(180%); -webkit-backdrop-filter: blur(48px) saturate(180%);
+  border-radius: 20px; padding: 20px 22px;
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,.18) inset,   /* top edge shine */
+    0 -1px 0 rgba(0,0,0,.25) inset,        /* bottom inner shadow */
+    0 24px 60px rgba(0,0,0,.45),           /* deep ambient */
+    0 4px 16px rgba(0,0,0,.30);
+  overflow: hidden;
+}
+.glass-card-demo-dark::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(170deg, rgba(255,255,255,.12) 0%, transparent 45%);
+  border-radius: inherit; pointer-events: none;
+}
+
+/* INPUTS */
+.input-demo { width: 100%; padding: 9px 12px; background: var(--background); border: 1.5px solid var(--input); border-radius: var(--radius); font-size: 14px; color: var(--foreground); transition: all .15s; outline: none; font-family: inherit; }
+.input-demo:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); }
+.input-demo::placeholder { color: var(--muted-fg); }
+.input-wrap { display: flex; flex-direction: column; gap: 5px; width: 260px; }
+.input-label { font-size: 12px; font-weight: 600; color: var(--foreground); }
+
+/* SIDEBAR DEMO */
+.sb-demo { background: var(--sb); border-radius: 12px; padding: 12px 8px; border: 1px solid rgba(245,240,232,.08); }
+.sb-demo-section { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--sb-muted); padding: 10px 10px 4px; }
+.sb-demo-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: 13px; color: var(--sb-muted); cursor: default; }
+.sb-demo-item.active { background: var(--sb-active); color: #fff; font-weight: 700; }
+.sb-demo-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* TOKEN TABLE */
+.token-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.token-table th { text-align: left; padding: 8px 12px; background: var(--secondary); color: var(--muted-fg); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.token-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--foreground); }
+.token-table tr:last-child td { border-bottom: none; }
+.token-dot { width: 16px; height: 16px; border-radius: 4px; display: inline-block; vertical-align: middle; border: 1px solid var(--border); margin-right: 6px; }
+
+/* NOTICE */
+.notice { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; font-size: 13px; background: var(--primary-light); border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); color: var(--foreground); margin-bottom: 16px; line-height: 1.55; }
+.notice svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--primary); margin-top: 1px; }
+.notice-accent { background: var(--accent-light); border-color: color-mix(in srgb, var(--accent) 20%, transparent); }
+.notice-accent svg { color: var(--accent); }
+
+/* LANDING PREVIEW MINI */
+.landing-preview { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.lp-nav { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.lp-logo { font-size: 16px; font-weight: 900; color: var(--primary); letter-spacing: -.03em; }
+.lp-hero { background: linear-gradient(135deg, #1E0B4B, #2D1470); padding: 40px 24px; text-align: center; position: relative; overflow: hidden; }
+.lp-hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(155,95,255,.2) 1px, transparent 1px); background-size: 24px 24px; }
+.lp-hero-inner { position: relative; z-index: 1; }
+.lp-h1 { font-size: 22px; font-weight: 900; color: #F5F0E8; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 8px; }
+.lp-h1 em { font-style: normal; color: #FF6B1A; }
+.lp-sub { font-size: 12px; color: rgba(196,184,232,.8); margin-bottom: 16px; }
+.lp-btns { display: flex; justify-content: center; gap: 8px; }
+.lp-btn-p { background: #FF6B1A; color: #fff; font-size: 11px; font-weight: 800; padding: 7px 14px; border-radius: 8px; box-shadow: 0 3px 12px rgba(255,107,26,.4); }
+.lp-btn-g { border: 1px solid rgba(245,240,232,.3); color: #F5F0E8; font-size: 11px; padding: 7px 14px; border-radius: 8px; }
+.lp-stats { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+.lp-glass { background: rgba(255,255,255,.07); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 10px 14px; text-align: left; }
+.lp-glass-label { font-size: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(196,184,232,.7); }
+.lp-glass-val { font-size: 16px; font-weight: 900; color: #F5F0E8; letter-spacing: -.02em; }
+.lp-glass-sub { font-size: 9px; color: #FF6B1A; font-weight: 700; }
+.lp-section { background: var(--background); padding: 24px 20px; }
+.lp-section-title { font-size: 14px; font-weight: 900; color: var(--foreground); text-align: center; margin-bottom: 12px; }
+.lp-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.lp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.lp-card-num { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 4px; }
+.lp-card-t { font-size: 11px; font-weight: 700; color: var(--foreground); }
+.lp-card-d { font-size: 10px; color: var(--muted-fg); margin-top: 2px; }
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .side-nav { display: none; }
+  main { padding: 24px 20px 60px; }
+}
+
+/* TOAST */
+#toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--foreground); color: var(--background); padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 600; transition: transform .2s; z-index: 999; pointer-events: none; }
+#toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+
+<!-- HEADER -->
+<div class="top-bar">
+  <div style="display:flex;align-items:center">
+    <span class="logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="height:22px;width:auto;display:inline-block;vertical-align:middle;" fill="#fff"><path d="M166.16,76.05h-38.04c-9.67,0-17.5,7.84-17.5,17.5v19.25h-19.62v40.34h19.62v69.63c0,15.38,4.4,27.03,13.19,34.95,8.8,7.92,21.85,11.88,39.17,11.88,4.97,0,10.27-.3,15.89-.9,5.62-.6,11.61-1.77,17.96-3.52l-6.63-39.65c-1.01.37-3.11.76-6.29,1.17s-5.6.62-7.25.62c-3.68,0-6.36-.81-8.01-2.42-1.66-1.61-2.49-4.03-2.49-7.25v-64.52h30.67v-40.34h-30.67v-36.75Z"/><path d="M323.7,122.67c-11.88-6.58-26.21-9.87-42.97-9.87s-31.13,3.29-43.11,9.87c-11.97,6.58-21.12,15.75-27.43,27.5-6.31,11.75-9.46,25.43-9.46,41.04s3.15,29.29,9.46,41.04c6.31,11.75,15.45,20.92,27.43,27.5,11.97,6.58,26.34,9.87,43.11,9.87s31.09-3.29,42.97-9.87c11.88-6.58,20.98-15.74,27.29-27.5,6.31-11.75,9.46-25.43,9.46-41.04s-3.16-29.29-9.46-41.04c-6.31-11.75-15.4-20.92-27.29-27.5ZM301.04,211.28c-1.84,5.67-4.49,10.01-7.94,13-3.45,2.99-7.58,4.49-12.37,4.49s-9.07-1.5-12.57-4.49c-3.5-2.99-6.17-7.33-8.01-13-1.84-5.67-2.76-12.46-2.76-20.35s.92-14.75,2.76-20.28c1.84-5.53,4.51-9.75,8.01-12.66,3.5-2.9,7.69-4.36,12.57-4.36s8.91,1.45,12.37,4.36c3.45,2.91,6.1,7.13,7.94,12.66,1.84,5.54,2.76,12.3,2.76,20.28s-.92,14.68-2.76,20.35Z"/><path d="M453.01,184.33c-2.86,10.66-5.39,21.51-7.6,32.54,0,.04-.02.08-.02.12-.52,2.6-4.17,2.61-4.7,0-.01-.07-.03-.13-.04-.19-2.26-11.08-4.86-21.9-7.81-32.47l-20.03-71.53h-58.3l50.82,144.91c2.5,7.13,9.16,11.9,16.61,11.9h40.52c7.35,0,13.9-4.69,16.38-11.71l51.14-145.1h-57.47l-19.48,71.53Z"/><path d="M564.65,96.63c7.55,0,14-2.49,19.34-7.46,5.34-4.97,8.01-10.96,8.01-17.96s-2.67-13.1-8.01-18.03c-5.34-4.93-11.79-7.39-19.34-7.39s-14,2.47-19.34,7.39c-5.34,4.93-8.01,10.94-8.01,18.03s2.67,12.99,8.01,17.96c5.34,4.97,11.79,7.46,19.34,7.46Z"/><path d="M574.75,112.67h-20.2c-9.75,0-17.66,7.91-17.66,17.66v139.28h55.54v-139.27c0-9.76-7.91-17.68-17.68-17.68Z"/><path d="M745.85,143.14c-3.36-6.04-8.2-11.34-14.51-15.89-6.31-4.54-13.91-8.09-22.8-10.64-8.89-2.54-18.81-3.82-29.77-3.82-14.46,0-26.73,2.09-36.82,6.27-10.09,4.18-17.99,9.77-23.69,16.77-4.34,5.32-7.45,11.09-9.34,17.3l51.02,4.99c.41-.6.86-1.17,1.36-1.7,1.89-2,4.26-3.5,7.12-4.5,2.85-1,6.03-1.5,9.53-1.5s6.68.48,9.26,1.43c2.58.95,4.58,2.34,6.01,4.16,1.43,1.82,2.14,4.05,2.14,6.68v.55c0,2.91-1.18,5.25-3.52,7.02-2.35,1.77-6.13,3.12-11.33,4.02-5.2.91-12.14,1.68-20.79,2.32-8.01.55-15.45,1.84-22.31,3.89-6.86,2.05-12.87,4.96-18.03,8.73-5.16,3.77-9.17,8.61-12.02,14.52-2.86,5.91-4.28,13.05-4.28,21.41,0,10.09,2.12,18.41,6.36,24.95,4.24,6.54,10.15,11.43,17.75,14.66,7.6,3.23,16.32,4.84,26.18,4.84,6.72,0,12.85-.82,18.38-2.45,5.53-1.64,10.48-4.2,14.85-7.7,4.37-3.5,8.13-8.11,11.26-13.84h1.1v23.99h34.52c9.63,0,17.43-10.15,17.43-19.65v-87.25c0-7-1.68-13.52-5.04-19.57ZM695.9,213.16c0,4.64-1.17,8.57-3.52,11.8-2.35,3.23-5.39,5.71-9.12,7.43-3.73,1.73-7.72,2.59-11.95,2.59-3.13,0-5.9-.5-8.29-1.5-2.4-1-4.28-2.48-5.66-4.43-1.38-1.95-2.07-4.34-2.07-7.16,0-2.64.64-5.02,1.93-7.16,1.29-2.13,3.29-3.95,6.01-5.45,2.72-1.5,6.24-2.57,10.57-3.2,2.21-.36,4.3-.73,6.29-1.09,1.98-.36,3.91-.77,5.8-1.23,1.89-.45,3.66-.95,5.32-1.5,1.66-.55,3.22-1.09,4.7-1.64v12.55Z"/></svg></span>
+    <span class="ds-label">Design System</span>
+  </div>
+  <div class="top-right">
+    <span class="version-chip">v2 · Roxo + Laranja</span>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="theme-label">Light</span>
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="side-nav">
+    <div class="nav-section">Fundação</div>
+    <a class="nav-link active" onclick="nav('colors',this)">Cores</a>
+    <a class="nav-link" onclick="nav('typography',this)">Tipografia</a>
+    <a class="nav-link" onclick="nav('spacing',this)">Raios e Sombras</a>
+    <a class="nav-link" onclick="nav('tokens',this)">Tokens CSS</a>
+    <div class="nav-section">Componentes</div>
+    <a class="nav-link" onclick="nav('buttons',this)">Botões</a>
+    <a class="nav-link" onclick="nav('badges',this)">Badges e Status</a>
+    <a class="nav-link" onclick="nav('cards',this)">Cards</a>
+    <a class="nav-link" onclick="nav('glass',this)">Glass (iOS)</a>
+    <a class="nav-link" onclick="nav('inputs',this)">Inputs</a>
+    <a class="nav-link" onclick="nav('sidebar',this)">Sidebar</a>
+    <div class="nav-section">Identidade</div>
+    <a class="nav-link" onclick="nav('logo',this)">Logo</a>
+    <a class="nav-link" onclick="nav('landing',this)">Landing Preview</a>
+    <a class="nav-link" onclick="nav('icons',this)">Ícones</a>
+    <div class="nav-section">Mobile</div>
+    <a class="nav-link" onclick="nav('mobile',this)">Visão Geral</a>
+  </nav>
+
+  <main>
+
+    <!-- ── CORES ─────────────────────────────────────── -->
+    <section class="ds-section" id="colors">
+      <div class="section-eyebrow">Fundação</div>
+      <div class="section-title">Cores</div>
+      <div class="section-desc">Nova paleta com roxo profundo como cor de marca/dark surface, laranja como cor de ação, e creme como fundo. Clique em qualquer swatch para copiar o token CSS.</div>
+
+      <div class="notice">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span><strong>Regra:</strong> nunca use hex diretamente no código. Sempre use as variáveis CSS (<code>var(--primary)</code>). Os valores mudam entre light e dark — as variáveis garantem consistência automática.</span>
+      </div>
+
+      <!-- Paleta visual strip -->
+      <div class="sub-label">Paleta completa</div>
+      <div class="palette-strip" style="margin-bottom:24px">
+        <div style="background:#1E0B4B;color:rgba(245,240,232,.7)">Ink</div>
+        <div style="background:#2D1470;color:rgba(245,240,232,.7)">Roxo</div>
+        <div style="background:#9B5FFF;color:#fff">Violeta</div>
+        <div style="background:#FF6B1A;color:#fff">Laranja</div>
+        <div style="background:#FFF4EE;color:#FF6B1A;border-left:1px solid var(--border)">Pêssego</div>
+        <div style="background:#F5F0E8;color:#6b5fa0;border-left:1px solid var(--border)">Creme</div>
+        <div style="background:#ffffff;color:#6b5fa0;border-left:1px solid var(--border)">Branco</div>
+      </div>
+
+      <div class="sub-label">Ação e destaque</div>
+      <div class="swatch-grid" style="margin-bottom:24px">
+        <div class="swatch" onclick="copy('var(--primary)',this)">
+          <div class="swatch-color" style="background:#FF6B1A"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-val">#FF6B1A</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--primary-dark)',this)">
+          <div class="swatch-color" style="background:#E55A08"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary Dark</div><div class="swatch-val">#E55A08</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--primary-light)',this)">
+          <div class="swatch-color" style="background:#FFF4EE;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary Light</div><div class="swatch-val">#FFF4EE</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--accent)',this)">
+          <div class="swatch-color" style="background:#9B5FFF"></div>
+          <div class="swatch-info"><div class="swatch-name">Accent (Violeta)</div><div class="swatch-val">#9B5FFF</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--accent-light)',this)">
+          <div class="swatch-color" style="background:#F0E8FF;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Accent Light</div><div class="swatch-val">#F0E8FF</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+      </div>
+
+      <div class="sub-label">Superfícies e texto</div>
+      <div class="swatch-grid" style="margin-bottom:24px">
+        <div class="swatch" onclick="copy('var(--background)',this)">
+          <div class="swatch-color" style="background:#F5F0E8;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-val">#F5F0E8 (creme)</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--card)',this)">
+          <div class="swatch-color" style="background:#ffffff;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Card</div><div class="swatch-val">#ffffff</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--foreground)',this)">
+          <div class="swatch-color" style="background:#1E0B4B"></div>
+          <div class="swatch-info"><div class="swatch-name">Foreground</div><div class="swatch-val">#1E0B4B (roxo ink)</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--muted-fg)',this)">
+          <div class="swatch-color" style="background:#6b5fa0"></div>
+          <div class="swatch-info"><div class="swatch-name">Muted FG</div><div class="swatch-val">#6b5fa0</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--border)',this)">
+          <div class="swatch-color" style="background:#E0D8CC"></div>
+          <div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-val">#E0D8CC</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+        <div class="swatch" onclick="copy('var(--destructive)',this)">
+          <div class="swatch-color" style="background:#ef4444"></div>
+          <div class="swatch-info"><div class="swatch-name">Destructive</div><div class="swatch-val">#ef4444</div><div class="swatch-copy">Copiado!</div></div>
+        </div>
+      </div>
+
+      <div class="sub-label">Sidebar / Dark surface</div>
+      <div class="dark-swatch-wrap">
+        <div class="swatch-grid">
+          <div class="swatch dark-swatch" onclick="copy('var(--sb)',this)">
+            <div class="swatch-color" style="background:#2D1470"></div>
+            <div class="swatch-info"><div class="swatch-name">Sidebar BG</div><div class="swatch-val">#2D1470</div><div class="swatch-copy">Copiado!</div></div>
+          </div>
+          <div class="swatch dark-swatch" onclick="copy('#1E0B4B',this)">
+            <div class="swatch-color" style="background:#1E0B4B"></div>
+            <div class="swatch-info"><div class="swatch-name">Hero / Hero dark</div><div class="swatch-val">#1E0B4B</div><div class="swatch-copy">Copiado!</div></div>
+          </div>
+          <div class="swatch dark-swatch" onclick="copy('var(--sb-active)',this)">
+            <div class="swatch-color" style="background:rgba(245,240,232,.13)"></div>
+            <div class="swatch-info"><div class="swatch-name">Active BG</div><div class="swatch-val">rgba(245,240,232,.13)</div><div class="swatch-copy">Copiado!</div></div>
+          </div>
+          <div class="swatch dark-swatch" onclick="copy('var(--sb-muted)',this)">
+            <div class="swatch-color" style="background:rgba(245,240,232,.55)"></div>
+            <div class="swatch-info"><div class="swatch-name">Muted text</div><div class="swatch-val">rgba(245,240,232,.55)</div><div class="swatch-copy">Copiado!</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label">Semânticas (sucesso · aviso · erro · info)</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:#16a34a"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-val">#16a34a</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#d97706"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-val">#d97706</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#ef4444"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-val">#ef4444</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#2563eb"></div><div class="swatch-info"><div class="swatch-name">Info</div><div class="swatch-val">#2563eb</div></div></div>
+      </div>
+    </section>
+
+    <!-- ── TIPOGRAFIA ─────────────────────────────────── -->
+    <section class="ds-section" id="typography">
+      <div class="section-eyebrow">Fundação</div>
+      <div class="section-title">Tipografia &amp; Fontes</div>
+      <div class="section-desc">Uma família tipográfica: <strong>Inter</strong> para toda a interface (web e mobile). O logo manuscrito é um arquivo SVG — não uma fonte.</div>
+
+      <!-- Inter -->
+      <div class="sub-label" style="margin-bottom:12px;margin-top:4px">Inter — Interface</div>
+      <div class="component-block" style="margin-bottom:24px">
+        <div style="padding:20px 24px">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px">
+            <span style="font-family:Inter,sans-serif;font-size:48px;font-weight:900;color:var(--foreground);letter-spacing:-.04em;line-height:1">Aa</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--foreground)">Inter</div>
+              <div style="font-size:11px;color:var(--muted-fg)">Google Fonts · Variable · <code>--font-sans: "Inter", ui-sans-serif</code></div>
+            </div>
+          </div>
+          <div style="font-family:Inter,sans-serif;font-size:12px;color:var(--muted-fg);margin:12px 0 20px;line-height:1.8;letter-spacing:.01em">
+            A B C D E F G H I J K L M N O P Q R S T U V W X Y Z &nbsp;·&nbsp; a b c d e f g h i j k l m n o p q r s t u v w x y z &nbsp;·&nbsp; 0 1 2 3 4 5 6 7 8 9
+          </div>
+          <div class="type-scale">
+            <div class="type-row"><div class="type-meta"><strong>Display</strong><br>36–56px · 900<br>tracking −.03em</div><div style="font-size:36px;font-weight:900;letter-spacing:-.03em;line-height:1.1;color:var(--foreground)">Tovia Eventos</div></div>
+            <div class="type-row"><div class="type-meta"><strong>H1</strong><br>28px · 900<br>tracking −.025em</div><div style="font-size:28px;font-weight:900;letter-spacing:-.025em;line-height:1.2;color:var(--foreground)">Meus Eventos</div></div>
+            <div class="type-row"><div class="type-meta"><strong>H2</strong><br>22px · 800<br>tracking −.02em</div><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.25;color:var(--foreground)">Visão Geral</div></div>
+            <div class="type-row"><div class="type-meta"><strong>H3</strong><br>18px · 700<br>tracking −.01em</div><div style="font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--foreground)">Inscrições do Evento</div></div>
+            <div class="type-row"><div class="type-meta"><strong>Body</strong><br>14–15px · 400<br>line-height 1.6</div><div style="font-size:15px;line-height:1.6;color:var(--foreground);max-width:400px">O Tovia conecta organizadores e participantes com uma gestão simples e eficiente de eventos.</div></div>
+            <div class="type-row"><div class="type-meta"><strong>Small</strong><br>13px · 400<br>color: muted</div><div style="font-size:13px;color:var(--muted-fg)">Atualizado há 3 minutos · 128 inscritos</div></div>
+            <div class="type-row"><div class="type-meta"><strong>Label / Caption</strong><br>11px · 700<br>uppercase · tracking .08em</div><div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-fg)">Eventos Ativos</div></div>
+            <div class="type-row"><div class="type-meta"><strong>Mono</strong><br>SF Mono / Fira Code<br>11–12px</div><div style="font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--primary)">--primary: #FF6B1A</div></div>
+          </div>
+        </div>
+        <div class="component-code">Tailwind: font-sans · pesos: 400 · 600 · 700 · 800 · 900</div>
+      </div>
+
+      <!-- Logo Manuscrito SVG -->
+      <div class="sub-label" style="margin-bottom:12px">Logo Manuscrito — Decorativo</div>
+      <div class="component-block">
+        <div style="padding:20px 24px">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="padding:20px 24px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">
+              <div style="max-width:300px;color:var(--primary)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="width:100%;height:auto;display:block" fill="currentColor"><path d="M496.29,129.47c0-4.21-.53-7.36-1.58-9.47-1.84-4.21-4.74-6.32-8.68-6.32-1.84,0-3.55.66-5.13,1.97-1.58,1.32-2.37,3.16-2.37,5.53,0,1.84.52,3.69,1.58,5.53.53.79.79,2.5.79,5.13,0,5-1.52,11.98-4.54,20.92-3.03,8.95-7.24,18.62-12.63,29.01-5.4,10.4-11.58,20.27-18.55,29.61-6.98,9.34-14.48,17.04-22.5,23.09-8.03,6.06-16.12,9.08-24.28,9.08-7.64,0-11.45-4.34-11.45-13.03,0-4.99,1.05-10.79,3.16-17.37,2.1-6.58,4.6-13.03,7.5-19.34.55-1.19,1.08-2.32,1.62-3.44.91-1.22,1.82-2.41,2.73-3.66,1.05-1.32,1.58-2.76,1.58-4.34,0-.16-.03-.29-.04-.44.81-1.5,1.61-2.95,2.4-4.29,2.63-4.47,4.34-7.24,5.13-8.29,6.32-8.68,11.05-15.66,14.21-20.92,3.16-5.26,4.74-9.61,4.74-13.03,0-2.63-1.05-5-3.16-7.11-.79-.79-1.97-1.19-3.55-1.19-3.42,0-7.5,2.31-12.24,6.91-4.74,4.61-7.5,11.51-8.29,20.72-1.84,2.11-4.48,6.12-7.9,12.04-3,5.2-6.06,11.2-9.16,17.91-6.01,7.58-11.38,14.06-16.1,19.4-6.06,6.85-12.04,12.18-17.96,15.99-5.92,3.82-12.83,6.39-20.72,7.7,3.95-5.26,7.5-10.59,10.66-15.99,3.16-5.39,5.79-10.72,7.9-15.99,2.1-5.26,3.81-10.86,5.13-16.78,1.31-5.92,1.97-11.78,1.97-17.57,0-9.74-2.44-18.16-7.3-25.27-4.87-7.11-13.49-10.66-25.86-10.66s-23.62,3.29-32.96,9.87c-9.35,6.58-16.72,14.87-22.11,24.87-5.27,9.77-8.08,19.67-8.45,29.69-1.25.18-2.32.8-3.19,1.89-3.95,4.21-8.16,8.82-12.63,13.82-4.48,5-9.35,9.74-14.61,14.21-8.95,7.63-17.96,13.62-27.04,17.96s-15.86,6.51-20.33,6.51c-5.53,0-8.29-3.29-8.29-9.87,0-5.53,1.78-12.56,5.33-21.12,3.55-8.55,7.9-17.43,13.03-26.65,5.13-9.21,10-17.63,14.61-25.26,4.6-7.63,8.09-13.16,10.46-16.58l3.55-5.53h47.37c2.37,0,4.08-.72,5.13-2.17,1.05-1.44,1.58-3.09,1.58-4.94,0-1.58-.53-3.09-1.58-4.54-1.05-1.45-2.76-2.17-5.13-2.17h-37.9c6.32-8.68,12.37-17.04,18.16-25.07,5.79-8.02,10.79-14.8,15-20.33,4.21-5.53,6.71-8.81,7.5-9.87,1.31-2.1,1.97-4.08,1.97-5.92,0-2.37-.79-4.54-2.37-6.51-1.58-1.97-3.42-2.96-5.53-2.96-1.05,0-2.24.4-3.55,1.19-7.9,5.27-14.54,12.24-19.94,20.92-5.4,8.68-9.94,17.76-13.62,27.24-2.37,3.42-4.74,6.91-7.11,10.46-2.37,3.55-5,7.17-7.9,10.86h-24.08c-2.11,0-3.75.73-4.94,2.17-1.18,1.45-1.78,2.96-1.78,4.54,0,1.84.59,3.49,1.78,4.94,1.18,1.45,2.83,2.17,4.94,2.17h14.21c-8.43,12.37-16.65,25.26-24.67,38.69-8.03,13.42-14.01,25.93-17.96,37.5-2.63,7.63-3.95,14.47-3.95,20.53,0,14.48,7.24,21.71,21.71,21.71,5.53,0,11.84-1.19,18.95-3.55,11.58-3.68,22.37-9.21,32.37-16.58,5.26-3.95,11.38-9.28,18.36-15.99,1.06-1.02,2.02-2,3.01-3-1.09,5.34-1.64,10.35-1.64,15.04,0,7.64,1.84,14.01,5.53,19.15,3.68,5.13,10,7.7,18.95,7.7,8.15,0,15.92-1.71,23.29-5.13,7.36-3.42,14.21-7.9,20.53-13.42,13.68,0,25.39-2.37,35.13-7.11,7.38-3.59,14.19-8.24,20.43-13.95-.96,4.78-1.49,9.32-1.49,13.55,0,7.11,1.71,12.9,5.13,17.37,3.42,4.47,9.6,6.71,18.55,6.71,10.52,0,20.79-3.23,30.79-9.67,10-6.44,19.21-14.8,27.63-25.07,8.42-10.26,15.85-21.25,22.3-32.96,6.45-11.71,11.45-23.03,15-33.95,3.55-10.92,5.33-20.06,5.33-27.44ZM273.65,246.72c-3.69,0-6.38-1.25-8.09-3.75-1.72-2.5-2.57-5.85-2.57-10.07,0-4.47.79-9.87,2.37-16.19,2.89,5.27,6.97,9.94,12.24,14.01,5.26,4.08,11.71,7.04,19.34,8.88-7.9,4.74-15.66,7.11-23.29,7.11ZM311.54,228.56c-12.9-.79-22.44-4.41-28.62-10.86-6.19-6.44-9.54-13.75-10.07-21.91,3.68-8.42,7.76-16.18,12.24-23.29,4.47-7.11,8.29-11.84,11.45-14.21,1.84-1.58,2.76-3.42,2.76-5.53,0-1.84-.66-3.42-1.97-4.74,3.68-2.63,7.76-4.74,12.24-6.31,4.47-1.58,9.08-2.37,13.82-2.37,6.84,0,11.84,2.11,15,6.31,3.16,4.21,4.74,9.74,4.74,16.58,0,10.01-2.9,21.25-8.68,33.75-5.79,12.5-13.42,23.36-22.9,32.57Z"/><path d="M546.13,131.05c3.42,0,6.38-1.12,8.88-3.36,2.5-2.23,3.75-5.07,3.75-8.49,0-3.68-1.18-6.71-3.55-9.08-2.37-2.37-5.4-3.55-9.08-3.55-3.42,0-6.32,1.18-8.68,3.55-2.37,2.37-3.55,5.4-3.55,9.08,0,3.42,1.25,6.26,3.75,8.49,2.5,2.24,5.33,3.36,8.49,3.36Z"/><path d="M683.71,192.05c-1.19-1.44-2.44-2.17-3.75-2.17-1.58,0-2.9.66-3.95,1.97-4.74,5.27-10.01,10.86-15.79,16.78-5.79,5.92-11.84,11.52-18.16,16.78-1.58,1.06-3.36,2.24-5.33,3.55-1.97,1.32-3.62,1.97-4.94,1.97-1.84,0-2.76-1.32-2.76-3.95s.85-6.51,2.56-11.65c1.71-5.13,3.81-10.72,6.32-16.78,2.5-6.05,5-11.71,7.5-16.97,2.5-5.26,4.67-9.34,6.51-12.24.79-1.31,1.19-2.5,1.19-3.55,0-2.1-.79-3.81-2.37-5.13-1.58-1.31-3.29-1.97-5.13-1.97-2.37,0-4.34,1.19-5.92,3.55-3.16,3.95-7.63,9.21-13.42,15.79-5.79,6.58-12.24,13.56-19.34,20.92-7.11,7.37-14.28,14.41-21.51,21.12-7.24,6.71-14.01,12.18-20.33,16.38-6.32,4.21-11.45,6.32-15.39,6.32-2.11,0-3.62-1.05-4.54-3.16-.93-2.1-1.38-4.47-1.38-7.11,0-5.53,1.97-12.56,5.92-21.12,3.95-8.55,9.14-17.5,15.59-26.85,6.44-9.34,13.35-18.09,20.72-26.25,7.36-8.15,14.61-14.86,21.71-20.13,7.11-5.26,13.29-7.9,18.55-7.9,3.68,0,7.56,1.32,11.65,3.95,4.08,2.64,6.77,8.16,8.09,16.58,0,2.11,1.45,3.16,4.34,3.16,1.32,0,2.77-.65,4.34-1.97,1.58-1.31,2.37-3.42,2.37-6.32,0-8.15-1.52-14.34-4.54-18.55-3.03-4.21-6.91-7.04-11.65-8.49-4.74-1.45-9.61-2.17-14.61-2.17-7.37,0-15.4,2.83-24.08,8.49-8.68,5.66-17.31,13.03-25.86,22.11-8.56,9.08-16.38,18.89-23.49,29.41-4.05,6.01-7.61,11.89-10.76,17.69-4.17,4.6-8.67,9.41-13.52,14.49-5.66,5.92-11.78,11.52-18.36,16.78-1.84,1.32-3.95,2.83-6.32,4.54-2.37,1.71-4.48,2.56-6.32,2.56-2.11,0-3.16-1.44-3.16-4.34,0-1.31.39-3.29,1.18-5.92,1.31-3.95,3.42-9.08,6.32-15.4,2.89-6.32,5.53-11.97,7.9-16.98,1.31-2.89,3.29-6.51,5.92-10.86,2.63-4.34,5.33-8.55,8.09-12.63,2.76-4.08,5.06-7.04,6.91-8.88,1.31-1.32,1.97-2.63,1.97-3.95,0-1.58-.79-2.89-2.37-3.95-1.58-1.05-3.42-1.58-5.53-1.58-2.63,0-4.87.93-6.71,2.77-4.48,4.21-9.15,9.94-14.01,17.17-4.87,7.24-9.41,15.14-13.62,23.69-4.21,8.56-7.64,16.84-10.26,24.87-2.63,8.03-3.95,14.8-3.95,20.33,0,4.48,1.05,7.7,3.16,9.67,2.1,1.97,4.87,2.96,8.29,2.96,4.74,0,9.93-1.31,15.59-3.95,5.66-2.63,10.2-5.26,13.62-7.89,3.78-2.83,8.01-6.41,12.67-10.66-.29,2.06-.44,4.04-.44,5.93,0,6.58,1.78,12.04,5.33,16.38s9.01,6.51,16.38,6.51c5.79,0,12.56-2.57,20.33-7.7,7.76-5.13,15.85-11.51,24.28-19.15,8.42-7.63,16.31-15.4,23.68-23.29-1.84,5.27-3.42,10.4-4.74,15.4-1.32,5-1.97,9.47-1.97,13.42,0,5,1.05,8.49,3.16,10.46,2.1,1.97,4.74,2.96,7.89,2.96,4.21,0,8.62-1.12,13.23-3.36,4.6-2.23,8.62-4.54,12.04-6.91,5.26-3.95,11.31-9.28,18.16-15.99,6.84-6.71,12.37-12.83,16.58-18.36,1.32-1.58,1.97-3.55,1.97-5.92,0-2.1-.59-3.88-1.78-5.33Z"/></svg></div>
+              <div style="margin-top:8px;font-size:11px;color:var(--muted-fg)">Primário (#FF6B1A) · fundo claro</div>
+            </div>
+            <div style="padding:20px 24px;background:#1E0B4B;border-radius:10px">
+              <div style="max-width:300px;color:#F5F0E8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="width:100%;height:auto;display:block" fill="currentColor"><path d="M496.29,129.47c0-4.21-.53-7.36-1.58-9.47-1.84-4.21-4.74-6.32-8.68-6.32-1.84,0-3.55.66-5.13,1.97-1.58,1.32-2.37,3.16-2.37,5.53,0,1.84.52,3.69,1.58,5.53.53.79.79,2.5.79,5.13,0,5-1.52,11.98-4.54,20.92-3.03,8.95-7.24,18.62-12.63,29.01-5.4,10.4-11.58,20.27-18.55,29.61-6.98,9.34-14.48,17.04-22.5,23.09-8.03,6.06-16.12,9.08-24.28,9.08-7.64,0-11.45-4.34-11.45-13.03,0-4.99,1.05-10.79,3.16-17.37,2.1-6.58,4.6-13.03,7.5-19.34.55-1.19,1.08-2.32,1.62-3.44.91-1.22,1.82-2.41,2.73-3.66,1.05-1.32,1.58-2.76,1.58-4.34,0-.16-.03-.29-.04-.44.81-1.5,1.61-2.95,2.4-4.29,2.63-4.47,4.34-7.24,5.13-8.29,6.32-8.68,11.05-15.66,14.21-20.92,3.16-5.26,4.74-9.61,4.74-13.03,0-2.63-1.05-5-3.16-7.11-.79-.79-1.97-1.19-3.55-1.19-3.42,0-7.5,2.31-12.24,6.91-4.74,4.61-7.5,11.51-8.29,20.72-1.84,2.11-4.48,6.12-7.9,12.04-3,5.2-6.06,11.2-9.16,17.91-6.01,7.58-11.38,14.06-16.1,19.4-6.06,6.85-12.04,12.18-17.96,15.99-5.92,3.82-12.83,6.39-20.72,7.7,3.95-5.26,7.5-10.59,10.66-15.99,3.16-5.39,5.79-10.72,7.9-15.99,2.1-5.26,3.81-10.86,5.13-16.78,1.31-5.92,1.97-11.78,1.97-17.57,0-9.74-2.44-18.16-7.3-25.27-4.87-7.11-13.49-10.66-25.86-10.66s-23.62,3.29-32.96,9.87c-9.35,6.58-16.72,14.87-22.11,24.87-5.27,9.77-8.08,19.67-8.45,29.69-1.25.18-2.32.8-3.19,1.89-3.95,4.21-8.16,8.82-12.63,13.82-4.48,5-9.35,9.74-14.61,14.21-8.95,7.63-17.96,13.62-27.04,17.96s-15.86,6.51-20.33,6.51c-5.53,0-8.29-3.29-8.29-9.87,0-5.53,1.78-12.56,5.33-21.12,3.55-8.55,7.9-17.43,13.03-26.65,5.13-9.21,10-17.63,14.61-25.26,4.6-7.63,8.09-13.16,10.46-16.58l3.55-5.53h47.37c2.37,0,4.08-.72,5.13-2.17,1.05-1.44,1.58-3.09,1.58-4.94,0-1.58-.53-3.09-1.58-4.54-1.05-1.45-2.76-2.17-5.13-2.17h-37.9c6.32-8.68,12.37-17.04,18.16-25.07,5.79-8.02,10.79-14.8,15-20.33,4.21-5.53,6.71-8.81,7.5-9.87,1.31-2.1,1.97-4.08,1.97-5.92,0-2.37-.79-4.54-2.37-6.51-1.58-1.97-3.42-2.96-5.53-2.96-1.05,0-2.24.4-3.55,1.19-7.9,5.27-14.54,12.24-19.94,20.92-5.4,8.68-9.94,17.76-13.62,27.24-2.37,3.42-4.74,6.91-7.11,10.46-2.37,3.55-5,7.17-7.9,10.86h-24.08c-2.11,0-3.75.73-4.94,2.17-1.18,1.45-1.78,2.96-1.78,4.54,0,1.84.59,3.49,1.78,4.94,1.18,1.45,2.83,2.17,4.94,2.17h14.21c-8.43,12.37-16.65,25.26-24.67,38.69-8.03,13.42-14.01,25.93-17.96,37.5-2.63,7.63-3.95,14.47-3.95,20.53,0,14.48,7.24,21.71,21.71,21.71,5.53,0,11.84-1.19,18.95-3.55,11.58-3.68,22.37-9.21,32.37-16.58,5.26-3.95,11.38-9.28,18.36-15.99,1.06-1.02,2.02-2,3.01-3-1.09,5.34-1.64,10.35-1.64,15.04,0,7.64,1.84,14.01,5.53,19.15,3.68,5.13,10,7.7,18.95,7.7,8.15,0,15.92-1.71,23.29-5.13,7.36-3.42,14.21-7.9,20.53-13.42,13.68,0,25.39-2.37,35.13-7.11,7.38-3.59,14.19-8.24,20.43-13.95-.96,4.78-1.49,9.32-1.49,13.55,0,7.11,1.71,12.9,5.13,17.37,3.42,4.47,9.6,6.71,18.55,6.71,10.52,0,20.79-3.23,30.79-9.67,10-6.44,19.21-14.8,27.63-25.07,8.42-10.26,15.85-21.25,22.3-32.96,6.45-11.71,11.45-23.03,15-33.95,3.55-10.92,5.33-20.06,5.33-27.44ZM273.65,246.72c-3.69,0-6.38-1.25-8.09-3.75-1.72-2.5-2.57-5.85-2.57-10.07,0-4.47.79-9.87,2.37-16.19,2.89,5.27,6.97,9.94,12.24,14.01,5.26,4.08,11.71,7.04,19.34,8.88-7.9,4.74-15.66,7.11-23.29,7.11ZM311.54,228.56c-12.9-.79-22.44-4.41-28.62-10.86-6.19-6.44-9.54-13.75-10.07-21.91,3.68-8.42,7.76-16.18,12.24-23.29,4.47-7.11,8.29-11.84,11.45-14.21,1.84-1.58,2.76-3.42,2.76-5.53,0-1.84-.66-3.42-1.97-4.74,3.68-2.63,7.76-4.74,12.24-6.31,4.47-1.58,9.08-2.37,13.82-2.37,6.84,0,11.84,2.11,15,6.31,3.16,4.21,4.74,9.74,4.74,16.58,0,10.01-2.9,21.25-8.68,33.75-5.79,12.5-13.42,23.36-22.9,32.57Z"/><path d="M546.13,131.05c3.42,0,6.38-1.12,8.88-3.36,2.5-2.23,3.75-5.07,3.75-8.49,0-3.68-1.18-6.71-3.55-9.08-2.37-2.37-5.4-3.55-9.08-3.55-3.42,0-6.32,1.18-8.68,3.55-2.37,2.37-3.55,5.4-3.55,9.08,0,3.42,1.25,6.26,3.75,8.49,2.5,2.24,5.33,3.36,8.49,3.36Z"/><path d="M683.71,192.05c-1.19-1.44-2.44-2.17-3.75-2.17-1.58,0-2.9.66-3.95,1.97-4.74,5.27-10.01,10.86-15.79,16.78-5.79,5.92-11.84,11.52-18.16,16.78-1.58,1.06-3.36,2.24-5.33,3.55-1.97,1.32-3.62,1.97-4.94,1.97-1.84,0-2.76-1.32-2.76-3.95s.85-6.51,2.56-11.65c1.71-5.13,3.81-10.72,6.32-16.78,2.5-6.05,5-11.71,7.5-16.97,2.5-5.26,4.67-9.34,6.51-12.24.79-1.31,1.19-2.5,1.19-3.55,0-2.1-.79-3.81-2.37-5.13-1.58-1.31-3.29-1.97-5.13-1.97-2.37,0-4.34,1.19-5.92,3.55-3.16,3.95-7.63,9.21-13.42,15.79-5.79,6.58-12.24,13.56-19.34,20.92-7.11,7.37-14.28,14.41-21.51,21.12-7.24,6.71-14.01,12.18-20.33,16.38-6.32,4.21-11.45,6.32-15.39,6.32-2.11,0-3.62-1.05-4.54-3.16-.93-2.1-1.38-4.47-1.38-7.11,0-5.53,1.97-12.56,5.92-21.12,3.95-8.55,9.14-17.5,15.59-26.85,6.44-9.34,13.35-18.09,20.72-26.25,7.36-8.15,14.61-14.86,21.71-20.13,7.11-5.26,13.29-7.9,18.55-7.9,3.68,0,7.56,1.32,11.65,3.95,4.08,2.64,6.77,8.16,8.09,16.58,0,2.11,1.45,3.16,4.34,3.16,1.32,0,2.77-.65,4.34-1.97,1.58-1.31,2.37-3.42,2.37-6.32,0-8.15-1.52-14.34-4.54-18.55-3.03-4.21-6.91-7.04-11.65-8.49-4.74-1.45-9.61-2.17-14.61-2.17-7.37,0-15.4,2.83-24.08,8.49-8.68,5.66-17.31,13.03-25.86,22.11-8.56,9.08-16.38,18.89-23.49,29.41-4.05,6.01-7.61,11.89-10.76,17.69-4.17,4.6-8.67,9.41-13.52,14.49-5.66,5.92-11.78,11.52-18.36,16.78-1.84,1.32-3.95,2.83-6.32,4.54-2.37,1.71-4.48,2.56-6.32,2.56-2.11,0-3.16-1.44-3.16-4.34,0-1.31.39-3.29,1.18-5.92,1.31-3.95,3.42-9.08,6.32-15.4,2.89-6.32,5.53-11.97,7.9-16.98,1.31-2.89,3.29-6.51,5.92-10.86,2.63-4.34,5.33-8.55,8.09-12.63,2.76-4.08,5.06-7.04,6.91-8.88,1.31-1.32,1.97-2.63,1.97-3.95,0-1.58-.79-2.89-2.37-3.95-1.58-1.05-3.42-1.58-5.53-1.58-2.63,0-4.87.93-6.71,2.77-4.48,4.21-9.15,9.94-14.01,17.17-4.87,7.24-9.41,15.14-13.62,23.69-4.21,8.56-7.64,16.84-10.26,24.87-2.63,8.03-3.95,14.8-3.95,20.33,0,4.48,1.05,7.7,3.16,9.67,2.1,1.97,4.87,2.96,8.29,2.96,4.74,0,9.93-1.31,15.59-3.95,5.66-2.63,10.2-5.26,13.62-7.89,3.78-2.83,8.01-6.41,12.67-10.66-.29,2.06-.44,4.04-.44,5.93,0,6.58,1.78,12.04,5.33,16.38s9.01,6.51,16.38,6.51c5.79,0,12.56-2.57,20.33-7.7,7.76-5.13,15.85-11.51,24.28-19.15,8.42-7.63,16.31-15.4,23.68-23.29-1.84,5.27-3.42,10.4-4.74,15.4-1.32,5-1.97,9.47-1.97,13.42,0,5,1.05,8.49,3.16,10.46,2.1,1.97,4.74,2.96,7.89,2.96,4.21,0,8.62-1.12,13.23-3.36,4.6-2.23,8.62-4.54,12.04-6.91,5.26-3.95,11.31-9.28,18.16-15.99,6.84-6.71,12.37-12.83,16.58-18.36,1.32-1.58,1.97-3.55,1.97-5.92,0-2.1-.59-3.88-1.78-5.33Z"/></svg></div>
+              <div style="margin-top:8px;font-size:11px;color:rgba(245,240,232,0.6)">Cream (#F5F0E8) · fundo escuro</div>
+            </div>
+            <div style="padding:20px 24px;background:#2D1470;border-radius:10px">
+              <div style="max-width:300px;color:#FF6B1A"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="width:100%;height:auto;display:block" fill="currentColor"><path d="M496.29,129.47c0-4.21-.53-7.36-1.58-9.47-1.84-4.21-4.74-6.32-8.68-6.32-1.84,0-3.55.66-5.13,1.97-1.58,1.32-2.37,3.16-2.37,5.53,0,1.84.52,3.69,1.58,5.53.53.79.79,2.5.79,5.13,0,5-1.52,11.98-4.54,20.92-3.03,8.95-7.24,18.62-12.63,29.01-5.4,10.4-11.58,20.27-18.55,29.61-6.98,9.34-14.48,17.04-22.5,23.09-8.03,6.06-16.12,9.08-24.28,9.08-7.64,0-11.45-4.34-11.45-13.03,0-4.99,1.05-10.79,3.16-17.37,2.1-6.58,4.6-13.03,7.5-19.34.55-1.19,1.08-2.32,1.62-3.44.91-1.22,1.82-2.41,2.73-3.66,1.05-1.32,1.58-2.76,1.58-4.34,0-.16-.03-.29-.04-.44.81-1.5,1.61-2.95,2.4-4.29,2.63-4.47,4.34-7.24,5.13-8.29,6.32-8.68,11.05-15.66,14.21-20.92,3.16-5.26,4.74-9.61,4.74-13.03,0-2.63-1.05-5-3.16-7.11-.79-.79-1.97-1.19-3.55-1.19-3.42,0-7.5,2.31-12.24,6.91-4.74,4.61-7.5,11.51-8.29,20.72-1.84,2.11-4.48,6.12-7.9,12.04-3,5.2-6.06,11.2-9.16,17.91-6.01,7.58-11.38,14.06-16.1,19.4-6.06,6.85-12.04,12.18-17.96,15.99-5.92,3.82-12.83,6.39-20.72,7.7,3.95-5.26,7.5-10.59,10.66-15.99,3.16-5.39,5.79-10.72,7.9-15.99,2.1-5.26,3.81-10.86,5.13-16.78,1.31-5.92,1.97-11.78,1.97-17.57,0-9.74-2.44-18.16-7.3-25.27-4.87-7.11-13.49-10.66-25.86-10.66s-23.62,3.29-32.96,9.87c-9.35,6.58-16.72,14.87-22.11,24.87-5.27,9.77-8.08,19.67-8.45,29.69-1.25.18-2.32.8-3.19,1.89-3.95,4.21-8.16,8.82-12.63,13.82-4.48,5-9.35,9.74-14.61,14.21-8.95,7.63-17.96,13.62-27.04,17.96s-15.86,6.51-20.33,6.51c-5.53,0-8.29-3.29-8.29-9.87,0-5.53,1.78-12.56,5.33-21.12,3.55-8.55,7.9-17.43,13.03-26.65,5.13-9.21,10-17.63,14.61-25.26,4.6-7.63,8.09-13.16,10.46-16.58l3.55-5.53h47.37c2.37,0,4.08-.72,5.13-2.17,1.05-1.44,1.58-3.09,1.58-4.94,0-1.58-.53-3.09-1.58-4.54-1.05-1.45-2.76-2.17-5.13-2.17h-37.9c6.32-8.68,12.37-17.04,18.16-25.07,5.79-8.02,10.79-14.8,15-20.33,4.21-5.53,6.71-8.81,7.5-9.87,1.31-2.1,1.97-4.08,1.97-5.92,0-2.37-.79-4.54-2.37-6.51-1.58-1.97-3.42-2.96-5.53-2.96-1.05,0-2.24.4-3.55,1.19-7.9,5.27-14.54,12.24-19.94,20.92-5.4,8.68-9.94,17.76-13.62,27.24-2.37,3.42-4.74,6.91-7.11,10.46-2.37,3.55-5,7.17-7.9,10.86h-24.08c-2.11,0-3.75.73-4.94,2.17-1.18,1.45-1.78,2.96-1.78,4.54,0,1.84.59,3.49,1.78,4.94,1.18,1.45,2.83,2.17,4.94,2.17h14.21c-8.43,12.37-16.65,25.26-24.67,38.69-8.03,13.42-14.01,25.93-17.96,37.5-2.63,7.63-3.95,14.47-3.95,20.53,0,14.48,7.24,21.71,21.71,21.71,5.53,0,11.84-1.19,18.95-3.55,11.58-3.68,22.37-9.21,32.37-16.58,5.26-3.95,11.38-9.28,18.36-15.99,1.06-1.02,2.02-2,3.01-3-1.09,5.34-1.64,10.35-1.64,15.04,0,7.64,1.84,14.01,5.53,19.15,3.68,5.13,10,7.7,18.95,7.7,8.15,0,15.92-1.71,23.29-5.13,7.36-3.42,14.21-7.9,20.53-13.42,13.68,0,25.39-2.37,35.13-7.11,7.38-3.59,14.19-8.24,20.43-13.95-.96,4.78-1.49,9.32-1.49,13.55,0,7.11,1.71,12.9,5.13,17.37,3.42,4.47,9.6,6.71,18.55,6.71,10.52,0,20.79-3.23,30.79-9.67,10-6.44,19.21-14.8,27.63-25.07,8.42-10.26,15.85-21.25,22.3-32.96,6.45-11.71,11.45-23.03,15-33.95,3.55-10.92,5.33-20.06,5.33-27.44ZM273.65,246.72c-3.69,0-6.38-1.25-8.09-3.75-1.72-2.5-2.57-5.85-2.57-10.07,0-4.47.79-9.87,2.37-16.19,2.89,5.27,6.97,9.94,12.24,14.01,5.26,4.08,11.71,7.04,19.34,8.88-7.9,4.74-15.66,7.11-23.29,7.11ZM311.54,228.56c-12.9-.79-22.44-4.41-28.62-10.86-6.19-6.44-9.54-13.75-10.07-21.91,3.68-8.42,7.76-16.18,12.24-23.29,4.47-7.11,8.29-11.84,11.45-14.21,1.84-1.58,2.76-3.42,2.76-5.53,0-1.84-.66-3.42-1.97-4.74,3.68-2.63,7.76-4.74,12.24-6.31,4.47-1.58,9.08-2.37,13.82-2.37,6.84,0,11.84,2.11,15,6.31,3.16,4.21,4.74,9.74,4.74,16.58,0,10.01-2.9,21.25-8.68,33.75-5.79,12.5-13.42,23.36-22.9,32.57Z"/><path d="M546.13,131.05c3.42,0,6.38-1.12,8.88-3.36,2.5-2.23,3.75-5.07,3.75-8.49,0-3.68-1.18-6.71-3.55-9.08-2.37-2.37-5.4-3.55-9.08-3.55-3.42,0-6.32,1.18-8.68,3.55-2.37,2.37-3.55,5.4-3.55,9.08,0,3.42,1.25,6.26,3.75,8.49,2.5,2.24,5.33,3.36,8.49,3.36Z"/><path d="M683.71,192.05c-1.19-1.44-2.44-2.17-3.75-2.17-1.58,0-2.9.66-3.95,1.97-4.74,5.27-10.01,10.86-15.79,16.78-5.79,5.92-11.84,11.52-18.16,16.78-1.58,1.06-3.36,2.24-5.33,3.55-1.97,1.32-3.62,1.97-4.94,1.97-1.84,0-2.76-1.32-2.76-3.95s.85-6.51,2.56-11.65c1.71-5.13,3.81-10.72,6.32-16.78,2.5-6.05,5-11.71,7.5-16.97,2.5-5.26,4.67-9.34,6.51-12.24.79-1.31,1.19-2.5,1.19-3.55,0-2.1-.79-3.81-2.37-5.13-1.58-1.31-3.29-1.97-5.13-1.97-2.37,0-4.34,1.19-5.92,3.55-3.16,3.95-7.63,9.21-13.42,15.79-5.79,6.58-12.24,13.56-19.34,20.92-7.11,7.37-14.28,14.41-21.51,21.12-7.24,6.71-14.01,12.18-20.33,16.38-6.32,4.21-11.45,6.32-15.39,6.32-2.11,0-3.62-1.05-4.54-3.16-.93-2.1-1.38-4.47-1.38-7.11,0-5.53,1.97-12.56,5.92-21.12,3.95-8.55,9.14-17.5,15.59-26.85,6.44-9.34,13.35-18.09,20.72-26.25,7.36-8.15,14.61-14.86,21.71-20.13,7.11-5.26,13.29-7.9,18.55-7.9,3.68,0,7.56,1.32,11.65,3.95,4.08,2.64,6.77,8.16,8.09,16.58,0,2.11,1.45,3.16,4.34,3.16,1.32,0,2.77-.65,4.34-1.97,1.58-1.31,2.37-3.42,2.37-6.32,0-8.15-1.52-14.34-4.54-18.55-3.03-4.21-6.91-7.04-11.65-8.49-4.74-1.45-9.61-2.17-14.61-2.17-7.37,0-15.4,2.83-24.08,8.49-8.68,5.66-17.31,13.03-25.86,22.11-8.56,9.08-16.38,18.89-23.49,29.41-4.05,6.01-7.61,11.89-10.76,17.69-4.17,4.6-8.67,9.41-13.52,14.49-5.66,5.92-11.78,11.52-18.36,16.78-1.84,1.32-3.95,2.83-6.32,4.54-2.37,1.71-4.48,2.56-6.32,2.56-2.11,0-3.16-1.44-3.16-4.34,0-1.31.39-3.29,1.18-5.92,1.31-3.95,3.42-9.08,6.32-15.4,2.89-6.32,5.53-11.97,7.9-16.98,1.31-2.89,3.29-6.51,5.92-10.86,2.63-4.34,5.33-8.55,8.09-12.63,2.76-4.08,5.06-7.04,6.91-8.88,1.31-1.32,1.97-2.63,1.97-3.95,0-1.58-.79-2.89-2.37-3.95-1.58-1.05-3.42-1.58-5.53-1.58-2.63,0-4.87.93-6.71,2.77-4.48,4.21-9.15,9.94-14.01,17.17-4.87,7.24-9.41,15.14-13.62,23.69-4.21,8.56-7.64,16.84-10.26,24.87-2.63,8.03-3.95,14.8-3.95,20.33,0,4.48,1.05,7.7,3.16,9.67,2.1,1.97,4.87,2.96,8.29,2.96,4.74,0,9.93-1.31,15.59-3.95,5.66-2.63,10.2-5.26,13.62-7.89,3.78-2.83,8.01-6.41,12.67-10.66-.29,2.06-.44,4.04-.44,5.93,0,6.58,1.78,12.04,5.33,16.38s9.01,6.51,16.38,6.51c5.79,0,12.56-2.57,20.33-7.7,7.76-5.13,15.85-11.51,24.28-19.15,8.42-7.63,16.31-15.4,23.68-23.29-1.84,5.27-3.42,10.4-4.74,15.4-1.32,5-1.97,9.47-1.97,13.42,0,5,1.05,8.49,3.16,10.46,2.1,1.97,4.74,2.96,7.89,2.96,4.21,0,8.62-1.12,13.23-3.36,4.6-2.23,8.62-4.54,12.04-6.91,5.26-3.95,11.31-9.28,18.16-15.99,6.84-6.71,12.37-12.83,16.58-18.36,1.32-1.58,1.97-3.55,1.97-5.92,0-2.1-.59-3.88-1.78-5.33Z"/></svg></div>
+              <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.6)">Primário (#FF6B1A) · fundo sidebar</div>
+            </div>
+          </div>
+          <div class="notice notice-accent" style="margin-top:16px">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Arquivo SVG — não é uma fonte. Use <code>fill="currentColor"</code> e defina a cor via <code>color</code> no elemento pai.</span>
+          </div>
+        </div>
+        <div class="component-code">public/logo-tovia-meow.svg · fill="currentColor" · uso: logo decorativo apenas</div>
+      </div>
+    </section>
+
+    <!-- ── RAIOS E SOMBRAS ────────────────────────────── -->
+    <section class="ds-section" id="spacing">
+      <div class="section-eyebrow">Fundação</div>
+      <div class="section-title">Raios e Sombras</div>
+      <div class="section-desc">Radius base: <code>0.75rem (12px)</code>. Sombras levemente tingidas de roxo para coerência com a paleta — não puro cinza/preto.</div>
+      <div class="sub-label" style="margin-bottom:16px">Border Radius</div>
+      <div class="radius-row" style="margin-bottom:32px">
+        <div class="radius-box"><div class="radius-sample" style="border-radius:0"></div><div>0</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:4px"></div><div>4px · xs</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:8px"></div><div>8px · sm</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:12px"></div><div>12px · base</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:16px"></div><div>16px · lg</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:20px"></div><div>20px · xl</div></div>
+        <div class="radius-box"><div class="radius-sample" style="border-radius:999px;width:64px;height:36px"></div><div>999px · pill</div></div>
+      </div>
+      <div class="sub-label" style="margin-bottom:16px">Elevação / Sombras</div>
+      <div class="shadow-row">
+        <div class="shadow-box" style="box-shadow:var(--shadow-flat)"><div class="shadow-name">flat</div><div>0 1px 3px</div></div>
+        <div class="shadow-box" style="box-shadow:var(--shadow-raised)"><div class="shadow-name">raised</div><div>0 4px 16px</div></div>
+        <div class="shadow-box" style="box-shadow:var(--shadow-floating)"><div class="shadow-name">floating</div><div>0 8px 32px</div></div>
+      </div>
+    </section>
+
+    <!-- ── TOKENS ─────────────────────────────────────── -->
+    <section class="ds-section" id="tokens">
+      <div class="section-eyebrow">Fundação</div>
+      <div class="section-title">Tokens CSS</div>
+      <div class="section-desc">Variáveis definidas em <code>src/index.css</code>. Coluna "Dark" mostra os valores para dark mode.</div>
+      <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>--background</code></td><td><span class="token-dot" style="background:#F5F0E8"></span>#F5F0E8</td><td><span class="token-dot" style="background:#0C0720"></span>#0C0720</td><td>Fundo da página</td></tr>
+            <tr><td><code>--foreground</code></td><td><span class="token-dot" style="background:#1E0B4B"></span>#1E0B4B</td><td><span class="token-dot" style="background:#F5F0E8;border-color:#999"></span>#F5F0E8</td><td>Texto principal</td></tr>
+            <tr><td><code>--card</code></td><td><span class="token-dot" style="background:#ffffff"></span>#ffffff</td><td><span class="token-dot" style="background:#160A38"></span>#160A38</td><td>Superfície de card</td></tr>
+            <tr><td><code>--primary</code></td><td><span class="token-dot" style="background:#FF6B1A"></span>#FF6B1A</td><td><span class="token-dot" style="background:#FF8C47"></span>#FF8C47</td><td>Cor de ação principal (laranja)</td></tr>
+            <tr><td><code>--primary-dark</code></td><td><span class="token-dot" style="background:#E55A08"></span>#E55A08</td><td><span class="token-dot" style="background:#E07035"></span>#E07035</td><td>Hover do botão primary</td></tr>
+            <tr><td><code>--primary-light</code></td><td><span class="token-dot" style="background:#FFF4EE"></span>#FFF4EE</td><td><span class="token-dot" style="background:#3D1506"></span>#3D1506</td><td>Fundo de destaque laranja</td></tr>
+            <tr><td><code>--accent</code></td><td><span class="token-dot" style="background:#9B5FFF"></span>#9B5FFF</td><td><span class="token-dot" style="background:#B07FFF"></span>#B07FFF</td><td>Violeta — destaque secundário</td></tr>
+            <tr><td><code>--accent-light</code></td><td><span class="token-dot" style="background:#F0E8FF"></span>#F0E8FF</td><td><span class="token-dot" style="background:#1E0B4B"></span>#1E0B4B</td><td>Fundo de destaque violeta</td></tr>
+            <tr><td><code>--secondary</code></td><td><span class="token-dot" style="background:#EDE8DE"></span>#EDE8DE</td><td><span class="token-dot" style="background:#1E1050"></span>#1E1050</td><td>Fundo secundário / hover</td></tr>
+            <tr><td><code>--muted-fg</code></td><td><span class="token-dot" style="background:#6b5fa0"></span>#6b5fa0</td><td><span class="token-dot" style="background:#A899CC"></span>#A899CC</td><td>Texto secundário</td></tr>
+            <tr><td><code>--border</code></td><td><span class="token-dot" style="background:#E0D8CC"></span>#E0D8CC</td><td><span class="token-dot" style="background:#2A1660"></span>#2A1660</td><td>Bordas e divisores</td></tr>
+            <tr><td><code>--destructive</code></td><td><span class="token-dot" style="background:#ef4444"></span>#ef4444</td><td><span class="token-dot" style="background:#7f1d1d"></span>#7f1d1d</td><td>Erros, exclusão</td></tr>
+            <tr><td><code>--sb</code></td><td><span class="token-dot" style="background:#2D1470"></span>#2D1470</td><td><span class="token-dot" style="background:#1A0B40"></span>#1A0B40</td><td>Sidebar / superfícies escuras</td></tr>
+            <tr><td><code>--ring</code></td><td><span class="token-dot" style="background:#FF6B1A"></span>#FF6B1A</td><td><span class="token-dot" style="background:#FF8C47"></span>#FF8C47</td><td>Focus ring</td></tr>
+            <tr><td><code>--radius</code></td><td colspan="2">0.75rem (12px)</td><td>Raio base dos componentes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── BOTÕES ─────────────────────────────────────── -->
+    <section class="ds-section" id="buttons">
+      <div class="section-eyebrow">Componentes</div>
+      <div class="section-title">Botões</div>
+      <div class="section-desc">Dois botões de ação: <strong>Primary</strong> (laranja, ação principal) e <strong>Accent</strong> (violeta, ação secundária de destaque). Font-weight 700 min. Sempre <code>cursor: pointer</code>.</div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Variantes</div>
+        <div class="component-preview">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-accent">Accent</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-outline">Outline</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-destructive">Destructive</button>
+        </div>
+        <div class="component-code">btn-primary · btn-accent · btn-secondary · btn-outline · btn-ghost · btn-destructive</div>
+      </div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Tamanhos</div>
+        <div class="component-preview" style="align-items:center">
+          <button class="btn btn-primary btn-sm">Pequeno</button>
+          <button class="btn btn-primary">Padrão</button>
+          <button class="btn btn-primary btn-lg">Grande</button>
+        </div>
+        <div class="component-code">btn-sm · (padrão) · btn-lg</div>
+      </div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Com ícone</div>
+        <div class="component-preview">
+          <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Novo Evento</button>
+          <button class="btn btn-accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 15 21 21 3 21 3 15"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar</button>
+          <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscar</button>
+        </div>
+        <div class="component-code">Ícone SVG 15×15 à esquerda do texto</div>
+      </div>
+    </section>
+
+    <!-- ── BADGES ─────────────────────────────────────── -->
+    <section class="ds-section" id="badges">
+      <div class="section-eyebrow">Componentes</div>
+      <div class="section-title">Badges e Status</div>
+      <div class="section-desc">Pill shape (radius 999px), font-size 11px, font-weight 700. Badge de plano usa laranja para Koách (plano principal) e violeta para Chalém (top).</div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Status semânticos</div>
+        <div class="component-preview">
+          <span class="badge badge-green">Ativo</span>
+          <span class="badge badge-gray">Inativo</span>
+          <span class="badge badge-red">Bloqueado</span>
+          <span class="badge badge-yellow">Pendente</span>
+          <span class="badge badge-blue">Em andamento</span>
+          <span class="badge badge-orange">Destaque</span>
+          <span class="badge badge-purple">Premium</span>
+        </div>
+        <div class="component-code">badge-green · badge-gray · badge-red · badge-yellow · badge-blue · badge-orange · badge-purple</div>
+      </div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Planos</div>
+        <div class="component-preview">
+          <span class="badge plan-chinam">Chinám</span>
+          <span class="badge plan-petach">Pétach</span>
+          <span class="badge plan-koach">Koách</span>
+          <span class="badge plan-chalem">Chalém</span>
+        </div>
+        <div class="component-code">plan-chinam (gray) · plan-petach (blue) · plan-koach (orange) · plan-chalem (purple)</div>
+      </div>
+    </section>
+
+    <!-- ── CARDS ─────────────────────────────────────── -->
+    <section class="ds-section" id="cards">
+      <div class="section-eyebrow">Componentes</div>
+      <div class="section-title">Cards</div>
+      <div class="section-desc">Três níveis de elevação. Background sempre <code>var(--card)</code> + border <code>var(--border)</code>.</div>
+      <div class="component-block">
+        <div class="component-preview">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;width:100%">
+            <div class="card-demo" style="box-shadow:var(--shadow-flat)"><div class="card-title">card-flat</div><div class="card-body">Listas e tabelas.</div></div>
+            <div class="card-demo" style="box-shadow:var(--shadow-raised)"><div class="card-title">card-raised</div><div class="card-body">Painéis e conteúdo principal.</div></div>
+            <div class="card-demo" style="box-shadow:var(--shadow-floating)"><div class="card-title">card-floating</div><div class="card-body">Modais e popovers.</div></div>
+          </div>
+        </div>
+        <div class="component-code">shadow-flat · shadow-raised · shadow-floating</div>
+      </div>
+    </section>
+
+    <!-- ── GLASS ─────────────────────────────────────── -->
+    <section class="ds-section" id="glass">
+      <div class="section-eyebrow">Componentes · Novo</div>
+      <div class="section-title">Glass (efeito iOS)</div>
+      <div class="section-desc">Glassmorphism com <code>backdrop-filter: blur(20px)</code>. Dois contextos: sobre fundos claros (creme) e sobre fundos escuros (roxo). Usar com moderação — hero, cards flutuantes, stat cards.</div>
+      <div class="notice notice-accent">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <span>Glass sobre fundo claro precisa de opacidade maior (≥15%) para ter contraste. Glass sobre fundo escuro funciona bem a partir de 6–8%.</span>
+      </div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Sobre fundo creme</div>
+        <div class="component-preview" style="background:var(--primary-light)">
+          <div class="glass-card-demo" style="min-width:220px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin-bottom:6px">Inscrições</div>
+            <div style="font-size:28px;font-weight:900;color:var(--foreground);letter-spacing:-.03em">142</div>
+            <div style="font-size:11px;color:var(--primary);font-weight:700;margin-top:2px">↑ +18 hoje</div>
+          </div>
+        </div>
+        <div class="component-code">background: rgba(255,107,26,.06) · blur(20px) · border: rgba(255,107,26,.2)</div>
+      </div>
+      <div class="component-block">
+        <div class="sub-label" style="padding:16px 24px 0">Sobre fundo roxo (hero)</div>
+        <div class="component-preview" style="background:linear-gradient(135deg,#1E0B4B,#2D1470)">
+          <div class="glass-card-demo-dark" style="min-width:220px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,184,232,.75);margin-bottom:6px">Inscrições</div>
+            <div style="font-size:28px;font-weight:900;color:#F5F0E8;letter-spacing:-.03em">142</div>
+            <div style="font-size:11px;color:#FF6B1A;font-weight:700;margin-top:2px">↑ +18 hoje</div>
+          </div>
+          <div class="glass-card-demo-dark" style="min-width:220px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,184,232,.75);margin-bottom:6px">Doações</div>
+            <div style="font-size:28px;font-weight:900;color:#F5F0E8;letter-spacing:-.03em">R$4.320</div>
+            <div style="font-size:11px;color:#9B5FFF;font-weight:700;margin-top:2px">↑ mês atual</div>
+          </div>
+        </div>
+        <div class="component-code">background: rgba(255,255,255,.07) · blur(20px) · border: rgba(255,255,255,.14) · inset 0 1px 0 rgba(255,255,255,.1)</div>
+      </div>
+    </section>
+
+    <!-- ── INPUTS ─────────────────────────────────────── -->
+    <section class="ds-section" id="inputs">
+      <div class="section-eyebrow">Componentes</div>
+      <div class="section-title">Inputs</div>
+      <div class="section-desc">Focus ring laranja com <code>box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent)</code>. Border muda para <code>var(--primary)</code> no focus.</div>
+      <div class="component-block">
+        <div class="component-preview col">
+          <div class="input-wrap">
+            <label class="input-label">Nome do evento</label>
+            <input class="input-demo" placeholder="Ex: Workshop de Liderança 2026" />
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Data de início</label>
+            <input class="input-demo" type="date" />
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Estado (disabled)</label>
+            <input class="input-demo" placeholder="Não disponível" disabled style="opacity:.5;cursor:not-allowed" />
+          </div>
+        </div>
+        <div class="component-code">border: 1.5px solid var(--input) → focus: var(--primary) + ring 3px 20%</div>
+      </div>
+    </section>
+
+    <!-- ── SIDEBAR ────────────────────────────────────── -->
+    <section class="ds-section" id="sidebar">
+      <div class="section-eyebrow">Componentes</div>
+      <div class="section-title">Sidebar</div>
+      <div class="section-desc">Fundo roxo profundo <code>#2D1470</code>. Texto creme com opacidade para hierarquia. Item ativo usa <code>rgba(245,240,232,.13)</code> como fundo.</div>
+      <div class="component-block">
+        <div class="component-preview">
+          <div class="sb-demo" style="width:200px">
+            <div class="sb-demo-section">Eventos</div>
+            <div class="sb-demo-item active">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Meus Eventos
+            </div>
+            <div class="sb-demo-item">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Participantes
+            </div>
+            <div class="sb-demo-item">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Financeiro
+            </div>
+            <div class="sb-demo-section">Conta</div>
+            <div class="sb-demo-item">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+              Configurações
+            </div>
+          </div>
+        </div>
+        <div class="component-code">--sb: #2D1470 · --sb-active: rgba(245,240,232,.13) · --sb-hover: rgba(245,240,232,.07)</div>
+      </div>
+    </section>
+
+    <!-- ── LOGO ───────────────────────────────────────── -->
+    <section class="ds-section" id="logo">
+      <div class="section-eyebrow">Identidade</div>
+      <div class="section-title">Logo</div>
+      <div class="section-desc">Wordmark <strong>tovia</strong> em peso 900. A letra <strong>v</strong> é colorida com <code>var(--primary)</code> (laranja). Tagline "Gestão de Eventos" em 9px uppercase com border-left.</div>
+      <div class="component-block">
+        <div class="component-preview col" style="gap:24px">
+          <div style="display:flex;align-items:center;gap:12px;background:var(--card);padding:20px 24px;border-radius:10px;border:1px solid var(--border)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="height:40px;width:auto;display:inline-block;vertical-align:middle;" fill="var(--foreground)"><path d="M166.16,76.05h-38.04c-9.67,0-17.5,7.84-17.5,17.5v19.25h-19.62v40.34h19.62v69.63c0,15.38,4.4,27.03,13.19,34.95,8.8,7.92,21.85,11.88,39.17,11.88,4.97,0,10.27-.3,15.89-.9,5.62-.6,11.61-1.77,17.96-3.52l-6.63-39.65c-1.01.37-3.11.76-6.29,1.17s-5.6.62-7.25.62c-3.68,0-6.36-.81-8.01-2.42-1.66-1.61-2.49-4.03-2.49-7.25v-64.52h30.67v-40.34h-30.67v-36.75Z"/><path d="M323.7,122.67c-11.88-6.58-26.21-9.87-42.97-9.87s-31.13,3.29-43.11,9.87c-11.97,6.58-21.12,15.75-27.43,27.5-6.31,11.75-9.46,25.43-9.46,41.04s3.15,29.29,9.46,41.04c6.31,11.75,15.45,20.92,27.43,27.5,11.97,6.58,26.34,9.87,43.11,9.87s31.09-3.29,42.97-9.87c11.88-6.58,20.98-15.74,27.29-27.5,6.31-11.75,9.46-25.43,9.46-41.04s-3.16-29.29-9.46-41.04c-6.31-11.75-15.4-20.92-27.29-27.5ZM301.04,211.28c-1.84,5.67-4.49,10.01-7.94,13-3.45,2.99-7.58,4.49-12.37,4.49s-9.07-1.5-12.57-4.49c-3.5-2.99-6.17-7.33-8.01-13-1.84-5.67-2.76-12.46-2.76-20.35s.92-14.75,2.76-20.28c1.84-5.53,4.51-9.75,8.01-12.66,3.5-2.9,7.69-4.36,12.57-4.36s8.91,1.45,12.37,4.36c3.45,2.91,6.1,7.13,7.94,12.66,1.84,5.54,2.76,12.3,2.76,20.28s-.92,14.68-2.76,20.35Z"/><path d="M453.01,184.33c-2.86,10.66-5.39,21.51-7.6,32.54,0,.04-.02.08-.02.12-.52,2.6-4.17,2.61-4.7,0-.01-.07-.03-.13-.04-.19-2.26-11.08-4.86-21.9-7.81-32.47l-20.03-71.53h-58.3l50.82,144.91c2.5,7.13,9.16,11.9,16.61,11.9h40.52c7.35,0,13.9-4.69,16.38-11.71l51.14-145.1h-57.47l-19.48,71.53Z"/><path d="M564.65,96.63c7.55,0,14-2.49,19.34-7.46,5.34-4.97,8.01-10.96,8.01-17.96s-2.67-13.1-8.01-18.03c-5.34-4.93-11.79-7.39-19.34-7.39s-14,2.47-19.34,7.39c-5.34,4.93-8.01,10.94-8.01,18.03s2.67,12.99,8.01,17.96c5.34,4.97,11.79,7.46,19.34,7.46Z"/><path d="M574.75,112.67h-20.2c-9.75,0-17.66,7.91-17.66,17.66v139.28h55.54v-139.27c0-9.76-7.91-17.68-17.68-17.68Z"/><path d="M745.85,143.14c-3.36-6.04-8.2-11.34-14.51-15.89-6.31-4.54-13.91-8.09-22.8-10.64-8.89-2.54-18.81-3.82-29.77-3.82-14.46,0-26.73,2.09-36.82,6.27-10.09,4.18-17.99,9.77-23.69,16.77-4.34,5.32-7.45,11.09-9.34,17.3l51.02,4.99c.41-.6.86-1.17,1.36-1.7,1.89-2,4.26-3.5,7.12-4.5,2.85-1,6.03-1.5,9.53-1.5s6.68.48,9.26,1.43c2.58.95,4.58,2.34,6.01,4.16,1.43,1.82,2.14,4.05,2.14,6.68v.55c0,2.91-1.18,5.25-3.52,7.02-2.35,1.77-6.13,3.12-11.33,4.02-5.2.91-12.14,1.68-20.79,2.32-8.01.55-15.45,1.84-22.31,3.89-6.86,2.05-12.87,4.96-18.03,8.73-5.16,3.77-9.17,8.61-12.02,14.52-2.86,5.91-4.28,13.05-4.28,21.41,0,10.09,2.12,18.41,6.36,24.95,4.24,6.54,10.15,11.43,17.75,14.66,7.6,3.23,16.32,4.84,26.18,4.84,6.72,0,12.85-.82,18.38-2.45,5.53-1.64,10.48-4.2,14.85-7.7,4.37-3.5,8.13-8.11,11.26-13.84h1.1v23.99h34.52c9.63,0,17.43-10.15,17.43-19.65v-87.25c0-7-1.68-13.52-5.04-19.57ZM695.9,213.16c0,4.64-1.17,8.57-3.52,11.8-2.35,3.23-5.39,5.71-9.12,7.43-3.73,1.73-7.72,2.59-11.95,2.59-3.13,0-5.9-.5-8.29-1.5-2.4-1-4.28-2.48-5.66-4.43-1.38-1.95-2.07-4.34-2.07-7.16,0-2.64.64-5.02,1.93-7.16,1.29-2.13,3.29-3.95,6.01-5.45,2.72-1.5,6.24-2.57,10.57-3.2,2.21-.36,4.3-.73,6.29-1.09,1.98-.36,3.91-.77,5.8-1.23,1.89-.45,3.66-.95,5.32-1.5,1.66-.55,3.22-1.09,4.7-1.64v12.55Z"/></svg>
+            <span style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);border-left:1px solid var(--border);padding-left:10px;line-height:1.4">Gestão de<br>Eventos</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:#2D1470;padding:20px 24px;border-radius:10px">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="height:40px;width:auto;display:inline-block;vertical-align:middle;" fill="#F5F0E8"><path d="M166.16,76.05h-38.04c-9.67,0-17.5,7.84-17.5,17.5v19.25h-19.62v40.34h19.62v69.63c0,15.38,4.4,27.03,13.19,34.95,8.8,7.92,21.85,11.88,39.17,11.88,4.97,0,10.27-.3,15.89-.9,5.62-.6,11.61-1.77,17.96-3.52l-6.63-39.65c-1.01.37-3.11.76-6.29,1.17s-5.6.62-7.25.62c-3.68,0-6.36-.81-8.01-2.42-1.66-1.61-2.49-4.03-2.49-7.25v-64.52h30.67v-40.34h-30.67v-36.75Z"/><path d="M323.7,122.67c-11.88-6.58-26.21-9.87-42.97-9.87s-31.13,3.29-43.11,9.87c-11.97,6.58-21.12,15.75-27.43,27.5-6.31,11.75-9.46,25.43-9.46,41.04s3.15,29.29,9.46,41.04c6.31,11.75,15.45,20.92,27.43,27.5,11.97,6.58,26.34,9.87,43.11,9.87s31.09-3.29,42.97-9.87c11.88-6.58,20.98-15.74,27.29-27.5,6.31-11.75,9.46-25.43,9.46-41.04s-3.16-29.29-9.46-41.04c-6.31-11.75-15.4-20.92-27.29-27.5ZM301.04,211.28c-1.84,5.67-4.49,10.01-7.94,13-3.45,2.99-7.58,4.49-12.37,4.49s-9.07-1.5-12.57-4.49c-3.5-2.99-6.17-7.33-8.01-13-1.84-5.67-2.76-12.46-2.76-20.35s.92-14.75,2.76-20.28c1.84-5.53,4.51-9.75,8.01-12.66,3.5-2.9,7.69-4.36,12.57-4.36s8.91,1.45,12.37,4.36c3.45,2.91,6.1,7.13,7.94,12.66,1.84,5.54,2.76,12.3,2.76,20.28s-.92,14.68-2.76,20.35Z"/><path d="M453.01,184.33c-2.86,10.66-5.39,21.51-7.6,32.54,0,.04-.02.08-.02.12-.52,2.6-4.17,2.61-4.7,0-.01-.07-.03-.13-.04-.19-2.26-11.08-4.86-21.9-7.81-32.47l-20.03-71.53h-58.3l50.82,144.91c2.5,7.13,9.16,11.9,16.61,11.9h40.52c7.35,0,13.9-4.69,16.38-11.71l51.14-145.1h-57.47l-19.48,71.53Z"/><path d="M564.65,96.63c7.55,0,14-2.49,19.34-7.46,5.34-4.97,8.01-10.96,8.01-17.96s-2.67-13.1-8.01-18.03c-5.34-4.93-11.79-7.39-19.34-7.39s-14,2.47-19.34,7.39c-5.34,4.93-8.01,10.94-8.01,18.03s2.67,12.99,8.01,17.96c5.34,4.97,11.79,7.46,19.34,7.46Z"/><path d="M574.75,112.67h-20.2c-9.75,0-17.66,7.91-17.66,17.66v139.28h55.54v-139.27c0-9.76-7.91-17.68-17.68-17.68Z"/><path d="M745.85,143.14c-3.36-6.04-8.2-11.34-14.51-15.89-6.31-4.54-13.91-8.09-22.8-10.64-8.89-2.54-18.81-3.82-29.77-3.82-14.46,0-26.73,2.09-36.82,6.27-10.09,4.18-17.99,9.77-23.69,16.77-4.34,5.32-7.45,11.09-9.34,17.3l51.02,4.99c.41-.6.86-1.17,1.36-1.7,1.89-2,4.26-3.5,7.12-4.5,2.85-1,6.03-1.5,9.53-1.5s6.68.48,9.26,1.43c2.58.95,4.58,2.34,6.01,4.16,1.43,1.82,2.14,4.05,2.14,6.68v.55c0,2.91-1.18,5.25-3.52,7.02-2.35,1.77-6.13,3.12-11.33,4.02-5.2.91-12.14,1.68-20.79,2.32-8.01.55-15.45,1.84-22.31,3.89-6.86,2.05-12.87,4.96-18.03,8.73-5.16,3.77-9.17,8.61-12.02,14.52-2.86,5.91-4.28,13.05-4.28,21.41,0,10.09,2.12,18.41,6.36,24.95,4.24,6.54,10.15,11.43,17.75,14.66,7.6,3.23,16.32,4.84,26.18,4.84,6.72,0,12.85-.82,18.38-2.45,5.53-1.64,10.48-4.2,14.85-7.7,4.37-3.5,8.13-8.11,11.26-13.84h1.1v23.99h34.52c9.63,0,17.43-10.15,17.43-19.65v-87.25c0-7-1.68-13.52-5.04-19.57ZM695.9,213.16c0,4.64-1.17,8.57-3.52,11.8-2.35,3.23-5.39,5.71-9.12,7.43-3.73,1.73-7.72,2.59-11.95,2.59-3.13,0-5.9-.5-8.29-1.5-2.4-1-4.28-2.48-5.66-4.43-1.38-1.95-2.07-4.34-2.07-7.16,0-2.64.64-5.02,1.93-7.16,1.29-2.13,3.29-3.95,6.01-5.45,2.72-1.5,6.24-2.57,10.57-3.2,2.21-.36,4.3-.73,6.29-1.09,1.98-.36,3.91-.77,5.8-1.23,1.89-.45,3.66-.95,5.32-1.5,1.66-.55,3.22-1.09,4.7-1.64v12.55Z"/></svg>
+            <span style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,.55);border-left:1px solid rgba(245,240,232,.15);padding-left:10px;line-height:1.4">Gestão de<br>Eventos</span>
+          </div>
+        </div>
+        <div class="component-code">font-weight: 900 · "v" → color: var(--primary) · tagline: 9px uppercase tracking .12em</div>
+      </div>
+    </section>
+
+    <!-- ── LANDING PREVIEW ────────────────────────────── -->
+    <section class="ds-section" id="landing">
+      <div class="section-eyebrow">Identidade</div>
+      <div class="section-title">Landing Page — Preview</div>
+      <div class="section-desc">Miniatura fiel ao layout aprovado: navbar branca, hero roxo escuro com glassmorphism, setas decorativas laranja, fundo creme nas seções de conteúdo.</div>
+      <div class="landing-preview">
+        <div class="lp-nav">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="lp-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="height:16px;width:auto;display:inline-block;vertical-align:middle;" fill="#FF6B1A"><path d="M166.16,76.05h-38.04c-9.67,0-17.5,7.84-17.5,17.5v19.25h-19.62v40.34h19.62v69.63c0,15.38,4.4,27.03,13.19,34.95,8.8,7.92,21.85,11.88,39.17,11.88,4.97,0,10.27-.3,15.89-.9,5.62-.6,11.61-1.77,17.96-3.52l-6.63-39.65c-1.01.37-3.11.76-6.29,1.17s-5.6.62-7.25.62c-3.68,0-6.36-.81-8.01-2.42-1.66-1.61-2.49-4.03-2.49-7.25v-64.52h30.67v-40.34h-30.67v-36.75Z"/><path d="M323.7,122.67c-11.88-6.58-26.21-9.87-42.97-9.87s-31.13,3.29-43.11,9.87c-11.97,6.58-21.12,15.75-27.43,27.5-6.31,11.75-9.46,25.43-9.46,41.04s3.15,29.29,9.46,41.04c6.31,11.75,15.45,20.92,27.43,27.5,11.97,6.58,26.34,9.87,43.11,9.87s31.09-3.29,42.97-9.87c11.88-6.58,20.98-15.74,27.29-27.5,6.31-11.75,9.46-25.43,9.46-41.04s-3.16-29.29-9.46-41.04c-6.31-11.75-15.4-20.92-27.29-27.5ZM301.04,211.28c-1.84,5.67-4.49,10.01-7.94,13-3.45,2.99-7.58,4.49-12.37,4.49s-9.07-1.5-12.57-4.49c-3.5-2.99-6.17-7.33-8.01-13-1.84-5.67-2.76-12.46-2.76-20.35s.92-14.75,2.76-20.28c1.84-5.53,4.51-9.75,8.01-12.66,3.5-2.9,7.69-4.36,12.57-4.36s8.91,1.45,12.37,4.36c3.45,2.91,6.1,7.13,7.94,12.66,1.84,5.54,2.76,12.3,2.76,20.28s-.92,14.68-2.76,20.35Z"/><path d="M453.01,184.33c-2.86,10.66-5.39,21.51-7.6,32.54,0,.04-.02.08-.02.12-.52,2.6-4.17,2.61-4.7,0-.01-.07-.03-.13-.04-.19-2.26-11.08-4.86-21.9-7.81-32.47l-20.03-71.53h-58.3l50.82,144.91c2.5,7.13,9.16,11.9,16.61,11.9h40.52c7.35,0,13.9-4.69,16.38-11.71l51.14-145.1h-57.47l-19.48,71.53Z"/><path d="M564.65,96.63c7.55,0,14-2.49,19.34-7.46,5.34-4.97,8.01-10.96,8.01-17.96s-2.67-13.1-8.01-18.03c-5.34-4.93-11.79-7.39-19.34-7.39s-14,2.47-19.34,7.39c-5.34,4.93-8.01,10.94-8.01,18.03s2.67,12.99,8.01,17.96c5.34,4.97,11.79,7.46,19.34,7.46Z"/><path d="M574.75,112.67h-20.2c-9.75,0-17.66,7.91-17.66,17.66v139.28h55.54v-139.27c0-9.76-7.91-17.68-17.68-17.68Z"/><path d="M745.85,143.14c-3.36-6.04-8.2-11.34-14.51-15.89-6.31-4.54-13.91-8.09-22.8-10.64-8.89-2.54-18.81-3.82-29.77-3.82-14.46,0-26.73,2.09-36.82,6.27-10.09,4.18-17.99,9.77-23.69,16.77-4.34,5.32-7.45,11.09-9.34,17.3l51.02,4.99c.41-.6.86-1.17,1.36-1.7,1.89-2,4.26-3.5,7.12-4.5,2.85-1,6.03-1.5,9.53-1.5s6.68.48,9.26,1.43c2.58.95,4.58,2.34,6.01,4.16,1.43,1.82,2.14,4.05,2.14,6.68v.55c0,2.91-1.18,5.25-3.52,7.02-2.35,1.77-6.13,3.12-11.33,4.02-5.2.91-12.14,1.68-20.79,2.32-8.01.55-15.45,1.84-22.31,3.89-6.86,2.05-12.87,4.96-18.03,8.73-5.16,3.77-9.17,8.61-12.02,14.52-2.86,5.91-4.28,13.05-4.28,21.41,0,10.09,2.12,18.41,6.36,24.95,4.24,6.54,10.15,11.43,17.75,14.66,7.6,3.23,16.32,4.84,26.18,4.84,6.72,0,12.85-.82,18.38-2.45,5.53-1.64,10.48-4.2,14.85-7.7,4.37-3.5,8.13-8.11,11.26-13.84h1.1v23.99h34.52c9.63,0,17.43-10.15,17.43-19.65v-87.25c0-7-1.68-13.52-5.04-19.57ZM695.9,213.16c0,4.64-1.17,8.57-3.52,11.8-2.35,3.23-5.39,5.71-9.12,7.43-3.73,1.73-7.72,2.59-11.95,2.59-3.13,0-5.9-.5-8.29-1.5-2.4-1-4.28-2.48-5.66-4.43-1.38-1.95-2.07-4.34-2.07-7.16,0-2.64.64-5.02,1.93-7.16,1.29-2.13,3.29-3.95,6.01-5.45,2.72-1.5,6.24-2.57,10.57-3.2,2.21-.36,4.3-.73,6.29-1.09,1.98-.36,3.91-.77,5.8-1.23,1.89-.45,3.66-.95,5.32-1.5,1.66-.55,3.22-1.09,4.7-1.64v12.55Z"/></svg></span>
+            <span style="font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b5fa0;border-left:1px solid #E0D8CC;padding-left:7px">Gestão de Eventos</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:11px;color:#6b5fa0;font-weight:500">
+            <span>Funcionalidades</span><span>Planos</span><span>Como Funciona</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <span style="font-size:11px;font-weight:600;color:#1E0B4B">Entrar</span>
+            <span style="background:#FF6B1A;color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:7px;box-shadow:0 2px 8px rgba(255,107,26,.35)">Criar meu evento</span>
+          </div>
+        </div>
+        <div class="lp-hero">
+          <div class="lp-hero-inner">
+            <div style="display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FF6B1A;background:rgba(255,107,26,.16);border:1px solid rgba(255,107,26,.3);padding:4px 10px;border-radius:999px;margin-bottom:16px">
+              <span style="width:5px;height:5px;border-radius:50%;background:#FF6B1A;display:inline-block"></span>
+              Plataforma de gestão de eventos
+            </div>
+            <div class="lp-h1">Do zero ao check-in<br><em>tudo em uma plataforma</em></div>
+            <svg style="display:block;margin:-2px auto 10px;width:200px;overflow:visible" height="10" viewBox="0 0 200 10" fill="none">
+              <path d="M 3 6 Q 25 2, 50 6 Q 75 10, 100 6 Q 125 2, 150 6 Q 175 10, 197 6" stroke="#FF6B1A" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            </svg>
+            <div class="lp-sub">Crie, configure e gerencie seus eventos — tudo integrado.</div>
+            <div class="lp-btns">
+              <div class="lp-btn-p">Criar meu evento →</div>
+              <div class="lp-btn-g">Ver como funciona</div>
+            </div>
+            <div class="lp-stats">
+              <div class="lp-glass"><div class="lp-glass-label">Inscrições</div><div class="lp-glass-val">142</div><div class="lp-glass-sub">↑ hoje</div></div>
+              <div class="lp-glass"><div class="lp-glass-label">Doações</div><div class="lp-glass-val">R$4.3k</div><div class="lp-glass-sub">↑ mês</div></div>
+              <div class="lp-glass"><div class="lp-glass-label">Criado em</div><div class="lp-glass-val">3 min</div><div class="lp-glass-sub">✓ ativo</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="lp-section">
+          <div class="lp-section-title">Como funciona</div>
+          <div class="lp-cards">
+            <div class="lp-card"><div class="lp-card-num">01</div><div class="lp-card-t">Crie sua conta</div><div class="lp-card-d">Em 2 minutos</div></div>
+            <div class="lp-card"><div class="lp-card-num">02</div><div class="lp-card-t">Configure</div><div class="lp-card-d">Datas e ingressos</div></div>
+            <div class="lp-card"><div class="lp-card-num">03</div><div class="lp-card-t">Compartilhe</div><div class="lp-card-d">Link de inscrição</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ÍCONES ─────────────────────────────────────── -->
+    <section class="ds-section" id="icons">
+      <div class="section-eyebrow">Identidade</div>
+      <div class="section-title">Ícones</div>
+      <div class="section-desc">Biblioteca: <strong>Lucide React</strong>. Tamanho padrão: <code>16×16</code> (inline), <code>20×20</code> (botão/menu), <code>24×24</code> (destaque). strokeWidth: 2 padrão, 2.5 em ênfase. Sempre <code>stroke="currentColor"</code> — nunca fill hardcoded.</div>
+      <div class="component-block">
+        <div class="component-preview" style="gap:20px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--primary)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Evento
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--primary)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Inscritos
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--primary)"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Financeiro
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--primary)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Check-in
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--primary)"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Relatórios
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--muted-fg)">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--accent)"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            Doações
+          </div>
+        </div>
+        <div class="component-code">Lucide React · stroke="currentColor" · size 24 · strokeWidth 2</div>
+      </div>
+    </section>
+
+    <!-- ── MOBILE ─────────────────────────────────────── -->
+    <section class="ds-section" id="mobile">
+      <div class="section-eyebrow">Mobile</div>
+      <div class="section-title">App Mobile — Componentes</div>
+      <div class="section-desc">React Native (Expo). Tab bar roxo com laranja como ativo. FAB de check-in centralizado. Topo da aba Início com gradiente arredondado e glass cards.</div>
+
+      <!-- PHONE MOCKUP -->
+      <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+
+        <!-- Phone shell -->
+        <div style="flex-shrink:0">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:10px">Tela Início</div>
+          <div style="width:260px;background:#111;border-radius:36px;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.08)">
+            <!-- Status bar -->
+            <div style="background:#1E0B4B;border-radius:26px 26px 0 0;padding:10px 18px 0;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:10px;font-weight:700;color:rgba(245,240,232,.6)">9:41</span>
+              <div style="width:80px;height:20px;background:#111;border-radius:0 0 12px 12px;margin:-10px auto 0"></div>
+              <div style="display:flex;gap:4px;align-items:center">
+                <svg width="12" height="10" fill="rgba(245,240,232,.6)" viewBox="0 0 24 24"><path d="M1 6l5 5 5-5-5-5z" transform="translate(4,7)"/><rect x="0" y="0" width="4" height="7" rx="1" transform="translate(1,17) rotate(-90)"/><rect x="0" y="0" width="4" height="10" rx="1" transform="translate(7,14) rotate(-90)"/><rect x="0" y="0" width="4" height="14" rx="1" transform="translate(14,10) rotate(-90)"/></svg>
+                <svg width="14" height="10" fill="rgba(245,240,232,.6)" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3a1 1 0 0 0 0-3z"/><rect x="4" y="9" width="10" height="7" rx="1" fill="#FF6B1A"/></svg>
+              </div>
+            </div>
+            <!-- Hero top — rounded purple gradient -->
+            <div style="background:linear-gradient(170deg,#1E0B4B 0%,#2D1470 100%);padding:16px 18px 28px;position:relative">
+              <!-- Profile top bar -->
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                <div>
+                  <div style="font-size:10px;color:rgba(245,240,232,.55);font-weight:600">Olá, Ricardo 👋</div>
+                  <div style="font-size:15px;font-weight:900;color:#F5F0E8;letter-spacing:-.02em;line-height:1.2">Seus Eventos</div>
+                </div>
+                <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,107,26,.3);border:2px solid #FF6B1A;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:14px;font-weight:900;color:#FF6B1A">R</span>
+                </div>
+              </div>
+              <!-- Glass stat cards -->
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;background:linear-gradient(160deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 100%);backdrop-filter:blur(48px) saturate(180%);-webkit-backdrop-filter:blur(48px) saturate(180%);border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 0 rgba(255,255,255,.22),0 8px 24px rgba(0,0,0,.35)">
+                  <div style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,184,232,.7);margin-bottom:4px">Inscrições</div>
+                  <div style="font-size:20px;font-weight:900;color:#F5F0E8;letter-spacing:-.03em;line-height:1">142</div>
+                  <div style="font-size:9px;color:#FF6B1A;font-weight:700;margin-top:3px">↑ +18 hoje</div>
+                </div>
+                <div style="flex:1;background:linear-gradient(160deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.06) 100%);backdrop-filter:blur(48px) saturate(180%);-webkit-backdrop-filter:blur(48px) saturate(180%);border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 0 rgba(255,255,255,.22),0 8px 24px rgba(0,0,0,.35)">
+                  <div style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,184,232,.7);margin-bottom:4px">Doações</div>
+                  <div style="font-size:20px;font-weight:900;color:#F5F0E8;letter-spacing:-.03em;line-height:1">R$4.3k</div>
+                  <div style="font-size:9px;color:#9B5FFF;font-weight:700;margin-top:3px">↑ esse mês</div>
+                </div>
+              </div>
+              <!-- Rounded bottom of hero -->
+              <div style="position:absolute;bottom:-1px;left:0;right:0;height:20px;background:#F5F0E8;border-radius:20px 20px 0 0"></div>
+            </div>
+            <!-- Content area -->
+            <div style="background:#F5F0E8;padding:14px 14px 0">
+              <div style="font-size:11px;font-weight:800;color:#1E0B4B;letter-spacing:-.01em;margin-bottom:8px">Próximos eventos</div>
+              <!-- Event card -->
+              <div style="background:#fff;border:1px solid #E0D8CC;border-radius:12px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;border-radius:8px;background:#FFF4EE;border:1px solid rgba(255,107,26,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+                  <span style="font-size:7px;font-weight:700;text-transform:uppercase;color:#FF6B1A;letter-spacing:.05em">JUL</span>
+                  <span style="font-size:14px;font-weight:900;color:#FF6B1A;line-height:1">22</span>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:11px;font-weight:700;color:#1E0B4B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Workshop de Liderança</div>
+                  <div style="font-size:9px;color:#6b5fa0;margin-top:1px">48 inscritos · São Paulo</div>
+                </div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#16a34a;flex-shrink:0"></div>
+              </div>
+              <div style="background:#fff;border:1px solid #E0D8CC;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;border-radius:8px;background:#F0E8FF;border:1px solid rgba(155,95,255,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+                  <span style="font-size:7px;font-weight:700;text-transform:uppercase;color:#9B5FFF;letter-spacing:.05em">AGO</span>
+                  <span style="font-size:14px;font-weight:900;color:#9B5FFF;line-height:1">05</span>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:11px;font-weight:700;color:#1E0B4B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Conferência Anual</div>
+                  <div style="font-size:9px;color:#6b5fa0;margin-top:1px">120 inscritos · Online</div>
+                </div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0"></div>
+              </div>
+            </div>
+            <!-- Tab bar -->
+            <div style="background:#2D1470;border-radius:0 0 26px 26px;padding:8px 4px 14px;display:flex;align-items:center;justify-content:space-around;position:relative;margin-top:10px">
+              <!-- Tab: Início (ativo) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#FF6B1A" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span style="font-size:8px;font-weight:800;color:#FF6B1A;letter-spacing:.02em">Início</span>
+              </div>
+              <!-- Tab: Financeiro -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(245,240,232,.45)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span style="font-size:8px;font-weight:600;color:rgba(245,240,232,.45)">Finanças</span>
+              </div>
+              <!-- FAB Check-in (central) -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+                <div style="width:52px;height:52px;border-radius:50%;background:#FF6B1A;display:flex;align-items:center;justify-content:center;margin-top:-34px;border:3px solid #2D1470">
+                  <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </div>
+                <span style="font-size:8px;font-weight:800;color:#FF6B1A;letter-spacing:.02em">Check-in</span>
+              </div>
+              <!-- Tab: Tarefas -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(245,240,232,.45)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span style="font-size:8px;font-weight:600;color:rgba(245,240,232,.45)">Tarefas</span>
+              </div>
+              <!-- Tab: Suporte -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(245,240,232,.45)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span style="font-size:8px;font-weight:600;color:rgba(245,240,232,.45)">Suporte</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs ao lado -->
+        <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:12px">
+          <div class="component-block">
+            <div class="sub-label" style="padding:14px 18px 0">Tab Bar</div>
+            <div class="component-preview col" style="padding:14px 18px 18px;gap:6px">
+              <div style="font-size:13px;color:var(--foreground)">Fundo: <code>#2D1470</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Aba ativa: <code>#FF6B1A</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Aba inativa: <code>rgba(245,240,232,.45)</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Border radius inferior: <code>26px</code></div>
+            </div>
+          </div>
+          <div class="component-block">
+            <div class="sub-label" style="padding:14px 18px 0">FAB Check-in</div>
+            <div class="component-preview col" style="padding:14px 18px 18px;gap:6px">
+              <div style="font-size:13px;color:var(--foreground)">Tamanho: <code>52×52px</code> (mobile)</div>
+              <div style="font-size:13px;color:var(--foreground)">Fundo: <code>#FF6B1A</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Sombra: <code>0 4px 16px rgba(255,107,26,.5)</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Borda: <code>3px solid #2D1470</code></div>
+              <div style="font-size:13px;color:var(--foreground)">marginTop: <code>-28px</code> (flutua acima)</div>
+            </div>
+          </div>
+          <div class="component-block">
+            <div class="sub-label" style="padding:14px 18px 0">Topo Arredondado (Início)</div>
+            <div class="component-preview col" style="padding:14px 18px 18px;gap:6px">
+              <div style="font-size:13px;color:var(--foreground)">Hero BG: <code>linear-gradient(170deg, #1E0B4B, #2D1470)</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Folha branca: <code>border-radius: 20px 20px 0 0</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Glass cards: <code>rgba(255,255,255,.08) + blur</code></div>
+              <div style="font-size:13px;color:var(--foreground)">Inset glow: <code>inset 0 1px 0 rgba(255,255,255,.1)</code></div>
+            </div>
+          </div>
+          <div class="component-block">
+            <div class="sub-label" style="padding:14px 18px 0">Botão Nova Tarefa</div>
+            <div class="component-preview" style="padding:14px 18px 18px">
+              <button class="btn btn-primary" style="border-radius:999px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Tarefa
+              </button>
+            </div>
+            <div class="component-code">bg: #FF6B1A · radius: 999px · shadow laranja</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast">Token copiado!</div>
+
+<script>
+let dark = false;
+function toggleTheme() {
+  dark = !dark;
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.getElementById('theme-label').textContent = dark ? 'Dark' : 'Light';
+}
+function nav(id, el) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  el?.classList.add('active');
+}
+function copy(val, el) {
+  navigator.clipboard?.writeText(val).catch(()=>{});
+  el.classList.add('copied');
+  setTimeout(() => el.classList.remove('copied'), 1400);
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1600);
+}
+// Update active nav on scroll
+const sections = document.querySelectorAll('.ds-section');
+const links = document.querySelectorAll('.nav-link');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      links.forEach(l => { l.classList.remove('active'); if (l.getAttribute('onclick')?.includes(`'${id}'`)) l.classList.add('active'); });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
