@@ -24,7 +24,7 @@ export function ComoFunciona() {
             <div
               key={step}
               className="relative rounded-3xl overflow-hidden min-h-[240px] p-7 pb-0 flex flex-col"
-              style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e4a2e 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1E0B4B 100%)' }}
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
               <span className="inline-flex text-xs font-black text-primary/70 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4">
