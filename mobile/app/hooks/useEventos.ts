@@ -25,6 +25,7 @@ export interface Evento {
 
 export interface EventoComInscritos extends Evento {
   total_inscritos: number;
+  codigo?: string;
 }
 
 function classify(evento: Evento): 'hoje' | 'proximo' | 'encerrado' {

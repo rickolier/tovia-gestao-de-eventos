@@ -414,7 +414,7 @@ const sc = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#000' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   permBtn: { paddingHorizontal: 32, paddingVertical: 14, borderRadius: Radius.pill },
-  overlay: { ...StyleSheet.absoluteFillObject, flexDirection: 'column' },
+  overlay: { ...StyleSheet.absoluteFill, flexDirection: 'column' },
   darkRow: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
   middleRow: { flexDirection: 'row', height: FRAME },
   darkCol: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },

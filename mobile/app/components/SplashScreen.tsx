@@ -93,7 +93,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: '#162d20',
     alignItems: 'center',
     justifyContent: 'center',

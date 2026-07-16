@@ -7,6 +7,7 @@ type UserProfile = {
   uid: string;
   email: string;
   name: string;
+  nome: string;
   plan: 'chinam' | 'petach' | 'koach' | 'chalem';
   isAdmin: boolean;
   instituicao?: string;
@@ -31,6 +32,7 @@ export function useAuth() {
             uid: firebaseUser.uid,
             email: firebaseUser.email ?? '',
             name: data.nome ?? data.name ?? '',
+            nome: data.nome ?? data.name ?? '',
             plan: data.plano ?? data.plan ?? 'chinam',
             isAdmin: data.isAdmin ?? false,
             instituicao: data.instituicao,

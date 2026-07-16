@@ -9,7 +9,7 @@ interface ThemeContextValue {
   mode: ThemeMode;
   setMode: (mode: ThemeMode) => void;
   scheme: ColorScheme;
-  colors: typeof Colors.light;
+  colors: typeof Colors.light | typeof Colors.dark;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({

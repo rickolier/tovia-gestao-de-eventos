@@ -8,7 +8,7 @@ import { useThemeContext } from '../../contexts/ThemeContext';
 import { usePermissoes } from '../../contexts/PermissoesContext';
 
 // ── Ícone padrão com animação de escala ───────────────────────────────────────
-function TabIcon({ Icon, color, focused }: { Icon: LucideIcon; color: string; focused: boolean }) {
+function TabIcon({ Icon, color, focused }: { Icon: LucideIcon; color: string | import('react-native').ColorValue; focused: boolean }) {
   const scale = useRef(new Animated.Value(focused ? 1.2 : 1)).current;
 
   useEffect(() => {
@@ -100,8 +100,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.mutedFg,
+        tabBarActiveTintColor: colors.primary as string,
+        tabBarInactiveTintColor: colors.mutedFg as string,
         tabBarStyle: {
           backgroundColor: colors.tabBar,
           borderTopColor: colors.tabBarBorder,
