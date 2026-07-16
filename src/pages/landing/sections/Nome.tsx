@@ -2,7 +2,7 @@ import React from 'react';
 
 export function Nome() {
   return (
-    <section className="bg-[#f0f7f3] w-full py-10 px-6">
+    <section className="bg-accent/5 w-full py-10 px-6">
       <div className="max-w-3xl mx-auto text-center">
         <span className="text-xs font-semibold uppercase tracking-widest text-primary">A solução</span>
         <h2 className="text-3xl font-black text-foreground tracking-tight mt-3 mb-6">
