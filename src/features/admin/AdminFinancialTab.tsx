@@ -450,8 +450,8 @@ export default function AdminFinancialTab() {
                         <span className={cn(
                           'text-[10px] font-bold px-2 py-0.5 rounded-full',
                           (u.plano === 'chalem') ? 'bg-primary/10 text-primary' :
-                          (u.plano === 'koach' || u.plano === 'pro') ? 'bg-violet-100 text-violet-700' :
-                          (u.plano === 'petach' || u.plano === 'essencial') ? 'bg-blue-100 text-blue-700' :
+                          (u.plano === 'koach') ? 'bg-violet-100 text-violet-700' :
+                          (u.plano === 'petach') ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-600'
                         )}>
                           {u.plano ? PLAN_LABELS[u.plano] : '—'}

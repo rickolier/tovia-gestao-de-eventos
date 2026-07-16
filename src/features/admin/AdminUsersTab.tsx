@@ -148,10 +148,10 @@ export default function AdminUsersTab() {
                     <td className="px-4 py-4">
                       <span className={cn(
                         'text-xs font-bold px-2 py-1 rounded-full',
-                        (u.plano === 'chalem' || u.plano === 'pro') ? 'bg-primary/10 text-primary' :
+                        (u.plano === 'chalem') ? 'bg-primary/10 text-primary' :
                         (u.plano === 'koach') ? 'bg-violet-100 text-violet-700' :
-                        (u.plano === 'petach' || u.plano === 'essencial') ? 'bg-blue-100 text-blue-700' :
-                        (u.plano === 'chinam' || u.plano === 'start') ? 'bg-gray-100 text-gray-600' :
+                        (u.plano === 'petach') ? 'bg-blue-100 text-blue-700' :
+                        (u.plano === 'chinam') ? 'bg-gray-100 text-gray-600' :
                         'bg-red-100 text-red-600'
                       )}>
                         {u.plano ? (PLAN_CONFIGS[u.plano as PlanLevel]?.name || u.plano) : 'Sem plano'}

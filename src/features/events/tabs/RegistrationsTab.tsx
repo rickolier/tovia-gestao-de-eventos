@@ -76,10 +76,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           <SortIcon columnKey={columnKey} />
         </button>
         <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-30 hover:opacity-100'}`}>
-              <Filter className="w-3 h-3" />
-            </Button>
+          <PopoverTrigger className={`h-6 w-6 ml-1 transition-all rounded-md inline-flex items-center justify-center ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-30 hover:opacity-100'}`}>
+            <Filter className="w-3 h-3" />
           </PopoverTrigger>
           <PopoverContent className="w-64 p-3 rounded-xl border-none shadow-2xl bg-card">
             <div className="space-y-2">
@@ -604,10 +602,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       <SortIcon columnKey="nome" />
                     </button>
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters.nome ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
-                          <Filter className="w-3 h-3" />
-                        </Button>
+                      <PopoverTrigger className={`h-6 w-6 ml-1 transition-all rounded-md inline-flex items-center justify-center ${columnFilters.nome ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
+                        <Filter className="w-3 h-3" />
                       </PopoverTrigger>
                       <PopoverContent className="w-64 p-3 rounded-xl border-none shadow-2xl bg-card">
                         <div className="space-y-2">
@@ -689,10 +685,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                     <TableCell>
                       {reg.respostas_formulario && Object.keys(reg.respostas_formulario).length > 0 ? (
                         <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-7 px-2 rounded-lg text-[10px] font-black text-primary bg-primary/5 hover:bg-primary/10">
-                              {Object.keys(reg.respostas_formulario).length} resp.
-                            </Button>
+                          <PopoverTrigger className="h-7 px-2 rounded-lg text-[10px] font-black text-primary bg-primary/5 hover:bg-primary/10 transition-colors">
+                            {Object.keys(reg.respostas_formulario).length} resp.
                           </PopoverTrigger>
                           <PopoverContent className="w-72 p-4 rounded-2xl border-none shadow-2xl bg-card" align="start">
                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">Respostas do formulário</p>

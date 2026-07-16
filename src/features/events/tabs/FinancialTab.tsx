@@ -70,10 +70,8 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
           <SortIcon columnKey={columnKey} />
         </button>
         <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
-              <Filter className="w-3 h-3" />
-            </Button>
+          <PopoverTrigger className={`h-6 w-6 ml-1 transition-all rounded-md inline-flex items-center justify-center ${columnFilters[filterKey] ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
+            <Filter className="w-3 h-3" />
           </PopoverTrigger>
           <PopoverContent className="w-64 p-3 rounded-xl border-none shadow-2xl bg-card">
             <div className="space-y-2">
@@ -181,10 +179,8 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                       <SortIcon columnKey="nome" />
                     </button>
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className={`h-6 w-6 ml-1 transition-all rounded-md ${columnFilters.nome ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
-                          <Filter className="w-3 h-3" />
-                        </Button>
+                      <PopoverTrigger className={`h-6 w-6 ml-1 transition-all rounded-md inline-flex items-center justify-center ${columnFilters.nome ? 'text-primary bg-primary/10' : 'opacity-20 group-hover:opacity-100'}`}>
+                        <Filter className="w-3 h-3" />
                       </PopoverTrigger>
                       <PopoverContent className="w-64 p-3 rounded-xl border-none shadow-2xl bg-card">
                         <div className="space-y-2">

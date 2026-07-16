@@ -126,11 +126,8 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
 
             <div className="flex gap-2 w-full sm:w-auto">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline"
-                    className="border-border text-muted-foreground hover:bg-muted/40 gap-2 rounded-xl font-bold h-10">
-                    <Settings className="w-4 h-4" /> Editar Aba
-                  </Button>
+                <DropdownMenuTrigger className="border border-border text-muted-foreground hover:bg-muted/40 gap-2 rounded-xl font-bold h-10 px-4 inline-flex items-center text-sm bg-background transition-colors">
+                  <Settings className="w-4 h-4" /> Editar Aba
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-52 rounded-xl shadow-xl border-border p-1">
                   <DropdownMenuItem

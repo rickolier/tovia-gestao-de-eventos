@@ -305,7 +305,7 @@ export default function AdminTicketsTab() {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {ticket.resposta && (
-                          <MessageSquare className="w-3.5 h-3.5 text-primary" title="Respondido" />
+                          <span title="Respondido"><MessageSquare className="w-3.5 h-3.5 text-primary" /></span>
                         )}
                         <span className={cn('text-xs font-bold', PRIORIDADE_COLORS[ticket.prioridade])}>
                           {PRIORIDADE_LABELS[ticket.prioridade]}
