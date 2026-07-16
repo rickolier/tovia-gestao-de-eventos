@@ -6,7 +6,7 @@ import { ADMIN_EMAILS } from '~/utils/admin-config';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
-  Menu, X, Palette, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
+  Menu, X, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
   ChevronDown, FileText,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
@@ -21,7 +21,6 @@ import AdminComunicadosTab from './AdminComunicadosTab';
 import AdminBillingKeyTab from './AdminBillingKeyTab';
 import AdminDocumentoProdutoTab from './AdminDocumentoProdutoTab';
 import AdminLeadsTab from './AdminLeadsTab';
-import DesignSystemTab from '~/features/dashboard/tabs/DesignSystemTab';
 
 type AdminRole = 'criador' | 'suporte';
 
@@ -66,7 +65,6 @@ const NAV: NavGroup[] = [
       { id: 'leads',              label: 'Leads',                icon: Users,      roles: ['criador'] },
       { id: 'calculator',         label: 'Calculadora',          icon: Calculator, roles: ['criador'] },
       { id: 'comunicados',        label: 'Comunicados',          icon: Megaphone,  roles: ['criador'] },
-      { id: 'design-system',      label: 'Design System',        icon: Palette,    roles: ['criador'] },
       { id: 'documento-produto',  label: 'Documento de Produto', icon: FileText,   roles: ['criador'] },
     ],
   },
@@ -83,7 +81,6 @@ const TAB_TITLES: Record<string, string> = {
   tickets:              'Suporte',
   calculator:           'Calculadora',
   comunicados:          'Comunicados',
-  'design-system':      'Design System',
   'documento-produto':  'Documento de Produto',
   leads:                'Leads',
 };
@@ -224,7 +221,6 @@ export default function AdminDashboard() {
           {activeTab === 'tickets'            && <AdminTicketsTab />}
           {activeTab === 'calculator'         && <AdminCalculatorTab />}
           {activeTab === 'comunicados'        && <AdminComunicadosTab />}
-          {activeTab === 'design-system'      && <DesignSystemTab />}
           {activeTab === 'documento-produto'  && <AdminDocumentoProdutoTab />}
           {activeTab === 'leads'              && <AdminLeadsTab />}
         </main>
