@@ -8,7 +8,7 @@ export function DemoMockups() {
   const [demoTab, setDemoTab] = useState('vendas');
 
   return (
-    <section id="funcionalidades" className="pt-12 pb-10 px-6 bg-[#1E3A5F]">
+    <section id="funcionalidades" className="pt-12 pb-10 px-6 bg-sidebar">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Veja na prática</span>

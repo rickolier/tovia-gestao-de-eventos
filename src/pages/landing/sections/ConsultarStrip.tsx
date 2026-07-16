@@ -4,8 +4,8 @@ import { ArrowRight, CheckCircle } from 'lucide-react';
 
 export function ConsultarStrip() {
   return (
-    <div className="mt-10 md:mt-14">
-      <div className="bg-secondary/60 border-y border-border">
+    <div>
+      <div className="bg-secondary/60 border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
