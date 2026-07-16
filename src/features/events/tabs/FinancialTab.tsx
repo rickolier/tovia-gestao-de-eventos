@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
-import { Pagamento, Inscricao, Pessoa, Ticket } from '~/types';
-import { where, limit } from 'firebase/firestore';
+import React from 'react';
+import { Pagamento, Inscricao, Pessoa } from '~/types';
 import { Button } from '@/components/ui/button';
+import { useFinancial } from './hooks/useFinancial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -12,247 +11,38 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
-import { v4 as uuidv4 } from 'uuid';
-import { useAuth } from '~/context/AuthContext';
-import { getPlanConfig } from '~/utils/plan-limits';
 import { FinancialTransaction } from '~/types';
-import OnboardingTour, { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
-
+import OnboardingTour from '~/features/dashboard/OnboardingTour';
+import { useAuth } from '~/context/AuthContext';
 import { Progress } from '@/components/ui/progress';
 
 export default function FinancialTab({ eventoId, isActive }: { eventoId: string; isActive?: boolean }) {
   const { user, profile } = useAuth();
-  const skipFirstActiveRef = useRef(true);
-  const [financialTourOpen, setFinancialTourOpen] = useState(false);
-  const [payments, setPayments] = useState<Pagamento[]>([]);
-  const [registrations, setRegistrations] = useState<(Inscricao & { pessoa?: Pessoa })[]>([]);
-  const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    payments, registrations, transactions, loading, plan,
+    financialTourOpen, setFinancialTourOpen,
+    isPayDialogOpen, setIsPayDialogOpen,
+    isHistoryDialogOpen, setIsHistoryDialogOpen,
+    selectedRegId, setSelectedRegId,
+    lockedInscricaoId, setLockedInscricaoId,
+    editingPaymentId, setEditingPaymentId,
+    searchTerm, setSearchTerm,
+    sortConfig, columnFilters, setColumnFilters,
+    formData, setFormData,
+    filteredRegistrations, selectedReg, regPayments,
+    fetchData, requestSort,
+    handleSubmit, handleEditPayment, handleDeletePayment,
+    getInscritoNome,
+  } = useFinancial(eventoId, isActive);
 
-  const plan = getPlanConfig(profile?.plano);
-  const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
-  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
-  const [selectedRegId, setSelectedRegId] = useState<string | null>(null);
-  const [lockedInscricaoId, setLockedInscricaoId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // Sorting and Filtering State
-  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
-  const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
-    nome: '',
-    celula: '',
-    total: '',
-    pago: '',
-    saldo: '',
-    status: ''
-  });
-
-  const [formData, setFormData] = useState({
-    inscricaoId: '',
-    valor: 0,
-    metodo: 'pix' as const,
-    status: 'pago' as const,
-    data_vencimento: new Date().toISOString().split('T')[0],
-    data_pagamento: new Date().toISOString().split('T')[0],
-  });
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [payData, regData, peopleData, transData, ticketData] = await Promise.all([
-        listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`, [limit(500)]),
-        listDocuments<Inscricao>(`eventos/${eventoId}/inscricoes`, [limit(500)]),
-        listDocuments<Pessoa>(`eventos/${eventoId}/pessoas`, [limit(500)]),
-        listDocuments<FinancialTransaction>(`eventos/${eventoId}/transacoes`, [limit(500)]),
-        listDocuments<Ticket>(`eventos/${eventoId}/tickets`),
-      ]);
-
-      const doacaoIds = new Set(ticketData.filter(t => t.tipo === 'doacao').map(t => t.id));
-      const enrichedRegs = regData
-        .filter(reg => !doacaoIds.has(reg.ticketId))
-        .map(reg => ({
-          ...reg,
-          pessoa: peopleData.find(p => p.id === reg.pessoaId)
-        }));
-
-      setPayments(payData);
-      setRegistrations(enrichedRegs);
-      setTransactions(transData);
-    } catch (error) {
-      console.error('Erro ao carregar dados financeiros:', error);
-      toast.error('Erro ao carregar dados. Tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    skipFirstActiveRef.current = true;
-    fetchData();
-  }, [eventoId]);
-
-  useEffect(() => {
-    if (skipFirstActiveRef.current) { skipFirstActiveRef.current = false; return; }
-    if (isActive) fetchData();
-  }, [isActive]);
-
-  useEffect(() => {
-    if (user && !hasTourBeenSeen(user.uid, 'financeiro')) {
-      const timer = setTimeout(() => setFinancialTourOpen(true), 800);
-      return () => clearTimeout(timer);
-    }
-  }, [user]);
-
-
-  const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const selectedReg = registrations.find(r => r.id === formData.inscricaoId);
-      if (!selectedReg) return;
-
-      const remainingBefore = selectedReg.valor_total - selectedReg.valor_pago;
-      if (Number(formData.valor) > remainingBefore && formData.status === 'pago' && !editingPaymentId) {
-        if (!confirm(`O valor informado (R$ ${formData.valor}) é maior que o saldo devedor (R$ ${remainingBefore}). Deseja continuar?`)) return;
-      }
-
-      if (editingPaymentId) {
-        const oldPayment = payments.find(p => p.id === editingPaymentId);
-        if (!oldPayment) return;
-
-        await updateDocument(`eventos/${eventoId}/pagamentos`, editingPaymentId, {
-          valor: Number(formData.valor),
-          metodo: formData.metodo,
-          status: formData.status,
-          data_pagamento: formData.status === 'pago' ? new Date(formData.data_pagamento).toISOString() : undefined,
-        });
-
-        // Re-calculate valor_pago and status for registration
-        const allPayments = await listDocuments<Pagamento>(`eventos/${eventoId}/pagamentos`, [
-          where('inscricaoId', '==', selectedReg.id)
-        ]);
-        
-        const newValorPagoTotal = allPayments
-          .filter(p => p.status === 'pago')
-          .reduce((sum, p) => sum + p.valor, 0);
-
-        let newStatus: Inscricao['status'] = 'pendente';
-        if (selectedReg.precisa_ajuda) {
-          newStatus = 'ajuda_solicitada';
-        } else if (newValorPagoTotal >= selectedReg.valor_total) {
-          newStatus = 'pago';
-        } else if (newValorPagoTotal > 0) {
-          newStatus = 'pagamento_iniciado';
-        }
-
-        await updateDocument(`eventos/${eventoId}/inscricoes`, selectedReg.id, {
-          valor_pago: newValorPagoTotal,
-          status: newStatus
-        });
-
-        toast.success('Pagamento atualizado!');
-      } else {
-        const id = uuidv4();
-        await createDocument(`eventos/${eventoId}/pagamentos`, id, {
-          ...formData,
-          id,
-          eventoId,
-          valor: Number(formData.valor),
-          data_pagamento: formData.status === 'pago' ? new Date(formData.data_pagamento).toISOString() : undefined,
-          origem: 'manual'
-        });
-
-        // Update registration valor_pago
-        if (formData.status === 'pago') {
-          const newValorPago = selectedReg.valor_pago + Number(formData.valor);
-          
-          let newStatus: Inscricao['status'] = selectedReg.status;
-          if (selectedReg.precisa_ajuda) {
-            newStatus = 'ajuda_solicitada';
-          } else if (newValorPago >= selectedReg.valor_total) {
-            newStatus = 'pago';
-          } else if (newValorPago > 0) {
-            newStatus = 'pagamento_iniciado';
-          }
-
-          await updateDocument(`eventos/${eventoId}/inscricoes`, selectedReg.id, {
-            valor_pago: newValorPago,
-            status: newStatus
-          });
-        }
-        toast.success('Pagamento registrado!');
-      }
-
-      setIsPayDialogOpen(false);
-      setEditingPaymentId(null);
-      fetchData();
-      setFormData({ ...formData, valor: 0, inscricaoId: '' });
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao processar pagamento.');
-    }
-  };
-
-  const handleEditPayment = (pay: Pagamento) => {
-    setFormData({
-      inscricaoId: pay.inscricaoId,
-      valor: pay.valor,
-      metodo: pay.metodo as any,
-      status: pay.status as any,
-      data_vencimento: pay.data_vencimento,
-      data_pagamento: pay.data_pagamento ? pay.data_pagamento.split('T')[0] : new Date().toISOString().split('T')[0],
-    });
-    setEditingPaymentId(pay.id);
-    setIsHistoryDialogOpen(false); // Close history to open pay dialog
-    setIsPayDialogOpen(true);
-  };
-
-  const handleDeletePayment = async (pay: Pagamento) => {
-    if (!confirm(`Excluir pagamento de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(pay.valor)}? Essa ação não pode ser desfeita.`)) return;
-
-    try {
-      await removeDocument(`eventos/${eventoId}/pagamentos`, pay.id);
-
-      const reg = registrations.find(r => r.id === pay.inscricaoId);
-      if (reg) {
-        const remaining = payments.filter(p => p.id !== pay.id && p.inscricaoId === reg.id);
-        const newValorPago = remaining.filter(p => p.status === 'pago').reduce((sum, p) => sum + p.valor, 0);
-
-        let newStatus: Inscricao['status'] = 'pendente';
-        if (reg.precisa_ajuda) {
-          newStatus = 'ajuda_solicitada';
-        } else if (newValorPago >= reg.valor_total) {
-          newStatus = 'pago';
-        } else if (newValorPago > 0) {
-          newStatus = 'pagamento_iniciado';
-        }
-
-        await updateDocument(`eventos/${eventoId}/inscricoes`, reg.id, {
-          valor_pago: newValorPago,
-          status: newStatus,
-        });
-      }
-
-      toast.success('Pagamento excluído.');
-      fetchData();
-    } catch {
-      toast.error('Erro ao excluir pagamento.');
-    }
-  };
-
-  const getInscritoNome = (r: Inscricao & { pessoa?: Pessoa }): string => {
-    if (r.pessoa?.nome?.trim()) return r.pessoa.nome.trim();
-    if (r.nome?.trim()) return r.nome.trim();
-    if (r.email?.trim()) return r.email.trim();
-    const respostas = r.respostas_formulario;
-    if (respostas) {
-      const entry = Object.entries(respostas).find(([k]) => k.toLowerCase().includes('nome') || k.toLowerCase().includes('name'));
-      if (entry && typeof entry[1] === 'string' && entry[1].trim()) return entry[1].trim();
-    }
-    return `Participante #${r.id.slice(0, 8)}`;
-  };
+  const totalArrecadado = payments.filter(p => p.status === 'pago').reduce((acc, curr) => acc + curr.valor, 0);
+  const totalEsperado = registrations.reduce((acc, curr) => acc + curr.valor_total, 0);
+  const totalSaidas = transactions.filter(t => t.tipo === 'saida').reduce((acc, t) => acc + t.valor, 0);
+  const totalInscritos = registrations.length;
+  const custoPorInscrito = totalInscritos > 0 ? totalSaidas / totalInscritos : 0;
+  const margemPorInscrito = totalInscritos > 0 ? (totalArrecadado - totalSaidas) / totalInscritos : 0;
+  const isAutoPay = plan.modules.autoPayments;
+  const gatewayConnected = profile?.gateway_connected === true;
 
   const getMethodIcon = (metodo: string) => {
     switch (metodo) {
@@ -263,106 +53,19 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
     }
   };
 
-  const selectedReg = registrations.find(r => r.id === selectedRegId);
-  const regPayments = payments.filter(p => p.inscricaoId === selectedRegId);
-
-  const filteredRegistrations = registrations.filter(reg => {
-    const matchesSearch = searchTerm === '' || 
-      reg.pessoa?.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      reg.pessoa?.celula?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesNome = columnFilters.nome === '' || 
-      reg.pessoa?.nome.toLowerCase().includes(columnFilters.nome.toLowerCase());
-
-    const matchesCelula = columnFilters.celula === '' || 
-      (reg.pessoa?.celula || '').toLowerCase().includes(columnFilters.celula.toLowerCase());
-
-    const matchesStatus = columnFilters.status === '' || 
-      (reg.valor_pago >= reg.valor_total ? 'pago' : reg.valor_pago > 0 ? 'andamento' : 'pendente').includes(columnFilters.status.toLowerCase());
-
-    const matchesTotal = columnFilters.total === '' || 
-      (reg.valor_total || 0).toString().includes(columnFilters.total);
-
-    const matchesPago = columnFilters.pago === '' || 
-      (reg.valor_pago || 0).toString().includes(columnFilters.pago);
-
-    const matchesSaldo = columnFilters.saldo === '' || 
-      ((reg.valor_total || 0) - (reg.valor_pago || 0)).toString().includes(columnFilters.saldo);
-
-    return matchesSearch && matchesNome && matchesCelula && matchesStatus && matchesTotal && matchesPago && matchesSaldo;
-  }).sort((a, b) => {
-    if (!sortConfig) return 0;
-    
-    let aVal: any = '';
-    let bVal: any = '';
-
-    const saldoA = a.valor_total - a.valor_pago;
-    const saldoB = b.valor_total - b.valor_pago;
-
-    switch (sortConfig.key) {
-      case 'nome':
-        aVal = a.pessoa?.nome || '';
-        bVal = b.pessoa?.nome || '';
-        break;
-      case 'celula':
-        aVal = a.pessoa?.celula || '';
-        bVal = b.pessoa?.celula || '';
-        break;
-      case 'total':
-        aVal = a.valor_total || 0;
-        bVal = b.valor_total || 0;
-        break;
-      case 'pago':
-        aVal = a.valor_pago || 0;
-        bVal = b.valor_pago || 0;
-        break;
-      case 'saldo':
-        aVal = saldoA;
-        bVal = saldoB;
-        break;
-      case 'status':
-        aVal = a.valor_pago >= a.valor_total ? 2 : a.valor_pago > 0 ? 1 : 0;
-        bVal = b.valor_pago >= b.valor_total ? 2 : b.valor_pago > 0 ? 1 : 0;
-        break;
-    }
-
-    if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-    return 0;
-  });
-
-  const requestSort = (key: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
-
   const SortIcon = ({ columnKey }: { columnKey: string }) => {
     if (sortConfig?.key !== columnKey) return <ArrowUpAZ className="w-3 h-3 ml-2 opacity-20 group-hover:opacity-100 transition-opacity" />;
-    return sortConfig.direction === 'asc' 
-      ? <ArrowUp className="w-3 h-3 ml-2 text-primary" /> 
+    return sortConfig.direction === 'asc'
+      ? <ArrowUp className="w-3 h-3 ml-2 text-primary" />
       : <ArrowDown className="w-3 h-3 ml-2 text-primary" />;
   };
 
-  const FilterHeader = ({ 
-    label, 
-    filterKey, 
-    columnKey,
-    className = ""
-  }: { 
-    label: string, 
-    filterKey: string, 
-    columnKey: string,
-    className?: string
-  }) => (
+  const FilterHeader = ({
+    label, filterKey, columnKey, className = '',
+  }: { label: string; filterKey: string; columnKey: string; className?: string }) => (
     <TableHead className={`font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 group ${className}`}>
       <div className="flex items-center">
-        <button 
-          onClick={() => requestSort(columnKey)}
-          className="flex items-center hover:text-primary transition-colors focus:outline-none"
-        >
+        <button onClick={() => requestSort(columnKey)} className="flex items-center hover:text-primary transition-colors focus:outline-none">
           {label}
           <SortIcon columnKey={columnKey} />
         </button>
@@ -377,40 +80,18 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
               <div className="flex items-center justify-between">
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar {label}</p>
                 {columnFilters[filterKey] && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-5 w-5 text-destructive"
-                    onClick={() => setColumnFilters(prev => ({ ...prev, [filterKey]: '' }))}
-                  >
+                  <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => setColumnFilters(prev => ({ ...prev, [filterKey]: '' }))}>
                     <X className="w-3 h-3" />
                   </Button>
                 )}
               </div>
-              <Input 
-                placeholder={`Filtrar por ${label}...`}
-                value={columnFilters[filterKey]}
-                onChange={e => setColumnFilters(prev => ({ ...prev, [filterKey]: e.target.value }))}
-                className="h-9 rounded-lg border-none bg-muted font-bold text-xs focus-visible:ring-primary"
-                autoFocus
-              />
+              <Input placeholder={`Filtrar por ${label}...`} value={columnFilters[filterKey]} onChange={e => setColumnFilters(prev => ({ ...prev, [filterKey]: e.target.value }))} className="h-9 rounded-lg border-none bg-muted font-bold text-xs focus-visible:ring-primary" autoFocus />
             </div>
           </PopoverContent>
         </Popover>
       </div>
     </TableHead>
   );
-
-  const totalArrecadado = payments.filter(p => p.status === 'pago').reduce((acc, curr) => acc + curr.valor, 0);
-  const totalEsperado = registrations.reduce((acc, curr) => acc + curr.valor_total, 0);
-
-  const totalSaidas = transactions.filter(t => t.tipo === 'saida').reduce((acc, t) => acc + t.valor, 0);
-  const totalInscritos = registrations.length;
-  const custoPorInscrito = totalInscritos > 0 ? totalSaidas / totalInscritos : 0;
-  const margemPorInscrito = totalInscritos > 0 ? (totalArrecadado - totalSaidas) / totalInscritos : 0;
-
-  const isAutoPay = plan.modules.autoPayments;
-  const gatewayConnected = profile?.gateway_connected === true;
 
   return (
     <div className="space-y-6 text-foreground">

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile, Donation } from '~/types';
-import { createDocument, getDocument, updateDocument } from '~/services/firestore';
-import { maskTelefone, maskCPF, validateEmail, validateTelefone, validateCPF } from '~/utils/validators';
+import React from 'react';
+import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile } from '~/types';
+import { maskTelefone, maskCPF } from '~/utils/validators';
 import { Button } from '@/components/ui/button';
+import { useSalesPageContent, Step, CheckoutResult } from './hooks/useSalesPageContent';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,24 +13,8 @@ import {
   Ticket as TicketIcon, Shield, Lock, HeadphonesIcon, Instagram, Globe, Mail, Phone,
   CreditCard, Copy, ExternalLink,
 } from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
 import { toast } from 'sonner';
-import { v4 as uuidv4 } from 'uuid';
-import { Email } from '~/services/email';
 import Logo from '~/components/Logo';
-
-type Step = 'ticket' | 'form' | 'checkout' | 'success';
-
-interface CheckoutResult {
-  paymentUrl: string | null;
-  pixQrCode?: { encodedImage: string; payload: string; expirationDate: string } | null;
-  bankSlipUrl?: string | null;
-  identificationField?: string | null;
-  chargeId: string;
-  installmentValue?: number | null;
-  installmentCount?: number | null;
-}
 
 function safeUrl(url: string | undefined): string | undefined {
   if (!url) return undefined;
@@ -60,237 +44,27 @@ interface Props {
 }
 
 const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, onSuccess }) => {
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [doacaoValores, setDoacaoValores] = useState<Record<string, number>>({});
-  const [step, setStep] = useState<Step>('ticket');
-  const [submitting, setSubmitting] = useState(false);
-  const [inscricaoId, setInscricaoId] = useState<string | null>(null);
-  const [formValues, setFormValues] = useState<Record<string, string | boolean>>({});
-  const [organizador, setOrganizador] = useState<UserProfile | null>(null);
-  const [isDoacaoSubmission, setIsDoacaoSubmission] = useState(false);
-  const [gatewayConnected, setGatewayConnected] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState('');
-  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
-  const [cpf, setCpf] = useState('');
-  const [card, setCard] = useState({ holderName: '', number: '', expiry: '', ccv: '' });
-  const [installments, setInstallments] = useState(1);
-
-  useEffect(() => {
-    if (evento.criado_por) {
-      getDocument<UserProfile>('users', evento.criado_por)
-        .then(u => { if (u) setOrganizador(u); })
-        .catch(() => {});
-      getDocument<{ gateway_connected?: boolean }>('organizer_public', evento.criado_por)
-        .then(meta => { setGatewayConnected(meta?.gateway_connected === true); })
-        .catch(() => {});
-    }
-  }, [evento.criado_por]);
-
-  const selectedTickets = tickets.filter(t => (quantities[t.id] || 0) > 0 || (t.valor_livre && (doacaoValores[t.id] || 0) > 0));
-  const allDoacao = selectedTickets.length > 0 && selectedTickets.every(t => t.tipo === 'doacao');
-
-  const getTicketTotal = (t: Ticket) => {
-    if (t.tipo === 'doacao' && t.valor_livre) return doacaoValores[t.id] || 0;
-    if (t.tipo === 'doacao' && t.permite_patrocinio) return (t.valor_patrocinio || 0) * (quantities[t.id] || 0);
-    return t.valor * (quantities[t.id] || 0);
-  };
-
-  const total = selectedTickets.reduce((s, t) => s + getTicketTotal(t), 0);
-  const totalQty: number = selectedTickets.reduce((sum, t) => {
-    if (t.tipo === 'doacao' && t.valor_livre) return sum + ((doacaoValores[t.id] || 0) > 0 ? 1 : 0);
-    return sum + (quantities[t.id] || 0);
-  }, 0);
-
-  const updateQty = (id: string, delta: number) =>
-    setQuantities(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + delta) }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    for (const campo of pagina.campos_formulario) {
-      const val = String(formValues[campo.id] || '').trim();
-      if (campo.obrigatorio && !val) {
-        toast.error(`O campo "${campo.label}" é obrigatório.`);
-        return;
-      }
-      if (val) {
-        if (campo.tipo === 'email' && !validateEmail(val)) {
-          toast.error(`E-mail inválido no campo "${campo.label}".`);
-          return;
-        }
-        if (campo.tipo === 'telefone' && !validateTelefone(val)) {
-          toast.error(`Telefone inválido no campo "${campo.label}". Use (00) 00000-0000.`);
-          return;
-        }
-        if (campo.label.toLowerCase().includes('cpf') && val.replace(/\D/g, '').length === 11 && !validateCPF(val)) {
-          toast.error(`CPF inválido no campo "${campo.label}".`);
-          return;
-        }
-      }
-    }
-    const needsCpf = gatewayConnected && total > 0;
-    if (needsCpf && !validateCPF(cpf)) {
-      toast.error('Informe um CPF válido para continuar.');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const respostas: Record<string, string | boolean> = {};
-      pagina.campos_formulario.forEach(c => { respostas[c.label] = formValues[c.id] || ''; });
-
-      const nomeField = pagina.campos_formulario.find(c => c.label.toLowerCase().includes('nome'));
-      const emailField = pagina.campos_formulario.find(c => c.tipo === 'email' || c.label.toLowerCase().includes('e-mail'));
-      const telefoneField = pagina.campos_formulario.find(c => c.tipo === 'telefone' || c.label.toLowerCase().includes('telefone'));
-
-      const nome = nomeField ? String(formValues[nomeField.id] || '') : '';
-      const email = emailField ? String(formValues[emailField.id] || '') : '';
-      const telefone = telefoneField ? String(formValues[telefoneField.id] || '') : '';
-
-      const pessoaId = uuidv4();
-      const cpfDigits = cpf.replace(/\D/g, '');
-      await createDocument(`eventos/${eventoId}/pessoas`, pessoaId, {
-        id: pessoaId, nome, email, telefone,
-        ...(cpfDigits ? { cpf: cpfDigits } : {}),
-      });
-
-      if (allDoacao) {
-        // Página de doação: cria documento Donation em vez de Inscricao
-        const doacaoId = uuidv4();
-        const ticket = selectedTickets[0];
-        let finalidade = ticket?.nome || '';
-        if (ticket?.permite_patrocinio) {
-          finalidade = `${ticket.nome} — ${quantities[ticket.id] || 0} inscrição(ões) patrocinadas`;
-        }
-        const useDonationGateway = gatewayConnected && !!selectedMethod && total > 0;
-        const doacaoData: Omit<Donation, 'id'> & { id: string; pessoaId: string; email?: string; telefone?: string; respostas_formulario?: Record<string, string | boolean> } = {
-          id: doacaoId,
-          eventoId,
-          valor: total,
-          valorLiquido: total,
-          taxaAdm: 0,
-          formaPagamento: useDonationGateway ? selectedMethod : '',
-          dataPagamento: new Date().toISOString(),
-          doadorNome: nome,
-          pessoaId,
-          email,
-          telefone,
-          destino: 'livre',
-          finalidade,
-          data: new Date().toISOString(),
-          status: 'pendente',
-          valorRestante: total,
-          respostas_formulario: respostas,
-        };
-        await createDocument(`eventos/${eventoId}/doacoes`, doacaoId, doacaoData as any);
-        setIsDoacaoSubmission(true);
-        setInscricaoId(doacaoId);
-
-        if (useDonationGateway) {
-          const fns = getFunctions(app, 'us-central1');
-          const createCharge = httpsCallable(fns, 'createEventCharge');
-          const [expiryMonth, expiryYear] = card.expiry.split('/');
-          const result = await createCharge({
-            eventoId,
-            inscricaoId: doacaoId,
-            isDonation: true,
-            paymentMethod: selectedMethod,
-            attendeeName: nome,
-            attendeeEmail: email,
-            attendeeCpf: cpf.replace(/\D/g, ''),
-            attendeePhone: telefone,
-            installments: installments > 1 ? installments : undefined,
-            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
-              holderName: card.holderName,
-              number: card.number.replace(/\s/g, ''),
-              expiryMonth: expiryMonth ?? '',
-              expiryYear: expiryYear ? `20${expiryYear}` : '',
-              ccv: card.ccv,
-            } : undefined,
-            valor: total,
-          });
-          setCheckoutResult(result.data as CheckoutResult);
-          setStep('checkout');
-          return;
-        }
-
-        setStep('success');
-        onSuccess?.(doacaoId);
-      } else {
-        // Página de inscrição normal
-        const id = uuidv4();
-        const ticket = selectedTickets[0];
-        const valorFinal = ticket ? getTicketTotal(ticket) : total;
-        const useGateway = gatewayConnected && selectedMethod && valorFinal > 0;
-        await createDocument(`eventos/${eventoId}/inscricoes`, id, {
-          id, eventoId,
-          pessoaId,
-          ticketId: ticket?.id || '',
-          ticket_nome: ticket?.nome || '',
-          nome,
-          email,
-          telefone,
-          ...(cpfDigits ? { cpf: cpfDigits } : {}),
-          respostas_formulario: respostas,
-          quantidades: quantities,
-          valor_total: valorFinal,
-          valor_pago: 0,
-          status: valorFinal === 0 ? 'pago' : useGateway ? 'pagamento_iniciado' : 'pendente',
-          data_inscricao: new Date().toISOString(),
-          precisa_ajuda: false,
-          validada_manual: false,
-          pagina_venda_id: pagina.id,
-          pagina_venda_slug: pagina.slug,
-        } as any);
-        setInscricaoId(id);
-
-        // Envia email de confirmação com link para consultar inscrição via OTP
-        if (email) {
-          Email.confirmacaoInscricao(
-            email,
-            nome || email,
-            evento?.nome || '',
-            evento?.data_inicio || '',
-            evento?.local || '',
-            `${window.location.origin}/consultar`,
-          ).catch(() => {});
-        }
-
-        if (useGateway) {
-          const fns = getFunctions(app, 'us-central1');
-          const createCharge = httpsCallable(fns, 'createEventCharge');
-          const [expiryMonth, expiryYear] = card.expiry.split('/');
-          const result = await createCharge({
-            eventoId,
-            inscricaoId: id,
-            paymentMethod: selectedMethod,
-            attendeeName: nome,
-            attendeeEmail: email,
-            attendeeCpf: cpf.replace(/\D/g, ''),
-            attendeePhone: telefone,
-            installments: installments > 1 ? installments : undefined,
-            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
-              holderName: card.holderName,
-              number: card.number.replace(/\s/g, ''),
-              expiryMonth: expiryMonth ?? '',
-              expiryYear: expiryYear ? `20${expiryYear}` : '',
-              ccv: card.ccv,
-            } : undefined,
-            valor: valorFinal,
-          });
-          setCheckoutResult(result.data as CheckoutResult);
-          setStep('checkout');
-          return;
-        }
-
-        setStep('success');
-        onSuccess?.(id);
-      }
-    } catch (err: any) {
-      console.error('[SalesPage] handleSubmit error:', err?.code, err?.message, err);
-      toast.error('Erro ao enviar. Tente novamente.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    quantities, setQuantities,
+    doacaoValores, setDoacaoValores,
+    step, setStep,
+    submitting,
+    inscricaoId,
+    formValues, setFormValues,
+    organizador,
+    isDoacaoSubmission,
+    gatewayConnected,
+    selectedMethod, setSelectedMethod,
+    checkoutResult,
+    cpf, setCpf,
+    card, setCard,
+    installments, setInstallments,
+    selectedTickets, allDoacao,
+    getTicketTotal,
+    total, totalQty,
+    updateQty,
+    handleSubmit,
+  } = useSalesPageContent({ evento, pagina, tickets, eventoId, onSuccess });
 
   // ── Checkout screen ───────────────────────────────────────────────────────
   if (step === 'checkout' && checkoutResult) {

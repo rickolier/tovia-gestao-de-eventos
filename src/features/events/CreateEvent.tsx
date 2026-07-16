@@ -11,9 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, AlertTriangle, ImagePlus, X } from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
 import { Link, useNavigate } from 'react-router-dom';
+import { useEventImageUpload } from './hooks/useEventImageUpload';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { getPlanConfig } from '~/utils/plan-limits';
@@ -25,11 +24,11 @@ export default function CreateEvent() {
   const navegar = useNavigate();
   const [carregando, setCarregando] = useState(false);
   const [quantidadeEventosAtivos, setQuantidadeEventosAtivos] = useState<number | null>(null);
-  const [imagemFile, setImagemFile] = useState<File | null>(null);
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
-  const [imagemErro, setImagemErro] = useState<string | null>(null);
-  const [uploadProgresso, setUploadProgresso] = useState<number | null>(null);
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const {
+    imagemFile, imagemPreview, imagemErro, uploadProgresso,
+    cropSrc, setCropSrc,
+    handleImagemChange, handleCropComplete, clearImagem, uploadImagem,
+  } = useEventImageUpload();
 
   const plano = getPlanConfig(perfil?.plano);
 
@@ -84,46 +83,6 @@ export default function CreateEvent() {
       });
     }
   }, [usuario]);
-
-  const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImagemErro(null);
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-      setImagemErro('Formato inválido. Use PNG, JPEG ou WebP.');
-      return;
-    }
-
-    const url = URL.createObjectURL(file);
-    setCropSrc(url);
-  };
-
-  const handleCropComplete = (croppedFile: File) => {
-    const preview = URL.createObjectURL(croppedFile);
-    setImagemFile(croppedFile);
-    setImagemPreview(preview);
-    setCropSrc(null);
-  };
-
-  const uploadImagem = async (eventoId: string): Promise<string> => {
-    if (!imagemFile) return '';
-    setUploadProgresso(10);
-    const imageBase64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve((reader.result as string).split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(imagemFile);
-    });
-    setUploadProgresso(40);
-    const fns = getFunctions(app, 'us-central1');
-    const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
-    const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
-    setUploadProgresso(100);
-    const url = result.data.downloadUrl;
-    return url.includes('?t=') ? url : `${url}?t=${Date.now()}`;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -415,7 +374,7 @@ export default function CreateEvent() {
                       />
                       <button
                         type="button"
-                        onClick={() => { setImagemFile(null); setImagemPreview(null); setImagemErro(null); setUploadProgresso(null); }}
+                        onClick={clearImagem}
                         className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white transition-colors"
                       >
                         <X className="w-4 h-4" />

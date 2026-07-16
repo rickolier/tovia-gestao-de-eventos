@@ -1,172 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
+import React, { useState } from 'react';
 import { Ticket } from '~/types';
-import { where } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
+import { useTickets } from './hooks/useTickets';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Ticket as TicketIcon, Trash2, Edit2, AlertCircle, Tag } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import CuponsTab from './CuponsTab';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
-import { v4 as uuidv4 } from 'uuid';
-import { useAuth } from '~/context/AuthContext';
-import { getPlanConfig } from '~/utils/plan-limits';
-
 export default function TicketsTab({ eventoId }: { eventoId: string }) {
-  const { profile } = useAuth();
   const [subTab, setSubTab] = useState<'ingressos' | 'cupons'>('ingressos');
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const plan = getPlanConfig(profile?.plano);
-  const onlyFreeTickets = !plan.modules.manualPayments;
-  const gatewayConnected = profile?.gateway_connected === true;
-  const reachedTicketLimit = tickets.length >= plan.maxTicketsPerEvent;
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [ticketToDelete, setTicketToDelete] = useState<string | null>(null);
-  const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
-
-  const defaultMetodos = plan.modules.autoPayments ? ['pix', 'boleto', 'credito'] : [];
-
-  const [formData, setFormData] = useState({
-    nome: '',
-    tipo: 'pago' as 'pago' | 'gratuito' | 'doacao',
-    valor: 0,
-    limite_vagas: 0,
-    data_limite: '',
-    permite_parcelamento: false,
-    metodos_pagamento: defaultMetodos,
-    max_parcelas_credito: 1,
-    max_parcelas_recorrente: 2,
-    installment_logic: 'free' as 'free' | 'limited',
-    exibir_preco: true,
-    valor_livre: false,
-    permite_patrocinio: false,
-    valor_patrocinio: 0,
-  });
-
-  const fetchTickets = async () => {
-    const data = await listDocuments<Ticket>(`eventos/${eventoId}/tickets`);
-    setTickets(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchTickets();
-  }, [eventoId]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTicketId && reachedTicketLimit) {
-      toast.error(`Seu plano (${plan.name}) permite no máximo ${plan.maxTicketsPerEvent} ingressos por evento.`);
-      return;
-    }
-    if (formData.tipo === 'pago') {
-      if (!formData.valor || formData.valor <= 0) {
-        toast.error('O valor do ingresso pago deve ser maior que zero.');
-        return;
-      }
-      if (formData.valor > 99999.99) {
-        toast.error('O valor do ingresso não pode exceder R$ 99.999,99.');
-        return;
-      }
-      if ((formData.metodos_pagamento || []).length === 0) {
-        toast.error('Selecione ao menos uma forma de pagamento.');
-        return;
-      }
-    }
-    if (formData.data_limite && new Date(formData.data_limite) <= new Date()) {
-      toast.error('A data limite deve ser uma data futura.');
-      return;
-    }
-    try {
-      const ticketData = {
-        ...formData,
-        eventoId,
-        valor: (formData.tipo === 'gratuito' || formData.tipo === 'doacao') ? 0 : Number(formData.valor),
-        limite_vagas: formData.tipo === 'doacao' ? 0 : Number(formData.limite_vagas)
-      };
-
-      if (editingTicketId) {
-        await updateDocument(`eventos/${eventoId}/tickets`, editingTicketId, ticketData);
-        toast.success('Ingresso atualizado com sucesso!');
-      } else {
-        const id = uuidv4();
-        await createDocument(`eventos/${eventoId}/tickets`, id, {
-          ...ticketData,
-          id
-        });
-        toast.success('Ingresso criado com sucesso!');
-      }
-      
-      setIsDialogOpen(false);
-      setEditingTicketId(null);
-      setFormData({
-        nome: '',
-        tipo: 'pago',
-        valor: 0,
-        limite_vagas: 0,
-        data_limite: '',
-        permite_parcelamento: false,
-        metodos_pagamento: defaultMetodos,
-        max_parcelas_credito: 1,
-        max_parcelas_recorrente: 2,
-        installment_logic: 'free' as 'free' | 'limited',
-        exibir_preco: true,
-        valor_livre: false,
-        permite_patrocinio: false,
-        valor_patrocinio: 0,
-      });
-      fetchTickets();
-    } catch (error) {
-      toast.error('Erro ao salvar ingresso.');
-    }
-  };
-
-  const handleEdit = (ticket: Ticket) => {
-    setEditingTicketId(ticket.id);
-    setFormData({
-      nome: ticket.nome,
-      tipo: ticket.tipo as 'pago' | 'gratuito' | 'doacao',
-      valor: ticket.valor,
-      limite_vagas: ticket.limite_vagas || 0,
-      data_limite: ticket.data_limite || '',
-      permite_parcelamento: ticket.permite_parcelamento || false,
-      metodos_pagamento: ticket.metodos_pagamento || defaultMetodos,
-      max_parcelas_credito: ticket.max_parcelas_credito ?? 1,
-      max_parcelas_recorrente: ticket.max_parcelas_recorrente ?? 2,
-      installment_logic: (ticket as any).installment_logic ?? 'free',
-      exibir_preco: ticket.exibir_preco !== false,
-      valor_livre: ticket.valor_livre || false,
-      permite_patrocinio: ticket.permite_patrocinio || false,
-      valor_patrocinio: ticket.valor_patrocinio || 0,
-    });
-    setIsDialogOpen(true);
-  };
-
-  const handleDelete = async () => {
-    if (!ticketToDelete) return;
-    try {
-      await removeDocument(`eventos/${eventoId}/tickets`, ticketToDelete);
-      toast.success('Ingresso excluído com sucesso!');
-      setIsDeleteDialogOpen(false);
-      setTicketToDelete(null);
-      fetchTickets();
-    } catch (error) {
-      toast.error('Erro ao excluir ingresso.');
-    }
-  };
-
-  const confirmDelete = (id: string) => {
-    setTicketToDelete(id);
-    setIsDeleteDialogOpen(true);
-  };
+  const {
+    tickets, loading, plan, onlyFreeTickets, gatewayConnected, reachedTicketLimit, defaultMetodos,
+    isDialogOpen, setIsDialogOpen,
+    isDeleteDialogOpen, setIsDeleteDialogOpen,
+    ticketToDelete, editingTicketId, setEditingTicketId,
+    formData, setFormData,
+    handleSubmit, handleEdit, handleDelete, confirmDelete, resetForm,
+  } = useTickets(eventoId);
 
   return (
     <div className="space-y-8 text-foreground">
@@ -206,19 +61,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                   return;
                 }
                 setEditingTicketId(null);
-                setFormData({
-                  nome: '',
-                  tipo: onlyFreeTickets ? 'gratuito' : 'pago',
-                  valor: 0,
-                  limite_vagas: 0,
-                  data_limite: '',
-                  permite_parcelamento: false,
-                  metodos_pagamento: ['pix', 'boleto', 'credito'],
-                  max_parcelas_credito: 1,
-                  max_parcelas_recorrente: 2,
-                  installment_logic: 'free' as 'free' | 'limited',
-                  exibir_preco: true,
-                });
+                resetForm();
+                if (onlyFreeTickets) setFormData(prev => ({ ...prev, tipo: 'gratuito' }));
                 setIsDialogOpen(true);
               }}
               className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-xl h-10 px-5 font-black shadow-lg shadow-primary/20 transition-all active:scale-95"

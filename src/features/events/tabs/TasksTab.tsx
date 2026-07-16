@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { listDocuments, createDocument, updateDocument, removeDocument } from '~/services/firestore';
-import { Task, AppNotification, EquipeMembro, MembroEquipeGlobal } from '~/types';
-import { where, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import React from 'react';
+import { Task, EquipeMembro, MembroEquipeGlobal } from '~/types';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { useTasks } from './hooks/useTasks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -59,225 +58,14 @@ interface TasksTabProps {
 const DEFAULT_PERMS: EquipeMembro['permissoes'] = ['registrations', 'management', 'rooms', 'tasks'];
 
 export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate }: TasksTabProps) {
-  const { user, profile } = useAuth();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [view, setView] = useState<'lista' | 'quadros'>('quadros');
-
-  // Membros globais do organizador
-  const [globalMembros, setGlobalMembros] = useState<MembroEquipeGlobal[]>([]);
-  const [linkingId, setLinkingId] = useState<string | null>(null);
-  const isOwner = !!donoId && user?.uid === donoId;
-
-  useEffect(() => {
-    if (!isOwner || !donoId) return;
-    listDocuments<MembroEquipeGlobal>('equipes', [where('donoId', '==', donoId)])
-      .then(data => setGlobalMembros(data.filter(m => m.status === 'ativo')))
-      .catch(() => {});
-  }, [donoId, isOwner]);
-
-  const handleVincular = async (membro: MembroEquipeGlobal) => {
-    if (!membro.userId) {
-      toast.error(`${membro.nome} ainda não tem conta no Tovia. Aguarde o cadastro.`);
-      return;
-    }
-    if (equipe.some(m => m.userId === membro.userId)) return;
-    setLinkingId(membro.id);
-    try {
-      const novoMembro: EquipeMembro = {
-        userId: membro.userId,          // UID real do Firebase
-        email: membro.email,
-        nome: membro.nome,
-        permissoes: DEFAULT_PERMS,
-        adicionadoEm: new Date().toISOString(),
-      };
-      await updateDocument('eventos', eventoId, {
-        equipe: [...equipe, novoMembro],
-        equipeIds: arrayUnion(membro.userId),  // UID real → query equipeIds funciona
-      } as any);
-      toast.success(`${membro.nome} vinculado a este evento.`);
-      onEquipeUpdate?.();
-    } catch {
-      toast.error('Erro ao vincular membro.');
-    } finally {
-      setLinkingId(null);
-    }
-  };
-
-  const handleDesvincular = async (membro: MembroEquipeGlobal) => {
-    if (!membro.userId) return;
-    setLinkingId(membro.id);
-    try {
-      const novaEquipe = equipe.filter(m => m.userId !== membro.userId);
-      await updateDocument('eventos', eventoId, {
-        equipe: novaEquipe,
-        equipeIds: arrayRemove(membro.userId),  // UID real
-      } as any);
-      toast.success(`${membro.nome} removido deste evento.`);
-      onEquipeUpdate?.();
-    } catch {
-      toast.error('Erro ao desvincular membro.');
-    } finally {
-      setLinkingId(null);
-    }
-  };
-
-  const [formData, setFormData] = useState({
-    titulo: '',
-    descricao: '',
-    categoria: 'Outros',
-    responsavel: '',
-    dataLimite: new Date().toISOString().split('T')[0],
-    prioridade: 'media' as 'baixa' | 'media' | 'alta'
-  });
-
-  const memberOptions: string[] = [
-    ...(profile?.nome ? [profile.nome] : []),
-    ...equipe.filter(m => m.userId !== user?.uid && m.nome).map(m => m.nome),
-  ];
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const data = await listDocuments<Task>(`eventos/${eventoId}/tarefas`);
-      setTasks(data);
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao carregar tarefas.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [eventoId]);
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const taskId = editingTask?.id || uuidv4();
-      const taskData: Task = {
-        ...formData,
-        id: taskId,
-        eventoId,
-        status: editingTask?.status || 'pendente',
-        dataCriacao: editingTask?.dataCriacao || new Date().toISOString(),
-        prioridade: formData.prioridade
-      };
-
-      if (editingTask) {
-        await updateDocument(`eventos/${eventoId}/tarefas`, taskId, taskData);
-        toast.success('Tarefa atualizada!');
-      } else {
-        await createDocument(`eventos/${eventoId}/tarefas`, taskId, taskData);
-        
-        // Notificar responsável
-        if (user) {
-          const notifId = uuidv4();
-          await createDocument('notificacoes', notifId, {
-            id: notifId,
-            userId: user.uid, // In a real app, this would be the ID of the 'responsavel'
-            eventoId,
-            tipo: 'tarefa',
-            titulo: 'Nova Tarefa Atribuída',
-            mensagem: `Você recebeu a tarefa: ${formData.titulo}`,
-            data: new Date().toISOString(),
-            lida: false
-          } as AppNotification);
-        }
-        
-        toast.success('Tarefa criada!');
-      }
-
-      setIsDialogOpen(false);
-      setEditingTask(null);
-      resetForm();
-      fetchData();
-    } catch (error) {
-      toast.error('Erro ao salvar tarefa.');
-    }
-  };
-
-  const handleStatusChange = async (taskId: string, newStatus: Task['status']) => {
-    try {
-      await updateDocument(`eventos/${eventoId}/tarefas`, taskId, { status: newStatus });
-      fetchData();
-    } catch (error) {
-      toast.error('Erro ao atualizar status.');
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await removeDocument(`eventos/${eventoId}/tarefas`, id);
-      toast.success('Tarefa removida');
-      setIsDialogOpen(false);
-      fetchData();
-    } catch (error) {
-      toast.error('Erro ao remover');
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      titulo: '',
-      descricao: '',
-      categoria: 'Outros',
-      responsavel: '',
-      dataLimite: new Date().toISOString().split('T')[0],
-      prioridade: 'media'
-    });
-  };
-
-  const openForm = (task?: Task) => {
-    if (task) {
-      setEditingTask(task);
-      setFormData({
-        titulo: task.titulo,
-        descricao: task.descricao,
-        categoria: task.categoria,
-        responsavel: task.responsavel,
-        dataLimite: task.dataLimite,
-        prioridade: task.prioridade
-      });
-    } else {
-      setEditingTask(null);
-      resetForm();
-    }
-    setIsDialogOpen(true);
-  };
-
-  const onDragEnd = async (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-
-    if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
-
-    const newStatus = destination.droppableId as Task['status'];
-    const taskId = draggableId;
-
-    // Local update for immediate feedback
-    const prevTasks = [...tasks];
-    setTasks(prevTasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
-
-    try {
-      await updateDocument(`eventos/${eventoId}/tarefas`, taskId, { status: newStatus });
-      toast.success('Status atualizado');
-    } catch (error) {
-      setTasks(prevTasks); // Revert on error
-      toast.error('Erro ao atualizar status');
-    }
-  };
+  const {
+    tasks, setTasks, loading, isDialogOpen, setIsDialogOpen,
+    editingTask, setEditingTask, view, setView,
+    globalMembros, linkingId, isOwner, memberOptions,
+    formData, setFormData,
+    openForm, resetForm, handleSubmit, handleStatusChange,
+    handleDelete, onDragEnd, handleVincular, handleDesvincular,
+  } = useTasks(eventoId, equipe, donoId, onEquipeUpdate);
 
   return (
     <div className="space-y-6 text-foreground">
@@ -451,7 +239,6 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
                           className={`flex-1 space-y-3.5 transition-all p-1.5 rounded-[1.5rem] ${snapshot.isDraggingOver ? 'bg-primary/5 ring-2 ring-primary/20 ring-inset' : ''}`}
                         >
                           {statusTasks.map((task: Task, index: number) => (
-                            // @ts-expect-error — DraggableChildrenFn return type conflicts with Card's ref in @hello-pangea/dnd v18 + React 19
                             <Draggable key={task.id} draggableId={task.id} index={index}>
                               {(draggableProvided, draggableSnapshot) => (
                                 <Card

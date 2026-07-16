@@ -8,9 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye, EyeOff, Trash2, AlertTriangle, ImagePlus, X } from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEventImageUpload } from './hooks/useEventImageUpload';
 import { toast } from 'sonner';
 import { Evento } from '~/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -29,10 +28,11 @@ export default function EditEvent() {
 
   const plan = getPlanConfig(profile?.plano);
 
-  const [imagemFile, setImagemFile] = useState<File | null>(null);
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
-  const [uploadProgresso, setUploadProgresso] = useState<number | null>(null);
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const {
+    imagemFile, imagemPreview, setImagemPreview,
+    uploadProgresso, cropSrc, setCropSrc,
+    handleImagemChange, handleCropComplete, clearImagem, uploadImagem,
+  } = useEventImageUpload();
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -119,42 +119,6 @@ export default function EditEvent() {
     }
   };
 
-  const handleImagemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-      toast.error('Formato inválido. Use PNG, JPEG ou WebP.');
-      return;
-    }
-    setCropSrc(URL.createObjectURL(file));
-  };
-
-  const handleCropComplete = (croppedFile: File) => {
-    setImagemFile(croppedFile);
-    setImagemPreview(URL.createObjectURL(croppedFile));
-    setCropSrc(null);
-  };
-
-  const uploadImagem = async (eventoId: string): Promise<string> => {
-    if (!imagemFile) return formData.imagem_url;
-    setUploadProgresso(10);
-    const imageBase64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve((reader.result as string).split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(imagemFile);
-    });
-    setUploadProgresso(40);
-    const fns = getFunctions(app, 'us-central1');
-    const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
-    const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
-    setUploadProgresso(100);
-    // Cache bust client-side: garante URL única mesmo antes do redeploy das Functions
-    const url = result.data.downloadUrl;
-    return url.includes('?t=') ? url : `${url}?t=${Date.now()}`;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !id) return;
@@ -176,7 +140,7 @@ export default function EditEvent() {
       const dataInicio = new Date(formData.data_inicio).toISOString();
       const dataFim = new Date(formData.data_fim).toISOString();
 
-      const imagemUrl = await uploadImagem(id);
+      const imagemUrl = await uploadImagem(id, formData.imagem_url);
 
       const eventData = {
         nome: formData.nome,
@@ -327,7 +291,7 @@ export default function EditEvent() {
                       />
                       <button
                         type="button"
-                        onClick={() => { setImagemFile(null); setImagemPreview(null); setUploadProgresso(null); setFormData(p => ({ ...p, imagem_url: '' })); }}
+                        onClick={() => { clearImagem(); setFormData(p => ({ ...p, imagem_url: '' })); }}
                         className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white transition-colors"
                       >
                         <X className="w-4 h-4" />
