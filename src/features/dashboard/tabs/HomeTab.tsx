@@ -140,8 +140,8 @@ export default function HomeTab({ eventos }: HomeTabProps) {
 
         {/* Stat card 2 — Ativos */}
         <div className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+          <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
           </div>
           <div className="min-w-0">
             <p className="text-2xl font-bold text-foreground leading-none">{activeEvents.length}</p>
@@ -224,7 +224,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {displayedEvents.map((evento, index) => {
               const dataInicio = new Date(evento.data_inicio);
-              const eventColor = evento.cor_tema || '#1a7a45';
+              const eventColor = evento.cor_tema || '#FF6B1A';
               const isGuestEvent = !!user && evento.criado_por !== user.uid;
 
               return (
@@ -258,7 +258,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                             <span className={cn(
                               'text-[10px] font-semibold px-2 py-0.5 rounded-full',
                               evento.ativo
-                                ? 'bg-emerald-50 text-emerald-600'
+                                ? 'bg-orange-50 text-primary'
                                 : 'bg-muted text-muted-foreground',
                             )}>
                               {evento.ativo ? 'Ativo' : 'Arquivado'}

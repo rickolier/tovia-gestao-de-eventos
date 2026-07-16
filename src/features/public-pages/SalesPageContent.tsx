@@ -780,7 +780,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             )}
           </div>
         </div>
-        <div className="bg-[var(--sidebar)] px-6 py-8 mt-0">
+        <div className="bg-sidebar px-6 py-8 mt-0">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="text-2xl font-black text-white tracking-tight">tovia</span>
             <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>

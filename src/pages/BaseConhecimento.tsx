@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 // ── Badge config ────────────────────────────────────────────────────────────
 
 const BADGES = {
-  chinam: { label: 'Chinám', color: 'bg-emerald-100 text-emerald-700' },
+  chinam: { label: 'Chinám', color: 'bg-orange-50 text-primary' },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
   koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
   chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
@@ -29,7 +29,7 @@ const ACCENT: Record<string, string> = {
 
 // Active filter pill styles (shown on the banner dark bg)
 const PLAN_FILTER_ACTIVE: Record<string, string> = {
-  chinam: 'bg-emerald-500 text-white border-emerald-500',
+  chinam: 'bg-primary text-white border-primary',
   petach: 'bg-blue-500 text-white border-blue-500',
   koach:  'bg-violet-500 text-white border-violet-500',
   chalem: 'bg-amber-500 text-white border-amber-500',
@@ -355,7 +355,7 @@ export default function BaseConhecimento() {
       {/* ── Banner ── */}
       <div
         className="relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 50%, #1a7a45 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 50%, #FF6B1A 100%)' }}
       >
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
         <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/20" />
@@ -365,7 +365,7 @@ export default function BaseConhecimento() {
             <BookOpen className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
-            Base de Conhecimento <span className="text-emerald-400">tovia</span>
+            Base de Conhecimento <span className="text-[#FF8C47]">tovia</span>
           </h1>
           <p className="text-white/60 text-sm max-w-lg mb-7">
             Tutoriais, guias e explicações sobre cada funcionalidade da plataforma — para você organizar eventos incríveis.

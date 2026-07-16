@@ -110,7 +110,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'pago': return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none font-black uppercase text-[10px]"><CheckCircle className="w-3 h-3 mr-1" /> Pago</Badge>;
+      case 'pago': return <Badge className="bg-orange-50 text-primary hover:bg-emerald-100 border-none font-black uppercase text-[10px]"><CheckCircle className="w-3 h-3 mr-1" /> Pago</Badge>;
       case 'pagamento_iniciado': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none font-black uppercase text-[10px]"><Clock className="w-3 h-3 mr-1" /> Pagamento Iniciado</Badge>;
       case 'pendente': return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none font-black uppercase text-[10px]"><Clock className="w-3 h-3 mr-1" /> Pendente</Badge>;
       case 'ajuda_solicitada': return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 border-none font-black uppercase text-[10px]"><AlertCircle className="w-3 h-3 mr-1" /> Ajuda Solicitada</Badge>;
@@ -223,7 +223,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 />
                 <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                   {importPreview.length > 0 ? (
-                    <Check className="w-8 h-8 text-emerald-500" />
+                    <Check className="w-8 h-8 text-primary" />
                   ) : (
                     <Upload className="w-8 h-8 text-muted-foreground" />
                   )}
@@ -294,7 +294,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               {/* ── RIGHT: Export ── */}
               <div className="flex-1 p-8 overflow-y-auto scrollbar-hide flex flex-col gap-6">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-primary">
+                  <div className="w-10 h-10 bg-orange-50 rounded-2xl flex items-center justify-center text-primary">
                     <FileDown className="w-6 h-6 shrink-0" />
                   </div>
                   <h2 className="text-2xl font-black text-foreground tracking-tight">Exportar</h2>
@@ -795,7 +795,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 <p className="font-black text-foreground">{qrInscricao.pessoa?.nome || qrInscricao.nome}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{qrInscricao.ticket_nome}</p>
                 {qrInscricao.presenca && (
-                  <span className="mt-2 inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                  <span className="mt-2 inline-flex items-center gap-1.5 bg-orange-50 text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
                     <CheckCircle className="w-3 h-3" /> Presença confirmada
                   </span>
                 )}

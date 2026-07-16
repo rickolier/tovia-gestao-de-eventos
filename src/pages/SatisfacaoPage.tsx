@@ -60,7 +60,7 @@ export default function SatisfacaoPage() {
     <div className="min-h-screen bg-[#f4f6f3] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="bg-[#1a7a45] rounded-t-2xl px-8 py-6 text-center">
+        <div className="bg-[#FF6B1A] rounded-t-2xl px-8 py-6 text-center">
           <span className="text-3xl font-black text-white tracking-tight">tovia</span>
           <span className="block text-[10px] font-semibold text-[#a7f3d0] tracking-[3px] mt-1">GESTÃO DE EVENTOS</span>
         </div>

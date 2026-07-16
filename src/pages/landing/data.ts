@@ -14,7 +14,7 @@ export const FEATURES = [
     icon: TicketIcon,
     title: 'Ingressos & Inscrições',
     description: 'Crie ingressos gratuitos ou pagos, configure vagas e colete os dados que precisar no formulário de inscrição.',
-    color: 'bg-emerald-50 text-emerald-600',
+    color: 'bg-orange-50 text-orange-600',
   },
   {
     icon: Globe,

@@ -29,7 +29,7 @@ function maskWhatsapp(value: string) {
 }
 
 const inputClass =
-  'w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a7a45] focus:border-transparent bg-white';
+  'w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B1A] focus:border-transparent bg-white';
 
 export default function CaptacaoPage() {
   const [form, setForm] = useState({
@@ -103,18 +103,18 @@ export default function CaptacaoPage() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#0f3d22] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-16 px-6">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#0f3d22] via-[#1e3d2a] to-[#FF6B1A] pt-10 pb-16 px-6">
           {/* Decorative circles */}
           <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
           <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
-          <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] rounded-full bg-emerald-400/20" />
+          <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] rounded-full bg-[#FF6B1A]/20" />
 
           <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center gap-12">
             {/* Texto */}
             <div className="flex-1 max-w-2xl">
               <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
                 Do zero ao check-in{' '}
-                <span className="text-emerald-400">tudo em uma plataforma.</span>
+                <span className="text-[#FF8C47]">tudo em uma plataforma.</span>
               </h1>
               <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
                 Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar. Feito para igrejas, conferências, retiros e quem organiza com propósito.
@@ -132,7 +132,7 @@ export default function CaptacaoPage() {
             {/* Hero visual — foto + elipse + cards flutuantes */}
             <div className="hidden md:flex flex-1 justify-center items-end relative" style={{ minHeight: '420px' }}>
               {/* Círculo de contraste */}
-              <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-emerald-400/20 border border-emerald-400/30" />
+              <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-[#FF6B1A]/20 border border-[#FF6B1A]/30" />
               <div className="absolute bottom-6 right-10 w-64 h-64 rounded-full bg-white/5" />
 
               {/* Foto dentro da elipse */}
@@ -155,8 +155,8 @@ export default function CaptacaoPage() {
 
               {/* Card flutuante — inscrições */}
               <div className="absolute top-6 left-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-gray-100">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                  <Users className="w-4 h-4 text-emerald-600" />
+                <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <Users className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Inscrições</p>
@@ -191,7 +191,7 @@ export default function CaptacaoPage() {
 
         {/* ── A Solução ── */}
         <section id="solucao" className="py-10 px-6 bg-white text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1a7a45] mb-2">A Solução</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#FF6B1A] mb-2">A Solução</p>
           <h2 className="text-xl md:text-2xl font-black text-gray-900 mb-4">
             Tovia — <span className="font-normal" style={{ fontFamily: 'serif' }}>טוֹבִיָּה</span>
           </h2>
@@ -245,7 +245,7 @@ export default function CaptacaoPage() {
                 </div>
                 {/* Badge: inscrições */}
                 <div className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg px-3 py-2 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-emerald-600" />
+                  <Users className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-xs font-black text-gray-900 leading-none">127 inscrições</p>
                     <p className="text-[10px] text-gray-400">confirmadas</p>
@@ -275,7 +275,7 @@ export default function CaptacaoPage() {
                   'Relatórios em tempo real',
                 ].map(item => (
                   <li key={item} className="flex items-center gap-2 text-gray-700 text-sm">
-                    <CheckCircle className="w-4 h-4 text-[#1a7a45] flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-[#FF6B1A] flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -334,8 +334,8 @@ export default function CaptacaoPage() {
                             onClick={() => setForm(prev => ({ ...prev, tamanho_publico: t.value }))}
                             className={`px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
                               form.tamanho_publico === t.value
-                                ? 'bg-[#1a7a45] text-white border-[#1a7a45]'
-                                : 'border-gray-200 text-gray-600 hover:border-[#1a7a45] hover:text-[#1a7a45]'
+                                ? 'bg-[#FF6B1A] text-white border-[#FF6B1A]'
+                                : 'border-gray-200 text-gray-600 hover:border-[#FF6B1A] hover:text-[#FF6B1A]'
                             }`}
                           >
                             {t.label}
@@ -350,12 +350,12 @@ export default function CaptacaoPage() {
                         type="checkbox"
                         checked={lgpdConsent}
                         onChange={e => setLgpdConsent(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#1a7a45] cursor-pointer flex-shrink-0"
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#FF6B1A] cursor-pointer flex-shrink-0"
                       />
                       <label htmlFor="lgpd" className="text-xs text-gray-500 leading-relaxed cursor-pointer">
                         Autorizo o Tovia a usar meus dados para entrar em contato sobre a plataforma.
                         Seus dados não serão compartilhados com terceiros.{' '}
-                        <a href="/privacidade" target="_blank" className="text-[#1a7a45] underline hover:text-[#155e36]">
+                        <a href="/privacidade" target="_blank" className="text-[#FF6B1A] underline hover:text-[#155e36]">
                           Política de Privacidade
                         </a>.
                       </label>
@@ -366,7 +366,7 @@ export default function CaptacaoPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-[#1a7a45] hover:bg-[#155e36] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+                      className="w-full bg-[#FF6B1A] hover:bg-[#155e36] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
                     >
                       {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                       {loading ? 'Enviando...' : 'Quero saber mais'}

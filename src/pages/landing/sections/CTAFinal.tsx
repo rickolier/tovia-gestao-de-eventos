@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 
 export function CTAFinal() {
   return (
-    <section className="bg-gradient-to-br from-[var(--sidebar)] to-primary py-20 px-6 relative overflow-hidden">
+    <section className="bg-gradient-to-br from-sidebar to-primary py-20 px-6 relative overflow-hidden">
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
       <div className="max-w-4xl mx-auto relative text-center">

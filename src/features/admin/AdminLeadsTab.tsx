@@ -36,15 +36,15 @@ export default function AdminLeadsTab() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
-          <Users className="w-5 h-5 text-emerald-600" />
+        <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+          <Users className="w-5 h-5 text-primary" />
         </div>
         <div>
           <h1 className="text-xl font-black text-foreground">Leads</h1>
           <p className="text-sm text-muted-foreground">Formulários preenchidos na landing page</p>
         </div>
         {!loading && (
-          <span className="ml-auto text-xs font-semibold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+          <span className="ml-auto text-xs font-semibold bg-orange-50 text-primary px-3 py-1 rounded-full">
             {leads.length} leads
           </span>
         )}

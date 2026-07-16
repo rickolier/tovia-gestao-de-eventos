@@ -106,7 +106,7 @@ export default function DesignSystemTab() {
             <Label>Versão Principal</Label>
           </div>
           {/* Dark bg */}
-          <div className="bg-[#162d20] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
+          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
             <div className="font-black text-5xl tracking-tight text-white leading-none">tovia</div>
             <div className="text-xs font-bold tracking-widest uppercase text-white/60 border-l-2 border-white/20 pl-3 leading-tight">
               Gestão de<br />Eventos
@@ -135,16 +135,16 @@ export default function DesignSystemTab() {
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Cores Principais</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <Swatch color="bg-[#1a7a45]" label="Primary" hex="#1a7a45" />
-              <Swatch color="bg-[#162d20]" label="Sidebar / Dark" hex="#162d20" />
-              <Swatch color="bg-[#e8f5ee]" label="Accent / Light" hex="#e8f5ee" textClass="text-[#1a7a45]" />
-              <Swatch color="bg-[#f0f4f2]" label="Secondary / Muted" hex="#f0f4f2" textClass="text-muted-foreground" />
+              <Swatch color="bg-[#FF6B1A]" label="Primary" hex="#FF6B1A" />
+              <Swatch color="bg-[#2D1470]" label="Sidebar / Dark" hex="#2D1470" />
+              <Swatch color="bg-[#FFF4EE]" label="Accent / Light" hex="#FFF4EE" textClass="text-[#FF6B1A]" />
+              <Swatch color="bg-[#EDE8DE]" label="Secondary / Muted" hex="#EDE8DE" textClass="text-muted-foreground" />
             </div>
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Neutros & Superfícies</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <Swatch color="bg-[#f4f7f5]" label="Background" hex="#f4f7f5" textClass="text-muted-foreground" />
+              <Swatch color="bg-[#F5F0E8]" label="Background" hex="#F5F0E8" textClass="text-muted-foreground" />
               <Swatch color="bg-white" label="Card / White" hex="#ffffff" textClass="text-muted-foreground" />
               <Swatch color="bg-[#111827]" label="Foreground / Text" hex="#111827" />
               <Swatch color="bg-[#6b7280]" label="Muted Foreground" hex="#6b7280" />
@@ -153,7 +153,7 @@ export default function DesignSystemTab() {
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Semânticas (Estado)</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <Swatch color="bg-emerald-500" label="Sucesso" hex="#10b981" />
+              <Swatch color="bg-orange-500" label="Sucesso" hex="#10b981" />
               <Swatch color="bg-amber-400" label="Aviso" hex="#f59e0b" textClass="text-amber-900" />
               <Swatch color="bg-red-500" label="Erro / Destrutivo" hex="#ef4444" />
               <Swatch color="bg-violet-500" label="Info / Premium" hex="#8b5cf6" />
@@ -364,7 +364,7 @@ export default function DesignSystemTab() {
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-semibold text-muted-foreground uppercase">#EV001</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Ativo</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-primary">Ativo</span>
                 </div>
                 <h3 className="font-semibold text-sm text-foreground mb-3">Conferência de Líderes 2025</h3>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -399,7 +399,7 @@ export default function DesignSystemTab() {
         <div className="bg-card border border-border rounded-2xl p-6">
           <div className="flex flex-wrap gap-3">
             {[
-              { label: 'Ativo', cls: 'bg-emerald-50 text-emerald-600 border border-emerald-200' },
+              { label: 'Ativo', cls: 'bg-orange-50 text-primary border border-primary/20' },
               { label: 'Arquivado', cls: 'bg-muted text-muted-foreground border border-border' },
               { label: 'Pendente', cls: 'bg-amber-50 text-amber-600 border border-amber-200' },
               { label: 'Pago', cls: 'bg-emerald-100 text-emerald-700 border border-emerald-300' },
@@ -487,7 +487,7 @@ export default function DesignSystemTab() {
       <Section title="09. Feedback & Alertas" subtitle="Mensagens de estado e notificação ao usuário">
         <div className="space-y-3">
           {[
-            { icon: CheckCircle2, label: 'Sucesso', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700', iconCls: 'text-emerald-500', msg: 'Evento criado com sucesso! Você já pode gerenciar as inscrições.' },
+            { icon: CheckCircle2, label: 'Sucesso', cls: 'bg-orange-50 border-primary/20 text-primary', iconCls: 'text-emerald-500', msg: 'Evento criado com sucesso! Você já pode gerenciar as inscrições.' },
             { icon: AlertTriangle, label: 'Aviso', cls: 'bg-amber-50 border-amber-200 text-amber-700', iconCls: 'text-amber-500', msg: 'Seu perfil está incompleto. Complete para liberar todos os recursos.' },
             { icon: XCircle, label: 'Erro', cls: 'bg-red-50 border-red-200 text-red-700', iconCls: 'text-red-500', msg: 'Erro ao salvar. Verifique sua conexão e tente novamente.' },
             { icon: Info, label: 'Info', cls: 'bg-blue-50 border-blue-200 text-blue-700', iconCls: 'text-blue-500', msg: 'Uma nova versão do Tovia está disponível com melhorias.' },
@@ -544,7 +544,7 @@ export default function DesignSystemTab() {
       ────────────────────────────────────── */}
       <Section title="11. Navegação — Sidebar" subtitle="Padrão de navegação lateral escura">
         <div className="flex gap-4">
-          <div className="bg-[#162d20] rounded-2xl p-4 w-56 space-y-0.5 shrink-0">
+          <div className="bg-[#2D1470] rounded-2xl p-4 w-56 space-y-0.5 shrink-0">
             <div className="px-3 pb-4 mb-2 border-b border-white/10">
               <div className="font-black text-3xl text-white tracking-tight">tovia</div>
             </div>
@@ -578,7 +578,7 @@ export default function DesignSystemTab() {
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Tokens da Sidebar</p>
             <div className="space-y-2 text-sm font-mono">
               {[
-                ['--sidebar', '#162d20', 'Fundo'],
+                ['--sidebar', '#2D1470', 'Fundo'],
                 ['--sidebar-foreground', '#ffffff', 'Texto'],
                 ['--sidebar-muted', 'rgba(255,255,255,0.55)', 'Item inativo'],
                 ['--sidebar-active-bg', 'rgba(255,255,255,0.12)', 'Item ativo'],
@@ -630,7 +630,7 @@ export default function DesignSystemTab() {
           </div>
 
           {/* Plano 4 - Chalém */}
-          <div className="rounded-2xl border-2 border-transparent p-5 flex flex-col gap-2" style={{ background: '#162d20' }}>
+          <div className="rounded-2xl border-2 border-transparent p-5 flex flex-col gap-2" style={{ background: '#2D1470' }}>
             <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20 bg-white/10 text-white/80 self-start">Plano 4 - Chalém</span>
             <p className="text-2xl font-black text-white mt-1">R$299<span className="text-sm font-semibold text-white/70">/mês</span></p>
             <p className="text-xs text-white/60">Pagamentos automáticos via PIX, boleto e cartão. Inscritos ilimitados.</p>
@@ -656,7 +656,7 @@ export default function DesignSystemTab() {
           <div className="bg-white border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
             <div className="flex items-baseline gap-0 leading-none">
               <span className="font-black text-5xl tracking-tight text-[#111827]">tovia</span>
-              <span className="font-black text-5xl tracking-tight text-[#1a7a45]">mobile</span>
+              <span className="font-black text-5xl tracking-tight text-[#FF6B1A]">mobile</span>
             </div>
             <Label>Logo — Fundo Claro</Label>
           </div>
@@ -669,7 +669,7 @@ export default function DesignSystemTab() {
             <Label>Logo — Fundo Escuro</Label>
           </div>
           {/* Sidebar dark */}
-          <div className="bg-[#162d20] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
+          <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-2">
             <div className="flex items-baseline gap-0 leading-none">
               <span className="font-black text-5xl tracking-tight text-white">tovia</span>
               <span className="font-black text-5xl tracking-tight text-[#22c55e]">mobile</span>
@@ -681,21 +681,21 @@ export default function DesignSystemTab() {
         <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
           <p className="text-xs text-muted-foreground">
             <strong className="text-foreground">Regra do logo mobile:</strong> As duas palavras são coladas, sempre em caixa baixa e peso Black (700+).
-            {' '}<span className="text-foreground font-semibold">tovia</span> usa a cor do texto principal do tema; <span className="text-[#1a7a45] font-semibold">mobile</span> usa <code className="bg-muted px-1 rounded text-[11px]">colors.primary</code> — verde no claro, verde vivo no escuro.
+            {' '}<span className="text-foreground font-semibold">tovia</span> usa a cor do texto principal do tema; <span className="text-[#FF6B1A] font-semibold">mobile</span> usa <code className="bg-muted px-1 rounded text-[11px]">colors.primary</code> — verde no claro, verde vivo no escuro.
           </p>
         </div>
 
         {/* Paleta Mobile */}
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Paleta de Cores — Mobile</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          <Swatch color="bg-[#1a7a45]" label="Primary (light)" hex="#1a7a45" />
+          <Swatch color="bg-[#FF6B1A]" label="Primary (light)" hex="#FF6B1A" />
           <Swatch color="bg-[#22c55e]" label="Primary (dark)" hex="#22c55e" textClass="text-[#14532d]" />
-          <Swatch color="bg-[#162d20]" label="Header / Sidebar" hex="#162d20" />
+          <Swatch color="bg-[#2D1470]" label="Header / Sidebar" hex="#2D1470" />
           <Swatch color="bg-[#111827]" label="Background Dark" hex="#111827" />
         </div>
         <div className="bg-muted/50 rounded-xl p-4 border border-border mb-6">
           <p className="text-xs text-muted-foreground">
-            <strong className="text-foreground">Shared com a web:</strong> O Primary <code className="bg-muted px-1 rounded text-[11px]">#1a7a45</code> e o Sidebar <code className="bg-muted px-1 rounded text-[11px]">#162d20</code> são idênticos entre web e mobile — garantindo coerência visual entre as plataformas.
+            <strong className="text-foreground">Shared com a web:</strong> O Primary <code className="bg-muted px-1 rounded text-[11px]">#FF6B1A</code> e o Sidebar <code className="bg-muted px-1 rounded text-[11px]">#2D1470</code> são idênticos entre web e mobile — garantindo coerência visual entre as plataformas.
             No tema escuro do app, o Primary sobe para <code className="bg-muted px-1 rounded text-[11px]">#22c55e</code> para manter contraste adequado.
           </p>
         </div>
@@ -745,7 +745,7 @@ export default function DesignSystemTab() {
         {/* Top Bar / Header */}
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Top Bar — Header</p>
         <div className="flex gap-4 mb-6">
-          <div className="flex-1 bg-[#162d20] rounded-2xl p-4">
+          <div className="flex-1 bg-[#2D1470] rounded-2xl p-4">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-baseline gap-0">
                 <span className="font-black text-xl text-white">tovia</span>
@@ -755,7 +755,7 @@ export default function DesignSystemTab() {
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
                   <Bell className="w-4 h-4 text-white/70" />
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#1a7a45] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-[#FF6B1A] flex items-center justify-center">
                   <span className="text-white text-xs font-bold">OR</span>
                 </div>
               </div>
@@ -776,9 +776,9 @@ export default function DesignSystemTab() {
         <div className="bg-card border border-border rounded-2xl p-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] font-mono">
             {[
-              ['Primary',         '#1a7a45', 'colors.primary (light)'],
+              ['Primary',         '#FF6B1A', 'colors.primary (light)'],
               ['Primary Dark',    '#22c55e', 'colors.primary (dark theme)'],
-              ['Sidebar',         '#162d20', 'colors.sidebar / sidebar web'],
+              ['Sidebar',         '#2D1470', 'colors.sidebar / sidebar web'],
               ['Danger',          '#ef4444', 'colors.danger / destructive'],
               ['Sucesso',         '#10b981', 'emerald-500 / colors.success'],
               ['Aviso',           '#f59e0b', 'amber-400 / colors.warning'],

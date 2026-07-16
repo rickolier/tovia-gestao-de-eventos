@@ -98,7 +98,7 @@ function RichTextEditor({
       UnderlineExtension,
       LinkExtension.configure({
         openOnClick: false,
-        HTMLAttributes: { style: 'color:#1a7a45;text-decoration:underline' },
+        HTMLAttributes: { style: 'color:#FF6B1A;text-decoration:underline' },
       }),
       ImageExtension.configure({
         HTMLAttributes: { style: 'max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block' },
@@ -284,9 +284,9 @@ function RichTextEditor({
           height: 0;
           font-style: italic;
         }
-        .tiptap-editor .ProseMirror a { color:#1a7a45; text-decoration:underline; }
+        .tiptap-editor .ProseMirror a { color:#FF6B1A; text-decoration:underline; }
         .tiptap-editor .ProseMirror img { max-width:100%; height:auto; border-radius:6px; margin:8px 0; display:block; cursor:default; }
-        .tiptap-editor .ProseMirror img.ProseMirror-selectednode { outline: 2px solid #1a7a45; outline-offset:2px; border-radius:6px; }
+        .tiptap-editor .ProseMirror img.ProseMirror-selectednode { outline: 2px solid #FF6B1A; outline-offset:2px; border-radius:6px; }
       `}</style>
       <div className="tiptap-editor" onClick={() => { if (sizeOpen) setSizeOpen(false); }}>
         <EditorContent editor={editor} />
@@ -328,7 +328,7 @@ function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
       {/* Template do email */}
       <div className="border rounded-xl overflow-hidden shadow-sm text-left">
         {/* Header verde */}
-        <div className="bg-[#1B5E38] px-6 py-5 text-center">
+        <div className="bg-[#2D1470] px-6 py-5 text-center">
           <p className="text-white font-black text-xl tracking-[-0.03em]">tovia</p>
           <p className="text-white/55 text-[8px] font-semibold uppercase tracking-[0.18em] mt-0.5">gestão de eventos</p>
         </div>
@@ -347,7 +347,7 @@ function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
 
           {corpo && !isEditorEmpty(corpo) ? (
             <div
-              className="text-[12px] text-gray-700 dark:text-zinc-300 leading-relaxed min-h-12 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_a]:text-[#1a7a45] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_u]:underline"
+              className="text-[12px] text-gray-700 dark:text-zinc-300 leading-relaxed min-h-12 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_a]:text-[#FF6B1A] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_u]:underline"
               dangerouslySetInnerHTML={{ __html: corpo }}
             />
           ) : (

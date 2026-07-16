@@ -15,9 +15,9 @@ import { useAuth } from '../hooks/useAuth';
 export const ONBOARDING_KEY = 'onboarding_done_v2';
 
 const { width: W } = Dimensions.get('window');
-const GREEN = '#1a7a45';
+const GREEN = '#FF6B1A';
 const GREEN_DARK = '#1b3a2d';
-const GREEN_LIGHT = '#e8f5ee';
+const GREEN_LIGHT = '#FFF4EE';
 const GREEN_PALE = '#f0faf4';
 const SLIDE_IDS = ['welcome', 'checkin', 'tarefas', 'done'] as const;
 
@@ -231,7 +231,7 @@ function TarefasSlide({
             </View>
             <Text style={st.tcName} numberOfLines={1}>Acampamento de Jovens 2026</Text>
             <View style={{ flexDirection: 'row' }}>
-              {[['#dbeafe','#1d4ed8','LF'],['#fce7f3','#9d174d','MR'],['#e8f5ee',GREEN,'JP']].map(([bg, color, init]) => (
+              {[['#dbeafe','#1d4ed8','LF'],['#fce7f3','#9d174d','MR'],['#FFF4EE',GREEN,'JP']].map(([bg, color, init]) => (
                 <View key={init} style={[st.tcAv, { backgroundColor: bg, marginLeft: init === 'LF' ? 0 : -5 }]}>
                   <Text style={[st.tcAvText, { color }]}>{init}</Text>
                 </View>

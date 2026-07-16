@@ -168,7 +168,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-sidebar via-sidebar to-primary/80 flex flex-col items-center justify-center p-6">
       <div className="fixed top-0 left-0 p-4">
         <Link to="/desenvolvimento" className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors text-sm font-semibold">
           <ArrowRight className="w-4 h-4 rotate-180" /> Voltar
@@ -254,7 +254,7 @@ export default function Login() {
                   <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                     <div className={cn(
                       'h-full rounded-full transition-all duration-300',
-                      passwordStrength === 'forte' ? 'w-full bg-emerald-400' :
+                      passwordStrength === 'forte' ? 'w-full bg-primary' :
                       passwordStrength === 'média' ? 'w-2/3 bg-yellow-400' :
                       'w-1/3 bg-red-400'
                     )} />
@@ -262,7 +262,7 @@ export default function Login() {
                   <p className="text-[10px] text-white/50">
                     Força: <span className={cn(
                       'font-semibold',
-                      passwordStrength === 'forte' ? 'text-emerald-400' :
+                      passwordStrength === 'forte' ? 'text-[#FF8C47]' :
                       passwordStrength === 'média' ? 'text-yellow-400' :
                       'text-red-400'
                     )}>{passwordStrength}</span> · mínimo 8 caracteres, use letras maiúsculas, números e símbolos

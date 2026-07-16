@@ -119,7 +119,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
       title: 'Taxas pela Sua Margem',
       desc: 'O participante paga o valor base. A taxa é descontada da sua margem.',
       icon: <ArrowDownToLine className="w-4 h-4" />,
-      color: 'emerald',
+      color: 'primary',
     },
   ];
 
@@ -254,26 +254,26 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                         onClick={() => setTaxaAbsorbida(opt.value)}
                         className={`p-3 rounded-xl border-2 cursor-pointer transition-all select-none ${
                           active
-                            ? isAmber ? 'border-amber-400 bg-amber-50' : 'border-emerald-500 bg-emerald-50'
+                            ? isAmber ? 'border-amber-400 bg-amber-50' : 'border-primary bg-orange-50'
                             : 'border-transparent bg-muted/40 hover:bg-muted/60'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                            active ? (isAmber ? 'bg-amber-400 text-white' : 'bg-emerald-500 text-white') : 'bg-muted text-muted-foreground'
+                            active ? (isAmber ? 'bg-amber-400 text-white' : 'bg-orange-500 text-white') : 'bg-muted text-muted-foreground'
                           }`}>
                             {opt.icon}
                           </div>
                           <div className="flex-1">
                             <p className={`text-xs font-black uppercase tracking-widest ${
-                              active ? (isAmber ? 'text-amber-700' : 'text-emerald-700') : 'text-foreground'
+                              active ? (isAmber ? 'text-amber-700' : 'text-primary') : 'text-foreground'
                             }`}>{opt.title}</p>
                             <p className="text-[11px] text-muted-foreground font-medium">{opt.desc}</p>
                           </div>
                           <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
-                            active ? (isAmber ? 'border-amber-400' : 'border-emerald-500') : 'border-muted-foreground'
+                            active ? (isAmber ? 'border-amber-400' : 'border-primary') : 'border-muted-foreground'
                           }`}>
-                            {active && <div className={`w-2 h-2 rounded-full ${isAmber ? 'bg-amber-400' : 'bg-emerald-500'}`} />}
+                            {active && <div className={`w-2 h-2 rounded-full ${isAmber ? 'bg-amber-400' : 'bg-orange-500'}`} />}
                           </div>
                         </div>
                       </div>
@@ -384,7 +384,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                 </h4>
                 <div className="space-y-2">
                   {[
-                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `R$ ${pixFee.toFixed(2)}`,  color: 'bg-emerald-500/10 text-emerald-600' },
+                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `R$ ${pixFee.toFixed(2)}`,  color: 'bg-orange-500/10 text-primary' },
                     { label: 'Boleto',     price: results.suggestedPriceBoleto,    fee: fmt(boletoFee),       color: 'bg-amber-500/10 text-amber-600' },
                     { label: 'Crédito',    price: results.suggestedPriceCredit,    fee: `${creditFee}%`,      color: 'bg-primary text-white', highlight: true },
                     { label: 'Recorrente', price: results.suggestedPriceRecurring, fee: `${recurringFee}%`,   color: 'bg-purple-500/10 text-purple-600' },

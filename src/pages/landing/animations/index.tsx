@@ -27,10 +27,10 @@ export function AnimConta() {
       <ToviaMockupHeader sub="criar conta" />
       {p >= 5 ? (
         <div className="p-4 flex flex-col items-center gap-1.5 py-5">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
+          <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
+            <CheckCircle className="w-4 h-4 text-primary" />
           </div>
-          <p className="text-[11px] font-black text-emerald-600">Conta criada!</p>
+          <p className="text-[11px] font-black text-primary">Conta criada!</p>
           <p className="text-[9px] text-muted-foreground">Bem-vindo ao Tovia</p>
         </div>
       ) : (
@@ -84,7 +84,7 @@ export function AnimEvento() {
           <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${(vagas / 200) * 100}%` }} />
         </div>
         <div className={cn('flex gap-1.5 transition-all duration-500', p >= 4 ? 'opacity-100' : 'opacity-0')}>
-          <span className="text-[9px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Gratuito ✓</span>
+          <span className="text-[9px] bg-orange-50 text-primary font-bold px-2 py-0.5 rounded-md">Gratuito ✓</span>
           <span className="text-[9px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-md">R$ 50</span>
         </div>
         <div className={cn('h-7 rounded-lg flex items-center justify-center text-[11px] font-black transition-all duration-300',
@@ -104,7 +104,7 @@ export function AnimCompartilhar() {
     const id = setInterval(() => setP(n => (n + 1) % 6), 900);
     return () => clearInterval(id);
   }, []);
-  const avatarColors = ['bg-emerald-200', 'bg-violet-200', 'bg-blue-200'];
+  const avatarColors = ['bg-orange-100', 'bg-violet-200', 'bg-blue-200'];
   const avatarInits  = ['JO', 'AM', 'CE'];
   const vis = p >= 3 ? Math.min(p - 2, 3) : 0;
   return (
@@ -116,7 +116,7 @@ export function AnimCompartilhar() {
           <span className="text-[9px] font-mono text-muted-foreground truncate">tovia.app/e/acampamento</span>
         </div>
         <div className={cn('h-7 rounded-lg flex items-center justify-center text-[11px] font-black transition-all duration-300',
-          p >= 2 ? 'bg-emerald-500 text-white' : 'bg-primary text-white'
+          p >= 2 ? 'bg-orange-500 text-white' : 'bg-primary text-white'
         )}>
           {p >= 2 ? '✓ Copiado!' : 'Copiar link'}
         </div>
@@ -130,7 +130,7 @@ export function AnimCompartilhar() {
                   </div>
                 ))}
               </div>
-              <span className="text-[9px] font-bold text-emerald-600">+{vis} inscritos!</span>
+              <span className="text-[9px] font-bold text-primary">+{vis} inscritos!</span>
             </div>
           )}
         </div>
@@ -152,7 +152,7 @@ export function AnimDashboard() {
   const amount = amounts[p] ?? 1200;
   return (
     <div className="w-52 bg-white rounded-t-2xl shadow-2xl overflow-hidden border border-white/20 flex">
-      <div className="w-11 bg-[var(--sidebar)] flex flex-col items-center pt-2.5 gap-2.5 shrink-0">
+      <div className="w-11 bg-sidebar flex flex-col items-center pt-2.5 gap-2.5 shrink-0">
         <span className="font-logo font-bold text-white text-[13px] leading-none">t</span>
         <div className="w-5 h-px bg-white/15 mt-1" />
         {[0, 1, 2].map(i => (
@@ -166,9 +166,9 @@ export function AnimDashboard() {
             <p className="text-[8px] text-muted-foreground">Inscrições</p>
             <p className="text-lg font-black text-foreground leading-tight transition-all">{count}</p>
           </div>
-          <div className="bg-emerald-50 rounded-lg p-1.5">
+          <div className="bg-orange-50 rounded-lg p-1.5">
             <p className="text-[8px] text-muted-foreground">Arrecadado</p>
-            <p className="text-[11px] font-black text-emerald-600 leading-tight">
+            <p className="text-[11px] font-black text-primary leading-tight">
               R${amount >= 1000 ? (amount / 1000).toFixed(1) + 'k' : amount}
             </p>
           </div>
@@ -176,9 +176,9 @@ export function AnimDashboard() {
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${Math.round((count / 200) * 100)}%` }} />
         </div>
-        <div className={cn('flex items-center gap-1 bg-emerald-50 rounded-lg px-1.5 py-1 transition-all duration-500', p % 2 === 0 ? 'opacity-100' : 'opacity-30')}>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-          <span className="text-[8px] text-emerald-700 font-semibold">Nova inscrição!</span>
+        <div className={cn('flex items-center gap-1 bg-orange-50 rounded-lg px-1.5 py-1 transition-all duration-500', p % 2 === 0 ? 'opacity-100' : 'opacity-30')}>
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+          <span className="text-[8px] text-primary font-semibold">Nova inscrição!</span>
         </div>
       </div>
     </div>

@@ -275,7 +275,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
             <button
               onClick={handleSeed}
               disabled={seeding}
-              className="flex items-center gap-1 text-xs font-black text-emerald-700 hover:text-emerald-900 transition-colors"
+              className="flex items-center gap-1 text-xs font-black text-primary hover:text-primary-dark transition-colors"
             >
               <Check className="w-3.5 h-3.5" />
               {seeding ? 'Importando...' : 'Sim'}

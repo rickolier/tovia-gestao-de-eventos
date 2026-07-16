@@ -152,7 +152,7 @@ export default function VerificarEmail() {
   const codeComplete = digits.every(d => d !== '');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-sidebar via-sidebar to-primary/80 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8 text-center">
         <Logo variant="white" />
 

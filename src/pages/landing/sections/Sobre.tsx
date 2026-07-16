@@ -9,11 +9,11 @@ export function Sobre() {
         <div className="relative">
           <div className="w-full aspect-square max-w-md mx-auto rounded-[3rem] overflow-hidden relative shadow-2xl">
             <img src="/foto-sobre.jpg" alt="Organizador de eventos usando o Tovia" className="w-full h-full object-cover object-center" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--sidebar)]/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-sidebar/40 to-transparent" />
           </div>
           <div className="absolute -bottom-6 -right-6 bg-white border border-border rounded-2xl shadow-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-              <Users className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">127 inscrições</p>

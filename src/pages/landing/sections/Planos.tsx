@@ -47,7 +47,7 @@ export function Planos() {
             <ul className="flex-1 space-y-2.5 text-sm">
               {['1 evento ativo', 'Até 100 vagas por evento', '1 Ingresso cadastrado', 'Página de inscrição pública', 'Relatórios básicos'].map((label, i) => (
                 <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                  <span className="w-5 h-5 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-primary" /></span>
                   <span className="text-foreground">{label}</span>
                 </li>
               ))}
@@ -75,7 +75,7 @@ export function Planos() {
             <ul className="flex-1 space-y-2.5 text-sm">
               {['3 eventos ativos', 'Até 200 vagas por evento', '3 Ingressos cadastrados', 'Financeiro manual', 'Painel de Doações'].map((label, i) => (
                 <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                  <span className="w-5 h-5 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-primary" /></span>
                   <span className="text-foreground">{label}</span>
                 </li>
               ))}
@@ -108,7 +108,7 @@ export function Planos() {
             <ul className="flex-1 space-y-1.5 text-sm">
               {(['5 eventos ativos', 'Até 500 vagas por evento', '5 membros de equipe'] as string[]).map((label, i) => (
                 <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                  <span className="w-5 h-5 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-primary" /></span>
                   <span className="text-foreground">{label}</span>
                 </li>
               ))}
@@ -122,7 +122,7 @@ export function Planos() {
                   <ul className="space-y-1">
                     {items.map(item => (
                       <li key={item} className="flex items-center gap-2.5 pl-1">
-                        <span className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><Check className="w-2.5 h-2.5 text-emerald-600" /></span>
+                        <span className="w-4 h-4 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-2.5 h-2.5 text-primary" /></span>
                         <span className="text-foreground text-xs">{item}</span>
                       </li>
                     ))}
@@ -183,7 +183,7 @@ export function Planos() {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-[var(--sidebar)] px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+        <div className="mt-8 rounded-2xl bg-sidebar px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
           <div>
             <p className="text-lg font-black text-white">🏢 Precisa de algo além do Chalém?</p>
             <p className="text-sm text-white/70 mt-1.5 max-w-lg">

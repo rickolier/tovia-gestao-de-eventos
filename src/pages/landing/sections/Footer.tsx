@@ -4,7 +4,7 @@ import { NAV_LINKS, NAV_ROUTE_LINKS } from '../data';
 
 export function Footer() {
   return (
-    <footer className="bg-[var(--sidebar)] py-10 px-6">
+    <footer className="bg-sidebar py-10 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col items-center md:items-start gap-1">
           <span className="text-2xl font-black text-white tracking-tight">tovia</span>

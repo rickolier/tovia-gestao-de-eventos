@@ -528,7 +528,7 @@ export function TourSelector({ userId, plan, onStart, onClose }: TourSelectorPro
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-sm font-bold text-foreground">{tour.label}</span>
                     {seen && (
-                      <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-primary-foreground0 bg-orange-500/10 px-1.5 py-0.5 rounded-full">
                         Visto
                       </span>
                     )}

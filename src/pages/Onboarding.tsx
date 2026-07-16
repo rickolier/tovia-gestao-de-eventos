@@ -49,7 +49,7 @@ export default function Onboarding() {
       : PLAN_CONFIGS[level].price.annualMonthLabel;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--sidebar)] via-[var(--sidebar)] to-[hsl(var(--primary)/0.8)] flex flex-col items-center justify-start py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-sidebar via-sidebar to-primary/80 flex flex-col items-center justify-start py-10 px-4">
       <div className="w-full max-w-7xl">
 
         {/* Header */}

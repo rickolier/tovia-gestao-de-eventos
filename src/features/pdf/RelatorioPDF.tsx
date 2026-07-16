@@ -2,11 +2,11 @@ import React from 'react';
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
 import { Evento, Inscricao, Ticket, FinancialTransaction } from '~/types';
 
-const PRIMARY = '#1a7a45';
+const PRIMARY = '#FF6B1A';
 const GRAY_DARK = '#111827';
 const GRAY_MID = '#6b7280';
 const GRAY_LIGHT = '#d1d5db';
-const BG_GREEN = '#e8f5ee';
+const BG_LIGHT = '#FFF4EE';
 
 const s = StyleSheet.create({
   page: { fontFamily: 'Helvetica', fontSize: 9, color: GRAY_DARK, backgroundColor: '#ffffff', paddingHorizontal: 40, paddingVertical: 36 },
@@ -18,15 +18,15 @@ const s = StyleSheet.create({
   headerSub: { fontSize: 8, color: GRAY_MID, marginTop: 2 },
   // Section
   section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: PRIMARY, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8, paddingBottom: 4, borderBottomWidth: 1, borderBottomColor: BG_GREEN },
+  sectionTitle: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: PRIMARY, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8, paddingBottom: 4, borderBottomWidth: 1, borderBottomColor: BG_LIGHT },
   // Stat chips
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  statChip: { flex: 1, backgroundColor: BG_GREEN, borderRadius: 8, padding: 10 },
+  statChip: { flex: 1, backgroundColor: BG_LIGHT, borderRadius: 8, padding: 10 },
   statValue: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: PRIMARY },
   statLabel: { fontSize: 7, color: GRAY_MID, textTransform: 'uppercase', letterSpacing: 0.8, marginTop: 2 },
   // Table
   table: { width: '100%' },
-  tableHeader: { flexDirection: 'row', backgroundColor: BG_GREEN, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 2 },
+  tableHeader: { flexDirection: 'row', backgroundColor: BG_LIGHT, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 2 },
   tableHeaderCell: { fontSize: 7, fontFamily: 'Helvetica-Bold', color: PRIMARY, textTransform: 'uppercase', letterSpacing: 0.8 },
   tableRow: { flexDirection: 'row', paddingHorizontal: 8, paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#f3f4f6' },
   tableRowAlt: { backgroundColor: '#fafafa' },
@@ -123,7 +123,7 @@ export default function RelatorioPDF({ evento, inscricoes, tickets, saidas, gera
               <Text style={{ ...s.statValue, color: '#dc2626' }}>{fmt(totalSaidas)}</Text>
               <Text style={s.statLabel}>Total saídas</Text>
             </View>
-            <View style={{ ...s.statChip, flex: 2, backgroundColor: saldo >= 0 ? BG_GREEN : '#fef2f2' }}>
+            <View style={{ ...s.statChip, flex: 2, backgroundColor: saldo >= 0 ? BG_LIGHT : '#fef2f2' }}>
               <Text style={{ ...s.statValue, color: saldo >= 0 ? PRIMARY : '#dc2626' }}>{fmt(saldo)}</Text>
               <Text style={s.statLabel}>Saldo líquido</Text>
             </View>

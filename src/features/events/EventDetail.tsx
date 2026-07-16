@@ -139,7 +139,7 @@ export default function EventDetail() {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile compact top header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[var(--sidebar)] h-14 flex items-center px-3 gap-2">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar h-14 flex items-center px-3 gap-2">
         <Link to="/desenvolvimento/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -152,7 +152,7 @@ export default function EventDetail() {
       <Tabs value={activeTab} onValueChange={setActiveTab} orientation="vertical" className="flex flex-col md:flex-row min-h-screen">
         {/* Sidebar — desktop only, dark green */}
         <aside className={cn(
-          "hidden md:flex bg-[var(--sidebar)] sticky top-0 h-screen flex-col z-30 shrink-0 transition-all duration-200",
+          "hidden md:flex bg-sidebar sticky top-0 h-screen flex-col z-30 shrink-0 transition-all duration-200",
           sidebarOpen ? "w-64" : "w-16"
         )}>
           {/* Logo area */}

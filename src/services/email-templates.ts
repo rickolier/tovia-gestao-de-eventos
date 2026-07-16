@@ -6,7 +6,7 @@ const BASE = `
   padding: 0;
 `;
 
-const PRIMARY = '#1a7a45';
+const PRIMARY = '#FF6B1A';
 const PRIMARY_DARK = '#155f37';
 const TEXT = '#1a1a1a';
 const MUTED = '#6b7280';

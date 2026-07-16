@@ -162,7 +162,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row font-sans">
       {/* ── Mobile top bar ── */}
-      <header className="md:hidden bg-[var(--sidebar)] h-14 flex items-center justify-between px-4 sticky top-0 z-50">
+      <header className="md:hidden bg-sidebar h-14 flex items-center justify-between px-4 sticky top-0 z-50">
         <Logo variant="white" className="scale-75 origin-left" />
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -176,7 +176,7 @@ export default function Dashboard() {
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
-          'bg-[var(--sidebar)]',
+          'bg-sidebar',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >

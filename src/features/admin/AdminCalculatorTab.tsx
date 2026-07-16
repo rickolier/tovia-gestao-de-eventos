@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // ─── Tokens de cor Tovia ──────────────────────────────────────────────────────
-const PRIMARY   = '#1a7a45';
+const PRIMARY   = '#FF6B1A';
 const PRIMARY_L = '#f0fdf4';  // fundo leve verde
 const PRIMARY_B = '#86efac';  // borda verde
 const DESTR     = '#dc2626';  // vermelho custo/negativo
@@ -595,7 +595,7 @@ function SliderRowMRR({ label, min, max, step, value, onChange, display }: {
 }
 
 function DetailRowMRR({ label, value, accent }: { label: string; value: string; accent?: 'green' | 'red' }) {
-  const cls = accent === 'green' ? 'text-emerald-600' : accent === 'red' ? 'text-red-500' : 'text-foreground';
+  const cls = accent === 'green' ? 'text-primary' : accent === 'red' ? 'text-red-500' : 'text-foreground';
   return (
     <div className="flex justify-between items-center text-sm py-1.5">
       <span className="text-muted-foreground">{label}</span>
@@ -636,7 +636,7 @@ function ProjecaoMRR() {
         ].map(({ label, value, color }) => (
           <Card key={label}><CardContent className="pt-4 pb-3 px-4">
             <p className="text-[11px] text-muted-foreground mb-1">{label}</p>
-            <p className={`text-xl font-black tracking-tight ${color === 'green' ? 'text-emerald-600' : color === 'red' ? 'text-red-500' : 'text-foreground'}`}>{value}</p>
+            <p className={`text-xl font-black tracking-tight ${color === 'green' ? 'text-primary' : color === 'red' ? 'text-red-500' : 'text-foreground'}`}>{value}</p>
           </CardContent></Card>
         ))}
       </div>

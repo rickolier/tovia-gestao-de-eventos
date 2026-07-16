@@ -45,8 +45,8 @@ export function DemoMockups() {
           <div className="flex-1 max-w-md">
             {demoTab === 'vendas' && (
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-5">
-                  <Globe className="w-6 h-6 text-emerald-600" />
+                <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mb-5">
+                  <Globe className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="text-2xl font-black text-foreground mb-4">Páginas de Inscrição prontas para compartilhar</h3>
                 <p className="text-muted-foreground leading-relaxed mb-6">

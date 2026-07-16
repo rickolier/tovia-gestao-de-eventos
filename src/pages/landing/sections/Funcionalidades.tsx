@@ -4,7 +4,7 @@ import { FEATURES } from '../data';
 
 export function Funcionalidades() {
   return (
-    <section id="funcionalidades" className="bg-[#f4f7f5] pt-12 pb-10 px-6">
+    <section id="funcionalidades" className="bg-background pt-12 pb-10 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Funcionalidades</span>

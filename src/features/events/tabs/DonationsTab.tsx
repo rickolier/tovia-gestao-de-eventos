@@ -87,9 +87,9 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
           <CardContent className="px-4 py-3">
             <div className="flex items-center justify-between mb-1">
               <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em]">Destinado a Inscritos</p>
-              <Target className="w-3.5 h-3.5 text-emerald-500 opacity-50" />
+              <Target className="w-3.5 h-3.5 text-muted-foreground" />
             </div>
-            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+            <p className="text-lg font-black text-primary dark:text-[#FF8C47]">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalDestinadoInscritos)}
             </p>
           </CardContent>
@@ -304,7 +304,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
                           {allocations.filter(a => a.doacaoId === don.id).map(a => {
                             const p = registrations.find(r => r.id === a.inscritoId)?.pessoa;
                             return (
-                              <div key={a.id} className="text-[10px] text-emerald-600 font-black flex items-center gap-1 pl-5 bg-emerald-50 dark:bg-emerald-950/20 rounded px-1.5 py-0.5 w-fit">
+                              <div key={a.id} className="text-[10px] text-primary font-black flex items-center gap-1 pl-5 bg-orange-50 dark:bg-primary/10 rounded px-1.5 py-0.5 w-fit">
                                 <ArrowRight className="w-2 h-2" />
                                 {p?.nome || 'Inscrito'}: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(a.valor)}
                               </div>

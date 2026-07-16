@@ -459,7 +459,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                               <span className="capitalize">{pay.metodo}</span>
                             </div>
                             {pay.isSignal && (
-                              <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-1">Sinal / Reserva</span>
+                              <span className="text-[9px] font-black text-primary uppercase tracking-widest mt-1">Sinal / Reserva</span>
                             )}
                           </div>
                         </TableCell>

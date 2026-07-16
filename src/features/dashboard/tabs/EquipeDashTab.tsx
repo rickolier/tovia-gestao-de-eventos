@@ -214,7 +214,7 @@ export default function EquipeDashTab() {
 
                 <div className="flex items-center gap-3">
                   {membro.status === 'ativo' ? (
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full">
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-primary bg-orange-50 border border-primary/20 px-2 py-1 rounded-full">
                       <CheckCircle2 className="w-3 h-3" /> Ativo
                     </span>
                   ) : (

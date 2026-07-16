@@ -19,7 +19,7 @@ import EventoSelectorCard from '../../components/ui/EventoSelectorCard';
 const STATUS_CHIP: Record<string, { label: string; bg: string; text: string }> = {
   pendente:    { label: 'Pendente',    bg: '#f0f4f2', text: '#6b7280' },
   em_progresso:{ label: 'Em andamento',bg: '#eff6ff', text: '#1e40af' },
-  concluida:   { label: 'Concluída',   bg: '#e8f5ee', text: '#1a7a45' },
+  concluida:   { label: 'Concluída',   bg: '#FFF4EE', text: '#FF6B1A' },
   atrasada:    { label: 'Atrasada',    bg: '#fee2e2', text: '#991b1b' },
 };
 

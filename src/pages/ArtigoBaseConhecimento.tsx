@@ -13,7 +13,7 @@ const PLAN_LABELS: Record<string, { label: string; color: string }> = {
 };
 
 const BADGES = {
-  chinam: { label: 'Chinám', color: 'bg-emerald-100 text-emerald-700' },
+  chinam: { label: 'Chinám', color: 'bg-orange-50 text-primary' },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
   koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
   chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
@@ -191,7 +191,7 @@ export default function ArtigoBaseConhecimento() {
       ) : (
         <div
           className="relative overflow-hidden px-6 pt-10 pb-10"
-          style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 60%, #1a7a45 100%)' }}
+          style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 60%, #FF6B1A 100%)' }}
         >
           <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-white/5" />
           <div className="max-w-3xl mx-auto">

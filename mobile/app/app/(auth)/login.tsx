@@ -9,8 +9,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Mail, Lock, ArrowRight } from 'lucide-react-native';
 import { auth } from '../../lib/firebase';
 
-const SIDEBAR = '#162d20';
-const PRIMARY = '#1a7a45';
+const SIDEBAR = '#2D1470';
+const PRIMARY = '#FF6B1A';
 const WHITE = '#ffffff';
 
 export default function LoginScreen() {

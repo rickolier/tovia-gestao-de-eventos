@@ -27,7 +27,7 @@ export function ComoFunciona() {
               style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e4a2e 100%)' }}
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
-              <span className="inline-flex text-xs font-black text-emerald-300 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4">
+              <span className="inline-flex text-xs font-black text-primary/70 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4">
                 {step}º Passo
               </span>
               <h3 className="text-xl font-black text-white leading-tight mb-2 max-w-[58%]">{title}</h3>

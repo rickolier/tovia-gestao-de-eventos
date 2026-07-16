@@ -505,7 +505,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                       R$ {totalComDesconto.toFixed(2)}
                     </span>
                     {cupomAplicado && (
-                      <p className="text-xs font-black text-emerald-600">
+                      <p className="text-xs font-black text-primary">
                         − R$ {desconto.toFixed(2)} de desconto aplicado
                       </p>
                     )}
@@ -538,15 +538,15 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-                      <Tag className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div className="flex items-center gap-3 bg-orange-50 border border-primary/20 rounded-xl px-4 py-3">
+                      <Tag className="w-4 h-4 text-primary shrink-0" />
                       <div className="flex-1">
-                        <p className="text-sm font-black text-emerald-700">{cupomAplicado.codigo}</p>
-                        <p className="text-xs text-emerald-600">
+                        <p className="text-sm font-black text-primary">{cupomAplicado.codigo}</p>
+                        <p className="text-xs text-primary">
                           {cupomAplicado.tipo === 'porcentagem' ? `${cupomAplicado.valor}% de desconto` : `R$ ${cupomAplicado.valor.toFixed(2)} de desconto`}
                         </p>
                       </div>
-                      <button onClick={handleRemoverCupom} className="text-emerald-400 hover:text-red-500 transition-colors p-1">
+                      <button onClick={handleRemoverCupom} className="text-[#FF8C47] hover:text-red-500 transition-colors p-1">
                         <X className="w-4 h-4" />
                       </button>
                     </div>
@@ -582,7 +582,7 @@ function RegistrationFlow({ eventoId, initialEvento, isSimulation = false }: Reg
                                 {method === 'pix' && <span className="font-black text-xs text-primary">PIX</span>}
                                 {method === 'boleto' && <span className="font-black text-xs text-amber-600">BOL</span>}
                                 {(method === 'credito' || method === 'debito') && <CreditCard className="w-5 h-5 text-blue-600" />}
-                                {method === 'dinheiro' && <span className="font-black text-xs text-emerald-600">$</span>}
+                                {method === 'dinheiro' && <span className="font-black text-xs text-primary">$</span>}
                               </div>
                               <div className="text-left">
                                 <p className="font-bold text-sm">{methodLabels[method] ?? method}</p>

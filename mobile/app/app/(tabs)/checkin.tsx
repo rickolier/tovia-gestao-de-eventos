@@ -347,7 +347,7 @@ function ScannerQR({ eventoId, eventoNome, onBack }: {
 
   const resultadoCfg = resultado
     ? resultado.tipo === 'ok'
-      ? { bg: '#1a7a45', icon: <UserCheck size={22} color="#fff" strokeWidth={2} />, msg: `✓ ${resultado.nome}`, sub: 'Check-in confirmado!' }
+      ? { bg: '#FF6B1A', icon: <UserCheck size={22} color="#fff" strokeWidth={2} />, msg: `✓ ${resultado.nome}`, sub: 'Check-in confirmado!' }
       : resultado.tipo === 'repetido'
       ? { bg: '#d97706', icon: <AlertCircle size={22} color="#fff" strokeWidth={2} />, msg: resultado.nome, sub: 'Já havia feito check-in' }
       : { bg: '#dc2626', icon: <UserX size={22} color="#fff" strokeWidth={2} />, msg: 'QR Code não reconhecido', sub: 'Inscrito não encontrado' }

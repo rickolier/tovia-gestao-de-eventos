@@ -185,7 +185,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
       {/* ── Painel de Saúde Financeira da Margem — só aparece quando margem está configurada ── */}
       {margem > 0 && <div className={cn(
         'rounded-3xl border p-6 space-y-4',
-        saudeColor === 'emerald' ? 'bg-emerald-50 border-emerald-200' :
+        saudeColor === 'emerald' ? 'bg-orange-50 border-primary/20' :
         saudeColor === 'amber'   ? 'bg-amber-50 border-amber-200' :
         saudeColor === 'red'     ? 'bg-red-50 border-red-200' :
         'bg-card border-border'
@@ -194,7 +194,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
           <div className="flex items-center gap-3">
             <div className={cn('w-10 h-10 rounded-2xl flex items-center justify-center shrink-0',
-              saudeColor === 'emerald' ? 'bg-emerald-500 text-white' :
+              saudeColor === 'emerald' ? 'bg-primary text-white' :
               saudeColor === 'amber'   ? 'bg-amber-500 text-white' :
               saudeColor === 'red'     ? 'bg-red-500 text-white' :
               'bg-primary/10 text-primary'
@@ -204,7 +204,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Saúde Financeira da Margem</p>
               <p className={cn('text-sm font-semibold',
-                saudeColor === 'emerald' ? 'text-emerald-700' :
+                saudeColor === 'emerald' ? 'text-primary' :
                 saudeColor === 'amber'   ? 'text-amber-700' :
                 saudeColor === 'red'     ? 'text-red-700' :
                 'text-muted-foreground'
@@ -261,7 +261,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             <div className="h-3 rounded-full bg-black/10 overflow-hidden">
               <div
                 className={cn('h-full rounded-full transition-all duration-500',
-                  saudeColor === 'emerald' ? 'bg-emerald-500' :
+                  saudeColor === 'emerald' ? 'bg-orange-500' :
                   saudeColor === 'amber'   ? 'bg-amber-400' :
                   'bg-red-500'
                 )}
@@ -282,7 +282,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Saldo</p>
                 <p className={cn('text-base font-black',
-                  saudeColor === 'emerald' ? 'text-emerald-600' :
+                  saudeColor === 'emerald' ? 'text-primary' :
                   saudeColor === 'amber'   ? 'text-amber-600' :
                   'text-red-600'
                 )}>{fmt(saldoMargem)}</p>
@@ -298,8 +298,8 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
             <Card className="border-none shadow-xl shadow-black/[0.02] bg-card rounded-2xl group hover:shadow-2xl transition-all">
               <CardContent className="p-4">
                 <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-2">Saldo de Doações</p>
-                <div className="flex items-center gap-2 text-emerald-600">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center shrink-0">
+                <div className="flex items-center gap-2 text-primary">
+                  <div className="w-8 h-8 rounded-lg bg-orange-50 dark:bg-emerald-950/30 flex items-center justify-center shrink-0">
                     <Coins className="w-4 h-4" />
                   </div>
                   <span className="text-lg font-black truncate">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSaldosDoacoes)}</span>

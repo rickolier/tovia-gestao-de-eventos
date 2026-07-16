@@ -16,7 +16,7 @@ import { FinanceiroSkeleton } from '../../components/ui/Skeleton';
 import EventoSelectorCard from '../../components/ui/EventoSelectorCard';
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string }> = {
-  pago:              { label: 'Pago',      bg: '#e8f5ee', text: '#1a7a45' },
+  pago:              { label: 'Pago',      bg: '#FFF4EE', text: '#FF6B1A' },
   pendente:          { label: 'Pendente',  bg: '#fef9c3', text: '#92400e' },
   pagamento_iniciado:{ label: 'Pendente',  bg: '#fef9c3', text: '#92400e' },
   cancelada:         { label: 'Cancelado', bg: '#fee2e2', text: '#991b1b' },
@@ -122,7 +122,7 @@ function ListaInscritos({ eventoId, eventoNome, onBack }: {
         </Text>
         {resumo.totalArrecadado > 0 && (
           <Text style={[Typography.small, { color: colors.mutedFg, marginTop: 2 }]}>
-            <Text style={{ color: '#1a7a45', fontWeight: '700' }}>{moeda(resumo.totalArrecadado)}</Text> arrecadado
+            <Text style={{ color: '#FF6B1A', fontWeight: '700' }}>{moeda(resumo.totalArrecadado)}</Text> arrecadado
             {resumo.totalPendente > 0 && (
               <Text>{'  ·  '}<Text style={{ color: '#92400e', fontWeight: '700' }}>{moeda(resumo.totalPendente)}</Text> pendente</Text>
             )}

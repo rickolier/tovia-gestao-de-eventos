@@ -63,7 +63,7 @@ export default function CheckinPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-[var(--sidebar)] px-4 py-3 flex items-center justify-between gap-3 sticky top-0 z-30">
+      <header className="bg-sidebar px-4 py-3 flex items-center justify-between gap-3 sticky top-0 z-30">
         <Link to={`/desenvolvimento/eventos/${eventoId}`} className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -75,17 +75,17 @@ export default function CheckinPage() {
       </header>
 
       {/* Stats */}
-      <div className="bg-[var(--sidebar)] px-4 pb-5">
+      <div className="bg-sidebar px-4 pb-5">
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/10 rounded-2xl px-4 py-3 flex flex-col items-center gap-1">
             <Users className="w-4 h-4 text-white/60" />
             <span className="text-2xl font-black text-white">{inscricoes.length}</span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">Total</span>
           </div>
-          <div className="bg-emerald-500/20 border border-emerald-400/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-1">
-            <UserCheck className="w-4 h-4 text-emerald-300" />
+          <div className="bg-orange-500/20 border border-primary/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-1">
+            <UserCheck className="w-4 h-4 text-primary/80" />
             <span className="text-2xl font-black text-white">{checkins}</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300">Presentes</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Presentes</span>
           </div>
           <div className="bg-white/5 rounded-2xl px-4 py-3 flex flex-col items-center gap-1">
             <UserX className="w-4 h-4 text-white/40" />
@@ -135,23 +135,23 @@ export default function CheckinPage() {
               onClick={() => handleManualCheckin(insc)}
               className={cn(
                 'w-full flex items-center gap-4 px-4 py-4 text-left transition-colors',
-                insc.presenca ? 'bg-emerald-50/60 dark:bg-emerald-950/20 cursor-default' : 'hover:bg-muted/40'
+                insc.presenca ? 'bg-orange-50/60 dark:bg-primary/10 cursor-default' : 'hover:bg-muted/40'
               )}
             >
               <div className={cn(
                 'w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                insc.presenca ? 'bg-emerald-500 border-emerald-500' : 'border-border bg-background'
+                insc.presenca ? 'bg-primary border-primary' : 'border-border bg-background'
               )}>
                 {insc.presenca && <CheckCircle2 className="w-5 h-5 text-white" />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={cn('font-bold text-sm truncate', insc.presenca ? 'text-emerald-700' : 'text-foreground')}>
+                <p className={cn('font-bold text-sm truncate', insc.presenca ? 'text-primary' : 'text-foreground')}>
                   {insc.nome ?? '—'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
                   {insc.ticket_nome}
                   {insc.presenca && insc.checkin_at && (
-                    <span className="text-emerald-600 font-semibold"> · {fmtTime(insc.checkin_at)}</span>
+                    <span className="text-primary font-semibold"> · {fmtTime(insc.checkin_at)}</span>
                   )}
                 </p>
               </div>

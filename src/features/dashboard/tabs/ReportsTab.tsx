@@ -31,12 +31,11 @@ function KpiCard({
   label: string;
   value: React.ReactNode;
   sub?: string;
-  color?: 'primary' | 'emerald' | 'amber' | 'violet' | 'rose';
+  color?: 'primary' | 'amber' | 'violet' | 'rose';
   locked?: boolean;
 }) {
   const colorMap = {
-    primary: { bg: 'bg-primary/10', text: 'text-primary', val: 'text-primary' },
-    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', val: 'text-emerald-600' },
+    primary: { bg: 'bg-orange-50', text: 'text-primary', val: 'text-primary' },
     amber: { bg: 'bg-amber-50', text: 'text-amber-600', val: 'text-amber-600' },
     violet: { bg: 'bg-violet-50', text: 'text-violet-600', val: 'text-violet-600' },
     rose: { bg: 'bg-rose-50', text: 'text-rose-600', val: 'text-rose-600' },
@@ -189,7 +188,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border',
                   typeFilters.has(key)
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    ? 'bg-orange-50 text-primary border-primary/20'
                     : 'bg-card text-muted-foreground border-border hover:text-foreground'
                 )}
               >
@@ -253,7 +252,7 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
               label="Taxa de ocupação"
               value={`${kpi2}%`}
               sub={`${kpi1} de ${filteredEvents.reduce((a, e) => a + (e.vagas_totais || 0), 0).toLocaleString('pt-BR')} vagas`}
-              color="emerald"
+              color="primary"
             />
             <KpiCard
               icon={DollarSign}
@@ -322,12 +321,12 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
                   <div className={cn(
                     'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
                     kpi7
-                      ? kpi7.delta > 0 ? 'bg-emerald-50' : kpi7.delta < 0 ? 'bg-rose-50' : 'bg-muted'
+                      ? kpi7.delta > 0 ? 'bg-orange-50' : kpi7.delta < 0 ? 'bg-rose-50' : 'bg-muted'
                       : 'bg-muted'
                   )}>
                     {kpi7 ? (
                       kpi7.delta > 0
-                        ? <TrendingUp className="w-5 h-5 text-emerald-600" />
+                        ? <TrendingUp className="w-5 h-5 text-primary" />
                         : kpi7.delta < 0
                           ? <TrendingDown className="w-5 h-5 text-rose-500" />
                           : <Minus className="w-5 h-5 text-muted-foreground" />
@@ -342,14 +341,14 @@ export default function ReportsTab({ eventos }: ReportsTabProps) {
                         <div className="flex items-baseline gap-2">
                           <span className={cn(
                             'text-2xl font-black',
-                            kpi7.delta > 0 ? 'text-emerald-600' : kpi7.delta < 0 ? 'text-rose-500' : 'text-foreground'
+                            kpi7.delta > 0 ? 'text-primary' : kpi7.delta < 0 ? 'text-rose-500' : 'text-foreground'
                           )}>
                             {kpi7.delta > 0 ? '+' : ''}{kpi7.delta}
                           </span>
                           {kpi7.pct !== null && (
                             <span className={cn(
                               'text-sm font-bold',
-                              kpi7.delta > 0 ? 'text-emerald-600' : kpi7.delta < 0 ? 'text-rose-500' : 'text-muted-foreground'
+                              kpi7.delta > 0 ? 'text-primary' : kpi7.delta < 0 ? 'text-rose-500' : 'text-muted-foreground'
                             )}>
                               ({kpi7.delta > 0 ? '+' : ''}{kpi7.pct}%)
                             </span>

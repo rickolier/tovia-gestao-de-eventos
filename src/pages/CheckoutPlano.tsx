@@ -140,7 +140,7 @@ export default function CheckoutPlano() {
   return (
     <div className="min-h-screen bg-muted/40 flex flex-col">
       {/* Header */}
-      <div className="bg-[var(--sidebar)] px-6 py-4 flex items-center gap-4">
+      <div className="bg-sidebar px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
           className="text-white/60 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-semibold"
@@ -373,7 +373,7 @@ export default function CheckoutPlano() {
         </div>
       </div>
       {/* Footer */}
-      <footer className="bg-[var(--sidebar)] py-8 px-6 mt-auto">
+      <footer className="bg-sidebar py-8 px-6 mt-auto">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center sm:items-start gap-0.5">
             <span className="text-xl font-black text-white tracking-tight">tovia</span>

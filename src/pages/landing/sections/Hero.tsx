@@ -4,7 +4,7 @@ import { ArrowRight, ChevronDown, Users, Heart, CheckCircle } from 'lucide-react
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[var(--sidebar)] via-[#1e3d2a] to-[#1a7a45] pt-10 pb-16 px-6">
+    <section className="relative overflow-hidden bg-gradient-to-br from-sidebar via-[#2D1470] to-[#1E0B4B] pt-10 pb-16 px-6">
       <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
       <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
       <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] rounded-full bg-primary/20" />
@@ -13,7 +13,7 @@ export function Hero() {
         <div className="flex-1 max-w-2xl">
           <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-6 uppercase">
             Do zero ao check-in{' '}
-            <span className="text-emerald-400">tudo em uma plataforma.</span>
+            <span className="text-[#FF8C47]">tudo em uma plataforma.</span>
           </h1>
           <p className="text-lg text-white/70 mb-10 max-w-xl leading-relaxed">
             Organize seu evento com inscrições, equipe, financeiro e check-in no mesmo lugar. Feito para igrejas, conferências, retiros e quem organiza com propósito.
@@ -35,7 +35,7 @@ export function Hero() {
         </div>
 
         <div className="hidden md:flex flex-1 justify-center items-end relative" style={{ minHeight: '420px' }}>
-          <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-emerald-400/20 border border-emerald-400/30" />
+          <div className="absolute bottom-0 right-4 w-80 h-80 rounded-full bg-[#FF6B1A]/20 border border-[#FF6B1A]/30" />
           <div className="absolute bottom-6 right-10 w-64 h-64 rounded-full bg-white/5" />
           <div
             className="relative z-10 overflow-hidden border-4 border-white/10"
@@ -44,8 +44,8 @@ export function Hero() {
             <img src="/foto-hero.jpg" alt="Organizador de eventos" className="w-full h-full object-cover" style={{ objectPosition: 'center 20%', transform: 'scale(1.15)', transformOrigin: 'center 30%' }} />
           </div>
           <div className="absolute top-6 left-0 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-border">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-              <Users className="w-4 h-4 text-emerald-600" />
+            <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+              <Users className="w-4 h-4 text-primary" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Inscrições</p>

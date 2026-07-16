@@ -187,8 +187,8 @@ export default function AdminGatewayTab() {
             value: connectedOrgs.length,
             sub: `${prodOrgs.length} produção · ${sandboxOrgs.length} sandbox`,
             icon: Wifi,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50',
+            color: 'text-primary',
+            bg: 'bg-orange-50',
           },
           {
             label: 'Total de cobranças',
@@ -246,7 +246,7 @@ export default function AdminGatewayTab() {
           </div>
           <CardContent className="p-5 space-y-3">
             {[
-              { label: 'Pagas / Aprovadas', count: paid.length, icon: CheckCircle2, color: 'text-emerald-600', bar: 'bg-emerald-500' },
+              { label: 'Pagas / Aprovadas', count: paid.length, icon: CheckCircle2, color: 'text-primary', bar: 'bg-orange-500' },
               { label: 'Pendentes (aguardando)', count: pending.length, icon: Clock, color: 'text-amber-600', bar: 'bg-amber-400' },
               { label: 'Canceladas / Recusadas', count: canceled.length, icon: XCircle, color: 'text-red-500', bar: 'bg-red-400' },
               { label: 'Com atraso > 24h', count: stale.length, icon: AlertTriangle, color: 'text-orange-500', bar: 'bg-orange-400' },
@@ -406,7 +406,7 @@ export default function AdminGatewayTab() {
                         className={`text-[10px] font-black px-3 rounded-full flex items-center gap-1 ${
                           org.gateway?.sandbox
                             ? 'bg-amber-100 text-amber-700'
-                            : 'bg-emerald-100 text-emerald-700'
+                            : 'bg-accent/10 text-accent'
                         }`}
                       >
                         {org.gateway?.sandbox

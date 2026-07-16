@@ -11,8 +11,8 @@ export function ConsultarStrip() {
       <div className="bg-[#f0fdf4]">
         <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-              <CheckCircle className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-5 h-5 text-primary" />
             </div>
             <div>
               <p className="font-black text-[#1a2e1a] text-base">Já se inscreveu em um evento?</p>

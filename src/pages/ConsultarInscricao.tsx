@@ -27,7 +27,7 @@ interface InscricaoResult {
 }
 
 const STATUS_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; border: string }> = {
-  pago:               { icon: CheckCircle2, color: 'text-emerald-700', bg: 'bg-emerald-50',  border: 'border-emerald-200' },
+  pago:               { icon: CheckCircle2, color: 'text-primary', bg: 'bg-orange-50',  border: 'border-primary/20' },
   pendente:           { icon: Clock,        color: 'text-amber-700',   bg: 'bg-amber-50',    border: 'border-amber-200'   },
   pagamento_iniciado: { icon: CreditCard,   color: 'text-blue-700',   bg: 'bg-blue-50',     border: 'border-blue-200'    },
   ajuda_solicitada:   { icon: AlertCircle,  color: 'text-purple-700', bg: 'bg-purple-50',   border: 'border-purple-200'  },
@@ -121,7 +121,7 @@ function InscricaoCard({ insc }: { insc: InscricaoResult }) {
 
   return (
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${isCancelled ? 'border-red-200' : 'border-gray-100'}`}>
-      <div className={`h-1.5 ${isPaid ? 'bg-emerald-500' : isCancelled ? 'bg-red-400' : 'bg-amber-400'}`} />
+      <div className={`h-1.5 ${isPaid ? 'bg-orange-500' : isCancelled ? 'bg-red-400' : 'bg-amber-400'}`} />
       <div className="p-6 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -192,20 +192,20 @@ function InscricaoCard({ insc }: { insc: InscricaoResult }) {
         )}
 
         {isPaid && !showQr && (
-          <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
-            <p className="text-xs text-emerald-700 font-medium">
+          <div className="bg-orange-50 border border-primary/10 rounded-xl px-4 py-3">
+            <p className="text-xs text-primary font-medium">
               Inscrição confirmada! Sua participação está garantida.
             </p>
           </div>
         )}
 
         {showQr && (
-          <div className="border border-emerald-200 rounded-xl overflow-hidden">
-            <div className="bg-emerald-50 px-4 py-2.5 flex items-center gap-2 border-b border-emerald-100">
-              <QrCode className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="border border-primary/20 rounded-xl overflow-hidden">
+            <div className="bg-orange-50 px-4 py-2.5 flex items-center gap-2 border-b border-primary/10">
+              <QrCode className="w-4 h-4 text-primary shrink-0" />
               <div>
-                <p className="text-xs font-black text-emerald-700">QR Code do ingresso</p>
-                <p className="text-[10px] text-emerald-600">Mostre na entrada para fazer check-in</p>
+                <p className="text-xs font-black text-primary">QR Code do ingresso</p>
+                <p className="text-[10px] text-primary">Mostre na entrada para fazer check-in</p>
               </div>
             </div>
             <div className="bg-white flex justify-center items-center p-6">

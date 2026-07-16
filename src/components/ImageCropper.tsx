@@ -97,7 +97,7 @@ export default function ImageCropper({
             showGrid
             style={{
               containerStyle: { borderRadius: 0 },
-              cropAreaStyle: { border: '2px solid #1a7a45', borderRadius: 8 },
+              cropAreaStyle: { border: '2px solid #FF6B1A', borderRadius: 8 },
             }}
           />
         </div>

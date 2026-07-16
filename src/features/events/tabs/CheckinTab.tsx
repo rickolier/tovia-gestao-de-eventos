@@ -65,10 +65,10 @@ export default function CheckinTab({ eventoId }: Props) {
 
       {/* Stat boxes */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 flex items-center gap-3">
-          <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span className="text-xl font-black text-emerald-700">{presentes.length}</span>
-          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Presentes</span>
+        <div className="rounded-xl border border-primary/20 bg-orange-50 px-4 py-3 flex items-center gap-3">
+          <UserCheck className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-xl font-black text-primary">{presentes.length}</span>
+          <span className="text-xs font-bold text-primary uppercase tracking-widest">Presentes</span>
         </div>
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center gap-3">
           <UserX className="w-4 h-4 text-slate-500 shrink-0" />
@@ -102,12 +102,12 @@ export default function CheckinTab({ eventoId }: Props) {
               className={cn(
                 'flex items-center gap-4 px-5 py-3.5',
                 idx !== inscricoes.length - 1 && 'border-b border-border/60',
-                insc.presenca ? 'bg-emerald-50/40' : 'bg-background',
+                insc.presenca ? 'bg-orange-50/40' : 'bg-background',
               )}
             >
               <div className={cn(
                 'w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0',
-                insc.presenca ? 'bg-emerald-500 border-emerald-500' : 'border-border',
+                insc.presenca ? 'bg-primary border-primary' : 'border-border',
               )}>
                 {insc.presenca && (
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
@@ -116,13 +116,13 @@ export default function CheckinTab({ eventoId }: Props) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={cn('text-sm font-semibold truncate', insc.presenca ? 'text-emerald-700' : 'text-foreground')}>
+                <p className={cn('text-sm font-semibold truncate', insc.presenca ? 'text-primary' : 'text-foreground')}>
                   {insc.nome ?? '—'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{insc.ticket_nome ?? '—'}</p>
               </div>
               {insc.presenca && insc.checkin_at ? (
-                <span className="text-[11px] font-black text-emerald-600 shrink-0">
+                <span className="text-[11px] font-black text-primary shrink-0">
                   {new Date(insc.checkin_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               ) : (

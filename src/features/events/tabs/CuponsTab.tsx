@@ -150,11 +150,11 @@ export default function CuponsTab({ eventoId }: Props) {
                 {/* Icon */}
                 <div className={cn(
                   'w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-                  cupom.tipo === 'porcentagem' ? 'bg-primary/10' : 'bg-emerald-50'
+                  cupom.tipo === 'porcentagem' ? 'bg-primary/10' : 'bg-orange-50'
                 )}>
                   {cupom.tipo === 'porcentagem'
                     ? <Percent className="w-5 h-5 text-primary" />
-                    : <DollarSign className="w-5 h-5 text-emerald-600" />
+                    : <DollarSign className="w-5 h-5 text-primary" />
                   }
                 </div>
 
@@ -172,7 +172,7 @@ export default function CuponsTab({ eventoId }: Props) {
                     <span className="text-lg font-black text-primary">{fmtValor(cupom)}</span>
                     {expirado && <Badge variant="outline" className="text-[10px] font-black uppercase border-red-200 text-red-500 bg-red-50">Expirado</Badge>}
                     {esgotado && !expirado && <Badge variant="outline" className="text-[10px] font-black uppercase border-amber-200 text-amber-600 bg-amber-50">Esgotado</Badge>}
-                    {!inativo && <Badge variant="outline" className="text-[10px] font-black uppercase border-emerald-200 text-emerald-600 bg-emerald-50">Ativo</Badge>}
+                    {!inativo && <Badge variant="outline" className="text-[10px] font-black uppercase border-primary/20 text-primary bg-orange-50">Ativo</Badge>}
                   </div>
                   <div className="flex items-center gap-3 mt-1 flex-wrap">
                     <span className="text-xs text-muted-foreground">

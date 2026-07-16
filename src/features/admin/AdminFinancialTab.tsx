@@ -231,8 +231,8 @@ export default function AdminFinancialTab() {
             value: fmt(mrr),
             sub: 'Receita mensal recorrente',
             icon: DollarSign,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50',
+            color: 'text-primary',
+            bg: 'bg-orange-50',
           },
           {
             label: 'ARR projetado',
@@ -263,8 +263,8 @@ export default function AdminFinancialTab() {
             value: inscricoesInPeriod.length,
             sub: `${paidInPeriod.length} confirmadas`,
             icon: TicketCheck,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50',
+            color: 'text-primary',
+            bg: 'bg-orange-50',
           },
           {
             label: `Eventos (${period})`,
@@ -399,7 +399,7 @@ export default function AdminFinancialTab() {
             })}
             <div className="pt-3 border-t border-border flex items-center justify-between">
               <span className="text-sm font-black text-foreground">MRR Total</span>
-              <span className="text-lg font-black text-emerald-600">{fmt(mrr)}</span>
+              <span className="text-lg font-black text-primary">{fmt(mrr)}</span>
             </div>
           </div>
         </CardContent>

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 export function MockupVendas() {
   const pages = [
-    { title: 'Acampamento Jovem 2026', tickets: 142, max: 200, color: 'bg-emerald-500' },
+    { title: 'Acampamento Jovem 2026', tickets: 142, max: 200, color: 'bg-orange-500' },
     { title: 'Conferência de Mulheres', tickets: 89, max: 150, color: 'bg-violet-500' },
     { title: 'Retiro de Casais', tickets: 34, max: 60, color: 'bg-blue-500' },
   ];
@@ -37,7 +37,7 @@ export function MockupVendas() {
             </button>
           ))}
         </div>
-        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 mb-4">
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 mb-4">
           <h4 className="text-sm font-black text-foreground leading-tight mb-1">{page.title}</h4>
           <p className="text-xs text-muted-foreground mb-3">Igreja Vida Nova · São Paulo</p>
           <div className="flex items-center justify-between mb-1.5">
@@ -77,7 +77,7 @@ export function MockupDoacoes() {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden w-full max-w-sm mx-auto">
-      <div className="bg-gradient-to-br from-[var(--sidebar)] to-primary p-5 text-white">
+      <div className="bg-gradient-to-br from-sidebar to-primary p-5 text-white">
         <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-1">Total de Doações</p>
         <p className="text-3xl font-black transition-all duration-500">R$ {total.toLocaleString('pt-BR')}</p>
         <p className="text-xs text-white/60 mt-1">Acampamento Jovem 2026</p>
@@ -85,7 +85,7 @@ export function MockupDoacoes() {
       <div className="p-4 space-y-2">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">Últimas doações</p>
         {items.map((item, i) => (
-          <div key={i} className={cn('flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-500', i === 0 ? 'bg-emerald-50 border border-emerald-200' : 'bg-gray-50')}>
+          <div key={i} className={cn('flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-500', i === 0 ? 'bg-orange-50 border border-primary/20' : 'bg-gray-50')}>
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
                 {item.name.split(' ').map(n => n[0]).join('')}
@@ -95,7 +95,7 @@ export function MockupDoacoes() {
                 <p className="text-[10px] text-muted-foreground">{item.time}</p>
               </div>
             </div>
-            <span className="text-sm font-black text-emerald-600">+R${item.value}</span>
+            <span className="text-sm font-black text-primary">+R${item.value}</span>
           </div>
         ))}
       </div>
@@ -141,8 +141,8 @@ export function MockupTarefas() {
       </div>
       <div className="p-3 space-y-1.5">
         {tasks.map((task, i) => (
-          <div key={i} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-500', task.done ? 'bg-emerald-50' : 'bg-gray-50')}>
-            <div className={cn('w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300', task.done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300')}>
+          <div key={i} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-500', task.done ? 'bg-orange-50' : 'bg-gray-50')}>
+            <div className={cn('w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300', task.done ? 'bg-orange-500 border-primary' : 'border-gray-300')}>
               {task.done && <Check className="w-3 h-3 text-white" />}
             </div>
             <div className="flex-1 min-w-0">

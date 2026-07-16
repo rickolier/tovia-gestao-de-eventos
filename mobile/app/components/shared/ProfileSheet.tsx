@@ -20,7 +20,7 @@ const PLAN_LABEL: Record<string, string> = {
 const PLAN_COLOR: Record<string, { bg: string; text: string }> = {
   chinam: { bg: '#f0f4f2', text: '#6b7280' },
   petach: { bg: '#eff6ff', text: '#1e40af' },
-  koach: { bg: '#e8f5ee', text: '#1a7a45' },
+  koach: { bg: '#FFF4EE', text: '#FF6B1A' },
   chalem: { bg: '#fdf4ff', text: '#7e22ce' },
 };
 
