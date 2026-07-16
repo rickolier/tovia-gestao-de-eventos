@@ -7,7 +7,6 @@ import { Nome } from './landing/sections/Nome';
 import { ComoFunciona } from './landing/sections/ComoFunciona';
 import { Funcionalidades } from './landing/sections/Funcionalidades';
 import { DemoMockups } from './landing/sections/DemoMockups';
-import { ProvaSocial } from './landing/sections/ProvaSocial';
 import { Gateway } from './landing/sections/Gateway';
 import { Planos } from './landing/sections/Planos';
 import { FAQ } from './landing/sections/FAQ';
@@ -25,7 +24,6 @@ export default function LandingPage() {
       <ComoFunciona />
       <Funcionalidades />
       <DemoMockups />
-      <ProvaSocial />
       <Gateway />
       <Planos />
       <FAQ />
