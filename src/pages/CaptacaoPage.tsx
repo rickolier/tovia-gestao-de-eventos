@@ -92,7 +92,7 @@ export default function CaptacaoPage() {
       {/* ── Header ── */}
       <header className="bg-white border-b border-gray-100 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-center gap-3">
-          <span className="text-[#0f3d22] font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
+          <span className="text-[#2D1470] font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
           <div className="w-px h-7 bg-gray-300" />
           <span className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] leading-tight">
             Gestão de<br />Eventos
@@ -103,7 +103,7 @@ export default function CaptacaoPage() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#0f3d22] via-[#1e3d2a] to-[#FF6B1A] pt-10 pb-16 px-6">
+        <section className="relative overflow-hidden bg-gradient-to-br from-sidebar via-[#1E0B4B] to-[#FF6B1A] pt-10 pb-16 px-6">
           {/* Decorative circles */}
           <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-white/5" />
           <div className="absolute top-20 -left-20 w-[300px] h-[300px] rounded-full bg-white/5" />
@@ -122,7 +122,7 @@ export default function CaptacaoPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
                   href="#formulario"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0f3d22] font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-[#2D1470] font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
                 >
                   Quero receber um contato! <ArrowRight className="w-4 h-4" />
                 </a>
@@ -252,14 +252,14 @@ export default function CaptacaoPage() {
                   </div>
                 </div>
                 {/* Badge: receita */}
-                <div className="absolute bottom-4 right-4 bg-[#0f3d22] rounded-xl shadow-lg px-3 py-2">
+                <div className="absolute bottom-4 right-4 bg-[#2D1470] rounded-xl shadow-lg px-3 py-2">
                   <p className="text-xs font-black text-white leading-none">R$ 4.320</p>
                   <p className="text-[10px] text-white/60">arrecadados</p>
                 </div>
               </div>
 
               {/* Copy */}
-              <h2 className="text-2xl font-black text-[#0f3d22] mb-3 uppercase">
+              <h2 className="text-2xl font-black text-[#2D1470] mb-3 uppercase">
                 Tudo que seu evento precisa, em um só lugar!
               </h2>
               <p className="text-gray-600 leading-relaxed text-sm mb-5">
@@ -387,7 +387,7 @@ export default function CaptacaoPage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#0f3d22] text-white/70 py-8 px-6">
+      <footer className="bg-[#2D1470] text-white/70 py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
             <span className="text-white font-bold text-lg">tovia</span>
