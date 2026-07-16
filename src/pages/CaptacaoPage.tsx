@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { db } from '~/services/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { CheckCircle, Loader2, Users, Heart, Zap, ChevronDown, ArrowRight } from 'lucide-react';
+import { ToviaLogo } from '~/components/ToviaLogo';
 
 const TIPOS_EVENTO = [
   'Conferência / Congresso',
@@ -92,7 +93,7 @@ export default function CaptacaoPage() {
       {/* ── Header ── */}
       <header className="bg-white border-b border-gray-100 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-center gap-3">
-          <span className="text-[#2D1470] font-bold tracking-tight" style={{ fontSize: '1.6rem', fontFamily: 'inherit' }}>tovia</span>
+          <ToviaLogo className="h-8 w-auto text-[#2D1470]" />
           <div className="w-px h-7 bg-gray-300" />
           <span className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] leading-tight">
             Gestão de<br />Eventos
@@ -390,7 +391,7 @@ export default function CaptacaoPage() {
       <footer className="bg-[#2D1470] text-white/70 py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
-            <span className="text-white font-bold text-lg">tovia</span>
+            <ToviaLogo className="h-6 w-auto text-white" />
             <p className="text-xs mt-1">Do zero ao check-in, tudo em um lugar.</p>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-4 text-sm">

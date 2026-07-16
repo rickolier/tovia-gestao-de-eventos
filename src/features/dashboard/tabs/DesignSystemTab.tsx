@@ -669,7 +669,7 @@ export default function DesignSystemTab() {
           </div>
           {/* Sidebar dark */}
           <div className="bg-[#2D1470] border border-border rounded-2xl p-8 flex flex-col items-center gap-3">
-            <ToviaLogo variant="mobile" className="h-8 w-auto text-[#FF6B1A]" />
+            <ToviaLogo variant="mobile" className="h-8 w-auto text-white" />
             <Label>Logo — Header do App</Label>
           </div>
         </div>
@@ -698,20 +698,20 @@ export default function DesignSystemTab() {
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Bottom Tab Bar</p>
         <div className="flex gap-4 mb-6">
           {/* Simulação do tab bar */}
-          <div className="flex-1 bg-[#111827] rounded-2xl p-4">
+          <div className="flex-1 bg-[#1E0B4B] rounded-2xl p-4 overflow-hidden">
             <div className="flex items-end justify-around border-t border-white/10 pt-3">
               {[
-                { Icon: House,       label: 'Início',     active: true  },
-                { Icon: DollarSign,  label: 'Financeiro', active: false },
-                { Icon: CheckCircle2,label: 'Check-in',   active: false },
-                { Icon: Layers,      label: 'Tarefas',    active: false },
-                { Icon: MessageCircle,label:'Suporte',    active: false },
+                { Icon: House,        label: 'Início',     active: true  },
+                { Icon: DollarSign,   label: 'Financeiro', active: false },
+                { Icon: CheckCircle2, label: 'Check-in',   active: false },
+                { Icon: Layers,       label: 'Tarefas',    active: false },
+                { Icon: MessageCircle,label: 'Suporte',    active: false },
               ].map(({ Icon, label, active }) => (
-                <div key={label} className="flex flex-col items-center gap-1">
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${active ? 'bg-[#FF6B1A]/15' : ''}`}>
+                <div key={label} className="flex flex-col items-center gap-1 min-w-0">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-[#FF6B1A]/15' : ''}`}>
                     <Icon className={`w-5 h-5 ${active ? 'text-[#FF6B1A]' : 'text-white/40'}`} />
                   </div>
-                  <span className={`text-[9px] font-semibold ${active ? 'text-[#FF6B1A]' : 'text-white/40'}`}>{label}</span>
+                  <span className={`text-[9px] font-semibold text-center whitespace-nowrap ${active ? 'text-[#FF6B1A]' : 'text-white/40'}`}>{label}</span>
                 </div>
               ))}
             </div>
