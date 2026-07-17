@@ -4,14 +4,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  BookOpen, MessageCircle, RefreshCw, Info,
+  BookOpen, MessageCircle, Info,
   Shield, FileText, LogOut, ChevronRight, Moon, Sun, Smartphone, Bell,
 } from 'lucide-react-native';
 import { signOut } from 'firebase/auth';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../lib/firebase';
-import { ONBOARDING_KEY } from '../onboarding';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeMode } from '../../contexts/ThemeContext';
 import { Typography, Radius, Shadow } from '../../constants/typography';
@@ -91,14 +88,8 @@ function ThemeToggle() {
 
 export default function SuporteScreen() {
   const { colors } = useTheme();
-  const router = useRouter();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-
-  async function openOnboarding() {
-    await AsyncStorage.removeItem(ONBOARDING_KEY);
-    router.push('/onboarding');
-  }
 
   function confirmSignOut() {
     Alert.alert('Sair', 'Tem certeza que deseja sair?', [
@@ -127,12 +118,6 @@ export default function SuporteScreen() {
             icon={<MessageCircle size={16} color={colors.primary} strokeWidth={2} />}
             label="Fale Conosco"
             onPress={() => Linking.openURL('mailto:suporte@toviaapp.com.br?subject=Suporte%20Tovia%20Mobile')}
-          />
-          <Row
-            icon={<RefreshCw size={16} color={colors.primary} strokeWidth={2} />}
-            label="Rever tutorial"
-            onPress={openOnboarding}
-            showChevron={false}
           />
         </View>
 
