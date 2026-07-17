@@ -356,7 +356,7 @@ export default function BaseConhecimento() {
       {/* ── Banner ── */}
       <div
         className="relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, var(--sidebar) 0%, #1e3d2a 50%, #FF6B1A 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #1E0B4B 0%, var(--sidebar) 45%, #FF6B1A 100%)' }}
       >
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
         <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/20" />
@@ -365,8 +365,8 @@ export default function BaseConhecimento() {
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-5">
             <BookOpen className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
-            Base de Conhecimento <span className="text-[#FF8C47]">tovia</span>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3 flex items-center justify-center gap-2.5 flex-wrap">
+            Base de Conhecimento <ToviaLogo className="h-7 md:h-9 w-auto text-primary" />
           </h1>
           <p className="text-white/60 text-sm max-w-lg mb-7">
             Tutoriais, guias e explicações sobre cada funcionalidade da plataforma — para você organizar eventos incríveis.
