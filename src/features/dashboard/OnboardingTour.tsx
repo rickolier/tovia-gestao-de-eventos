@@ -146,6 +146,13 @@ function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
         position: 'right',
       },
       {
+        target: 'nav-equipe',
+        title: 'Sua Equipe!',
+        description: 'Convide e gerencie os membros da sua equipe. Eles ajudam a organizar seus eventos, e o número de membros depende do seu plano.',
+        icon: <Users className="w-4 h-4" />,
+        position: 'right',
+      },
+      {
         target: 'nav-relatorios',
         title: 'Relatórios!',
         description: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',

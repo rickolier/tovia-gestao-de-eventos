@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
   Menu, X, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
-  ChevronDown, FileText,
+  ChevronDown,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminFinancialTab from './AdminFinancialTab';
@@ -19,7 +19,6 @@ import AdminTicketsTab from './AdminTicketsTab';
 import AdminCSPanelTab from './AdminCSPanelTab';
 import AdminComunicadosTab from './AdminComunicadosTab';
 import AdminBillingKeyTab from './AdminBillingKeyTab';
-import AdminDocumentoProdutoTab from './AdminDocumentoProdutoTab';
 import AdminLeadsTab from './AdminLeadsTab';
 
 type AdminRole = 'criador' | 'suporte';
@@ -65,7 +64,6 @@ const NAV: NavGroup[] = [
       { id: 'leads',              label: 'Leads',                icon: Users,      roles: ['criador'] },
       { id: 'calculator',         label: 'Calculadora',          icon: Calculator, roles: ['criador'] },
       { id: 'comunicados',        label: 'Comunicados',          icon: Megaphone,  roles: ['criador'] },
-      { id: 'documento-produto',  label: 'Documento de Produto', icon: FileText,   roles: ['criador'] },
     ],
   },
 ];
@@ -81,7 +79,6 @@ const TAB_TITLES: Record<string, string> = {
   tickets:              'Suporte',
   calculator:           'Calculadora',
   comunicados:          'Comunicados',
-  'documento-produto':  'Documento de Produto',
   leads:                'Leads',
 };
 
@@ -221,7 +218,6 @@ export default function AdminDashboard() {
           {activeTab === 'tickets'            && <AdminTicketsTab />}
           {activeTab === 'calculator'         && <AdminCalculatorTab />}
           {activeTab === 'comunicados'        && <AdminComunicadosTab />}
-          {activeTab === 'documento-produto'  && <AdminDocumentoProdutoTab />}
           {activeTab === 'leads'              && <AdminLeadsTab />}
         </main>
       </div>

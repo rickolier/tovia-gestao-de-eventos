@@ -28,6 +28,8 @@ import {
   Calculator,
   ScanLine,
   ChevronRight,
+  BookOpen,
+  GraduationCap,
 } from 'lucide-react';
 import OverviewTab from './tabs/OverviewTab';
 import TicketsTab from './tabs/TicketsTab';
@@ -43,7 +45,7 @@ import SalesPagesTab from './tabs/SalesPagesTab';
 import TasksTab from './tabs/TasksTab';
 import CheckinTab from './tabs/CheckinTab';
 import { toast } from 'sonner';
-import OnboardingTour from '~/features/dashboard/OnboardingTour';
+import OnboardingTour, { TourSelector } from '~/features/dashboard/OnboardingTour';
 
 export default function EventDetail() {
   const {
@@ -58,6 +60,8 @@ export default function EventDetail() {
     handleLogout, fetchEventoData,
     toggleSection,
   } = useEventDetail();
+
+  const [tourSelectorOpen, setTourSelectorOpen] = React.useState(false);
 
   if (loading) {
     return (
@@ -269,8 +273,31 @@ export default function EventDetail() {
             })}
           </nav>
 
-          {/* Logout at bottom */}
-          <div className="mt-auto px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0">
+          {/* Ajuda + Logout at bottom */}
+          <div className="mt-auto px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0 space-y-0.5">
+            <Link to="/desenvolvimento/base-de-conhecimento">
+              <button
+                className={cn(
+                  "sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10 w-full",
+                  !sidebarOpen && "justify-center !justify-center px-0"
+                )}
+                title={!sidebarOpen ? 'Base de Conhecimento' : undefined}
+              >
+                <BookOpen className="w-4 h-4 shrink-0" />
+                {sidebarOpen && <span>Base de Conhecimento</span>}
+              </button>
+            </Link>
+            <button
+              onClick={() => setTourSelectorOpen(true)}
+              className={cn(
+                "sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10 w-full",
+                !sidebarOpen && "justify-center !justify-center px-0"
+              )}
+              title={!sidebarOpen ? 'Tutorial' : undefined}
+            >
+              <GraduationCap className="w-4 h-4 shrink-0" />
+              {sidebarOpen && <span>Tutorial</span>}
+            </button>
             <button
               onClick={handleLogout}
               className={cn(
@@ -469,6 +496,15 @@ export default function EventDetail() {
           })}
         </nav>
       </div>
+
+      {tourSelectorOpen && user && (
+        <TourSelector
+          userId={user.uid}
+          plan={profile?.plano || 'chinam'}
+          onStart={(id) => setActiveTourId(id)}
+          onClose={() => setTourSelectorOpen(false)}
+        />
+      )}
 
       {activeTourId && user && profile?.plano && (
         <OnboardingTour
