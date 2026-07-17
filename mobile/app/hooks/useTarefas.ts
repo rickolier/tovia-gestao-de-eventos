@@ -54,9 +54,5 @@ export function useTarefas(eventoId: string | null) {
     });
   }
 
-  const pendentes = tarefas.filter((t) => t.status === 'pendente' || t.status === 'atrasada');
-  const emProgresso = tarefas.filter((t) => t.status === 'em_progresso');
-  const concluidas = tarefas.filter((t) => t.status === 'concluida');
-
-  return { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, mudarStatus, criarTarefa };
+  return { tarefas, loading, toggleConcluida, mudarStatus, criarTarefa };
 }

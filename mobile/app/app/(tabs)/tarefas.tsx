@@ -23,8 +23,8 @@ const STATUS_CHIP: Record<string, { label: string; bg: string; text: string }> =
   atrasada:    { label: 'Atrasada',    bg: '#fee2e2', text: '#991b1b' },
 };
 
-// Ordem do seletor de status
-const STATUS_LIST: TaskStatus[] = ['pendente', 'em_progresso', 'concluida', 'atrasada'];
+// Ordem do seletor de status e dos filtros
+const STATUS_LIST: TaskStatus[] = ['pendente', 'em_progresso', 'atrasada', 'concluida'];
 
 const PRIORIDADE_LABEL: Record<string, string> = {
   baixa: 'Baixa', media: 'Média', alta: 'Alta',
@@ -108,20 +108,21 @@ function TarefaDetailModal({ tarefa, onClose, onStatusChange }: {
               <TouchableOpacity
                 key={s}
                 style={[styles.statusOption, {
-                  backgroundColor: ativo ? opt.bg : colors.secondary,
+                  backgroundColor: ativo ? opt.bg : 'transparent',
                   borderColor: ativo ? opt.text : colors.border,
                 }]}
+                hitSlop={{ top: 6, bottom: 6 }}
                 onPress={() => onStatusChange(s)}
                 activeOpacity={0.8}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: ativo }}
                 accessibilityLabel={opt.label}
               >
-                {ativo && <Check size={14} color={opt.text} strokeWidth={3} />}
-                <Text style={[Typography.body, {
+                {ativo && <Check size={12} color={opt.text} strokeWidth={3} />}
+                <Text style={[Typography.small, {
                   color: ativo ? opt.text : colors.mutedFg,
                   fontWeight: ativo ? '700' : '500',
-                  marginLeft: ativo ? 6 : 0,
+                  marginLeft: ativo ? 5 : 0,
                 }]}>
                   {opt.label}
                 </Text>
@@ -375,8 +376,8 @@ function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => 
 
 function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; eventoNome: string; onBack: () => void }) {
   const { colors } = useTheme();
-  const { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, mudarStatus, criarTarefa } = useTarefas(eventoId);
-  const [filtro, setFiltro] = useState<'todas' | 'pendente' | 'em_progresso' | 'concluida'>('todas');
+  const { tarefas, loading, toggleConcluida, mudarStatus, criarTarefa } = useTarefas(eventoId);
+  const [filtro, setFiltro] = useState<'todas' | TaskStatus>('todas');
   const [tarefaSelId, setTarefaSelId] = useState<string | null>(null);
   const [novaAberta, setNovaAberta] = useState(false);
 
@@ -387,13 +388,11 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
     { key: 'todas', label: 'Todas' },
     { key: 'pendente', label: 'Pendentes' },
     { key: 'em_progresso', label: 'Em andamento' },
+    { key: 'atrasada', label: 'Atrasadas' },
     { key: 'concluida', label: 'Concluídas' },
   ] as const;
 
-  const visiveis = filtro === 'todas' ? tarefas
-    : filtro === 'pendente' ? pendentes
-    : filtro === 'em_progresso' ? emProgresso
-    : concluidas;
+  const visiveis = filtro === 'todas' ? tarefas : tarefas.filter((t) => t.status === filtro);
 
   return (
     <View style={{ flex: 1 }}>
@@ -544,14 +543,10 @@ const styles = StyleSheet.create({
   statusOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: Radius.pill,
-    borderWidth: 1.5,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    minHeight: 44,
-    flexGrow: 1,
-    flexBasis: '46%',
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
   chip: {
     paddingHorizontal: 8,
@@ -610,9 +605,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   filterChip: {
-    width: '47%',
-    paddingVertical: 10,
-    borderRadius: Radius.md,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: Radius.pill,
     alignItems: 'center',
   },
 });
