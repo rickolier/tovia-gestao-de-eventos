@@ -5,10 +5,10 @@ import {
   TextInput, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CheckSquare, Square, Calendar, User, AlertTriangle, X, Plus } from 'lucide-react-native';
+import { CheckSquare, Square, Calendar, User, AlertTriangle, X, Plus, Check } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useEventos } from '../../hooks/useEventos';
-import { useTarefas, Tarefa } from '../../hooks/useTarefas';
+import { useTarefas, Tarefa, TaskStatus } from '../../hooks/useTarefas';
 import { Typography, Radius } from '../../constants/typography';
 import TopBar from '../../components/shared/TopBar';
 import ProfileSheet from '../../components/shared/ProfileSheet';
@@ -23,6 +23,9 @@ const STATUS_CHIP: Record<string, { label: string; bg: string; text: string }> =
   atrasada:    { label: 'Atrasada',    bg: '#fee2e2', text: '#991b1b' },
 };
 
+// Ordem do seletor de status
+const STATUS_LIST: TaskStatus[] = ['pendente', 'em_progresso', 'concluida', 'atrasada'];
+
 const PRIORIDADE_LABEL: Record<string, string> = {
   baixa: 'Baixa', media: 'Média', alta: 'Alta',
 };
@@ -30,12 +33,10 @@ const PRIORIDADE_COLOR: Record<string, string> = {
   baixa: '#6b7280', media: '#d97706', alta: '#dc2626',
 };
 
-function TarefaDetailModal({ tarefa, onClose, onToggle }: {
-  tarefa: Tarefa; onClose: () => void; onToggle: () => void;
+function TarefaDetailModal({ tarefa, onClose, onStatusChange }: {
+  tarefa: Tarefa; onClose: () => void; onStatusChange: (novo: TaskStatus) => void;
 }) {
   const { colors } = useTheme();
-  const chip = STATUS_CHIP[tarefa.status] ?? STATUS_CHIP.pendente;
-  const concluida = tarefa.status === 'concluida';
 
   return (
     <Modal visible animationType="slide" transparent onRequestClose={onClose}>
@@ -54,11 +55,8 @@ function TarefaDetailModal({ tarefa, onClose, onToggle }: {
           </TouchableOpacity>
         </View>
 
-        {/* Status + Prioridade */}
+        {/* Prioridade */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
-          <View style={[styles.chip, { backgroundColor: chip.bg }]}>
-            <Text style={[Typography.caption, { color: chip.text }]}>{chip.label}</Text>
-          </View>
           <View style={[styles.chip, { backgroundColor: colors.secondary }]}>
             <AlertTriangle size={10} color={PRIORIDADE_COLOR[tarefa.prioridade] ?? '#6b7280'} strokeWidth={2} />
             <Text style={[Typography.caption, { color: PRIORIDADE_COLOR[tarefa.prioridade] ?? '#6b7280', marginLeft: 4 }]}>
@@ -100,24 +98,37 @@ function TarefaDetailModal({ tarefa, onClose, onToggle }: {
           ) : null}
         </View>
 
-        {/* Botão toggle */}
-        <TouchableOpacity
-          style={[styles.toggleBtn, { backgroundColor: concluida ? colors.secondary : colors.primary }]}
-          onPress={() => { onToggle(); onClose(); }}
-          activeOpacity={0.85}
-        >
-          {concluida
-            ? <Square size={18} color={colors.mutedFg} strokeWidth={2} />
-            : <CheckSquare size={18} color="#fff" strokeWidth={2} />
-          }
-          <Text style={[Typography.body, {
-            fontWeight: '700',
-            color: concluida ? colors.mutedFg : '#fff',
-            marginLeft: 8,
-          }]}>
-            {concluida ? 'Marcar como pendente' : 'Marcar como concluída'}
-          </Text>
-        </TouchableOpacity>
+        {/* Seletor de status */}
+        <Text style={[Typography.label, { color: colors.mutedFg, marginBottom: 10 }]}>STATUS</Text>
+        <View style={styles.statusGrid}>
+          {STATUS_LIST.map((s) => {
+            const opt = STATUS_CHIP[s];
+            const ativo = tarefa.status === s;
+            return (
+              <TouchableOpacity
+                key={s}
+                style={[styles.statusOption, {
+                  backgroundColor: ativo ? opt.bg : colors.secondary,
+                  borderColor: ativo ? opt.text : colors.border,
+                }]}
+                onPress={() => onStatusChange(s)}
+                activeOpacity={0.8}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativo }}
+                accessibilityLabel={opt.label}
+              >
+                {ativo && <Check size={14} color={opt.text} strokeWidth={3} />}
+                <Text style={[Typography.body, {
+                  color: ativo ? opt.text : colors.mutedFg,
+                  fontWeight: ativo ? '700' : '500',
+                  marginLeft: ativo ? 6 : 0,
+                }]}>
+                  {opt.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
     </Modal>
   );
@@ -131,7 +142,13 @@ function TarefaRow({ tarefa, onToggle, onDetalhes }: {
   const concluida = tarefa.status === 'concluida';
 
   return (
-    <View style={[styles.tarefaRow, { backgroundColor: concluida ? colors.secondary : colors.card, borderColor: colors.border }]}>
+    <TouchableOpacity
+      style={[styles.tarefaRow, { backgroundColor: concluida ? colors.secondary : colors.card, borderColor: colors.border }]}
+      onPress={onDetalhes}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityHint="Abre os detalhes para alterar o status"
+    >
       <TouchableOpacity onPress={onToggle} style={{ marginTop: 2, padding: 2 }} hitSlop={8}>
         {concluida
           ? <CheckSquare size={20} color={colors.primary} strokeWidth={2} />
@@ -157,11 +174,8 @@ function TarefaRow({ tarefa, onToggle, onDetalhes }: {
         <View style={[styles.chip, { backgroundColor: chip.bg }]}>
           <Text style={[Typography.caption, { color: chip.text }]}>{chip.label}</Text>
         </View>
-        <TouchableOpacity onPress={onDetalhes} hitSlop={8}>
-          <Text style={[Typography.caption, { color: colors.primary, fontWeight: '700' }]}>Ver detalhes</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -361,10 +375,13 @@ function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => 
 
 function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; eventoNome: string; onBack: () => void }) {
   const { colors } = useTheme();
-  const { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, criarTarefa } = useTarefas(eventoId);
+  const { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, mudarStatus, criarTarefa } = useTarefas(eventoId);
   const [filtro, setFiltro] = useState<'todas' | 'pendente' | 'em_progresso' | 'concluida'>('todas');
-  const [tarefaSel, setTarefaSel] = useState<Tarefa | null>(null);
+  const [tarefaSelId, setTarefaSelId] = useState<string | null>(null);
   const [novaAberta, setNovaAberta] = useState(false);
+
+  // Deriva da lista viva para o modal refletir a mudança de status na hora
+  const tarefaSel = tarefas.find((t) => t.id === tarefaSelId) ?? null;
 
   const FILTROS = [
     { key: 'todas', label: 'Todas' },
@@ -383,8 +400,8 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
       {tarefaSel && (
         <TarefaDetailModal
           tarefa={tarefaSel}
-          onClose={() => setTarefaSel(null)}
-          onToggle={() => toggleConcluida(tarefaSel)}
+          onClose={() => setTarefaSelId(null)}
+          onStatusChange={(novo) => mudarStatus(tarefaSel, novo)}
         />
       )}
       {novaAberta && (
@@ -432,7 +449,7 @@ function ListaTarefas({ eventoId, eventoNome, onBack }: { eventoId: string; even
               key={t.id}
               tarefa={t}
               onToggle={() => toggleConcluida(t)}
-              onDetalhes={() => setTarefaSel(t)}
+              onDetalhes={() => setTarefaSelId(t.id)}
             />
           ))}
         </ScrollView>
@@ -518,6 +535,23 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     paddingVertical: 14,
     paddingHorizontal: 20,
+  },
+  statusGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  statusOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: Radius.pill,
+    borderWidth: 1.5,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    minHeight: 44,
+    flexGrow: 1,
+    flexBasis: '46%',
   },
   chip: {
     paddingHorizontal: 8,

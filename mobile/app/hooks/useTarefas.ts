@@ -42,6 +42,11 @@ export function useTarefas(eventoId: string | null) {
     await updateDoc(doc(db, 'eventos', eventoId!, 'tarefas', tarefa.id), { status: novoStatus });
   }
 
+  async function mudarStatus(tarefa: Tarefa, novoStatus: TaskStatus) {
+    if (tarefa.status === novoStatus) return;
+    await updateDoc(doc(db, 'eventos', eventoId!, 'tarefas', tarefa.id), { status: novoStatus });
+  }
+
   async function criarTarefa(dados: Omit<Tarefa, 'id' | 'dataCriacao'>) {
     await addDoc(collection(db, 'eventos', eventoId!, 'tarefas'), {
       ...dados,
@@ -53,5 +58,5 @@ export function useTarefas(eventoId: string | null) {
   const emProgresso = tarefas.filter((t) => t.status === 'em_progresso');
   const concluidas = tarefas.filter((t) => t.status === 'concluida');
 
-  return { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, criarTarefa };
+  return { tarefas, pendentes, emProgresso, concluidas, loading, toggleConcluida, mudarStatus, criarTarefa };
 }
