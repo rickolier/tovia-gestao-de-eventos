@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  Modal, Pressable, Switch, TextInput, ScrollView, Alert,
+  Modal, Pressable, TextInput, ScrollView, Alert,
 } from 'react-native';
+import ToggleSwitch from './ui/ToggleSwitch';
 import { Bell, BellOff, Plus, Trash2, Clock, WifiOff, Calendar, ChevronDown } from 'lucide-react-native';
 import { useTheme } from '../hooks/useTheme';
 import { useNotifications } from '../hooks/useNotifications';
@@ -281,11 +282,9 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
               title="Lembrete antes do evento"
               subtitle={`Avisa ${settings.eventReminder.hoursBefore}h antes do início`}
               right={
-                <Switch
+                <ToggleSwitch
                   value={settings.eventReminder.enabled}
                   onValueChange={(v) => handleToggle('event', v)}
-                  trackColor={{ true: colors.primary, false: colors.border }}
-                  thumbColor="#fff"
                 />
               }
             />
@@ -320,11 +319,9 @@ export default function NotificacoesSheet({ visible, onClose }: Props) {
               title="Lembrete de lista offline"
               subtitle="3h antes: avisa para baixar a lista de inscritos"
               right={
-                <Switch
+                <ToggleSwitch
                   value={settings.offlineReminder.enabled}
                   onValueChange={(v) => handleToggle('offline', v)}
-                  trackColor={{ true: colors.primary, false: colors.border }}
-                  thumbColor="#fff"
                 />
               }
             />

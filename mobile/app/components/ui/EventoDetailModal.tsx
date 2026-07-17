@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, Modal, Pressable, ScrollView,
-  Switch, StyleSheet, TouchableOpacity, Dimensions, Clipboard, ToastAndroid, Platform, Alert,
+  StyleSheet, TouchableOpacity, Dimensions, Clipboard, ToastAndroid, Platform, Alert,
 } from 'react-native';
+import ToggleSwitch from './ToggleSwitch';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -184,11 +185,9 @@ export default function EventoDetailModal({ evento, onClose, onToggleAtivo }: Pr
                 {evento.ativo ? 'Visível e aceitando inscrições' : 'Oculto para novos participantes'}
               </Text>
             </View>
-            <Switch
+            <ToggleSwitch
               value={evento.ativo}
               onValueChange={(v) => onToggleAtivo(evento.id, v)}
-              trackColor={{ false: colors.border, true: colors.primaryLight }}
-              thumbColor={evento.ativo ? colors.primary : colors.mutedFg}
             />
           </View>
 
