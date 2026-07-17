@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React from 'react';
 import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile } from '~/types';
 import { maskTelefone, maskCPF } from '~/utils/validators';
@@ -265,7 +266,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
             </button>
             <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
               <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-              <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+              <ToviaLogo className="h-7 w-auto text-primary" />
             </a>
             <div className="flex items-center gap-1.5 text-gray-400 text-xs font-semibold">
               <Lock className="w-3.5 h-3.5" />
@@ -518,7 +519,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
           {/* Esquerda: feito com tovia */}
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
 
           {/* Centro: nome do organizador */}
@@ -782,7 +783,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         </div>
         <div className="bg-sidebar px-6 py-8 mt-0">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-2xl font-black text-white tracking-tight">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-white" />
             <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
             <a href="/" className="text-xs text-white/40 hover:text-white/70 transition-colors">tovia.app</a>
           </div>

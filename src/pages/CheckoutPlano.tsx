@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
@@ -376,7 +377,7 @@ export default function CheckoutPlano() {
       <footer className="bg-sidebar py-8 px-6 mt-auto">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center sm:items-start gap-0.5">
-            <span className="text-xl font-black text-white tracking-tight">tovia</span>
+            <ToviaLogo className="h-6 w-auto text-white" />
             <span className="text-xs text-white/40">Gestão de Eventos</span>
           </div>
           <p className="text-white/30 text-xs text-center">Todos os direitos reservados · BIGLAB Solutions © 2026</p>

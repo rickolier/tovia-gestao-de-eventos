@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Input } from '@/components/ui/input';
@@ -345,7 +346,7 @@ export default function ConsultarInscricao() {
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
           <span className="hidden sm:block text-xs font-semibold text-gray-500">
             Consultar inscrição

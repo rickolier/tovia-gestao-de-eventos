@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -15,7 +16,7 @@ export default function TermosDeUso() {
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
           <Link to="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-primary" />
           </Link>
           <Link to="/" className="text-xs font-black text-primary hover:underline">
             Voltar ao início →

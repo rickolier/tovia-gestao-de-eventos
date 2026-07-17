@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useState } from 'react';
 import { UserProfile, PlanLevel } from '~/types';
 import { useAdminComunicados, FiltroDef, ComunicadoGrupo, ComunicadoEnviado, MainView } from './hooks/useAdminComunicados';
@@ -329,7 +330,7 @@ function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
       <div className="border rounded-xl overflow-hidden shadow-sm text-left">
         {/* Header verde */}
         <div className="bg-[#2D1470] px-6 py-5 text-center">
-          <p className="text-white font-black text-xl tracking-[-0.03em]">tovia</p>
+          <ToviaLogo className="h-6 w-auto text-white" />
           <p className="text-white/55 text-[8px] font-semibold uppercase tracking-[0.18em] mt-0.5">gestão de eventos</p>
         </div>
 

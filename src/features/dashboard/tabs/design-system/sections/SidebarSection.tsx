@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React from 'react';
 import { House, User, Calendar, BarChart3, Settings, Plus } from 'lucide-react';
 import { Section, SubLabel } from '../shared';
@@ -25,7 +26,7 @@ export function SidebarSection() {
       <div className="flex flex-col md:flex-row gap-4">
         <div className="bg-[#2D1470] rounded-2xl p-4 w-full md:w-56 space-y-0.5 shrink-0">
           <div className="px-3 pb-4 mb-2 border-b border-white/10">
-            <div className="font-black text-3xl text-white tracking-tight">tovia</div>
+            <ToviaLogo className="h-8 w-auto text-white" />
           </div>
           {NAV_ITEMS.map(([Icon, label, active]) => (
             <div

@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -61,7 +62,7 @@ export default function SatisfacaoPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="bg-[#FF6B1A] rounded-t-2xl px-8 py-6 text-center">
-          <span className="text-3xl font-black text-white tracking-tight">tovia</span>
+          <ToviaLogo className="h-8 w-auto text-white" />
           <span className="block text-[10px] font-semibold text-[#a7f3d0] tracking-[3px] mt-1">GESTÃO DE EVENTOS</span>
         </div>
 

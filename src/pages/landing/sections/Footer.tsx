@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { NAV_LINKS, NAV_ROUTE_LINKS } from '../data';
@@ -7,7 +8,7 @@ export function Footer() {
     <footer className="bg-sidebar py-10 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col items-center md:items-start gap-1">
-          <span className="text-2xl font-black text-white tracking-tight">tovia</span>
+          <ToviaLogo className="h-7 w-auto text-white" />
           <a href="mailto:suporte@toviaapp.com.br" className="text-xs text-white/40 hover:text-white/70 transition-colors">
             suporte@toviaapp.com.br
           </a>

@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Tag, User2, BookOpen } from 'lucide-react';
@@ -159,7 +160,7 @@ export default function ArtigoBaseConhecimento() {
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
           <a
             href="/base-de-conhecimento"
@@ -347,7 +348,7 @@ export default function ArtigoBaseConhecimento() {
       {/* ── Footer ── */}
       <footer className="border-t border-border py-8 px-6">
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-          <span className="text-xl font-black text-primary">tovia</span>
+          <ToviaLogo className="h-6 w-auto text-primary" />
           <p className="text-xs text-muted-foreground">Base de Conhecimento · Equipe Tovia</p>
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Voltar ao início

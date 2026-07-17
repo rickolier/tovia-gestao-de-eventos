@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDocument, listDocuments } from '~/services/firestore';
@@ -283,7 +284,7 @@ function PublicOrganizerProfileWithUserId({ userId }: { userId: string }) {
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-2xl tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
           <span className="hidden sm:block text-xs font-semibold text-gray-500 truncate max-w-[200px] text-center">
             {displayName}
@@ -479,7 +480,7 @@ function PublicOrganizerProfileWithUserId({ userId }: { userId: string }) {
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-xs font-light text-gray-400 tracking-tight">feito com</span>
-            <span className="font-logo font-bold text-lg tracking-tight text-primary leading-none">tovia</span>
+            <ToviaLogo className="h-5 w-auto text-primary" />
           </a>
           <div className="flex items-center gap-4 text-xs text-gray-400">
             <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-600 transition-colors">

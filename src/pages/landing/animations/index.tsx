@@ -1,3 +1,4 @@
+import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useState, useEffect } from 'react';
 import { Globe, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -8,7 +9,7 @@ const prefersReducedMotion =
 export function ToviaMockupHeader({ sub }: { sub: string }) {
   return (
     <div className="bg-primary px-3 py-2 flex items-center gap-2 shrink-0">
-      <span className="font-logo font-bold text-white text-sm leading-none tracking-tight">tovia</span>
+      <ToviaLogo className="h-4 w-auto text-white" />
       <span className="text-white/40 text-[10px]">/</span>
       <span className="text-white/70 text-[10px] font-semibold">{sub}</span>
     </div>
