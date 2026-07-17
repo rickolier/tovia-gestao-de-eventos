@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useAuth } from '../../hooks/useAuth';
+import ToviaLogoMobile from './ToviaLogoMobile';
 
 interface TopBarProps {
   onAvatarPress: () => void;
@@ -18,9 +19,7 @@ export default function TopBar({ onAvatarPress, transparent }: TopBarProps) {
   return (
     <View style={[styles.bar, { backgroundColor: transparent ? 'transparent' : colors.sidebar, borderBottomColor: transparent ? 'transparent' : colors.sidebarBorder }]}>
       {/* Logo */}
-      <Text style={styles.logo}>
-        tovia<Text style={[styles.logoAccent, { color: colors.primary }]}>mobile</Text>
-      </Text>
+      <ToviaLogoMobile width={128} toviaColor="#ffffff" mobileColor={colors.primary} />
 
       {/* Avatar + nome */}
       <TouchableOpacity style={styles.userArea} onPress={onAvatarPress} activeOpacity={0.75}>
@@ -43,15 +42,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-  },
-  logo: {
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: -0.6,
-    color: '#ffffff',
-  },
-  logoAccent: {
-    fontWeight: '900',
   },
   userArea: {
     flexDirection: 'row',

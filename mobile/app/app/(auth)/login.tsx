@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Mail, Lock, ArrowRight } from 'lucide-react-native';
 import { auth } from '../../lib/firebase';
+import ToviaLogoMobile from '../../components/shared/ToviaLogoMobile';
 
 const SIDEBAR = '#2D1470';
 const PRIMARY = '#FF6B1A';
@@ -54,7 +55,7 @@ export default function LoginScreen() {
           >
             {/* Logo */}
             <View style={styles.logoArea}>
-              <Text style={styles.logo}>tovia</Text>
+              <ToviaLogoMobile width={240} toviaColor={WHITE} mobileColor={PRIMARY} />
               <Text style={styles.subtitle}>O app do organizador de eventos</Text>
             </View>
 
@@ -142,12 +143,6 @@ const styles = StyleSheet.create({
   logoArea: {
     alignItems: 'center',
     marginBottom: 32,
-  },
-  logo: {
-    fontSize: 52,
-    fontWeight: '900',
-    letterSpacing: -2,
-    color: WHITE,
   },
   subtitle: {
     fontSize: 13,
