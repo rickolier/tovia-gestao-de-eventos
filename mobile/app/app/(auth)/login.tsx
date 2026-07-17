@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, KeyboardAvoidingView, Platform,
-  ActivityIndicator, Alert, ScrollView,
+  ActivityIndicator, Alert, ScrollView, Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -118,9 +118,14 @@ export default function LoginScreen() {
             </View>
 
             <Text style={styles.footer}>
-              Não tem conta? Acesse{' '}
-              <Text style={styles.footerLink}>tovia.app</Text>
-              {' '}para criar a sua.
+              Ainda não tem uma conta Tovia? Acesse{' '}
+              <Text
+                style={styles.footerLink}
+                onPress={() => Linking.openURL('https://toviaapp.com.br')}
+              >
+                toviaapp.com.br
+              </Text>
+              {' '}e crie a sua.
             </Text>
           </ScrollView>
         </KeyboardAvoidingView>
