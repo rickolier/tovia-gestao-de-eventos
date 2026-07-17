@@ -113,13 +113,13 @@ const styles = StyleSheet.create({
     fontSize: 38,
     fontWeight: '900',
     letterSpacing: -1,
-    color: '#4ade80',
+    color: '#FF6B1A',
   },
   dot: {
     marginTop: 14,
     width: 7,
     height: 7,
     borderRadius: 3.5,
-    backgroundColor: '#4ade80',
+    backgroundColor: '#FF6B1A',
   },
 });
