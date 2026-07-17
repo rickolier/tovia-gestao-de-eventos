@@ -549,6 +549,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 999,
