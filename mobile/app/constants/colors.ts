@@ -23,6 +23,9 @@ export const Colors = {
     success: '#16a34a',
     danger: '#ef4444',
     warning: '#d97706',
+    // Toggles (ligado = verde, desligado = cinza — thumb branco)
+    toggleOn: '#7CB342',
+    toggleOff: '#E2E2E2',
     // Tab bar / sidebar (roxo profundo — sempre escura)
     sidebar: '#2D1470',
     sidebarFg: '#F5F0E8',
@@ -58,6 +61,9 @@ export const Colors = {
     success: '#22c55e',
     danger: '#ef4444',
     warning: '#f59e0b',
+    // Toggles (ligado = verde, desligado = cinza — thumb branco)
+    toggleOn: '#7CB342',
+    toggleOff: '#45454F',
     // Sidebar (ainda mais escura no dark)
     sidebar: '#1A0B40',
     sidebarFg: '#F5F0E8',

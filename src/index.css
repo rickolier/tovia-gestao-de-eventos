@@ -21,6 +21,8 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-toggle-on: var(--toggle-on);
+  --color-toggle-off: var(--toggle-off);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -53,6 +55,8 @@
   --destructive-foreground: #ffffff;
   --success: #16a34a;
   --success-foreground: #ffffff;
+  --toggle-on: #7CB342;
+  --toggle-off: #E2E2E2;
   --border: #E0D8CC;
   --input: #E0D8CC;
   --ring: #FF6B1A;
@@ -86,6 +90,8 @@
   --destructive-foreground: #ffffff;
   --success: #22c55e;
   --success-foreground: #ffffff;
+  --toggle-on: #7CB342;
+  --toggle-off: #45454F;
   --border: #3D2080;
   --input: #3D2080;
   --ring: #FF8C47;
