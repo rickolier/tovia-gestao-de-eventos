@@ -124,7 +124,7 @@ export default function Login() {
         Email.boasVindas(email, name);
         Email.boasVindasPlano(email, name, 'chinam');
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
-        navigate(eventoIdParam ? '/dashboard' : '/verificar-email', { state: { codeSent } });
+        navigate(eventoIdParam ? '/desenvolvimento/dashboard' : '/desenvolvimento/verificar-email', { state: { codeSent } });
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (eventoIdParam && !isAdminEmail(cred.user.email)) {
