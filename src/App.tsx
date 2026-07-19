@@ -13,7 +13,6 @@ import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
 import CaptacaoPage from './pages/CaptacaoPage';
-import PublicRegistration, { PublicRegistrationByCodigo } from '~/features/public-pages/PublicRegistration';
 import PublicSalesPage, { PublicSalesPageByCodigo } from '~/features/public-pages/PublicSalesPage';
 import PublicOrganizerProfile, { PublicOrganizerProfileByCodigo } from '~/features/public-pages/PublicOrganizerProfile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -144,8 +143,6 @@ export default function App() {
               }
             />
             <Route path="/desenvolvimento/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/inscricao/:id" element={<PublicRegistration />} />
-            <Route path="/:orgCodigo/:eventoCodigo" element={<PublicRegistrationByCodigo />} />
             <Route path="/:orgCodigo/:eventoCodigo/:paginaCodigo" element={<PublicSalesPageByCodigo />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />

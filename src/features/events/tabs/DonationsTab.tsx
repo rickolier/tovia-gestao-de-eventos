@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Heart, Plus, User, Target, Wallet, ArrowRight, Trash2, Edit2, Info, Check, X, Share2, DollarSign, TrendingUp, Undo2, Coins } from 'lucide-react';
+import { Heart, Plus, User, Target, Wallet, ArrowRight, Trash2, Edit2, Info, Check, X, Share2, DollarSign, TrendingUp, Undo2, Coins, ArrowUpAZ, ArrowDownAZ } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
 export default function DonationsTab({ eventoId }: { eventoId: string }) {
   const {
     donations, registrations, evento, loading, allocations, isSubmitting,
+    sortConfig, requestSort,
     isDonationDialogOpen, setIsDonationDialogOpen,
     editingId, setEditingId,
     isAllocationOpen, setIsAllocationOpen,
@@ -31,6 +32,20 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
     handleSubmit, handleDelete, confirmDelete,
     handleApprove, handleRejectToFree, handleAllocate, handleEdit,
   } = useDonations(eventoId);
+
+  const SortIcon = ({ columnKey }: { columnKey: string }) => {
+    if (sortConfig?.key !== columnKey) return <ArrowUpAZ className="w-3 h-3 ml-2 opacity-20 group-hover:opacity-100 transition-opacity" />;
+    return sortConfig.direction === 'asc'
+      ? <ArrowUpAZ className="w-3 h-3 ml-2 text-primary" />
+      : <ArrowDownAZ className="w-3 h-3 ml-2 text-primary" />;
+  };
+
+  const SortableHeader = ({ columnKey, children }: { columnKey: string; children: React.ReactNode }) => (
+    <button onClick={() => requestSort(columnKey)} className="flex items-center hover:text-primary transition-colors focus:outline-none">
+      {children}
+      <SortIcon columnKey={columnKey} />
+    </button>
+  );
 
   return (
     <div className="space-y-8 text-foreground pb-20 pt-4">
@@ -253,13 +268,13 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             <Table>
               <TableHeader className="bg-muted/10">
                 <TableRow className="hover:bg-transparent border-border/50">
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground px-6">Data Pag.</TableHead>
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Doador</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground px-6 group cursor-pointer" onClick={() => requestSort('data')}><SortableHeader columnKey="data">Data Pag.</SortableHeader></TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground group cursor-pointer" onClick={() => requestSort('doador')}><SortableHeader columnKey="doador">Doador</SortableHeader></TableHead>
                   <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Destino</TableHead>
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Forma</TableHead>
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Bruto</TableHead>
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Líquido</TableHead>
-                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground">Status</TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground group cursor-pointer" onClick={() => requestSort('forma')}><SortableHeader columnKey="forma">Forma</SortableHeader></TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground group cursor-pointer" onClick={() => requestSort('bruto')}><SortableHeader columnKey="bruto">Bruto</SortableHeader></TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground group cursor-pointer" onClick={() => requestSort('liquido')}><SortableHeader columnKey="liquido">Líquido</SortableHeader></TableHead>
+                  <TableHead className="py-5 font-semibold uppercase text-xs tracking-widest text-muted-foreground group cursor-pointer" onClick={() => requestSort('status')}><SortableHeader columnKey="status">Status</SortableHeader></TableHead>
                   <TableHead className="py-5 text-right font-black uppercase text-[10px] tracking-widest text-muted-foreground px-6">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -275,7 +290,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  donations.sort((a, b) => new Date(b.dataPagamento || b.data).getTime() - new Date(a.dataPagamento || a.data).getTime()).map(don => (
+                  donations.map(don => (
                     <TableRow key={don.id} className="hover:bg-muted/30 border-border/50 transition-colors">
                       <TableCell className="text-xs font-bold px-6">
                         {new Date(don.dataPagamento || don.data).toLocaleDateString('pt-BR')}

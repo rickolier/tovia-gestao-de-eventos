@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Calendar, MapPin, Clock, Plus, Minus, CheckCircle2, ArrowLeft,
   Ticket as TicketIcon, Shield, Lock, HeadphonesIcon, Instagram, Globe, Mail, Phone,
-  CreditCard, Copy, ExternalLink,
+  CreditCard, Copy, ExternalLink, Tag, Loader2, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Logo from '~/components/Logo';
@@ -60,6 +60,10 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     cpf, setCpf,
     card, setCard,
     installments, setInstallments,
+    codigoCupom, setCodigoCupom,
+    cupomAplicado, cupomLoading,
+    desconto, subtotal,
+    handleValidarCupom, handleRemoverCupom,
     selectedTickets, allDoacao,
     getTicketTotal,
     total, totalQty,
@@ -324,6 +328,52 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                 </div>
               )}
 
+              {/* Cupom de desconto */}
+              {total > 0 && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <Tag className="w-4 h-4 text-primary" />
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Cupom de desconto</h2>
+                  </div>
+                  <div className="px-6 py-5">
+                    {!cupomAplicado ? (
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Código do cupom"
+                          value={codigoCupom}
+                          onChange={e => setCodigoCupom(e.target.value.toUpperCase())}
+                          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleValidarCupom())}
+                          className="rounded-xl border border-gray-200 bg-white h-11 text-sm font-bold tracking-wider uppercase flex-1"
+                          maxLength={20}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleValidarCupom}
+                          disabled={cupomLoading || !codigoCupom.trim()}
+                          className="rounded-xl h-11 px-5 font-black shrink-0 border-gray-200"
+                        >
+                          {cupomLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 bg-orange-50 border border-primary/20 rounded-xl px-4 py-3">
+                        <Tag className="w-4 h-4 text-primary shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-sm font-black text-primary">{cupomAplicado.codigo}</p>
+                          <p className="text-xs text-primary">
+                            {cupomAplicado.tipo === 'porcentagem' ? `${cupomAplicado.valor}% de desconto` : `R$ ${cupomAplicado.valor.toFixed(2)} de desconto`}
+                          </p>
+                        </div>
+                        <button type="button" onClick={handleRemoverCupom} className="text-primary/60 hover:text-red-500 transition-colors p-1">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Pagamento */}
               {isGatewayPaid && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -483,6 +533,18 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
 
                 {/* Total + botão */}
                 <div className="p-5 space-y-4">
+                  {cupomAplicado && (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>Subtotal</span>
+                        <span className="line-through">{formatPrice(subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-primary font-bold">
+                        <span>Desconto ({cupomAplicado.codigo})</span>
+                        <span>− {formatPrice(desconto)}</span>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
                     <span className="font-black text-gray-900">Total</span>
                     <span className="font-black text-xl text-primary">{formatPrice(total)}</span>
@@ -733,6 +795,12 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                           )}
                         </div>
                       ))}
+                      {cupomAplicado && (
+                        <div className="flex justify-between text-xs text-primary font-bold">
+                          <span>Desconto ({cupomAplicado.codigo})</span>
+                          <span>− {formatPrice(desconto)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between font-black text-gray-900 pt-2 border-t border-gray-200 text-sm">
                         <span>Total</span>
                         <span className="text-primary">{formatPrice(total)}</span>

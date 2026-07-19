@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '~/services/firebase';
-import { getDocument, createDocument } from '~/services/firestore';
-import { Evento, Ticket, PaginaVenda, UserProfile, Donation } from '~/types';
+import { getDocument, createDocument, listDocuments, updateDocument } from '~/services/firestore';
+import { Evento, Ticket, PaginaVenda, UserProfile, Donation, Cupom } from '~/types';
 import { validateEmail, validateTelefone, validateCPF } from '~/utils/validators';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
@@ -43,6 +43,9 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
   const [cpf, setCpf] = useState('');
   const [card, setCard] = useState({ holderName: '', number: '', expiry: '', ccv: '' });
   const [installments, setInstallments] = useState(1);
+  const [codigoCupom, setCodigoCupom] = useState('');
+  const [cupomAplicado, setCupomAplicado] = useState<Cupom | null>(null);
+  const [cupomLoading, setCupomLoading] = useState(false);
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -64,7 +67,13 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
     return t.valor * (quantities[t.id] || 0);
   };
 
-  const total = selectedTickets.reduce((s, t) => s + getTicketTotal(t), 0);
+  const subtotal = selectedTickets.reduce((s, t) => s + getTicketTotal(t), 0);
+  const desconto = cupomAplicado
+    ? cupomAplicado.tipo === 'porcentagem'
+      ? subtotal * (cupomAplicado.valor / 100)
+      : Math.min(cupomAplicado.valor, subtotal)
+    : 0;
+  const total = Math.max(0, subtotal - desconto);
   const totalQty: number = selectedTickets.reduce((sum, t) => {
     if (t.tipo === 'doacao' && t.valor_livre) return sum + ((doacaoValores[t.id] || 0) > 0 ? 1 : 0);
     return sum + (quantities[t.id] || 0);
@@ -72,6 +81,30 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
 
   const updateQty = (id: string, delta: number) =>
     setQuantities(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + delta) }));
+
+  const handleValidarCupom = async () => {
+    if (!codigoCupom.trim()) return;
+    setCupomLoading(true);
+    try {
+      const cupons = await listDocuments<Cupom>(`eventos/${eventoId}/cupons`);
+      const cupom = cupons.find(c => c.codigo === codigoCupom.trim().toUpperCase());
+      if (!cupom) { toast.error('Cupom não encontrado.'); return; }
+      if (!cupom.ativo) { toast.error('Este cupom não está ativo.'); return; }
+      if (cupom.data_validade && new Date(cupom.data_validade) < new Date()) { toast.error('Este cupom está expirado.'); return; }
+      if (cupom.limite_usos && cupom.usos >= cupom.limite_usos) { toast.error('Este cupom atingiu o limite de usos.'); return; }
+      setCupomAplicado(cupom);
+      toast.success(`Cupom aplicado! ${cupom.tipo === 'porcentagem' ? `${cupom.valor}% de desconto` : `R$ ${cupom.valor.toFixed(2)} de desconto`}`);
+    } catch {
+      toast.error('Erro ao validar cupom.');
+    } finally {
+      setCupomLoading(false);
+    }
+  };
+
+  const handleRemoverCupom = () => {
+    setCupomAplicado(null);
+    setCodigoCupom('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,6 +242,10 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
         } as any);
         setInscricaoId(id);
 
+        if (cupomAplicado) {
+          await updateDocument(`eventos/${eventoId}/cupons`, cupomAplicado.id, { usos: cupomAplicado.usos + 1 });
+        }
+
         if (email) {
           Email.confirmacaoInscricao(
             email,
@@ -273,6 +310,10 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
     cpf, setCpf,
     card, setCard,
     installments, setInstallments,
+    codigoCupom, setCodigoCupom,
+    cupomAplicado, cupomLoading,
+    desconto, subtotal,
+    handleValidarCupom, handleRemoverCupom,
     selectedTickets, allDoacao,
     getTicketTotal,
     total, totalQty,

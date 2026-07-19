@@ -262,13 +262,38 @@ export function useDonations(eventoId: string) {
     setIsDonationDialogOpen(true);
   };
 
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+  const requestSort = (key: string) => {
+    const direction: 'asc' | 'desc' = sortConfig?.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc';
+    setSortConfig({ key, direction });
+  };
+
+  const sortedDonations = [...donations].sort((a, b) => {
+    if (!sortConfig) return new Date(b.dataPagamento || b.data).getTime() - new Date(a.dataPagamento || a.data).getTime();
+    let aVal: any = '';
+    let bVal: any = '';
+    switch (sortConfig.key) {
+      case 'data': aVal = new Date(a.dataPagamento || a.data).getTime(); bVal = new Date(b.dataPagamento || b.data).getTime(); break;
+      case 'doador': aVal = (a.doadorNome || '').toLowerCase(); bVal = (b.doadorNome || '').toLowerCase(); break;
+      case 'forma': aVal = (a.formaPagamento || '').toLowerCase(); bVal = (b.formaPagamento || '').toLowerCase(); break;
+      case 'bruto': aVal = a.valor; bVal = b.valor; break;
+      case 'liquido': aVal = a.valorLiquido || a.valor; bVal = b.valorLiquido || b.valor; break;
+      case 'status': aVal = a.status || 'pendente'; bVal = b.status || 'pendente'; break;
+    }
+    if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   const totalArrecadado = donations.filter(d => d.status === 'aprovada').reduce((acc, curr) => acc + curr.valor, 0);
   const totalLiquido = donations.filter(d => d.status === 'aprovada').reduce((acc, curr) => acc + (curr.valorLiquido || curr.valor), 0);
   const totalDestinadoInscritos = donations.filter(d => d.status === 'aprovada' && d.destino === 'inscrito').reduce((acc, curr) => acc + curr.valor, 0);
   const totalValoresNaoDestinados = donations.filter(d => d.status === 'aprovada' && d.destino === 'livre').reduce((acc, curr) => acc + curr.valorRestante, 0);
 
   return {
-    donations, registrations, evento, loading, allocations, isSubmitting,
+    donations: sortedDonations, registrations, evento, loading, allocations, isSubmitting,
+    sortConfig, requestSort,
     isDonationDialogOpen, setIsDonationDialogOpen,
     editingId, setEditingId,
     isAllocationOpen, setIsAllocationOpen,
