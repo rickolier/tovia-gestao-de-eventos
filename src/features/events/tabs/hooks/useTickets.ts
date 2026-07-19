@@ -20,6 +20,7 @@ function emptyForm(defaultMetodos: string[]) {
     installment_logic: 'free' as 'free' | 'limited',
     exibir_preco: true,
     valor_livre: false,
+    permite_direcionada: false,
     permite_patrocinio: false,
     valor_patrocinio: 0,
   };
@@ -107,6 +108,7 @@ export function useTickets(eventoId: string) {
       installment_logic: (ticket as any).installment_logic ?? 'free',
       exibir_preco: ticket.exibir_preco !== false,
       valor_livre: ticket.valor_livre || false,
+      permite_direcionada: ticket.permite_direcionada || false,
       permite_patrocinio: ticket.permite_patrocinio || false,
       valor_patrocinio: ticket.valor_patrocinio || 0,
     });

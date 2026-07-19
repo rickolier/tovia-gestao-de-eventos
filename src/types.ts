@@ -166,9 +166,10 @@ export interface Ticket {
   installment_logic?: 'free' | 'limited'; // free = sem restrição de data; limited = limitado pela data do evento
   exibir_preco?: boolean;
   // opções exclusivas de doação
-  valor_livre?: boolean;        // participante digita o valor
-  permite_patrocinio?: boolean; // participante escolhe quantas inscrições patrocinar
-  valor_patrocinio?: number;    // valor por inscrição patrocinada
+  valor_livre?: boolean;           // participante digita o valor
+  permite_direcionada?: boolean;   // participante pode direcionar a doação a um inscrito
+  permite_patrocinio?: boolean;    // legado — mantido para compatibilidade
+  valor_patrocinio?: number;       // legado
 }
 
 export interface Pessoa {

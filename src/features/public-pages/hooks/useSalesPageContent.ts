@@ -46,6 +46,8 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
   const [codigoCupom, setCodigoCupom] = useState('');
   const [cupomAplicado, setCupomAplicado] = useState<Cupom | null>(null);
   const [cupomLoading, setCupomLoading] = useState(false);
+  const [doacaoDestino, setDoacaoDestino] = useState<'livre' | 'inscrito'>('livre');
+  const [doacaoNomeInscrito, setDoacaoNomeInscrito] = useState('');
 
   useEffect(() => {
     if (evento.criado_por) {
@@ -174,7 +176,8 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
           pessoaId,
           email,
           telefone,
-          destino: 'livre',
+          destino: doacaoDestino === 'inscrito' ? 'inscrito' : 'livre',
+          ...(doacaoDestino === 'inscrito' && doacaoNomeInscrito ? { nomeInscrito: doacaoNomeInscrito } : {}),
           finalidade,
           data: new Date().toISOString(),
           status: 'pendente',
@@ -314,6 +317,8 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
     cupomAplicado, cupomLoading,
     desconto, subtotal,
     handleValidarCupom, handleRemoverCupom,
+    doacaoDestino, setDoacaoDestino,
+    doacaoNomeInscrito, setDoacaoNomeInscrito,
     selectedTickets, allDoacao,
     getTicketTotal,
     total, totalQty,

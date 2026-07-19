@@ -64,6 +64,8 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     cupomAplicado, cupomLoading,
     desconto, subtotal,
     handleValidarCupom, handleRemoverCupom,
+    doacaoDestino, setDoacaoDestino,
+    doacaoNomeInscrito, setDoacaoNomeInscrito,
     selectedTickets, allDoacao,
     getTicketTotal,
     total, totalQty,
@@ -368,6 +370,36 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                         <button type="button" onClick={handleRemoverCupom} className="text-primary/60 hover:text-red-500 transition-colors p-1">
                           <X className="w-4 h-4" />
                         </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Tipo de doação */}
+              {allDoacao && selectedTickets.some(t => t.permite_direcionada) && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-black shrink-0">&#10003;</div>
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Tipo de doação</h2>
+                  </div>
+                  <div className="px-6 py-5 space-y-3">
+                    <label className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${doacaoDestino === 'livre' ? 'border-primary bg-primary/5' : 'border-gray-200'}`}>
+                      <input type="radio" name="doacaoDestino" value="livre" checked={doacaoDestino === 'livre'} onChange={() => setDoacaoDestino('livre')} className="accent-primary" />
+                      <span className="text-sm font-bold text-gray-900">Doação livre</span>
+                    </label>
+                    <label className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${doacaoDestino === 'inscrito' ? 'border-primary bg-primary/5' : 'border-gray-200'}`}>
+                      <input type="radio" name="doacaoDestino" value="inscrito" checked={doacaoDestino === 'inscrito'} onChange={() => setDoacaoDestino('inscrito')} className="accent-primary" />
+                      <span className="text-sm font-bold text-gray-900">Doação direcionada a um inscrito</span>
+                    </label>
+                    {doacaoDestino === 'inscrito' && (
+                      <div className="pt-2">
+                        <Label className="text-xs font-bold text-gray-700 mb-1 block">Nome do participante</Label>
+                        <Input
+                          placeholder="Nome completo do inscrito"
+                          value={doacaoNomeInscrito}
+                          onChange={e => setDoacaoNomeInscrito(e.target.value)}
+                        />
                       </div>
                     )}
                   </div>
