@@ -52,10 +52,10 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
   useEffect(() => {
     if (evento.criado_por) {
       getDocument<UserProfile>('users', evento.criado_por)
-        .then(u => { if (u) setOrganizador(u); })
-        .catch(() => {});
-      getDocument<{ gateway_connected?: boolean }>('organizer_public', evento.criado_por)
-        .then(meta => { setGatewayConnected(meta?.gateway_connected === true); })
+        .then(u => {
+          if (u) setOrganizador(u);
+          setGatewayConnected(u?.gateway_connected === true && !!u?.gateway?.encrypted_api_key);
+        })
         .catch(() => {});
     }
   }, [evento.criado_por]);
