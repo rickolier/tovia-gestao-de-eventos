@@ -795,6 +795,10 @@ Cada cobrança gerada pelo Tovia aparece na sua conta Asaas com uma referência 
 
 O Asaas é a sua conta bancária do evento — o Tovia é o painel de gestão. Use o Tovia para entender os números do evento (quem pagou, quanto falta, qual a meta) e o Asaas para acompanhar saques e o saldo da conta.
 
+IMPORTANTE — NÚMEROS DO TOVIA vs. SALDO DO ASAAS:
+
+Os valores exibidos no Tovia refletem apenas as cobranças geradas pelo próprio Tovia. Se você usa a mesma conta Asaas para receber pagamentos de outras fontes (vendas avulsas, outras plataformas, cobranças manuais feitas direto no painel do Asaas), esses valores NÃO aparecem no Tovia. Ou seja: o saldo e o extrato que você vê no Asaas podem ser maiores do que os números mostrados no painel financeiro do Tovia. O Tovia mostra a fatia do evento — o Asaas mostra o todo da sua conta.
+
 PAGAMENTOS PENDENTES:
 
 Boletos têm prazo de compensação de 1 a 2 dias úteis após o pagamento. PIX é compensado em segundos. Cartão de crédito pode ter confirmação imediata ou em alguns minutos, dependendo da operadora.
