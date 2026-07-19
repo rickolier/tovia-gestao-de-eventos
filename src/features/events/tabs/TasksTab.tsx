@@ -8,6 +8,8 @@ import {
   CheckSquare,
   ListTodo,
   Kanban,
+  ArrowUpAZ,
+  ArrowDownAZ,
   Calendar as CalendarIcon,
   Users,
   Clock,
@@ -59,13 +61,28 @@ const DEFAULT_PERMS: EquipeMembro['permissoes'] = ['registrations', 'management'
 
 export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate }: TasksTabProps) {
   const {
-    tasks, setTasks, loading, isDialogOpen, setIsDialogOpen,
+    tasks, setTasks, sortedTasks, sortConfig, requestSort,
+    loading, isDialogOpen, setIsDialogOpen,
     editingTask, setEditingTask, view, setView,
     globalMembros, linkingId, isOwner, memberOptions,
     formData, setFormData,
     openForm, resetForm, handleSubmit, handleStatusChange,
     handleDelete, onDragEnd, handleVincular, handleDesvincular,
   } = useTasks(eventoId, equipe, donoId, onEquipeUpdate);
+
+  const SortIcon = ({ columnKey }: { columnKey: string }) => {
+    if (sortConfig?.key !== columnKey) return <ArrowUpAZ className="w-3 h-3 ml-2 opacity-20 group-hover:opacity-100 transition-opacity" />;
+    return sortConfig.direction === 'asc'
+      ? <ArrowUpAZ className="w-3 h-3 ml-2 text-primary" />
+      : <ArrowDownAZ className="w-3 h-3 ml-2 text-primary" />;
+  };
+
+  const SortableHeader = ({ columnKey, children }: { columnKey: string; children: React.ReactNode }) => (
+    <button onClick={() => requestSort(columnKey)} className="flex items-center hover:text-primary transition-colors focus:outline-none">
+      {children}
+      <SortIcon columnKey={columnKey} />
+    </button>
+  );
 
   return (
     <div className="space-y-6 text-foreground">
@@ -158,11 +175,11 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
             <Table className="min-w-[600px]">
               <TableHeader className="bg-muted/30">
                 <TableRow className="hover:bg-transparent border-border/50">
-                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 px-6">Tarefa</TableHead>
-                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Categoria</TableHead>
-                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Responsável</TableHead>
-                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Limite</TableHead>
-                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5">Status</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 px-6 group cursor-pointer" onClick={() => requestSort('titulo')}><SortableHeader columnKey="titulo">Tarefa</SortableHeader></TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 group cursor-pointer" onClick={() => requestSort('categoria')}><SortableHeader columnKey="categoria">Categoria</SortableHeader></TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 group cursor-pointer" onClick={() => requestSort('responsavel')}><SortableHeader columnKey="responsavel">Responsável</SortableHeader></TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 group cursor-pointer" onClick={() => requestSort('dataLimite')}><SortableHeader columnKey="dataLimite">Limite</SortableHeader></TableHead>
+                  <TableHead className="font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 group cursor-pointer" onClick={() => requestSort('status')}><SortableHeader columnKey="status">Status</SortableHeader></TableHead>
                   <TableHead className="text-right font-semibold text-muted-foreground uppercase text-xs tracking-widest py-5 px-6">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -172,7 +189,7 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
                     <TableCell colSpan={6} className="text-center py-16 text-muted-foreground italic font-medium">Nenhuma tarefa cadastrada para este evento.</TableCell>
                   </TableRow>
                 ) : (
-                  tasks.sort((a, b) => new Date(a.dataLimite).getTime() - new Date(b.dataLimite).getTime()).map(task => (
+                  sortedTasks.map(task => (
                     <TableRow key={task.id} className="hover:bg-muted/30 border-border/50 transition-colors">
                       <TableCell className="px-6 py-4">
                         <div className="flex flex-col">

@@ -210,8 +210,35 @@ export function useTasks(
     }
   };
 
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+  const requestSort = (key: string) => {
+    const direction: 'asc' | 'desc' = sortConfig?.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc';
+    setSortConfig({ key, direction });
+  };
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (!sortConfig) return new Date(a.dataLimite).getTime() - new Date(b.dataLimite).getTime();
+    let aVal: any = '';
+    let bVal: any = '';
+    const prioMap: Record<string, number> = { alta: 3, media: 2, baixa: 1 };
+    const statusMap: Record<string, number> = { pendente: 0, em_progresso: 1, atrasada: 2, concluida: 3 };
+    switch (sortConfig.key) {
+      case 'titulo': aVal = a.titulo.toLowerCase(); bVal = b.titulo.toLowerCase(); break;
+      case 'categoria': aVal = a.categoria.toLowerCase(); bVal = b.categoria.toLowerCase(); break;
+      case 'responsavel': aVal = a.responsavel.toLowerCase(); bVal = b.responsavel.toLowerCase(); break;
+      case 'dataLimite': aVal = new Date(a.dataLimite).getTime(); bVal = new Date(b.dataLimite).getTime(); break;
+      case 'status': aVal = statusMap[a.status] ?? 0; bVal = statusMap[b.status] ?? 0; break;
+      case 'prioridade': aVal = prioMap[a.prioridade] ?? 0; bVal = prioMap[b.prioridade] ?? 0; break;
+    }
+    if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   return {
-    tasks, setTasks, loading, isDialogOpen, setIsDialogOpen,
+    tasks, setTasks, sortedTasks, sortConfig, requestSort,
+    loading, isDialogOpen, setIsDialogOpen,
     editingTask, setEditingTask,
     view, setView,
     globalMembros, linkingId, isOwner,
