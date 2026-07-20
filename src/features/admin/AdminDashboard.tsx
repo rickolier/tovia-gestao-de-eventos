@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
   Menu, X, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
-  ChevronDown,
+  ChevronDown, FileText,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
 import AdminFinancialTab from './AdminFinancialTab';
@@ -20,6 +20,7 @@ import AdminCSPanelTab from './AdminCSPanelTab';
 import AdminComunicadosTab from './AdminComunicadosTab';
 import AdminBillingKeyTab from './AdminBillingKeyTab';
 import AdminLeadsTab from './AdminLeadsTab';
+import AdminDocumentosTab from './AdminDocumentosTab';
 
 type AdminRole = 'criador' | 'suporte';
 
@@ -46,6 +47,7 @@ const NAV: NavGroup[] = [
       { id: 'overview',     label: 'Visão Geral',        icon: LayoutDashboard, roles: ['criador'] },
       { id: 'relatorios',   label: 'Relatórios',         icon: TrendingUp,      roles: ['criador'] },
       { id: 'billing-key',  label: 'Configuração de API', icon: KeyRound,       roles: ['criador'] },
+      { id: 'documentos',   label: 'Documentos',          icon: FileText,       roles: ['criador'] },
     ],
   },
   {
@@ -80,6 +82,7 @@ const TAB_TITLES: Record<string, string> = {
   calculator:           'Calculadora',
   comunicados:          'Comunicados',
   leads:                'Leads',
+  documentos:           'Documentos',
 };
 
 export default function AdminDashboard() {
@@ -219,6 +222,7 @@ export default function AdminDashboard() {
           {activeTab === 'calculator'         && <AdminCalculatorTab />}
           {activeTab === 'comunicados'        && <AdminComunicadosTab />}
           {activeTab === 'leads'              && <AdminLeadsTab />}
+          {activeTab === 'documentos'         && <AdminDocumentosTab />}
         </main>
       </div>
     </div>
