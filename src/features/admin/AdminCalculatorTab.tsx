@@ -412,34 +412,6 @@ function CalculadoraEvento() {
               </div>
             </div>
 
-            <div style={{ background: PRIMARY_L, border: `1px solid ${PRIMARY_B}`, borderRadius: 14, padding: 20 }}>
-              <SectionTitle>Custo total do Tovia no período</SectionTitle>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <div>
-                  <div style={{ fontSize: 13, color: 'var(--foreground)' }}>
-                    {parcelas} {parcelas === 1 ? 'mês' : 'meses'} × {brl(planoTovia)}/mês
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--muted-foreground)', marginTop: 4 }}>Mensalidade ativa durante o ciclo</div>
-                </div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: PRIMARY, letterSpacing: '-0.02em' }}>{brl(planoTovia * parcelas)}</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <div style={{ background: 'var(--card)', borderRadius: 10, padding: '10px 12px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--muted-foreground)', marginBottom: 4 }}>% da receita total</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: PRIMARY }}>
-                    {receitaBruta > 0 ? ((planoTovia * parcelas) / receitaBruta * 100).toFixed(1) : '—'}%
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--muted-foreground)', marginTop: 2 }}>de {brl(receitaBruta)} arrecadados</div>
-                </div>
-                <div style={{ background: 'var(--card)', borderRadius: 10, padding: '10px 12px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--muted-foreground)', marginBottom: 4 }}>% da margem total</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: margem * inscritos > 0 && (planoTovia * parcelas) / (margem * inscritos) > 0.5 ? DESTR : PRIMARY }}>
-                    {margem * inscritos > 0 ? ((planoTovia * parcelas) / (margem * inscritos) * 100).toFixed(1) : '—'}%
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--muted-foreground)', marginTop: 2 }}>de {brl(margem * inscritos)} de margem</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       )}
