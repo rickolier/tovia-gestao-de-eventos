@@ -238,16 +238,16 @@ exports.saveGatewayConfig = functions.onCall({ secrets: ["GATEWAY_ENCRYPTION_KEY
             throw e;
         const status = (_a = e === null || e === void 0 ? void 0 : e.response) === null || _a === void 0 ? void 0 : _a.status;
         const errorMap = {
-            401: "GW-AUTH-401: Chave de API não autorizada. Verifique se a chave está correta e ativa no painel Asaas.",
-            403: "GW-PERM-403: Chave sem permissão. Verifique se a chave tem acesso à API no painel Asaas.",
-            404: "GW-URL-404: Endpoint não encontrado. Verifique se o ambiente (Sandbox/Produção) está correto.",
-            429: "GW-LIMIT-429: Muitas tentativas. Aguarde alguns minutos e tente novamente.",
-            500: "GW-ASAAS-500: Erro interno do Asaas. Tente novamente em alguns minutos.",
-            503: "GW-ASAAS-503: Asaas temporariamente indisponível. Tente novamente em alguns minutos.",
+            401: "ERRO TV001 — Chave de API não autorizada. Verifique se está correta e ativa.",
+            403: "ERRO TV002 — Sua chave não tem permissão de acesso. Verifique no painel Asaas.",
+            404: "ERRO TV003 — Ambiente incorreto. Confira se selecionou Sandbox ou Produção.",
+            429: "ERRO TV004 — Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+            500: "ERRO TV005 — Erro temporário no gateway. Tente novamente em alguns minutos.",
+            503: "ERRO TV006 — Gateway temporariamente indisponível. Tente mais tarde.",
         };
         const msg = status && errorMap[status]
             ? errorMap[status]
-            : `GW-NET-000: Falha de conexão com o gateway. Verifique sua internet e tente novamente.`;
+            : "ERRO TV007 — Falha de conexão. Verifique sua internet e tente novamente.";
         throw new functions.HttpsError("invalid-argument", msg);
     }
     const encryptedKey = (0, gateway_utils_1.encrypt)(apiKey, encKey);
