@@ -31,10 +31,10 @@ export default function Onboarding() {
   const handleConfirm = () => {
     if (!user) return;
     if (selected === 'chinam') {
-      navigate('/desenvolvimento/dashboard');
+      navigate('/dashboard');
       return;
     }
-    navigate('/desenvolvimento/checkout-plano', {
+    navigate('/checkout-plano', {
       state: {
         planLevel: selected,
         period,

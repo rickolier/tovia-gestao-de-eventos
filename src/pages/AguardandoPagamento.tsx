@@ -40,7 +40,7 @@ export default function AguardandoPagamento() {
   // Pagamento confirmado → redireciona
   useEffect(() => {
     if (profile?.plano && !profile?.planoPendente) {
-      navigate('/desenvolvimento/dashboard');
+      navigate('/dashboard');
     }
   }, [profile, navigate]);
 
@@ -99,7 +99,7 @@ export default function AguardandoPagamento() {
 
             <Button
               variant="ghost"
-              onClick={() => navigate('/desenvolvimento/planos')}
+              onClick={() => navigate('/planos')}
               className="text-white/70 hover:text-white hover:bg-white/10 rounded-2xl text-sm"
             >
               Voltar e trocar de plano

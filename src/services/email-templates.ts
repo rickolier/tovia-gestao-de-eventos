@@ -1,7 +1,7 @@
 // Paleta e estilo base
 const BASE = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f4f6f3;
+  background: #f5f3f0;
   margin: 0;
   padding: 0;
 `;
@@ -22,12 +22,12 @@ function wrap(content: string, preview = '') {
   <meta name="x-apple-disable-message-reformatting" />
   <style>
     :root { color-scheme: light only; }
-    body { margin: 0 !important; padding: 0 !important; background-color: #f4f6f3 !important; }
+    body { margin: 0 !important; padding: 0 !important; background-color: #f5f3f0 !important; }
   </style>
   ${preview ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preview}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>` : ''}
 </head>
-<body style="${BASE}" bgcolor="#f4f6f3">
-  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6f3" style="background-color:#f4f6f3;padding:40px 16px;">
+<body style="${BASE}" bgcolor="#f5f3f0">
+  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f5f3f0" style="background-color:#f5f3f0;padding:40px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
@@ -35,7 +35,7 @@ function wrap(content: string, preview = '') {
         <tr>
           <td bgcolor="${PRIMARY}" style="background-color:${PRIMARY} !important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
             <span style="font-size:28px;font-weight:900;color:#ffffff !important;letter-spacing:-1px;-webkit-text-fill-color:#ffffff;">tovia</span>
-            <span style="font-size:11px;font-weight:600;color:#a7f3d0 !important;-webkit-text-fill-color:#a7f3d0;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
+            <span style="font-size:11px;font-weight:600;color:#FFB380 !important;-webkit-text-fill-color:#FFB380;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
           </td>
         </tr>
 
@@ -207,7 +207,7 @@ export function emailBoasVindasPetach(nome: string, valor: string, proxVenciment
       ${feature('🧮', 'Calculadora', 'Planeje o financeiro antes mesmo de abrir as inscrições.')}
     </table>
     ${p('Você tem <strong>3 eventos ativos</strong>, até <strong>200 vagas</strong> por evento e <strong>3 tipos de ingresso</strong>.')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin:20px 0;">
+    <table cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ef;border:1px solid #FFD4B3;border-radius:12px;padding:16px 20px;margin:20px 0;">
       <tr><td>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">Pétach · פֶּתַח</strong></p>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>
@@ -231,7 +231,7 @@ export function emailBoasVindasKoach(nome: string, valor: string, proxVencimento
       ${feature('📊', 'Relatórios avançados', 'Visão completa de inscrições, financeiro e desempenho da equipe.')}
     </table>
     ${p('Você tem <strong>5 eventos ativos</strong>, até <strong>500 vagas</strong> por evento, <strong>5 ingressos</strong> e <strong>5 membros de equipe</strong>.')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin:20px 0;">
+    <table cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ef;border:1px solid #FFD4B3;border-radius:12px;padding:16px 20px;margin:20px 0;">
       <tr><td>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">Koách · כֹּחַ</strong></p>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>
@@ -255,7 +255,7 @@ export function emailBoasVindasChalem(nome: string, valor: string, proxVenciment
       ${feature('📊', 'Relatórios completos', 'Visão financeira e operacional de todos os seus eventos.')}
     </table>
     ${p('Você tem <strong>10 eventos ativos</strong>, <strong>inscritos ilimitados</strong>, <strong>10 tipos de ingresso</strong> e <strong>10 membros de equipe</strong>.')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin:20px 0;">
+    <table cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ef;border:1px solid #FFD4B3;border-radius:12px;padding:16px 20px;margin:20px 0;">
       <tr><td>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">Chalém · שָׁלֵם</strong></p>
         <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>

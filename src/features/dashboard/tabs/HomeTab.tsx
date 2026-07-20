@@ -76,7 +76,7 @@ function ProfileCompletion() {
             <div className={`${styles.fill} h-1.5 rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
           </div>
         </div>
-        <Link to="/desenvolvimento/dashboard?tab=perfil" className="shrink-0">
+        <Link to="/dashboard?tab=perfil" className="shrink-0">
           <Button size="sm" className={`${styles.btn} rounded-xl text-xs font-bold px-4 gap-1.5 whitespace-nowrap`}>
             Finalizar cadastro <ArrowRight className="w-3 h-3" />
           </Button>
@@ -161,7 +161,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
         </div>
 
         {/* Stat card 4 — Plano */}
-        <Link to="/desenvolvimento/planos" className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3 hover:border-primary/40 hover:shadow-sm transition-all group">
+        <Link to="/planos" className="bg-card rounded-xl p-4 border border-border card-flat flex items-center gap-3 hover:border-primary/40 hover:shadow-sm transition-all group">
           <div className="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
             <Star className="w-5 h-5 text-violet-500" />
           </div>
@@ -197,7 +197,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                 <ArrowRight className="w-3 h-3" />
               </button>
             )}
-            <Link to="/desenvolvimento/eventos/novo">
+            <Link to="/eventos/novo">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 px-3 text-xs font-semibold rounded-lg shadow-sm">
                 + Novo evento
               </Button>
@@ -214,7 +214,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
             <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">
               Crie seu primeiro evento e comece a vender ingressos em minutos.
             </p>
-            <Link to="/desenvolvimento/eventos/novo">
+            <Link to="/eventos/novo">
               <Button className="bg-primary hover:bg-primary/90 text-white h-10 px-6 font-semibold rounded-lg shadow-sm">
                 Criar primeiro evento
               </Button>
@@ -234,7 +234,7 @@ export default function HomeTab({ eventos }: HomeTabProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
                 >
-                  <Link to={`/desenvolvimento/eventos/${evento.id}`}>
+                  <Link to={`/eventos/${evento.id}`}>
                     <div className={cn(
                       'group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer',
                       evento.ativo === false && 'opacity-70 grayscale-[40%]',

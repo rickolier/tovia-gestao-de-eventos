@@ -8,6 +8,7 @@ import EventDetail from '~/features/events/EventDetail';
 import EditEvent from '~/features/events/EditEvent';
 import Onboarding from './pages/Onboarding';
 import VerificarEmail from './pages/VerificarEmail';
+import ConfirmarEmail from './pages/ConfirmarEmail';
 import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
@@ -40,13 +41,13 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user) return <Navigate to="/desenvolvimento/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
 
   // Admin nunca vai para onboarding
-  if (isAdminEmail(user.email)) return <Navigate to="/desenvolvimento/admin" replace />;
+  if (isAdminEmail(user.email)) return <Navigate to="/admin" replace />;
 
   // Email não verificado — bloqueia acesso ao app (contas demo são isentas)
-  if (!user.emailVerified && !isDemoEmail(user.email)) return <Navigate to="/desenvolvimento/verificar-email" replace />;
+  if (!user.emailVerified && !isDemoEmail(user.email)) return <Navigate to="/verificar-email" replace />;
 
   // Conta desativada
   if (profile?.desativado) {
@@ -80,8 +81,8 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isAuthReady } = useAuth();
   if (!isAuthReady) return null;
-  if (!user) return <Navigate to="/desenvolvimento/login" replace />;
-  if (!isAdminEmail(user.email)) return <Navigate to="/desenvolvimento/dashboard" replace />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isAdminEmail(user.email)) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -91,19 +92,18 @@ export default function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<CaptacaoPage />} />
-            <Route path="/sobre" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/leads" element={<CaptacaoPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/entrar" element={<Login />} />
-            <Route path="/desenvolvimento" element={<LandingPage />} />
-            <Route path="/desenvolvimento/login" element={<Login />} />
-            <Route path="/desenvolvimento/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
-            <Route path="/desenvolvimento/verificar-email" element={<VerificarEmail />} />
-            <Route path="/desenvolvimento/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
-            <Route path="/desenvolvimento/planos/aguardando" element={<PrivateRoute><AguardandoPagamento /></PrivateRoute>} />
-            <Route path="/desenvolvimento/checkout-plano" element={<PrivateRoute><CheckoutPlano /></PrivateRoute>} />
+            <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+            <Route path="/verificar-email" element={<VerificarEmail />} />
+            <Route path="/confirmar-email" element={<ConfirmarEmail />} />
+            <Route path="/planos" element={<PrivateRoute><Plans /></PrivateRoute>} />
+            <Route path="/planos/aguardando" element={<PrivateRoute><AguardandoPagamento /></PrivateRoute>} />
+            <Route path="/checkout-plano" element={<PrivateRoute><CheckoutPlano /></PrivateRoute>} />
             <Route
-              path="/desenvolvimento/dashboard"
+              path="/dashboard"
               element={
                 <PrivateRoute>
                   <Dashboard />
@@ -111,7 +111,7 @@ export default function App() {
               }
             />
             <Route
-              path="/desenvolvimento/eventos/novo"
+              path="/eventos/novo"
               element={
                 <PrivateRoute>
                   <CreateEvent />
@@ -119,7 +119,7 @@ export default function App() {
               }
             />
             <Route
-              path="/desenvolvimento/eventos/:id/editar"
+              path="/eventos/:id/editar"
               element={
                 <PrivateRoute>
                   <EditEvent />
@@ -127,7 +127,7 @@ export default function App() {
               }
             />
             <Route
-              path="/desenvolvimento/eventos/:id/checkin"
+              path="/eventos/:id/checkin"
               element={
                 <PrivateRoute>
                   <CheckinPage />
@@ -135,14 +135,14 @@ export default function App() {
               }
             />
             <Route
-              path="/desenvolvimento/eventos/:id/*"
+              path="/eventos/:id/*"
               element={
                 <PrivateRoute>
                   <EventDetail />
                 </PrivateRoute>
               }
             />
-            <Route path="/desenvolvimento/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/:orgCodigo/:eventoCodigo/:paginaCodigo" element={<PublicSalesPageByCodigo />} />
             <Route path="/e/:eventoId/:slug" element={<PublicSalesPage />} />
             <Route path="/o/:userId" element={<PublicOrganizerProfile />} />
@@ -151,8 +151,8 @@ export default function App() {
             <Route path="/satisfacao" element={<SatisfacaoPage />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos-de-uso" element={<TermosDeUso />} />
-            <Route path="/desenvolvimento/base-de-conhecimento" element={<PrivateRoute><BaseConhecimento /></PrivateRoute>} />
-            <Route path="/desenvolvimento/base-de-conhecimento/:slug" element={<PrivateRoute><ArtigoBaseConhecimento /></PrivateRoute>} />
+            <Route path="/base-de-conhecimento" element={<PrivateRoute><BaseConhecimento /></PrivateRoute>} />
+            <Route path="/base-de-conhecimento/:slug" element={<PrivateRoute><ArtigoBaseConhecimento /></PrivateRoute>} />
           </Routes>
           <Toaster />
         </Router>

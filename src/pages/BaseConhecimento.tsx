@@ -341,7 +341,7 @@ export default function BaseConhecimento() {
                   {profile?.nome?.split(' ')[0] || user.email}
                 </span>
               </div>
-              <Link to="/desenvolvimento/dashboard" className="flex items-center gap-1 text-xs font-black text-primary hover:underline whitespace-nowrap">
+              <Link to="/dashboard" className="flex items-center gap-1 text-xs font-black text-primary hover:underline whitespace-nowrap">
                 <ArrowLeft className="w-3.5 h-3.5" /> Painel
               </Link>
             </div>

@@ -52,7 +52,7 @@ export function Planos() {
                 </li>
               ))}
             </ul>
-            <Link to="/desenvolvimento/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
+            <Link to="/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
               Começar grátis
             </Link>
           </div>
@@ -80,7 +80,7 @@ export function Planos() {
                 </li>
               ))}
             </ul>
-            <Link to="/desenvolvimento/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
+            <Link to="/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
               Assinar Pétach
             </Link>
           </div>
@@ -127,7 +127,7 @@ export function Planos() {
                 </li>
               ))}
             </ul>
-            <Link to="/desenvolvimento/login?cadastro=true" className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-white text-primary hover:bg-white/90 transition-all shadow-lg">
+            <Link to="/login?cadastro=true" className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-white text-primary hover:bg-white/90 transition-all shadow-lg">
               Assinar Koách
             </Link>
           </div>
@@ -184,7 +184,7 @@ export function Planos() {
                 </li>
               ))}
             </ul>
-            <Link to="/desenvolvimento/login?cadastro=true" className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-primary hover:bg-primary/90 text-white transition-all shadow-lg shadow-primary/30">
+            <Link to="/login?cadastro=true" className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-primary hover:bg-primary/90 text-white transition-all shadow-lg shadow-primary/30">
               Assinar Chalém
             </Link>
           </div>

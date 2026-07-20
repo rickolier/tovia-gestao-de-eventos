@@ -23,11 +23,11 @@ export default function CheckinPage() {
     if (!eventoId || !user) return;
     (async () => {
       const ev = await getDocument<Evento>('eventos', eventoId);
-      if (!ev) { navigate('/desenvolvimento/dashboard'); return; }
+      if (!ev) { navigate('/dashboard'); return; }
 
       const isOwner = ev.criado_por === user.uid;
       const isTeam  = (ev.equipeIds ?? []).includes(user.uid);
-      if (!isOwner && !isTeam) { navigate('/desenvolvimento/dashboard'); return; }
+      if (!isOwner && !isTeam) { navigate('/dashboard'); return; }
 
       setEvento(ev);
       setAuthorized(true);
@@ -64,7 +64,7 @@ export default function CheckinPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-sidebar px-4 py-3 flex items-center justify-between gap-3 sticky top-0 z-30">
-        <Link to={`/desenvolvimento/eventos/${eventoId}`} className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+        <Link to={`/eventos/${eventoId}`} className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1 min-w-0 text-center">

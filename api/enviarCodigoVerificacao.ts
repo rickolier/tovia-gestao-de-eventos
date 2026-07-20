@@ -3,15 +3,17 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db, verifyAuth } from './_firebase.js';
+import { randomBytes } from 'crypto';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://toviaapp.com.br';
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT = 3;
-const CODE_TTL_MS = 10 * 60 * 1000;
+const TOKEN_TTL_MS = 30 * 60 * 1000;
 
-const PRIMARY = '#1a7a45';
+const PRIMARY = '#FF6B1A';
 const MUTED = '#6b7280';
 const TEXT = '#1a1a1a';
 
@@ -21,14 +23,14 @@ function emailWrap(content: string) {
 <meta name="color-scheme" content="light"/>
 <meta name="supported-color-schemes" content="light"/>
 <meta name="x-apple-disable-message-reformatting"/>
-<style>:root{color-scheme:light only;}body{margin:0!important;padding:0!important;background-color:#f4f6f3!important;}</style>
+<style>:root{color-scheme:light only;}body{margin:0!important;padding:0!important;background-color:#f5f3f0!important;}</style>
 </head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;" bgcolor="#f4f6f3">
-<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6f3" style="background-color:#f4f6f3;padding:40px 16px;">
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f3f0;margin:0;padding:0;" bgcolor="#f5f3f0">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f5f3f0" style="background-color:#f5f3f0;padding:40px 16px;">
 <tr><td align="center"><table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 <tr><td bgcolor="${PRIMARY}" style="background-color:${PRIMARY}!important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
 <span style="font-size:28px;font-weight:900;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:-1px;">tovia</span>
-<span style="font-size:11px;font-weight:600;color:#a7f3d0!important;-webkit-text-fill-color:#a7f3d0;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
+<span style="font-size:11px;font-weight:600;color:#FFB380!important;-webkit-text-fill-color:#FFB380;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
 </td></tr>
 <tr><td bgcolor="#ffffff" style="background-color:#ffffff!important;padding:40px;border-radius:0 0 16px 16px;">${content}</td></tr>
 <tr><td style="padding:24px 40px;text-align:center;">
@@ -38,7 +40,7 @@ function emailWrap(content: string) {
 }
 
 async function checkRateLimit(userId: string): Promise<boolean> {
-  const key = `otp_${userId}`;
+  const key = `verify_${userId}`;
   const ref = db.collection('_rate_limits').doc(key);
   const snap = await ref.get();
   const now = Date.now();
@@ -73,45 +75,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const allowed = await checkRateLimit(userId);
     if (!allowed) return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
 
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    const expiresAt = Date.now() + CODE_TTL_MS;
+    const token = randomBytes(32).toString('hex');
+    const expiresAt = Date.now() + TOKEN_TTL_MS;
 
-    await db.collection('verification_codes').doc(userId).set({ code, expiresAt, attempts: 0 });
+    await db.collection('verification_tokens').doc(token).set({ userId, expiresAt });
 
+    const verifyUrl = `${BASE_URL}/confirmar-email?token=${token}`;
     const nome = userRecord.displayName || 'organizador';
+
     const html = emailWrap(`
       <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Confirme seu e-mail ✉️</h1>
-      <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 24px;">
-        Olá, <strong>${nome}</strong>! Use o código abaixo para confirmar seu endereço de e-mail e liberar o acesso ao Tovia.
+      <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 28px;">
+        Olá, <strong>${nome}</strong>! Clique no botão abaixo para confirmar seu e-mail e liberar o acesso ao Tovia.
       </p>
-      <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:28px;text-align:center;margin:0 0 24px;">
-        <p style="font-size:13px;color:${MUTED};margin:0 0 8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Seu código de verificação</p>
-        <p style="font-size:48px;font-weight:900;color:${PRIMARY};letter-spacing:12px;margin:0;">${code}</p>
-        <p style="font-size:12px;color:${MUTED};margin:12px 0 0;">Válido por <strong>10 minutos</strong></p>
+      <div style="text-align:center;margin:0 0 28px;">
+        <a href="${verifyUrl}" style="display:inline-block;background:${PRIMARY};color:#ffffff;font-size:16px;font-weight:900;text-decoration:none;padding:16px 48px;border-radius:16px;letter-spacing:1px;text-transform:uppercase;">
+          Confirmar meu e-mail
+        </a>
       </div>
-      <p style="font-size:13px;color:${MUTED};margin:0;line-height:1.6;">
-        Se você não criou uma conta no Tovia, pode ignorar este e-mail com segurança.
+      <p style="font-size:12px;color:${MUTED};margin:0 0 16px;line-height:1.6;">
+        Ou copie e cole este link no navegador:
+      </p>
+      <p style="font-size:11px;color:${PRIMARY};word-break:break-all;margin:0 0 24px;">
+        ${verifyUrl}
+      </p>
+      <p style="font-size:12px;color:${MUTED};margin:0;line-height:1.6;">
+        Este link é válido por <strong>30 minutos</strong>. Se você não criou uma conta no Tovia, pode ignorar este e-mail.
       </p>
     `);
 
     if (!RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY não configurada — código não enviado.');
+      console.warn('RESEND_API_KEY não configurada — link não enviado.');
       return res.status(500).json({ error: 'Serviço de e-mail não configurado.' });
     }
+
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [userRecord.email!], subject: `${code} é seu código Tovia`, html }),
+      body: JSON.stringify({ from: FROM, to: [userRecord.email!], subject: 'Confirme seu e-mail — Tovia', html }),
     });
     if (!emailRes.ok) {
       const errBody = await emailRes.json().catch(() => ({}));
-      console.error('Resend error ao enviar código:', JSON.stringify(errBody));
-      return res.status(500).json({ error: 'Não foi possível enviar o código. Tente novamente.' });
+      console.error('Resend error ao enviar link:', JSON.stringify(errBody));
+      return res.status(500).json({ error: 'Não foi possível enviar o e-mail. Tente novamente.' });
     }
 
     return res.json({ ok: true });
   } catch (err: any) {
     console.error('enviarCodigoVerificacao error:', err.message);
-    return res.status(500).json({ error: 'Não foi possível enviar o código. Tente novamente.' });
+    return res.status(500).json({ error: 'Não foi possível enviar o e-mail. Tente novamente.' });
   }
 }

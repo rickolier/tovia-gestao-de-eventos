@@ -31,10 +31,10 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/desenvolvimento/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
+          <Link to="/login" className="text-sm font-semibold text-foreground hover:text-primary transition-colors px-4 py-2">
             Entrar
           </Link>
-          <Link to="/desenvolvimento/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
+          <Link to="/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
             Criar meu evento
           </Link>
         </div>
@@ -57,8 +57,8 @@ export function Navbar() {
             </Link>
           ))}
           <div className="pt-2 flex flex-col gap-3">
-            <Link to="/desenvolvimento/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
-            <Link to="/desenvolvimento/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
+            <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
+            <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
           </div>
         </div>
       )}

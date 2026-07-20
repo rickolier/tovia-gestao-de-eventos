@@ -268,7 +268,7 @@ export default function BillingTab() {
                 </p>
               </div>
               <Button
-                onClick={() => navigate('/desenvolvimento/planos')}
+                onClick={() => navigate('/planos')}
                 className="bg-primary text-white rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-sm gap-2"
               >
                 <ArrowUpCircle className="w-5 h-5" /> Ver planos
@@ -337,7 +337,7 @@ export default function BillingTab() {
             <div className="flex flex-col gap-2">
               <Button
                 variant="outline"
-                onClick={() => navigate('/desenvolvimento/planos')}
+                onClick={() => navigate('/planos')}
                 className="border-primary text-primary hover:bg-primary/5 rounded-xl font-semibold text-sm"
               >
                 Trocar de plano
@@ -354,7 +354,7 @@ export default function BillingTab() {
                   try {
                     await updateDocument('users', user.uid, { plano: null });
                     toast.success('Plano cancelado. Escolha um novo plano para continuar.');
-                    navigate('/desenvolvimento/onboarding');
+                    navigate('/onboarding');
                   } catch {
                     toast.error('Erro ao cancelar plano. Tente novamente.');
                   } finally {

@@ -9,7 +9,7 @@ const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT = 3;
 const CODE_TTL_MS = 10 * 60 * 1000;
 
-const PRIMARY = '#1a7a45';
+const PRIMARY = '#FF6B1A';
 const MUTED = '#6b7280';
 const TEXT = '#1a1a1a';
 
@@ -94,8 +94,8 @@ function buildEmailHtml(code: string): string {
 <meta name="color-scheme" content="light"/><meta name="supported-color-schemes" content="light"/>
 <style>:root{color-scheme:light only;}body{margin:0!important;padding:0!important;}</style>
 </head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;" bgcolor="#f4f6f3">
-  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6f3" style="background:#f4f6f3;padding:40px 16px;">
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f3f0;margin:0;padding:0;" bgcolor="#f5f3f0">
+  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f5f3f0" style="background:#f5f3f0;padding:40px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
         <tr><td bgcolor="${PRIMARY}" style="background:${PRIMARY}!important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
@@ -107,7 +107,7 @@ function buildEmailHtml(code: string): string {
           <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 24px;">
             Use o código abaixo para consultar suas inscrições. Ele é válido por <strong>10 minutos</strong>.
           </p>
-          <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:28px;text-align:center;margin:0 0 28px;">
+          <div style="background:#fff5ef;border:2px solid #FFD4B3;border-radius:16px;padding:28px;text-align:center;margin:0 0 28px;">
             <p style="font-size:13px;color:${MUTED};margin:0 0 8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Código de verificação</p>
             <p style="font-size:52px;font-weight:900;color:${PRIMARY};letter-spacing:14px;margin:0;font-variant-numeric:tabular-nums;">${code}</p>
             <p style="font-size:12px;color:${MUTED};margin:12px 0 0;">Válido por <strong>10 minutos</strong></p>

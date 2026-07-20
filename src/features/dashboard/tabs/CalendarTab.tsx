@@ -204,7 +204,7 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
                         return (
                           <Link
                             key={evento.id}
-                            to={`/desenvolvimento/eventos/${evento.id}`}
+                            to={`/eventos/${evento.id}`}
                             className={`text-[9px] p-1.5 bg-primary/10 text-primary font-black truncate hover:bg-primary/20 transition-all border-l-2 border-primary ${
                               isStart ? 'rounded-l-md' : ''
                             } ${
@@ -239,7 +239,7 @@ export default function CalendarTab({ eventos }: CalendarTabProps) {
               {upcomingEvents.map(evento => (
                 <Link
                   key={evento.id}
-                  to={`/desenvolvimento/eventos/${evento.id}`}
+                  to={`/eventos/${evento.id}`}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors group"
                 >
                   <div className="w-9 h-9 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all">

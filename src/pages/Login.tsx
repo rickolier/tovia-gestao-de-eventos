@@ -34,9 +34,9 @@ export default function Login() {
     if (eventoIdParam && !isAdminEmail(user.email)) {
       processEquipeJoin(eventoIdParam)
         .catch((err: any) => toast.error('Erro ao entrar na equipe: ' + err.message))
-        .finally(() => navigate(redirectParam || '/desenvolvimento/dashboard'));
+        .finally(() => navigate(redirectParam || '/dashboard'));
     } else {
-      navigate(isAdminEmail(user.email) ? '/desenvolvimento/admin' : (redirectParam || '/desenvolvimento/dashboard'));
+      navigate(isAdminEmail(user.email) ? '/admin' : (redirectParam || '/dashboard'));
     }
   }, [user, isAuthReady]);
 
@@ -65,6 +65,7 @@ export default function Login() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
+      const isNew = result.user.metadata.creationTime === result.user.metadata.lastSignInTime;
       if (eventoIdParam && !isAdminEmail(result.user.email)) {
         try {
           await processEquipeJoin(eventoIdParam);
@@ -72,7 +73,15 @@ export default function Login() {
           toast.error('Erro ao entrar na equipe: ' + joinErr.message);
         }
       }
-      navigate(redirectParam || '/desenvolvimento/dashboard');
+      if (isNew && result.user.email && result.user.displayName) {
+        Email.boasVindas(result.user.email, result.user.displayName);
+        Email.boasVindasPlano(result.user.email, result.user.displayName, 'chinam');
+      }
+      if (isNew && !isAdminEmail(result.user.email)) {
+        navigate('/onboarding');
+      } else {
+        navigate(isAdminEmail(result.user.email) ? '/admin' : (redirectParam || '/dashboard'));
+      }
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }
@@ -115,16 +124,15 @@ export default function Login() {
           }
         }
         const idToken = await userCredential.user.getIdToken();
-        const otpRes = await fetch('/api/enviarCodigoVerificacao', {
+        fetch('/api/enviarCodigoVerificacao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
           body: JSON.stringify({ userId: userCredential.user.uid }),
-        });
-        const codeSent = otpRes.ok;
+        }).catch(() => {});
         Email.boasVindas(email, name);
         Email.boasVindasPlano(email, name, 'chinam');
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
-        navigate(eventoIdParam ? '/desenvolvimento/dashboard' : '/desenvolvimento/verificar-email', { state: { codeSent } });
+        navigate(eventoIdParam ? '/dashboard' : '/verificar-email');
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (eventoIdParam && !isAdminEmail(cred.user.email)) {
@@ -137,7 +145,7 @@ export default function Login() {
         setLoginAttempts(0);
         setResetSent(false);
         toast.success('Bem-vindo de volta!');
-        navigate(isAdminEmail(cred.user.email) ? '/desenvolvimento/admin' : (redirectParam || '/desenvolvimento/dashboard'));
+        navigate(isAdminEmail(cred.user.email) ? '/admin' : (redirectParam || '/dashboard'));
       }
     } catch (error: any) {
       if (!isRegistering) {
@@ -170,7 +178,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sidebar via-sidebar to-primary/80 flex flex-col items-center justify-center p-6">
       <div className="fixed top-0 left-0 p-4">
-        <Link to="/desenvolvimento" className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors text-sm font-semibold">
+        <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors text-sm font-semibold">
           <ArrowRight className="w-4 h-4 rotate-180" /> Voltar
         </Link>
       </div>

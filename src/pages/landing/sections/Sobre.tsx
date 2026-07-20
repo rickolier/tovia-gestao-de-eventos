@@ -32,7 +32,7 @@ export function Sobre() {
           <p className="text-muted-foreground leading-relaxed mb-8">
             Simples para o organizador. Claro para o participante. Completo para o evento.
           </p>
-          <Link to="/desenvolvimento/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
+          <Link to="/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
             Criar minha conta <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

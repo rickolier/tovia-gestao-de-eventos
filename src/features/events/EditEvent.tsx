@@ -54,7 +54,7 @@ export default function EditEvent() {
           const data = await getDocument<Evento>('eventos', id);
           if (!data) {
             toast.error('Evento não encontrado');
-            navigate('/desenvolvimento/dashboard');
+            navigate('/dashboard');
             return;
           }
           
@@ -109,7 +109,7 @@ export default function EditEvent() {
     try {
       await removeDocument('eventos', id);
       toast.success('Evento excluído com sucesso!');
-      navigate('/desenvolvimento/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error(error);
       toast.error('Erro ao excluir evento.');
@@ -156,7 +156,7 @@ export default function EditEvent() {
 
       await updateDocument('eventos', id, eventData);
       toast.success('Evento atualizado com sucesso!');
-      navigate(`/desenvolvimento/eventos/${id}`);
+      navigate(`/eventos/${id}`);
     } catch (error: any) {
       console.error('Error updating event:', error);
       toast.error('Erro ao atualizar evento.');
@@ -189,7 +189,7 @@ export default function EditEvent() {
     <div className="min-h-screen bg-background">
       {/* Sticky top header */}
       <header className="sticky top-0 z-30 bg-sidebar h-14 flex items-center px-4 gap-3">
-        <Link to={`/desenvolvimento/eventos/${id}`} className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
+        <Link to={`/eventos/${id}`} className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-sm font-semibold text-white flex-1">Editar Evento</h1>

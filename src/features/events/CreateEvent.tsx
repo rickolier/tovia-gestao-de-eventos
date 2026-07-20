@@ -200,7 +200,7 @@ export default function CreateEvent() {
       } else {
         toast.success('Evento criado com sucesso!');
       }
-      navegar(`/desenvolvimento/eventos/${id}`);
+      navegar(`/eventos/${id}`);
     } catch (erro: any) {
       console.error('Error creating event:', erro);
       let mensagemErro = 'Erro ao criar evento.';
@@ -235,7 +235,7 @@ export default function CreateEvent() {
       )}
       {/* Sticky top header */}
       <header className="sticky top-0 z-30 bg-sidebar h-14 flex items-center px-4 gap-3">
-        <Link to="/desenvolvimento/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
+        <Link to="/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-sm font-semibold text-white flex-1">Novo Evento</h1>

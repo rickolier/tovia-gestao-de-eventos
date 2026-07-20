@@ -1,8 +1,6 @@
 import { useRef, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import app from '~/services/firebase';
-import { auth } from '~/services/firebase';
-import { sendPasswordResetEmail } from 'firebase/auth';
 import { updateDocument } from '~/services/firestore';
 import { useAuth } from '~/context/AuthContext';
 import { toast } from 'sonner';
@@ -52,7 +50,12 @@ export function useProfileTab() {
     if (!user?.email) return;
     setSendingReset(true);
     try {
-      await sendPasswordResetEmail(auth, user.email);
+      const res = await fetch('/api/enviarRedefinicaoSenha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email }),
+      });
+      if (!res.ok) throw new Error();
       toast.success(`E-mail de redefinição enviado para ${user.email}. Verifique sua caixa de entrada.`);
     } catch {
       toast.error('Não foi possível enviar o e-mail. Tente novamente.');

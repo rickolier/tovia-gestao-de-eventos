@@ -17,7 +17,7 @@ export default function Logo({ className, variant = 'default', showTagline = tru
   const colorClass = variant === 'white' ? 'text-white' : 'text-primary';
 
   return (
-    <Link to="/desenvolvimento" className={cn("flex items-center gap-3 transition-opacity hover:opacity-80", className)}>
+    <Link to="/" className={cn("flex items-center gap-3 transition-opacity hover:opacity-80", className)}>
       <ToviaLogo className={cn("h-10 w-auto", colorClass)} />
       {showTagline && (
         <div className={cn("hidden sm:block text-xs font-bold tracking-widest uppercase opacity-80 border-l-2 pl-3 leading-tight", colorClass, variant === 'white' ? 'border-white/20' : 'border-primary/20')}>

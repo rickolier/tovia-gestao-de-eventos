@@ -40,7 +40,7 @@ export default function Plans() {
   const goToCheckout = () => {
     if (!selected || selected === 'chinam') return;
     setShowDowngradeWarning(false);
-    navigate('/desenvolvimento/checkout-plano', {
+    navigate('/checkout-plano', {
       state: {
         planLevel: selected,
         period,
@@ -68,7 +68,7 @@ export default function Plans() {
         {/* Header */}
         <div className="flex items-center justify-between mb-10 pt-2">
           <button
-            onClick={() => navigate('/desenvolvimento/dashboard')}
+            onClick={() => navigate('/dashboard')}
             className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-semibold"
           >
             <ArrowLeft className="w-4 h-4" />

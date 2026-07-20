@@ -16,7 +16,7 @@ export function CTAFinal() {
         </p>
         <div className="flex justify-center">
           <Link
-            to="/desenvolvimento/login?cadastro=true"
+            to="/login?cadastro=true"
             className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
           >
             Criar conta grátis <ArrowRight className="w-4 h-4" />

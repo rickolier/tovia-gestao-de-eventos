@@ -9,14 +9,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 const APP_URL = 'https://tovia-gestao-de-eventos.vercel.app';
 
-const PRIMARY = '#1a7a45';
+const PRIMARY = '#FF6B1A';
 const MUTED = '#6b7280';
 const TEXT = '#1a1a1a';
 
 function emailWrap(content: string) {
   return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/></head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f3;margin:0;padding:0;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f3;padding:40px 16px;">
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f3f0;margin:0;padding:0;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3f0;padding:40px 16px;">
 <tr><td align="center"><table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 <tr><td style="background:${PRIMARY};border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
 <span style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">tovia</span>

@@ -113,7 +113,7 @@ export default function CheckoutPlano() {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
         await refreshProfile?.();
-        navigate('/desenvolvimento/planos/aguardando');
+        navigate('/planos/aguardando');
       }
     } catch (err: any) {
       toast.error(err?.message || 'Erro ao processar. Tente novamente.');

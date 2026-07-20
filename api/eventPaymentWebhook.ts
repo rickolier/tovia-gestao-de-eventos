@@ -11,7 +11,7 @@ function interpolate(template: string, vars: Record<string, string>): string {
 }
 
 function wrapCustomEmail(corpo: string): string {
-  const PRIMARY = '#1a7a45';
+  const PRIMARY = '#FF6B1A';
   const TEXT = '#1a1a1a';
   const html = corpo
     .split('\n')
@@ -20,7 +20,7 @@ function wrapCustomEmail(corpo: string): string {
       : '')
     .join('');
   return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/></head>
-<body style="font-family:sans-serif;background:#f4f6f3;margin:0;padding:40px 16px;">
+<body style="font-family:sans-serif;background:#f5f3f0;margin:0;padding:40px 16px;">
   <table width="100%" cellpadding="0" cellspacing="0">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">

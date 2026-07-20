@@ -144,7 +144,7 @@ export default function EventDetail() {
     <div className="min-h-screen bg-background">
       {/* Mobile compact top header */}
       <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar h-14 flex items-center px-3 gap-2">
-        <Link to="/desenvolvimento/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
+        <Link to="/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-sm font-semibold text-white leading-tight truncate flex-1">{evento.nome}</h1>
@@ -174,7 +174,7 @@ export default function EventDetail() {
           {/* Back + event name — hidden when collapsed */}
           {sidebarOpen && (
             <div className="px-4 py-4 border-b border-[var(--sidebar-border)] shrink-0">
-              <Link to="/desenvolvimento/dashboard" className="flex items-center gap-2 text-white/50 hover:text-white/80 text-xs mb-3 transition-colors">
+              <Link to="/dashboard" className="flex items-center gap-2 text-white/50 hover:text-white/80 text-xs mb-3 transition-colors">
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Voltar ao painel
               </Link>
@@ -193,7 +193,7 @@ export default function EventDetail() {
           {/* Collapsed: back arrow icon only */}
           {!sidebarOpen && (
             <div className="px-3 py-4 border-b border-[var(--sidebar-border)] shrink-0 flex justify-center">
-              <Link to="/desenvolvimento/dashboard" className="p-2 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-colors" title="Voltar ao painel">
+              <Link to="/dashboard" className="p-2 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-colors" title="Voltar ao painel">
                 <ArrowLeft className="w-4 h-4" />
               </Link>
             </div>
@@ -275,7 +275,7 @@ export default function EventDetail() {
 
           {/* Ajuda + Logout at bottom */}
           <div className="mt-auto px-3 py-4 border-t border-[var(--sidebar-border)] shrink-0 space-y-0.5">
-            <Link to="/desenvolvimento/base-de-conhecimento">
+            <Link to="/base-de-conhecimento">
               <button
                 className={cn(
                   "sidebar-nav-item text-white/60 hover:text-white hover:bg-white/10 w-full",

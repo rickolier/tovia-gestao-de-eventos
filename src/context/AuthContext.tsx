@@ -206,7 +206,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await processarEquipesPendentes(firebaseUser);
 
           if (!userProfile.isDemo) {
-            const isComplete = !!(userProfile.nome?.trim() && userProfile.whatsapp?.trim() && userProfile.instituicao?.trim());
+            const isComplete = !!(userProfile.nome?.trim() && (userProfile.whatsapp?.trim() || userProfile.telefone?.trim()) && userProfile.instituicao?.trim());
             if (!isComplete) {
               notifIfReadOrMissing(`perf_${firebaseUser.uid}`, {
                 userId: firebaseUser.uid,

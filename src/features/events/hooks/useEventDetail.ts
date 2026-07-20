@@ -37,7 +37,7 @@ export function useEventDetail() {
     if (!id) return;
     const data = await getDocument<Evento>('eventos', id);
     if (!data) {
-      navigate('/desenvolvimento/dashboard');
+      navigate('/dashboard');
       return;
     }
     setEvento({ ...data, id });
