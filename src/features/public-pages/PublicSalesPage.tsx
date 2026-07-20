@@ -33,7 +33,7 @@ export function PublicSalesPageByCodigo() {
 
   if (!eventoId) {
     return (
-      <div className="min-h-screen bg-[#0e1a12] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0C0720] flex items-center justify-center">
         <Loader2 className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
@@ -69,7 +69,7 @@ function PublicSalesPageByEventoId({ eventoId, paginaCodigo }: { eventoId: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0e1a12] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0C0720] flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -121,7 +121,7 @@ export default function PublicSalesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0e1a12] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0C0720] flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
