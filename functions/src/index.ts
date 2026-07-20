@@ -590,14 +590,29 @@ export const validateBillingKey = functions.onCall(
       throw new functions.HttpsError("not-found", "Chave API não definida.");
     }
 
-    const valid = await testAsaasApiKey(apiKey, sandbox ?? true);
+    const baseUrl = sandbox ? "https://sandbox.asaas.com/api/v3" : "https://api.asaas.com/api/v3";
+    let valid = false;
+    let debugInfo = "";
+    try {
+      const res = await import("axios").then(m => m.default.get(`${baseUrl}/customers`, {
+        params: { limit: 1 },
+        headers: { access_token: apiKey, "Content-Type": "application/json" },
+        timeout: 10000,
+      }));
+      valid = res.status === 200;
+      debugInfo = `status=${res.status}`;
+    } catch (e: any) {
+      const status = e?.response?.status;
+      const body = JSON.stringify(e?.response?.data ?? e?.message ?? "unknown");
+      debugInfo = `status=${status} body=${body}`;
+    }
 
     await db.collection("config").doc("billing").update({
       is_valid: valid,
       last_validated_at: new Date().toISOString(),
     });
 
-    return { valid };
+    return { valid, sandbox: !!sandbox, baseUrl, debugInfo };
   }
 );
 

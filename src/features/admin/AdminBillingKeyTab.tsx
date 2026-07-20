@@ -115,10 +115,13 @@ export default function AdminBillingKeyTab() {
     setValidateError(null);
     try {
       const fns = getFunctions(app, 'us-central1');
-      const validate = httpsCallable<object, { valid: boolean }>(fns, 'validateBillingKey');
+      const validate = httpsCallable<object, { valid: boolean; sandbox?: boolean; baseUrl?: string; debugInfo?: string }>(fns, 'validateBillingKey');
       const result = await validate({});
       const updated = { ...(currentConfig ?? config)!, is_valid: result.data.valid, last_validated_at: new Date().toISOString() };
       setConfig(updated);
+      if (!result.data.valid) {
+        setValidateError(`Sandbox=${result.data.sandbox} | URL=${result.data.baseUrl} | ${result.data.debugInfo}`);
+      }
     } catch (e: any) {
       setValidateError(e?.message ?? 'Erro ao verificar a chave.');
     } finally {

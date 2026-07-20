@@ -427,6 +427,7 @@ exports.uploadEventCover = functions.onCall({ region: "us-central1" }, async (re
 });
 // ─── Validar chave de billing da plataforma Tovia ────────────────────────────
 exports.validateBillingKey = functions.onCall({ region: "us-central1" }, async (request) => {
+    var _a, _b, _c, _d;
     if (!request.auth) {
         throw new functions.HttpsError("unauthenticated", "Não autenticado.");
     }
@@ -447,12 +448,28 @@ exports.validateBillingKey = functions.onCall({ region: "us-central1" }, async (
     if (!apiKey) {
         throw new functions.HttpsError("not-found", "Chave API não definida.");
     }
-    const valid = await (0, gateway_utils_1.testAsaasApiKey)(apiKey, sandbox !== null && sandbox !== void 0 ? sandbox : true);
+    const baseUrl = sandbox ? "https://sandbox.asaas.com/api/v3" : "https://api.asaas.com/api/v3";
+    let valid = false;
+    let debugInfo = "";
+    try {
+        const res = await Promise.resolve().then(() => __importStar(require("axios"))).then(m => m.default.get(`${baseUrl}/customers`, {
+            params: { limit: 1 },
+            headers: { access_token: apiKey, "Content-Type": "application/json" },
+            timeout: 10000,
+        }));
+        valid = res.status === 200;
+        debugInfo = `status=${res.status}`;
+    }
+    catch (e) {
+        const status = (_a = e === null || e === void 0 ? void 0 : e.response) === null || _a === void 0 ? void 0 : _a.status;
+        const body = JSON.stringify((_d = (_c = (_b = e === null || e === void 0 ? void 0 : e.response) === null || _b === void 0 ? void 0 : _b.data) !== null && _c !== void 0 ? _c : e === null || e === void 0 ? void 0 : e.message) !== null && _d !== void 0 ? _d : "unknown");
+        debugInfo = `status=${status} body=${body}`;
+    }
     await db.collection("config").doc("billing").update({
         is_valid: valid,
         last_validated_at: new Date().toISOString(),
     });
-    return { valid };
+    return { valid, sandbox: !!sandbox, baseUrl, debugInfo };
 });
 // ─── E-mail via Resend ────────────────────────────────────────────────────────
 async function sendEmailResend(to, subject, html) {
