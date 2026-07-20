@@ -21,6 +21,13 @@ const DOCS: Doc[] = [
     updatedAt: '2026-07-19',
   },
   {
+    id: 'codigos-erro',
+    title: 'Códigos de Erro',
+    description: 'Catálogo de erros do Tovia com códigos públicos (TV001…) e internos para resolução rápida.',
+    file: '/docs/codigos-erro.html',
+    updatedAt: '2026-07-20',
+  },
+  {
     id: 'design-system',
     title: 'Design System',
     description: 'Paleta de cores, tipografia, componentes, espaçamento e padrões visuais do Tovia.',

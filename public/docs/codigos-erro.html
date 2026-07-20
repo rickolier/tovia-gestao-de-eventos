@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia — Códigos de Erro</title>
+<style>
+:root {
+  --bg: #F5F0E8; --fg: #1E0B4B; --card: #ffffff; --border: #E0D8CC;
+  --muted: #6b5fa0; --primary: #FF6B1A; --accent: #9B5FFF;
+  --danger-bg: #fee2e2; --danger: #991b1b; --danger-border: #fca5a5;
+  --warn-bg: #fef3c7; --warn: #92400e; --warn-border: #fde68a;
+  --info-bg: #eff6ff; --info: #1e40af; --info-border: #bfdbfe;
+  --neutral-bg: #f3f4f6; --neutral: #374151; --neutral-border: #d1d5db;
+  --sb: #2D1470;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0C0720; --fg: #F5F0E8; --card: #160A38; --border: #2A1660; --muted: #A899CC;
+  --danger-bg: #2d0d0d; --danger: #fecaca; --danger-border: #7f1d1d;
+  --warn-bg: #1c0f00; --warn: #fde68a; --warn-border: #b45309;
+  --info-bg: #0d1f3c; --info: #bfdbfe; --info-border: #2563eb;
+  --neutral-bg: #1e1050; --neutral: #d1d5db; --neutral-border: #4b5563;
+}}
+:root[data-theme="dark"] {
+  --bg: #0C0720; --fg: #F5F0E8; --card: #160A38; --border: #2A1660; --muted: #A899CC;
+  --danger-bg: #2d0d0d; --danger: #fecaca; --danger-border: #7f1d1d;
+  --warn-bg: #1c0f00; --warn: #fde68a; --warn-border: #b45309;
+  --info-bg: #0d1f3c; --info: #bfdbfe; --info-border: #2563eb;
+  --neutral-bg: #1e1050; --neutral: #d1d5db; --neutral-border: #4b5563;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--fg); font-size: 14px; line-height: 1.6; }
+.doc { max-width: 800px; margin: 0 auto; padding: 48px 32px 80px; }
+.header { margin-bottom: 40px; }
+.logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.logo-mark { font-size: 24px; font-weight: 900; letter-spacing: -.03em; color: var(--fg); }
+.logo-mark span { color: var(--primary); }
+.doc-badge { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); background: rgba(255,107,26,.12); border: 1px solid rgba(255,107,26,.25); padding: 3px 10px; border-radius: 999px; }
+h1 { font-size: 28px; font-weight: 900; letter-spacing: -.02em; margin-bottom: 8px; }
+.subtitle { font-size: 14px; color: var(--muted); max-width: 560px; line-height: 1.7; }
+.updated { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+.section { margin-bottom: 48px; }
+.section-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.section-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+
+.range-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px; }
+.range-code { font-size: 13px; font-weight: 800; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); min-width: 120px; }
+.range-label { font-size: 13px; font-weight: 600; color: var(--fg); }
+.range-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: auto; white-space: nowrap; }
+.range-active { background: rgba(22,163,74,.12); color: #16a34a; border: 1px solid rgba(22,163,74,.25); }
+.range-reserved { background: var(--neutral-bg); color: var(--neutral); border: 1px solid var(--neutral-border); }
+
+.error-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.error-table th { text-align: left; padding: 10px 14px; background: var(--neutral-bg); color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.error-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.error-table tr:last-child td { border-bottom: none; }
+.error-table .group-row td { background: var(--neutral-bg); font-weight: 700; font-size: 12px; color: var(--muted); letter-spacing: .03em; padding: 8px 14px; }
+
+.tv-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.tv-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+.tv-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+.tv-info { background: var(--info-bg); color: var(--info); border: 1px solid var(--info-border); }
+.tv-neutral { background: var(--neutral-bg); color: var(--neutral); border: 1px solid var(--neutral-border); }
+
+.internal-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--muted); }
+.msg { font-size: 13px; color: var(--fg); }
+
+.note { background: var(--info-bg); border: 1px solid var(--info-border); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--info); line-height: 1.6; margin-top: 32px; }
+.note strong { font-weight: 700; }
+
+@media print {
+  body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc { padding: 24px !important; max-width: 100% !important; }
+  * { color-scheme: light !important; }
+}
+@page { margin: 1.5cm; size: A4; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="header">
+    <div class="logo-row">
+      <span class="logo-mark">tovi<span>a</span></span>
+      <span class="doc-badge">Documento interno</span>
+    </div>
+    <h1>Códigos de Erro</h1>
+    <p class="subtitle">
+      Catálogo de todos os erros identificados no Tovia. Cada erro tem um código público
+      (visível ao organizador) e um código interno para resolução rápida pelo suporte.
+    </p>
+    <p class="updated">Atualizado em 20 de julho de 2026</p>
+  </div>
+
+  <!-- FAIXAS -->
+  <div class="section">
+    <div class="section-title">Faixas reservadas</div>
+    <div class="section-desc">Cada módulo do Tovia tem uma faixa de 100 códigos. Conforme novos erros forem identificados, devem ser registrados dentro da faixa correspondente.</div>
+
+    <div class="range-card">
+      <span class="range-code">TV001 — TV099</span>
+      <span class="range-label">Gateway de pagamento</span>
+      <span class="range-status range-active">Ativo</span>
+    </div>
+    <div class="range-card">
+      <span class="range-code">TV100 — TV199</span>
+      <span class="range-label">Checkout e cobranças</span>
+      <span class="range-status range-reserved">Reservado</span>
+    </div>
+    <div class="range-card">
+      <span class="range-code">TV200 — TV299</span>
+      <span class="range-label">Inscrições</span>
+      <span class="range-status range-reserved">Reservado</span>
+    </div>
+    <div class="range-card">
+      <span class="range-code">TV300 — TV399</span>
+      <span class="range-label">Conta e perfil</span>
+      <span class="range-status range-reserved">Reservado</span>
+    </div>
+    <div class="range-card">
+      <span class="range-code">TV400 — TV499</span>
+      <span class="range-label">Eventos</span>
+      <span class="range-status range-reserved">Reservado</span>
+    </div>
+    <div class="range-card">
+      <span class="range-code">TV500 — TV599</span>
+      <span class="range-label">Notificações e e-mails</span>
+      <span class="range-status range-reserved">Reservado</span>
+    </div>
+  </div>
+
+  <!-- TABELA DE ERROS -->
+  <div class="section">
+    <div class="section-title">Erros catalogados</div>
+    <div class="section-desc">Tabela completa de erros identificados. Ao abrir um ticket de suporte, o organizador deve informar o código exibido na tela (ex: ERRO TV001).</div>
+
+    <table class="error-table">
+      <thead>
+        <tr>
+          <th style="width:110px">Público</th>
+          <th style="width:120px">Interno</th>
+          <th>Mensagem exibida ao organizador</th>
+          <th style="width:90px">Severidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Gateway -->
+        <tr class="group-row"><td colspan="4">🔌 Gateway de pagamento (TV001–TV099)</td></tr>
+        <tr>
+          <td><span class="tv-code tv-danger">TV001</span></td>
+          <td><span class="internal-code">GW-AUTH-401</span></td>
+          <td class="msg">Chave de API não autorizada. Verifique se está correta e ativa.</td>
+          <td><span class="tv-code tv-danger">Crítico</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-danger">TV002</span></td>
+          <td><span class="internal-code">GW-PERM-403</span></td>
+          <td class="msg">Sua chave não tem permissão de acesso. Verifique no painel Asaas.</td>
+          <td><span class="tv-code tv-danger">Crítico</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-warn">TV003</span></td>
+          <td><span class="internal-code">GW-URL-404</span></td>
+          <td class="msg">Ambiente incorreto. Confira se selecionou Sandbox ou Produção.</td>
+          <td><span class="tv-code tv-warn">Médio</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-warn">TV004</span></td>
+          <td><span class="internal-code">GW-LIMIT-429</span></td>
+          <td class="msg">Muitas tentativas. Aguarde alguns minutos e tente novamente.</td>
+          <td><span class="tv-code tv-warn">Médio</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-neutral">TV005</span></td>
+          <td><span class="internal-code">GW-ASAAS-500</span></td>
+          <td class="msg">Erro temporário no gateway. Tente novamente em alguns minutos.</td>
+          <td><span class="tv-code tv-info">Baixo</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-neutral">TV006</span></td>
+          <td><span class="internal-code">GW-ASAAS-503</span></td>
+          <td class="msg">Gateway temporariamente indisponível. Tente mais tarde.</td>
+          <td><span class="tv-code tv-info">Baixo</span></td>
+        </tr>
+        <tr>
+          <td><span class="tv-code tv-neutral">TV007</span></td>
+          <td><span class="internal-code">GW-NET-000</span></td>
+          <td class="msg">Falha de conexão. Verifique sua internet e tente novamente.</td>
+          <td><span class="tv-code tv-warn">Médio</span></td>
+        </tr>
+
+        <!-- Checkout -->
+        <tr class="group-row"><td colspan="4">💳 Checkout e cobranças (TV100–TV199)</td></tr>
+        <tr>
+          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+        </tr>
+
+        <!-- Inscrições -->
+        <tr class="group-row"><td colspan="4">📋 Inscrições (TV200–TV299)</td></tr>
+        <tr>
+          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+        </tr>
+
+        <!-- Conta -->
+        <tr class="group-row"><td colspan="4">👤 Conta e perfil (TV300–TV399)</td></tr>
+        <tr>
+          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+        </tr>
+
+        <!-- Eventos -->
+        <tr class="group-row"><td colspan="4">📅 Eventos (TV400–TV499)</td></tr>
+        <tr>
+          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+        </tr>
+
+        <!-- Notificações -->
+        <tr class="group-row"><td colspan="4">📧 Notificações e e-mails (TV500–TV599)</td></tr>
+        <tr>
+          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>Como registrar um novo erro:</strong> Ao identificar um novo erro no Tovia,
+      adicione-o na faixa correspondente com o próximo número disponível. Defina o código interno
+      descritivo (ex: <code>GW-AUTH-401</code>), a mensagem amigável para o organizador e a severidade.
+      O código público nunca deve ser reutilizado, mesmo que o erro seja corrigido.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
