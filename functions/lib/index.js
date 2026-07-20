@@ -448,7 +448,7 @@ exports.validateBillingKey = functions.onCall({ region: "us-central1" }, async (
     if (!apiKey) {
         throw new functions.HttpsError("not-found", "Chave API não definida.");
     }
-    const baseUrl = sandbox ? "https://sandbox.asaas.com/api/v3" : "https://api.asaas.com/api/v3";
+    const baseUrl = sandbox ? "https://sandbox.asaas.com/api/v3" : "https://api.asaas.com/v3";
     let valid = false;
     let debugInfo = "";
     try {

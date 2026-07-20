@@ -43,7 +43,7 @@ function asaasHeaders(apiKey) {
     return { access_token: apiKey, 'Content-Type': 'application/json' };
 }
 function asaasBaseUrl(sandbox) {
-    return sandbox ? 'https://sandbox.asaas.com/api/v3' : 'https://api.asaas.com/api/v3';
+    return sandbox ? 'https://sandbox.asaas.com/api/v3' : 'https://api.asaas.com/v3';
 }
 async function testAsaasApiKey(apiKey, sandbox) {
     var _a, _b, _c, _d;

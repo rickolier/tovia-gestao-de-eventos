@@ -34,7 +34,7 @@ function asaasHeaders(apiKey: string) {
 }
 
 export function asaasBaseUrl(sandbox: boolean) {
-  return sandbox ? 'https://sandbox.asaas.com/api/v3' : 'https://api.asaas.com/api/v3';
+  return sandbox ? 'https://sandbox.asaas.com/api/v3' : 'https://api.asaas.com/v3';
 }
 
 export async function testAsaasApiKey(apiKey: string, sandbox: boolean): Promise<boolean> {
