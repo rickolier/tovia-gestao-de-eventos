@@ -74,7 +74,6 @@ export default function Login() {
         }
       }
       if (isNew && result.user.email && result.user.displayName) {
-        Email.boasVindas(result.user.email, result.user.displayName);
         Email.boasVindasPlano(result.user.email, result.user.displayName, 'chinam');
       }
       if (isNew && !isAdminEmail(result.user.email)) {
@@ -129,8 +128,6 @@ export default function Login() {
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
           body: JSON.stringify({ userId: userCredential.user.uid }),
         }).catch(() => {});
-        Email.boasVindas(email, name);
-        Email.boasVindasPlano(email, name, 'chinam');
         toast.success('Conta criada! Verifique seu e-mail para ativar a conta.');
         navigate(eventoIdParam ? '/dashboard' : '/verificar-email');
       } else {
