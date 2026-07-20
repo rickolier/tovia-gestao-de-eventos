@@ -25,7 +25,8 @@ const DOCS: Doc[] = [
     title: 'Design System',
     description: 'Paleta de cores, tipografia, componentes, espaçamento e padrões visuais do Tovia.',
     file: '/docs/tovia-design-system.html',
-    updatedAt: '2026-07-19',
+    artifactUrl: 'https://claude.ai/code/artifact/ef884b50-7214-403c-8172-bd70068463b0',
+    updatedAt: '2026-07-20',
   },
 ];
 
