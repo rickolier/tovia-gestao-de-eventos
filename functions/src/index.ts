@@ -10,7 +10,7 @@ import {
   encrypt,
   decrypt,
   genToken,
-  testAsaasApiKey,
+
   registerAsaasWebhook,
   createOrFindAsaasCustomer,
   createAsaasCharge,
@@ -259,12 +259,32 @@ export const saveGatewayConfig = functions.onCall(
     const userId = request.auth.uid;
 
     // Valida a chave chamando endpoint leve do Asaas
-    const isValid = await testAsaasApiKey(apiKey, sandbox);
-    if (!isValid) {
-      throw new functions.HttpsError(
-        "invalid-argument",
-        "Chave de API inválida. Verifique e tente novamente."
-      );
+    const baseUrl = sandbox ? "https://sandbox.asaas.com/api/v3" : "https://api.asaas.com/v3";
+    try {
+      const axios = (await import("axios")).default;
+      const res = await axios.get(`${baseUrl}/customers`, {
+        params: { limit: 1 },
+        headers: { access_token: apiKey, "Content-Type": "application/json" },
+        timeout: 10000,
+      });
+      if (res.status !== 200) {
+        throw new functions.HttpsError("invalid-argument", `GW-ERR-${res.status}: Resposta inesperada do gateway. Informe este código ao suporte.`);
+      }
+    } catch (e: any) {
+      if (e instanceof functions.HttpsError) throw e;
+      const status = e?.response?.status;
+      const errorMap: Record<number, string> = {
+        401: "GW-AUTH-401: Chave de API não autorizada. Verifique se a chave está correta e ativa no painel Asaas.",
+        403: "GW-PERM-403: Chave sem permissão. Verifique se a chave tem acesso à API no painel Asaas.",
+        404: "GW-URL-404: Endpoint não encontrado. Verifique se o ambiente (Sandbox/Produção) está correto.",
+        429: "GW-LIMIT-429: Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+        500: "GW-ASAAS-500: Erro interno do Asaas. Tente novamente em alguns minutos.",
+        503: "GW-ASAAS-503: Asaas temporariamente indisponível. Tente novamente em alguns minutos.",
+      };
+      const msg = status && errorMap[status]
+        ? errorMap[status]
+        : `GW-NET-000: Falha de conexão com o gateway. Verifique sua internet e tente novamente.`;
+      throw new functions.HttpsError("invalid-argument", msg);
     }
 
     const encryptedKey = encrypt(apiKey, encKey);
