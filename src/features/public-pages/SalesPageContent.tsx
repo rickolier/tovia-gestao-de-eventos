@@ -159,6 +159,18 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
               </p>
               <p className="text-xs text-gray-400">Sua inscrição será confirmada após o processamento do cartão.</p>
             </div>
+          ) : selectedMethod === 'debito' ? (
+            <div className="w-full space-y-3 text-center">
+              <p className="text-sm text-gray-600">Finalize o pagamento no link abaixo:</p>
+              {checkoutResult.paymentUrl && (
+                <a href={checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
+                  <button type="button" className="w-full h-11 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 text-sm hover:opacity-90">
+                    Pagar com débito <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                </a>
+              )}
+              <p className="text-xs text-gray-400">Sua inscrição é confirmada automaticamente após o pagamento.</p>
+            </div>
           ) : (
             <div className="w-full space-y-3">
               <a href={checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
@@ -221,7 +233,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     if (allDoacao) {
       // Doações: usar métodos configurados no ingresso ou padrão (exceto recorrente)
       const donationTicket = selectedTickets[0];
-      const configured = (donationTicket?.metodos_pagamento || []).filter(m => ['pix', 'boleto', 'credito'].includes(m));
+      const configured = (donationTicket?.metodos_pagamento || []).filter(m => ['pix', 'boleto', 'credito', 'debito'].includes(m));
       allowedMethods = configured.length > 0 ? configured : ['pix', 'boleto', 'credito'];
     } else {
       allowedMethods = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
@@ -230,10 +242,11 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         allowedMethods = allowedMethods.filter(x => m.includes(x));
       });
     }
-    allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'recorrente'].includes(m));
+    allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'debito', 'recorrente'].includes(m));
 
     const firstTicket = allDoacao ? selectedTickets[0] : paidTickets[0];
     const maxParcelasCredito = firstTicket?.max_parcelas_credito ?? 1;
+    const maxParcelasBoleto = (firstTicket as any)?.max_parcelas_boleto ?? 1;
     const maxParcelasRecorrente = firstTicket?.max_parcelas_recorrente ?? 2;
 
     const needsCard = selectedMethod === 'credito' || selectedMethod === 'recorrente';
@@ -248,12 +261,14 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
       pix: 'PIX',
       boleto: 'Boleto',
       credito: 'Cartão de crédito',
+      debito: 'Cartão de débito',
       recorrente: 'Recorrente',
     };
     const methodDescs: Record<string, string> = {
       pix: 'Confirmação imediata após o pagamento',
-      boleto: 'Boleto bancário — vence em 3 dias',
+      boleto: maxParcelasBoleto > 1 ? `À vista ou em até ${maxParcelasBoleto}x — boletos mensais` : 'Boleto bancário — vence em 3 dias',
       credito: maxParcelasCredito > 1 ? `À vista ou em até ${maxParcelasCredito}x — reserva o total do limite` : 'Débito imediato no cartão',
+      debito: 'Pagamento à vista no cartão de débito',
       recorrente: `Cobranças mensais de ${maxParcelasRecorrente}x — reserva apenas a parcela do mês`,
     };
 
@@ -419,7 +434,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                         onClick={() => { setSelectedMethod(method); setInstallments(method === 'recorrente' ? 2 : 1); }}
                         className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all ${selectedMethod === method ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'}`}>
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${selectedMethod === method ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
-                          {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : <CreditCard className="w-4 h-4" />}
+                          {method === 'pix' ? 'PIX' : method === 'boleto' ? 'BOL' : method === 'debito' ? 'DÉB' : <CreditCard className="w-4 h-4" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-bold text-gray-900">{methodLabels[method]}</p>
@@ -443,6 +458,24 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
                           {Array.from({ length: maxParcelasCredito }, (_, i) => i + 1).map(n => (
                             <option key={n} value={n}>
                               {n === 1 ? `À vista — ${formatPrice(total)}` : `${n}x de ${formatPrice(total / n)} (total ${formatPrice(total)})`}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Seletor de parcelas — boleto */}
+                    {selectedMethod === 'boleto' && maxParcelasBoleto > 1 && (
+                      <div className="flex items-center gap-3 px-1">
+                        <span className="text-sm text-gray-600 font-semibold shrink-0">Parcelar em:</span>
+                        <select
+                          value={installments}
+                          onChange={e => setInstallments(Number(e.target.value))}
+                          className="flex-1 rounded-xl border border-gray-200 bg-white h-10 px-3 text-sm font-bold focus:ring-primary focus:outline-none"
+                        >
+                          {Array.from({ length: maxParcelasBoleto }, (_, i) => i + 1).map(n => (
+                            <option key={n} value={n}>
+                              {n === 1 ? `À vista — ${formatPrice(total)}` : `${n}x de ${formatPrice(total / n)} (boletos mensais)`}
                             </option>
                           ))}
                         </select>

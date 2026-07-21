@@ -111,7 +111,7 @@ export async function createOrFindAsaasCustomer(
   return create.data.id as string;
 }
 
-export type AsaasBillingType = 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'UNDEFINED';
+export type AsaasBillingType = 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'UNDEFINED';
 
 export interface AsaasChargeResult {
   id: string;
@@ -169,6 +169,11 @@ export async function createAsaasCharge(
       body.installmentCount = opts.installmentCount;
       body.installmentValue = parseFloat((opts.value / opts.installmentCount).toFixed(2));
     }
+  }
+
+  if (opts.billingType === 'BOLETO' && opts.installmentCount && opts.installmentCount > 1) {
+    body.installmentCount = opts.installmentCount;
+    body.installmentValue = parseFloat((opts.value / opts.installmentCount).toFixed(2));
   }
 
   const res = await axios.post(`${base}/payments`, body, { headers, timeout: 15000 });
@@ -255,6 +260,7 @@ export function mapBillingType(method: string): AsaasBillingType {
     boleto: 'BOLETO',
     credito: 'CREDIT_CARD',
     cartao: 'CREDIT_CARD',
+    debito: 'DEBIT_CARD',
   };
   return map[method] ?? 'UNDEFINED';
 }

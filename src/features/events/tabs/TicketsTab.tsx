@@ -247,8 +247,9 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                         {[
                           { id: 'pix', label: 'PIX' },
                           { id: 'boleto', label: 'Boleto' },
-                          { id: 'credito', label: 'Cartão (parcelado)' },
-                          { id: 'recorrente', label: 'Recorrente' },
+                          { id: 'credito', label: 'Cartão de Crédito' },
+                          { id: 'debito', label: 'Cartão de Débito' },
+                          { id: 'recorrente', label: 'Recorrente (crédito)' },
                         ].map(method => (
                           <div key={method.id} className="space-y-2">
                             <label className="flex items-center gap-2 cursor-pointer group">
@@ -281,6 +282,20 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                                 </select>
                               </div>
                             )}
+                            {method.id === 'boleto' && (formData.metodos_pagamento || []).includes('boleto') && (
+                              <div className="ml-6 flex items-center gap-2">
+                                <span className="text-[11px] text-muted-foreground">Máx. parcelas:</span>
+                                <select
+                                  value={formData.max_parcelas_boleto || 1}
+                                  onChange={e => setFormData({...formData, max_parcelas_boleto: Number(e.target.value)})}
+                                  className="text-xs font-bold rounded-lg border border-border bg-background px-2 py-1 focus:ring-primary focus:outline-none"
+                                >
+                                  {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                                    <option key={n} value={n}>{n === 1 ? 'Somente à vista' : `até ${n}x`}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
                             {method.id === 'recorrente' && (formData.metodos_pagamento || []).includes('recorrente') && (
                               <div className="ml-6 flex items-center gap-2">
                                 <span className="text-[11px] text-muted-foreground">Parcelas disponíveis:</span>
@@ -298,8 +313,8 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                           </div>
                         ))}
 
-                        {/* Lógica de parcelamento — exibir se credito ou recorrente estão ativos */}
-                        {((formData.metodos_pagamento || []).includes('credito') || (formData.metodos_pagamento || []).includes('recorrente')) && (
+                        {/* Lógica de parcelamento — exibir se credito, boleto parcelado ou recorrente estão ativos */}
+                        {((formData.metodos_pagamento || []).includes('credito') || (formData.metodos_pagamento || []).includes('recorrente') || (formData.max_parcelas_boleto || 1) > 1) && (
                           <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
                             <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Lógica de Parcelamento</p>
                             {[
