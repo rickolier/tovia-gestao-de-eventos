@@ -18,14 +18,15 @@ const DOCS: Doc[] = [
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
     file: '/docs/documento-produto.html',
     artifactUrl: 'https://claude.ai/code/artifact/a40cc4bf-9241-4f06-9810-74d2bba16925',
-    updatedAt: '2026-07-19',
+    updatedAt: '2026-07-23',
   },
   {
     id: 'codigos-erro',
     title: 'Códigos de Erro',
     description: 'Catálogo de erros do Tovia com códigos públicos (TV001…) e internos para resolução rápida.',
     file: '/docs/codigos-erro.html',
-    updatedAt: '2026-07-20',
+    artifactUrl: 'https://claude.ai/code/artifact/1ce36330-4a8b-4be3-952f-288196a6f78a',
+    updatedAt: '2026-07-23',
   },
   {
     id: 'design-system',
