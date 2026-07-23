@@ -3,9 +3,9 @@ import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db, verifyAuth } from './_firebase.js';
 import { randomBytes } from 'crypto';
-import type { AuthError } from './types.js';
-import { enviarCodigoVerificacaoSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import type { AuthError } from './_types.js';
+import { enviarCodigoVerificacaoSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';

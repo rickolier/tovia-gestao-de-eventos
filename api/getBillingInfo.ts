@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
-import type { AuthError, AsaasPayment } from './types.js';
-import { getBillingInfoSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import type { AuthError, AsaasPayment } from './_types.js';
+import { getBillingInfoSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
 const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';

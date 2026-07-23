@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db, verifyAuth } from './_firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
-import type { AuthError } from './types.js';
-import { equipeJoinSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import type { AuthError } from './_types.js';
+import { equipeJoinSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

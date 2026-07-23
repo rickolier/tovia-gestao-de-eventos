@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase.js';
-import { enviarCodigoInscricaoSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import { enviarCodigoInscricaoSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = 'Tovia <noreply@toviaapp.com.br>';

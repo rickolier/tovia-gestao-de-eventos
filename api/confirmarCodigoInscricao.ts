@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase.js';
-import { confirmarCodigoInscricaoSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import { confirmarCodigoInscricaoSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 const MAX_ATTEMPTS = 5;
 

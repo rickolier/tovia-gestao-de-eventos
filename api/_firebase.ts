@@ -1,7 +1,7 @@
 import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
-import type { AuthError } from './types.js';
+import type { AuthError } from './_types.js';
 
 let _initError: Error | null = null;
 

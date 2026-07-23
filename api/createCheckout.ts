@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
-import type { AuthError } from './types.js';
-import { checkoutSchema } from './schemas.js';
-import { validateBody } from './validate.js';
+import type { AuthError } from './_types.js';
+import { checkoutSchema } from './_schemas.js';
+import { validateBody } from './_validate.js';
 
 const CHECKOUT_RATE_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_RATE_LIMIT = 3;
