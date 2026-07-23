@@ -2,6 +2,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './types.js';
+import { checkoutSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const CHECKOUT_RATE_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_RATE_LIMIT = 3;
@@ -47,10 +49,13 @@ const PLAN_LABEL: Record<string, string> = {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  const data = validateBody(req.body, res, checkoutSchema);
+  if (!data) return;
+
   const {
     planLevel,
-    period = 'monthly',
-    paymentMethod = 'credit_card',
+    period,
+    paymentMethod,
     userId,
     userName,
     userEmail,
@@ -61,19 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     userNumero,
     userComplemento,
     userBairro,
-  } = req.body || {};
-
-  if (!planLevel || !userId || !userEmail) {
-    return res.status(400).json({ error: 'Dados incompletos.' });
-  }
-
-  if (!['petach', 'koach', 'chalem'].includes(planLevel)) {
-    return res.status(400).json({ error: 'Plano inválido.' });
-  }
-
-  if (!['monthly', 'annual'].includes(period)) {
-    return res.status(400).json({ error: 'Período inválido.' });
-  }
+  } = data;
 
   try {
     await verifyAuth(req.headers.authorization, userId);

@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase.js';
+import { enviarCodigoInscricaoSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = 'Tovia <noreply@toviaapp.com.br>';
@@ -40,12 +42,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  const { email } = req.body as { email?: string };
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: 'E-mail inválido.' });
-  }
+  const body = validateBody(req.body, res, enviarCodigoInscricaoSchema);
+  if (!body) return;
 
-  const emailNorm = email.trim().toLowerCase();
+  const emailNorm = body.email.trim().toLowerCase();
 
   const allowed = await checkRateLimit(emailNorm);
   if (!allowed) {

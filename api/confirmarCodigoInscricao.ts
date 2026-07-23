@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase.js';
+import { confirmarCodigoInscricaoSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const MAX_ATTEMPTS = 5;
 
@@ -55,8 +57,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  const { email, code } = req.body as { email?: string; code?: string };
-  if (!email || !code) return res.status(400).json({ error: 'E-mail e código são obrigatórios.' });
+  const body = validateBody(req.body, res, confirmarCodigoInscricaoSchema);
+  if (!body) return;
+  const { email, code } = body;
 
   const emailNorm = email.trim().toLowerCase();
   const codeNorm = String(code).replace(/\D/g, '').trim();

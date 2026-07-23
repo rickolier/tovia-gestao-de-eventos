@@ -2,14 +2,15 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db, verifyAuth } from './_firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
 import type { AuthError } from './types.js';
+import { equipeJoinSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { eventoId } = req.body || {};
-  if (!eventoId) {
-    return res.status(400).json({ error: 'eventoId é obrigatório.' });
-  }
+  const body = validateBody(req.body, res, equipeJoinSchema);
+  if (!body) return;
+  const { eventoId } = body;
 
   let decoded: Awaited<ReturnType<typeof verifyAuth>>;
   try {

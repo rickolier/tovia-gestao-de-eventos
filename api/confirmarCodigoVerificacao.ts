@@ -2,6 +2,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db } from './_firebase.js';
+import { confirmarCodigoVerificacaoSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -59,8 +61,9 @@ async function sendWelcomeEmail(email: string, nome: string) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const token = (req.query.token || req.body?.token) as string;
-  if (!token) return res.status(400).json({ error: 'Token ausente.' });
+  const parsed = validateBody({ token: req.query.token || req.body?.token }, res, confirmarCodigoVerificacaoSchema);
+  if (!parsed) return;
+  const { token } = parsed;
 
   try {
     const docRef = db.collection('verification_tokens').doc(token);

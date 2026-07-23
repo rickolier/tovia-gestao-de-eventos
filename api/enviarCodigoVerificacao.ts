@@ -4,6 +4,8 @@ import { getAuth } from 'firebase-admin/auth';
 import { db, verifyAuth } from './_firebase.js';
 import { randomBytes } from 'crypto';
 import type { AuthError } from './types.js';
+import { enviarCodigoVerificacaoSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -59,8 +61,9 @@ async function checkRateLimit(userId: string): Promise<boolean> {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  const { userId } = req.body || {};
-  if (!userId) return res.status(400).json({ error: 'Dados incompletos.' });
+  const body = validateBody(req.body, res, enviarCodigoVerificacaoSchema);
+  if (!body) return;
+  const { userId } = body;
 
   try {
     await verifyAuth(req.headers.authorization, userId);

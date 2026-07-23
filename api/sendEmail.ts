@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './types.js';
+import { sendEmailSchema } from './schemas.js';
+import { validateBody } from './validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -42,8 +44,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
   }
 
-  const { to, subject, html } = req.body || {};
-  if (!to || !subject || !html) return res.status(400).json({ error: 'to, subject e html são obrigatórios.' });
+  const data = validateBody(req.body, res, sendEmailSchema);
+  if (!data) return;
+  const { to, subject, html } = data;
 
   const isAdmin = ADMIN_EMAILS.includes(decoded.email ?? '');
   const toList: string[] = Array.isArray(to) ? to : [to];
