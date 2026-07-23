@@ -84,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await getAuth(getApp()).updateUser(data.userId, { emailVerified: true });
     await docRef.delete();
 
-    sendWelcomeEmail(userRecord.email!, userRecord.displayName || 'organizador');
+    void sendWelcomeEmail(userRecord.email!, userRecord.displayName || 'organizador');
 
     return res.json({ ok: true, userId: data.userId });
   } catch (err: unknown) {

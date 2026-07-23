@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navbar } from './landing/sections/Navbar';
 import { Hero } from './landing/sections/Hero';
 import { ConsultarStrip } from './landing/sections/ConsultarStrip';

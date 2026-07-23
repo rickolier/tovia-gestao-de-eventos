@@ -184,7 +184,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (canceledEvents.includes(eventType)) {
-      await inscricaoRef.update({ status: isDonation ? 'cancelada' : 'cancelada' });
+      await inscricaoRef.update({ status: 'cancelada' });
     }
 
     return res.status(200).send('ok');

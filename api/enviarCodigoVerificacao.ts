@@ -9,7 +9,7 @@ import { validateBody } from './_validate.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://toviaapp.com.br';
+const BASE_URL = process.env.BASE_URL || 'https://toviaapp.com.br';
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT = 3;

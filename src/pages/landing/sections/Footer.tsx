@@ -1,5 +1,4 @@
 import { ToviaLogo } from '~/components/ToviaLogo';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { NAV_LINKS, NAV_ROUTE_LINKS } from '../data';
 

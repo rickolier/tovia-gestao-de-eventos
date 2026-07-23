@@ -6,5 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
-.env.functions
 .vercel
+.firebase/
+functions/lib/

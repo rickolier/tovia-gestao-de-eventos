@@ -1,4 +1,3 @@
-import React from 'react';
 import { FileText, Download, Eye, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
