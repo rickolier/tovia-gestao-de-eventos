@@ -1,9 +1,9 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db, verifyAuth } from './_firebase.js';
 import { randomBytes } from 'crypto';
+import type { AuthError } from './types.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -64,8 +64,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await verifyAuth(req.headers.authorization, userId);
-  } catch (e: any) {
-    return res.status(e.status ?? 401).json({ error: e.message });
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
   }
 
   try {
@@ -121,8 +122,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.json({ ok: true });
-  } catch (err: any) {
-    console.error('enviarCodigoVerificacao error:', err.message);
+  } catch (err: unknown) {
+    console.error('enviarCodigoVerificacao error:', (err as Error).message);
     return res.status(500).json({ error: 'Não foi possível enviar o e-mail. Tente novamente.' });
   }
 }

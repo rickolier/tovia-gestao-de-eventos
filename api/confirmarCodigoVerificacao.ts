@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
@@ -85,8 +84,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     sendWelcomeEmail(userRecord.email!, userRecord.displayName || 'organizador');
 
     return res.json({ ok: true, userId: data.userId });
-  } catch (err: any) {
-    console.error('confirmarCodigoVerificacao error:', err.message);
+  } catch (err: unknown) {
+    console.error('confirmarCodigoVerificacao error:', (err as Error).message);
     return res.status(500).json({ error: 'Erro ao verificar. Tente novamente.' });
   }
 }

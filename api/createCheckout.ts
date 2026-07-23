@@ -1,7 +1,7 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
+import type { AuthError } from './types.js';
 
 const CHECKOUT_RATE_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_RATE_LIMIT = 3;
@@ -77,8 +77,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await verifyAuth(req.headers.authorization, userId);
-  } catch (e: any) {
-    return res.status(e.status ?? 401).json({ error: e.message });
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
   }
 
   const checkoutAllowed = await checkCheckoutRateLimit(userId);
@@ -166,11 +167,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const newId = createRes.data.id;
         await db.collection('users').doc(userId).set({ asaasCustomerId: newId }, { merge: true });
         return newId;
-      } catch (custErr: any) {
-        const asaasErrors = custErr?.response?.data?.errors;
+      } catch (custErr: unknown) {
+        const ce = custErr as { response?: { data?: { errors?: Array<{ description?: string; code?: string }> } }; message?: string };
+        const asaasErrors = ce?.response?.data?.errors;
         const detail = Array.isArray(asaasErrors)
-          ? asaasErrors.map((e: any) => e.description || e.code).join('; ')
-          : JSON.stringify(custErr?.response?.data ?? custErr?.message);
+          ? asaasErrors.map((e) => e.description || e.code).join('; ')
+          : JSON.stringify(ce?.response?.data ?? ce?.message);
         console.error('Erro ao criar cliente Asaas:', detail);
         throw new Error(`Erro ao registrar cliente no Asaas: ${detail}`);
       }
@@ -202,8 +204,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           { headers }
         );
         subscriptionId = subscriptionRes.data.id;
-      } catch (subErr: any) {
-        console.error('Erro ao criar assinatura no Asaas:', JSON.stringify(subErr?.response?.data));
+      } catch (subErr: unknown) {
+        const e = subErr as { response?: { data?: unknown } };
+        console.error('Erro ao criar assinatura no Asaas:', JSON.stringify(e?.response?.data));
         return res.status(500).json({ error: 'Erro ao criar assinatura no Asaas.' });
       }
 
@@ -244,7 +247,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let paymentId: string;
     let paymentUrl: string | null = null;
     try {
-      const paymentPayload: any = {
+      const paymentPayload: Record<string, unknown> = {
         customer: customerId,
         billingType,
         value: price,
@@ -261,8 +264,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const paymentRes = await axios.post(`${ASAAS_BASE_URL}/payments`, paymentPayload, { headers });
       paymentId = paymentRes.data.id;
       paymentUrl = paymentRes.data.invoiceUrl || paymentRes.data.bankSlipUrl || null;
-    } catch (payErr: any) {
-      console.error('Erro ao criar pagamento anual no Asaas.', payErr?.response?.status);
+    } catch (payErr: unknown) {
+      const e = payErr as { response?: { status?: number } };
+      console.error('Erro ao criar pagamento anual no Asaas.', e?.response?.status);
       return res.status(500).json({ error: 'Erro ao criar pagamento no Asaas.' });
     }
 
@@ -284,8 +288,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.json({ paymentUrl, paymentId });
-  } catch (err: any) {
-    console.error('Asaas error.', err?.response?.status);
+  } catch (err: unknown) {
+    const e = err as { response?: { status?: number } };
+    console.error('Asaas error.', e?.response?.status);
     return res.status(500).json({ error: 'Erro ao processar pagamento. Tente novamente.' });
   }
 }

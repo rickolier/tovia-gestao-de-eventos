@@ -1,7 +1,7 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db, verifyAuth } from './_firebase.js';
+import type { AuthError, AsaasPayment } from './types.js';
 
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
 const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';
@@ -14,8 +14,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await verifyAuth(req.headers.authorization, userId);
-  } catch (e: any) {
-    return res.status(e.status ?? 401).json({ error: e.message });
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
   }
 
   let apiKey: string;
@@ -55,10 +56,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ]);
 
     const subscription = subscriptionRes.data;
-    const payments: any[] = paymentsRes.data.data || [];
+    const payments: AsaasPayment[] = paymentsRes.data.data || [];
     const customer = customerRes.data;
 
-    const lastPaid = payments.find((p: any) => p.status === 'RECEIVED' || p.status === 'CONFIRMED');
+    const lastPaid = payments.find((p) => p.status === 'RECEIVED' || p.status === 'CONFIRMED');
     const creditCard = lastPaid?.creditCard || null;
 
     // Auto-ativa o plano se houver pagamento confirmado e o webhook ainda não disparou
@@ -90,7 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         cpfCnpj: customer.cpfCnpj || null,
       },
       creditCard,
-      payments: payments.map((p: any) => ({
+      payments: payments.map((p) => ({
         id: p.id,
         status: p.status,
         value: p.value,
@@ -100,8 +101,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         billingType: p.billingType,
       })),
     });
-  } catch (err: any) {
-    console.error('getBillingInfo error:', err?.response?.data || err.message);
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: unknown }; message?: string };
+    console.error('getBillingInfo error:', e.response?.data || e.message);
     return res.status(500).json({ error: 'Erro ao buscar dados de faturamento.' });
   }
 }

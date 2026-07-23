@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db } from './_firebase.js';
 
@@ -17,18 +16,17 @@ function docKey(email: string) {
   return Buffer.from(email).toString('base64').replace(/[/+=]/g, '_');
 }
 
-async function buildResult(inscDoc: any, eventoCache: Record<string, any>) {
+async function buildResult(inscDoc: FirebaseFirestore.QueryDocumentSnapshot, eventoCache: Record<string, Record<string, string> | undefined>) {
   const insc = inscDoc.data();
   const pathParts = inscDoc.ref.path.split('/');
   const eventoId = pathParts[1];
 
   if (!eventoCache[eventoId]) {
     const eventoDoc = await db.collection('eventos').doc(eventoId).get();
-    eventoCache[eventoId] = eventoDoc.exists
-      ? eventoDoc.data()
-      : { nome: 'Evento', data_inicio: '', local: '' };
+    const d = eventoDoc.exists ? eventoDoc.data() : undefined;
+    eventoCache[eventoId] = (d as Record<string, string> | undefined) ?? { nome: 'Evento', data_inicio: '', local: '' };
   }
-  const evento = eventoCache[eventoId];
+  const evento = eventoCache[eventoId] ?? { nome: 'Evento', data_inicio: '', local: '' };
   const status: string = insc.status ?? 'pendente';
 
   return {
@@ -114,8 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     results.sort((a, b) => new Date(b.dataInscricao).getTime() - new Date(a.dataInscricao).getTime());
 
     return res.json({ inscricoes: results });
-  } catch (err: any) {
-    console.error('[confirmarCodigoInscricao]', err?.message);
+  } catch (err: unknown) {
+    console.error('[confirmarCodigoInscricao]', (err as Error)?.message);
     return res.status(500).json({ error: 'Erro interno. Tente novamente.' });
   }
 }

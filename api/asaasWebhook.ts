@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
@@ -236,8 +235,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(200).send('ok');
-  } catch (err: any) {
-    console.error('Webhook error:', err.message);
+  } catch (err: unknown) {
+    console.error('Webhook error:', (err as Error).message);
     return res.status(500).send('error');
   }
 }

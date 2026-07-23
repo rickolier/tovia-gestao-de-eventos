@@ -9,5 +9,6 @@
     "skipLibCheck": true,
     "outDir": "../.vercel/output/functions"
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["__tests__"]
 }

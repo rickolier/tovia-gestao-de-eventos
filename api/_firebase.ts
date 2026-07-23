@@ -1,10 +1,8 @@
-// @ts-nocheck
-/* eslint-disable */
 import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
+import type { AuthError } from './types.js';
 
-// Deferred initialization — never throw at module level to avoid Vercel plain-text crashes.
 let _initError: Error | null = null;
 
 if (!getApps().length) {
@@ -15,51 +13,49 @@ if (!getApps().length) {
     try {
       const serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
       initializeApp({ credential: cert(serviceAccount) });
-    } catch (e: any) {
+    } catch (e: unknown) {
       _initError = e instanceof Error ? e : new Error(String(e));
     }
   }
 }
 
-let _db: any = null;
-export function getDb() {
+let _db: Firestore | null = null;
+export function getDb(): Firestore {
   if (_initError) throw _initError;
   if (!_db) _db = getFirestore(getApp(), 'ai-studio-5b5d834d-8788-4cb4-90df-ca1c7e43a048');
   return _db;
 }
 
-export const db = new Proxy({} as any, {
-  get(_target, prop) {
-    return getDb()[prop];
+export const db = new Proxy({} as Firestore, {
+  get(_target, prop: string) {
+    return (getDb() as unknown as Record<string, unknown>)[prop];
   },
 });
 
-/** Verifica Firebase ID Token do header Authorization: Bearer <token>.
- *  Retorna o DecodedIdToken ou lança erro com status 401/403. */
 export async function verifyAuth(authHeader: string | undefined, expectedUid?: string) {
   if (_initError) {
-    const err: any = new Error('Serviço indisponível: ' + _initError.message);
+    const err = new Error('Serviço indisponível: ' + _initError.message) as AuthError;
     err.status = 503;
     throw err;
   }
   if (!authHeader?.startsWith('Bearer ')) {
-    const err: any = new Error('Não autenticado.');
+    const err = new Error('Não autenticado.') as AuthError;
     err.status = 401;
     throw err;
   }
   const token = authHeader.slice(7);
-  let decoded: any;
   try {
-    decoded = await getAuth(getApp()).verifyIdToken(token);
-  } catch {
-    const err: any = new Error('Token inválido ou expirado.');
+    const decoded = await getAuth(getApp()).verifyIdToken(token);
+    if (expectedUid && decoded.uid !== expectedUid) {
+      const err = new Error('Acesso negado.') as AuthError;
+      err.status = 403;
+      throw err;
+    }
+    return decoded;
+  } catch (e) {
+    if ((e as AuthError).status) throw e;
+    const err = new Error('Token inválido ou expirado.') as AuthError;
     err.status = 401;
     throw err;
   }
-  if (expectedUid && decoded.uid !== expectedUid) {
-    const err: any = new Error('Acesso negado.');
-    err.status = 403;
-    throw err;
-  }
-  return decoded;
 }

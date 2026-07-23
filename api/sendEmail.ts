@@ -1,6 +1,6 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db, verifyAuth } from './_firebase.js';
+import type { AuthError } from './types.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -16,7 +16,7 @@ async function checkRateLimit(uid: string): Promise<boolean> {
   const now = Date.now();
   if (snap.exists) {
     const data = snap.data()!;
-    const requests: number[] = (data.requests || []).filter((t: number) => now - t < RATE_WINDOW_MS);
+    const requests: number[] = ((data.requests || []) as number[]).filter((t: number) => now - t < RATE_WINDOW_MS);
     if (requests.length >= RATE_LIMIT) return false;
     requests.push(now);
     await ref.set({ requests });
@@ -29,11 +29,12 @@ async function checkRateLimit(uid: string): Promise<boolean> {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  let decoded: any;
+  let decoded: Awaited<ReturnType<typeof verifyAuth>>;
   try {
     decoded = await verifyAuth(req.headers.authorization);
-  } catch (e: any) {
-    return res.status(e.status ?? 401).json({ error: e.message });
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
   }
 
   const allowed = await checkRateLimit(decoded.uid);
@@ -44,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { to, subject, html } = req.body || {};
   if (!to || !subject || !html) return res.status(400).json({ error: 'to, subject e html são obrigatórios.' });
 
-  const isAdmin = ADMIN_EMAILS.includes(decoded.email);
+  const isAdmin = ADMIN_EMAILS.includes(decoded.email ?? '');
   const toList: string[] = Array.isArray(to) ? to : [to];
 
   // Não-admins só podem enviar para o próprio email autenticado
@@ -77,10 +78,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Falha ao enviar e-mail.', detail: err });
     }
 
-    const data = await response.json();
+    const data = await response.json() as { id?: string };
     return res.json({ ok: true, id: data.id });
-  } catch (err: any) {
-    console.error('sendEmail error:', err.message);
+  } catch (err: unknown) {
+    console.error('sendEmail error:', (err as Error).message);
     return res.status(500).json({ error: 'Erro interno ao enviar e-mail.' });
   }
 }

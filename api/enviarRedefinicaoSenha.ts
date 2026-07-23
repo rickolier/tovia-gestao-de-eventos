@@ -1,11 +1,9 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { db } from './_firebase.js';
-import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 const APP_URL = 'https://tovia-gestao-de-eventos.vercel.app';
 
@@ -95,16 +93,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       </p>
     `);
 
-    await resend.emails.send({
-      from: FROM,
-      to: [emailNorm],
-      subject: 'Redefinição de senha — Tovia 🔑',
-      html,
+    if (!RESEND_API_KEY) {
+      console.warn('RESEND_API_KEY não configurada');
+      return res.json({ ok: true });
+    }
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM, to: [emailNorm], subject: 'Redefinição de senha — Tovia 🔑', html }),
     });
 
     return res.json({ ok: true });
-  } catch (err: any) {
-    console.error('enviarRedefinicaoSenha error:', err.message);
+  } catch (err: unknown) {
+    console.error('enviarRedefinicaoSenha error:', (err as Error).message);
     return res.status(500).json({ error: 'Não foi possível enviar o e-mail. Tente novamente.' });
   }
 }

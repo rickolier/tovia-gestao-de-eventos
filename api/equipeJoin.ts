@@ -1,7 +1,7 @@
-// @ts-nocheck
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { db, verifyAuth } from './_firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
+import type { AuthError } from './types.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -11,11 +11,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'eventoId é obrigatório.' });
   }
 
-  let decoded: any;
+  let decoded: Awaited<ReturnType<typeof verifyAuth>>;
   try {
     decoded = await verifyAuth(req.headers.authorization);
-  } catch (e: any) {
-    return res.status(e.status ?? 401).json({ error: e.message });
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
   }
 
   const uid: string = decoded.uid;
@@ -35,9 +36,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const evento = eventoSnap.data() || {};
-    const equipeAtual: any[] = evento.equipe || [];
+    const equipeAtual: Array<{ userId: string }> = evento.equipe || [];
 
-    if (equipeAtual.some((m: any) => m.userId === uid)) {
+    if (equipeAtual.some((m) => m.userId === uid)) {
       return res.json({ ok: true, alreadyMember: true });
     }
 
@@ -92,8 +93,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('[equipeJoin] sucesso');
     return res.json({ ok: true });
 
-  } catch (e: any) {
-    console.error('[equipeJoin] erro:', e?.message, e?.code);
-    return res.status(500).json({ error: e?.message || 'Erro interno.', code: e?.code });
+  } catch (e: unknown) {
+    const err = e as { message?: string; code?: string };
+    console.error('[equipeJoin] erro:', err?.message, err?.code);
+    return res.status(500).json({ error: err?.message || 'Erro interno.', code: err?.code });
   }
 }
