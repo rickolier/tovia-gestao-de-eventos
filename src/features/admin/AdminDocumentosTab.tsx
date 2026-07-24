@@ -1,4 +1,4 @@
-import { FileText, Download, Eye, ExternalLink } from 'lucide-react';
+import { FileText, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Doc {
@@ -6,7 +6,7 @@ interface Doc {
   title: string;
   description: string;
   file: string;
-  artifactUrl?: string;
+  hasPreview: boolean;
   updatedAt: string;
 }
 
@@ -16,7 +16,7 @@ const DOCS: Doc[] = [
     title: 'Documento de Produto',
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
     file: '/docs/documento-produto.html',
-    artifactUrl: 'https://claude.ai/code/artifact/a40cc4bf-9241-4f06-9810-74d2bba16925',
+    hasPreview: true,
     updatedAt: '2026-07-23',
   },
   {
@@ -24,7 +24,7 @@ const DOCS: Doc[] = [
     title: 'Códigos de Erro',
     description: 'Catálogo de erros do Tovia com códigos públicos (TV001…) e internos para resolução rápida.',
     file: '/docs/codigos-erro.html',
-    artifactUrl: 'https://claude.ai/code/artifact/1ce36330-4a8b-4be3-952f-288196a6f78a',
+    hasPreview: true,
     updatedAt: '2026-07-23',
   },
   {
@@ -32,14 +32,31 @@ const DOCS: Doc[] = [
     title: 'Design System',
     description: 'Paleta de cores, tipografia, componentes, espaçamento e padrões visuais do Tovia.',
     file: '/docs/tovia-design-system.html',
-    artifactUrl: 'https://claude.ai/code/artifact/ef884b50-7214-403c-8172-bd70068463b0',
+    hasPreview: true,
     updatedAt: '2026-07-20',
+  },
+  {
+    id: 'mobile-spec',
+    title: 'Tovia Mobile — Especificação',
+    description: 'Spec completa do app mobile: telas, navegação, componentes, feature gating por plano.',
+    file: '/docs/tovia-mobile-spec.md',
+    hasPreview: false,
+    updatedAt: '2026-07-24',
   },
 ];
 
 export default function AdminDocumentosTab() {
   const handleView = (doc: Doc) => {
     window.open(doc.file, '_blank');
+  };
+
+  const handleDownload = (doc: Doc) => {
+    const a = document.createElement('a');
+    a.href = doc.file;
+    a.download = doc.file.split('/').pop() || 'documento';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const handleExportPdf = (doc: Doc) => {
@@ -73,7 +90,7 @@ export default function AdminDocumentosTab() {
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
-        Documentos internos do Tovia. Visualize online ou exporte em PDF para compartilhar.
+        Documentos internos do Tovia. Visualize online, exporte em PDF ou baixe o arquivo.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -94,37 +111,39 @@ export default function AdminDocumentosTab() {
             <div className="text-[10px] text-muted-foreground uppercase tracking-widest">
               Atualizado em {new Date(doc.updatedAt + 'T12:00:00').toLocaleDateString('pt-BR')}
             </div>
-            <div className="flex flex-col gap-2 mt-auto">
-              <div className="flex gap-2">
+            <div className="flex gap-2 mt-auto">
+              {doc.hasPreview && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-xs"
+                    onClick={() => handleView(doc)}
+                  >
+                    <Eye className="w-3.5 h-3.5 mr-1.5" />
+                    Visualizar
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-xs"
+                    onClick={() => handleExportPdf(doc)}
+                  >
+                    <Download className="w-3.5 h-3.5 mr-1.5" />
+                    Exportar PDF
+                  </Button>
+                </>
+              )}
+              {!doc.hasPreview && (
                 <Button
                   variant="outline"
                   size="sm"
                   className="flex-1 text-xs"
-                  onClick={() => handleView(doc)}
-                >
-                  <Eye className="w-3.5 h-3.5 mr-1.5" />
-                  Visualizar
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 text-xs"
-                  onClick={() => handleExportPdf(doc)}
+                  onClick={() => handleDownload(doc)}
                 >
                   <Download className="w-3.5 h-3.5 mr-1.5" />
-                  Exportar PDF
+                  Baixar arquivo
                 </Button>
-              </div>
-              {doc.artifactUrl && (
-                <a
-                  href={doc.artifactUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-1.5 text-[11px] text-primary hover:underline"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  Abrir no Claude Artifact
-                </a>
               )}
             </div>
           </div>
