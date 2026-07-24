@@ -811,6 +811,82 @@ Dica: antes do evento, filtre a lista de participantes por "Pagamento pendente" 
     atualizado_em: NOW,
   },
 
+  {
+    id: 'seus-dados-exclusao',
+    slug: 'seus-dados-exclusao',
+    ordem: 35,
+    titulo: 'Seus dados e direito de exclusão',
+    resumo: 'Saiba quais dados o Tovia coleta, como acessá-los, e como solicitar a exclusão completa da sua conta e informações pessoais.',
+    tags: ['privacidade', 'lgpd', 'exclusão', 'dados pessoais', 'conta'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1633265486064-086b219458ec?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `O Tovia respeita seus direitos sobre seus dados pessoais, conforme a Lei Geral de Proteção de Dados (LGPD). Este artigo resume o que coletamos, como usamos e como você pode solicitar acesso ou exclusão.
+
+QUAIS DADOS O TOVIA COLETA?
+
+Como organizador:
+• Nome, e-mail e senha (para criar sua conta)
+• Foto de perfil, bio, redes sociais e contatos (opcionais)
+• Dados fiscais como CNPJ e endereço (para cobrança de planos via Asaas)
+
+Como participante de eventos:
+• Nome, e-mail e telefone
+• Dados adicionais solicitados pelo organizador no formulário de inscrição (gênero, cidade, restrição alimentar, etc.)
+
+COMO SEUS DADOS SÃO USADOS?
+
+Usamos seus dados exclusivamente para:
+• Operar a plataforma (criar conta, gerenciar eventos, processar inscrições)
+• Enviar comunicações transacionais (confirmação de cadastro, inscrição e pagamento)
+• Processar pagamentos de planos via gateway Asaas
+• Cumprir obrigações legais (retenção fiscal)
+
+Não vendemos nem compartilhamos seus dados com terceiros para fins publicitários.
+
+SEUS DIREITOS (LGPD Art. 18)
+
+Você pode, a qualquer momento:
+• Acessar uma cópia dos seus dados pessoais
+• Corrigir dados incompletos ou desatualizados
+• Solicitar a exclusão da sua conta e dados
+• Revogar o consentimento para uso dos seus dados
+• Solicitar a portabilidade dos seus dados em formato estruturado
+
+COMO SOLICITAR A EXCLUSÃO DA CONTA
+
+Se você deseja excluir sua conta e todos os dados associados:
+
+1. Envie um e-mail para suporte@toviaapp.com.br com o assunto "Exclusão de conta"
+2. Informe o e-mail cadastrado na plataforma
+3. Receberá confirmação de recebimento em até 2 dias úteis
+4. A exclusão será concluída em até 15 dias úteis
+5. Receberá um e-mail final confirmando que o processo foi concluído
+
+O QUE É EXCLUÍDO:
+• Perfil completo (nome, e-mail, foto, contatos)
+• Todos os eventos e dados associados (ingressos, páginas, participantes)
+• Registros financeiros do painel Tovia
+• Configurações de gateway de pagamento
+• Tarefas, grupos, recursos e dados de equipe
+• Registros de acesso (logs de login)
+
+O QUE PODE SER RETIDO:
+• Dados fiscais (CNPJ, endereço) por até 5 anos — obrigação tributária brasileira
+• Transações processadas pelo gateway Asaas — armazenadas pelo próprio Asaas
+
+ATENÇÃO: a exclusão é irreversível. Recomendamos exportar seus dados (lista de participantes, relatórios financeiros) antes de solicitar.
+
+PARA PARTICIPANTES DE EVENTOS:
+Se você se inscreveu em um evento e deseja que seus dados de inscrição sejam removidos, entre em contato diretamente com o organizador do evento. O organizador é o controlador dos dados de inscrição e pode removê-los pela plataforma. Se não conseguir contato com o organizador, envie um e-mail para suporte@toviaapp.com.br e intermediaremos a solicitação.
+
+CONTATO:
+Para qualquer questão sobre seus dados pessoais: suporte@toviaapp.com.br
+Para reclamações: Autoridade Nacional de Proteção de Dados (ANPD) — www.gov.br/anpd`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
   // ─── Mapas de uso por perfil de público ─────────────────────────────────────
 
   {

@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { auth } from '~/services/firebase';
-import { getDocument, createDocument, updateDocument, listDocuments, removeDocument } from '~/services/firestore';
+import { getDocument, createDocument, updateDocument, listDocuments, removeDocument, logAccess } from '~/services/firestore';
 import { notifIfReadOrMissing } from '~/utils/notifications';
 import { UserProfile, PlanLevel, ConvitePendente, MembroEquipeGlobal } from '../types';
 import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
@@ -222,6 +222,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           setProfile(userProfile);
           Sentry.setUser({ id: firebaseUser.uid, email: firebaseUser.email ?? undefined });
+          void logAccess(firebaseUser.uid, firebaseUser.email);
         } else {
           setUser(null);
           setProfile(null);

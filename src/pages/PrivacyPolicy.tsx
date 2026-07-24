@@ -28,14 +28,14 @@ export default function PrivacyPolicy() {
       <main className="max-w-3xl mx-auto px-6 py-12 space-y-10">
         <div>
           <h1 className="text-3xl font-black text-gray-900">Política de Privacidade e Termos de Uso</h1>
-          <p className="text-sm text-gray-400 mt-2">Última atualização: junho de 2026</p>
+          <p className="text-sm text-gray-400 mt-2">Última atualização: julho de 2026</p>
         </div>
 
         <Section title="1. Quem somos">
           <p>
             A <strong className="font-semibold text-gray-800">Tovia</strong> é uma plataforma de gestão e inscrição em eventos. Somos os controladores dos dados pessoais coletados nesta plataforma, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD).
           </p>
-          <p>Para contato relacionado a dados pessoais: <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a></p>
+          <p>Para contato relacionado a dados pessoais: <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a></p>
         </Section>
 
         <Section title="2. Quais dados coletamos">
@@ -120,7 +120,39 @@ export default function PrivacyPolicy() {
             <li><strong className="font-semibold text-gray-800">Oposição:</strong> opor-se ao tratamento realizado com fundamento em legítimo interesse</li>
           </ul>
           <p>
-            Para exercer seus direitos, entre em contato: <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a>. Responderemos em até 15 dias úteis.
+            Para exercer seus direitos, entre em contato: <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a>. Responderemos em até 15 dias úteis.
+          </p>
+        </Section>
+
+        <Section title="8.1. Direito de exclusão de conta e dados">
+          <p>
+            Você pode solicitar a exclusão completa da sua conta e de todos os dados pessoais associados a ela a qualquer momento, sem necessidade de justificativa.
+          </p>
+          <p><strong className="font-semibold text-gray-800">O que é excluído:</strong></p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Dados de perfil (nome, e-mail, foto, contatos, redes sociais)</li>
+            <li>Eventos criados por você e todos os dados associados (ingressos, páginas de inscrição, formulários)</li>
+            <li>Listas de participantes e inscrições vinculadas aos seus eventos</li>
+            <li>Registros financeiros do painel Tovia (pagamentos manuais, doações, configurações financeiras)</li>
+            <li>Configurações de gateway de pagamento (chaves criptografadas)</li>
+            <li>Tarefas, grupos, recursos e dados de equipe</li>
+            <li>Registros de acesso (logs de login)</li>
+          </ul>
+          <p><strong className="font-semibold text-gray-800">O que pode ser retido:</strong></p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Dados fiscais (CNPJ, endereço para cobrança) — retidos por até 5 anos conforme obrigações tributárias brasileiras (Art. 16, I da LGPD)</li>
+            <li>Registros de transações financeiras processadas pelo gateway — estes são armazenados pelo próprio gateway (Asaas) sob a política de privacidade deles</li>
+          </ul>
+          <p><strong className="font-semibold text-gray-800">Como solicitar:</strong></p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Envie um e-mail para <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a> com o assunto "Exclusão de conta"</li>
+            <li>Informe o e-mail cadastrado na plataforma</li>
+            <li>Confirmaremos o recebimento em até 2 dias úteis</li>
+            <li>A exclusão será concluída em até 15 dias úteis após a confirmação</li>
+            <li>Você receberá um e-mail de confirmação quando o processo for concluído</li>
+          </ul>
+          <p>
+            <strong className="font-semibold text-gray-800">Atenção:</strong> a exclusão é irreversível. Todos os eventos, participantes e dados financeiros associados à sua conta serão permanentemente removidos. Recomendamos exportar seus dados antes de solicitar a exclusão.
           </p>
         </Section>
 
@@ -139,7 +171,7 @@ export default function PrivacyPolicy() {
         <Section title="11. Contato e encarregado (DPO)">
           <p>
             Para questões relacionadas a esta política ou ao tratamento de seus dados pessoais:<br />
-            <a href="mailto:privacidade@toviaapp.com.br" className="text-primary hover:underline font-semibold">privacidade@toviaapp.com.br</a>
+            <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a>
           </p>
           <p>
             Você também pode registrar reclamações perante a Autoridade Nacional de Proteção de Dados (ANPD): <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">www.gov.br/anpd</a>

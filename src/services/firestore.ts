@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  addDoc,
   updateDoc,
   deleteDoc,
   query,
@@ -96,6 +97,22 @@ export const removeDocument = async (path: string, id: string): Promise<void> =>
     await deleteDoc(docRef);
   } catch (error) {
     handleFirestoreError(error, OperationType.DELETE, `${path}/${id}`);
+  }
+};
+
+export const logAccess = async (uid: string, email: string | null) => {
+  try {
+    await addDoc(collection(db, 'access_logs'), {
+      uid,
+      email: email || '',
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+    });
+  } catch {
+    // silently fail — access log is non-critical
   }
 };
 
