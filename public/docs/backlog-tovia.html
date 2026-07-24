@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Backlog Tovia</title>
+<style>
+  :root {
+    --bg: #f5f5f3;
+    --card: #fff;
+    --text: #1a1a18;
+    --muted: #6b7280;
+    --border: #e5e5e3;
+    --primary: #FF6B1A;
+    --primary-light: #fff5ef;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --yellow: #d97706;
+    --yellow-bg: #fffbeb;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --blue: #2563eb;
+    --blue-bg: #eff6ff;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --gray: #6b7280;
+    --gray-bg: #f9fafb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --card: #1a1a18;
+      --text: #f5f5f3;
+      --muted: #9ca3af;
+      --border: #2a2a28;
+      --primary-light: #2a1a0e;
+      --red-bg: #1a0a0a;
+      --yellow-bg: #1a150a;
+      --green-bg: #0a1a0e;
+      --blue-bg: #0a0e1a;
+      --purple-bg: #0f0a1a;
+      --gray-bg: #1a1a18;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .doc {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+  .section {
+    margin-bottom: 36px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-gray { background: var(--gray-bg); color: var(--gray); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .item-title { font-weight: 700; }
+  .item-desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+  .dot-red { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--blue); }
+  .dot-purple { background: var(--purple); }
+  .dot-gray { background: var(--gray); }
+  .done { text-decoration: line-through; color: var(--muted); }
+  .note {
+    background: var(--primary-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 32px;
+    line-height: 1.7;
+  }
+  .note strong { color: var(--text); }
+  @media print {
+    body { background: #fff; }
+    .doc { padding: 24px; }
+  }
+  @media (max-width: 640px) {
+    .doc { padding: 24px 16px; }
+    table { font-size: 13px; }
+    th, td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <h1>Backlog Tovia</h1>
+  <p class="subtitle">Atualizado em 24 de julho de 2026 &mdash; 32 itens, 4 fases</p>
+
+  <!-- BUGS -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-red">Bugs</span> Correções urgentes</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr>
+        <td>1</td>
+        <td>
+          <div class="item-title">Webhook Asaas &mdash; status da inscrição</div>
+          <div class="item-desc">Verificar se o webhook de pagamento de eventos está configurado corretamente no Asaas. O código já atualiza <code>inscricoes/{id}.status</code> para "pago", mas precisa validar em produção com pagamento real.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>A verificar</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>
+          <div class="item-title done">TermosDeUso &mdash; "plano Start" → "Chinám"</div>
+          <div class="item-desc done">Seção 4 mencionava nome antigo do plano gratuito.</div>
+        </td>
+        <td><span class="status-dot dot-green"></span>Corrigido</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- INFRA -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-yellow">Infra</span> Infraestrutura pendente</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr>
+        <td>3</td>
+        <td>
+          <div class="item-title">Migrar 6 Cloud Functions para Vercel</div>
+          <div class="item-desc">createEventCharge, suspendUser, validateBillingKey, saveGatewayConfig, uploadProfilePhoto, uploadEventCover</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>
+          <div class="item-title">Setar GATEWAY_ENCRYPTION_KEY</div>
+          <div class="item-desc">Firebase Secrets, 32 bytes hex. Obrigatório antes de pagamentos em produção.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>
+          <div class="item-title">Firestore Rules para gateway</div>
+          <div class="item-desc">users/{uid}.gateway.encrypted_api_key só acessível pelo próprio uid.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>
+          <div class="item-title">Resend API keys instáveis</div>
+          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes, sem solução definitiva.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>Recorrente</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- FASE 2 -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-green">Fase 2</span> Captação</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr><td>7</td><td><div class="item-title">Landing page com SEO</div><div class="item-desc">Meta tags, Open Graph, sitemap.xml, conteúdo otimizado para busca orgânica.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>8</td><td><div class="item-title">Beta fechado com 10 organizadores</div><div class="item-desc">Primeiros usuários reais testando a plataforma.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>9</td><td><div class="item-title">Presença no Instagram</div><div class="item-desc">Perfil, conteúdo e estratégia de divulgação.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>10</td><td><div class="item-title">PWA</div><div class="item-desc">Manifest, service worker, ícone instalável.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>11</td><td><div class="item-title">Publicar Tovia Mobile</div><div class="item-desc">App Store + Google Play. Spec pronta, implementação pendente.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>12</td><td><div class="item-title">Fluxo de pagamento em produção</div><div class="item-desc">Testar com dinheiro real. Nunca foi validado end-to-end.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>13</td><td><div class="item-title">Plano de conversão beta → pagante</div><div class="item-desc">Estratégia definida no doc de produto, não implementada.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-blue">Fase 3</span> Crescimento</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr><td>14</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>15</td><td><div class="item-title">Exportação CSV/Excel</div><div class="item-desc">Participantes e financeiro.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>16</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>17</td><td><div class="item-title">Webhooks para organizadores</div><div class="item-desc">Notificações em sistemas externos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>18</td><td><div class="item-title">Analytics (GA ou Mixpanel)</div><div class="item-desc">Sem analytics de uso atualmente.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>19</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Pagar.me e Mercado Pago. Mencionados na landing mas não integrados.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>20</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 4 -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-purple">Fase 4</span> Escala</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr><td>21</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>22</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>23</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>24</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Suporte a outros idiomas.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- CACHE -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-gray">Cache</span> Performance (~10 usuários)</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr><td>25</td><td><div class="item-title">Firestore persistence (offline cache)</div><div class="item-desc">1 linha de código. Reduz leituras e melhora UX offline.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>26</td><td><div class="item-title">Cache HTTP para docs estáticos</div><div class="item-desc">Headers explícitos para public/docs/.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>27</td><td><div class="item-title">React Query ou SWR</div><div class="item-desc">Caching client-side para queries Firestore.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- SWOT -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-yellow">SWOT</span> Fraquezas a endereçar</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Depende de</th></tr>
+      <tr><td>28</td><td><div class="item-title">Zero usuários pagantes</div></td><td>#8 Beta</td></tr>
+      <tr><td>29</td><td><div class="item-title">Sem brand awareness</div></td><td>#7 + #9</td></tr>
+      <tr><td>30</td><td><div class="item-title">Dependência de pessoa única</div><div class="item-desc">Mitigar com documentação e automação.</div></td><td>&mdash;</td></tr>
+      <tr><td>31</td><td><div class="item-title">Relatórios financeiros limitados</div></td><td>#14</td></tr>
+      <tr><td>32</td><td><div class="item-title">Sem integração Sympla/Even3</div></td><td>Fase 3/4</td></tr>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Sobre o bug #1 (webhook Asaas):</strong> O código em <code>eventPaymentWebhook.ts</code> já atualiza corretamente <code>inscricoes/{id}.status</code> para "pago". O problema pode ser de configuração: verificar se a URL do webhook está correta no painel Asaas do organizador e testar com um pagamento real.
+  </div>
+</div>
+</body>
+</html>

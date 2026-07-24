@@ -43,6 +43,14 @@ const DOCS: Doc[] = [
     hasPreview: false,
     updatedAt: '2026-07-24',
   },
+  {
+    id: 'backlog',
+    title: 'Backlog Tovia',
+    description: 'Lista consolidada de pendências: bugs, infra, captação, crescimento, escala e SWOT.',
+    file: '/docs/backlog-tovia.html',
+    hasPreview: true,
+    updatedAt: '2026-07-24',
+  },
 ];
 
 export default function AdminDocumentosTab() {

@@ -27,7 +27,7 @@ export default function TermosDeUso() {
       <main className="max-w-3xl mx-auto px-6 py-12 space-y-10">
         <div>
           <h1 className="text-3xl font-black text-gray-900">Termos de Uso</h1>
-          <p className="text-sm text-gray-400 mt-2">Última atualização: junho de 2026</p>
+          <p className="text-sm text-gray-400 mt-2">Última atualização: julho de 2026</p>
         </div>
 
         <Section title="1. Aceitação dos Termos">
@@ -62,7 +62,7 @@ export default function TermosDeUso() {
             A Tovia oferece planos gratuitos e pagos. Os planos pagos são cobrados recorrentemente via cartão de crédito, Pix ou boleto, processados por nosso parceiro de pagamentos (Asaas).
           </p>
           <ul className="list-disc pl-5 space-y-1">
-            <li>O plano Start é gratuito e não requer cartão de crédito.</li>
+            <li>O plano Chinám é gratuito e não requer cartão de crédito.</li>
             <li>Planos pagos podem ser cancelados a qualquer momento, sem multa ou fidelidade.</li>
             <li>O cancelamento encerra a cobrança no próximo ciclo; o acesso permanece até o fim do período já pago.</li>
             <li>Não realizamos estornos por períodos parcialmente utilizados.</li>
