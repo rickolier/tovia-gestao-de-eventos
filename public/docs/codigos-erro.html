@@ -6,228 +6,620 @@
 <title>Tovia — Códigos de Erro</title>
 <style>
 :root {
-  --bg: #F5F0E8; --fg: #1E0B4B; --card: #ffffff; --border: #E0D8CC;
-  --muted: #6b5fa0; --primary: #FF6B1A; --accent: #9B5FFF;
-  --danger-bg: #fee2e2; --danger: #991b1b; --danger-border: #fca5a5;
-  --warn-bg: #fef3c7; --warn: #92400e; --warn-border: #fde68a;
-  --info-bg: #eff6ff; --info: #1e40af; --info-border: #bfdbfe;
-  --neutral-bg: #f3f4f6; --neutral: #374151; --neutral-border: #d1d5db;
-  --sb: #2D1470;
+  --g: #FF6B1A; --g-dark: #E55A08; --g-tint: #FFF4EE; --g-mid: #FFC9A8;
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da;
+  --red: #ef4444; --red-tint: #fef2f2; --red-dark: #dc2626;
+  --amber: #f59e0b; --amber-tint: #fffbeb; --amber-dark: #b45309;
+  --blue: #3b82f6; --blue-tint: #eff6ff; --blue-dark: #1d4ed8;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0C0720; --fg: #F5F0E8; --card: #160A38; --border: #2A1660; --muted: #A899CC;
-  --danger-bg: #2d0d0d; --danger: #fecaca; --danger-border: #7f1d1d;
-  --warn-bg: #1c0f00; --warn: #fde68a; --warn-border: #b45309;
-  --info-bg: #0d1f3c; --info: #bfdbfe; --info-border: #2563eb;
-  --neutral-bg: #1e1050; --neutral: #d1d5db; --neutral-border: #4b5563;
-}}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-0: #111110; --surface-1: #1c1c1a;
+    --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+    --border: #2e2e2a; --g-tint: #3D1506;
+    --red-tint: #2a0f0f; --amber-tint: #2a1f08; --blue-tint: #0d1e38;
+  }
+}
 :root[data-theme="dark"] {
-  --bg: #0C0720; --fg: #F5F0E8; --card: #160A38; --border: #2A1660; --muted: #A899CC;
-  --danger-bg: #2d0d0d; --danger: #fecaca; --danger-border: #7f1d1d;
-  --warn-bg: #1c0f00; --warn: #fde68a; --warn-border: #b45309;
-  --info-bg: #0d1f3c; --info: #bfdbfe; --info-border: #2563eb;
-  --neutral-bg: #1e1050; --neutral: #d1d5db; --neutral-border: #4b5563;
+  --surface-0: #111110; --surface-1: #1c1c1a;
+  --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+  --border: #2e2e2a; --g-tint: #3D1506;
+  --red-tint: #2a0f0f; --amber-tint: #2a1f08; --blue-tint: #0d1e38;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--fg); font-size: 14px; line-height: 1.6; }
-.doc { max-width: 800px; margin: 0 auto; padding: 48px 32px 80px; }
-.header { margin-bottom: 40px; }
-.logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-.logo-mark { display: inline-flex; align-items: center; }
-.doc-badge { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); background: rgba(255,107,26,.12); border: 1px solid rgba(255,107,26,.25); padding: 3px 10px; border-radius: 999px; }
-h1 { font-size: 28px; font-weight: 900; letter-spacing: -.02em; margin-bottom: 8px; }
-.subtitle { font-size: 14px; color: var(--muted); max-width: 560px; line-height: 1.7; }
-.updated { font-size: 11px; color: var(--muted); margin-top: 12px; }
+:root[data-theme="light"] {
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da; --g-tint: #FFF4EE;
+  --red-tint: #fef2f2; --amber-tint: #fffbeb; --blue-tint: #eff6ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface-0); color: var(--text-primary); font-size: 15px; line-height: 1.7; }
+a { color: var(--g); text-decoration: none; }
+.doc { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+.cover { border-bottom: 0.5px solid var(--border); padding-bottom: 40px; margin-bottom: 56px; }
+.cover-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--g-tint); color: var(--g); font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+.cover h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; letter-spacing: -1px; line-height: 1.1; color: var(--text-primary); margin-bottom: 16px; }
+.cover-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.75; max-width: 580px; margin-bottom: 28px; }
+.cover-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.cover-meta span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+.toc { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 56px; }
+.toc-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-item { font-size: 13px; color: var(--g); display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.toc-num { color: var(--text-muted); font-size: 11px; min-width: 18px; }
+section { margin-bottom: 64px; scroll-margin-top: 24px; }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--g); margin-bottom: 8px; }
+section h2 { font-size: 24px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 12px; line-height: 1.25; }
+section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+.divider { height: 0.5px; background: var(--border); margin: 48px 0; }
+.callout { background: var(--g-tint); border-left: 3px solid var(--g); border-radius: 0 8px 8px 0; padding: 14px 16px; margin: 20px 0; }
+.callout p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.65; }
+.callout strong { color: var(--g); }
 
-.section { margin-bottom: 48px; }
-.section-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-.section-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
-
-.range-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px; }
-.range-code { font-size: 13px; font-weight: 800; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); min-width: 120px; }
-.range-label { font-size: 13px; font-weight: 600; color: var(--fg); }
-.range-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: auto; white-space: nowrap; }
-.range-active { background: rgba(22,163,74,.12); color: #16a34a; border: 1px solid rgba(22,163,74,.25); }
-.range-reserved { background: var(--neutral-bg); color: var(--neutral); border: 1px solid var(--neutral-border); }
-
-.error-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.error-table th { text-align: left; padding: 10px 14px; background: var(--neutral-bg); color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-.error-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+/* Error table styles */
+.error-group { margin-top: 24px; }
+.error-group-header { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.error-group-badge { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+.badge-client { background: var(--amber-tint); color: var(--amber-dark); }
+.badge-auth { background: var(--red-tint); color: var(--red-dark); }
+.badge-server { background: var(--blue-tint); color: var(--blue-dark); }
+.badge-limit { background: var(--g-tint); color: var(--g); }
+.error-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+.error-table th { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.error-table td { font-size: 12px; color: var(--text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: top; line-height: 1.55; }
 .error-table tr:last-child td { border-bottom: none; }
-.error-table .group-row td { background: var(--neutral-bg); font-weight: 700; font-size: 12px; color: var(--muted); letter-spacing: .03em; padding: 8px 14px; }
+.error-table tbody tr { background: var(--surface-1); }
+.error-table tbody tr:hover { background: var(--g-tint); }
+.error-code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 11px; font-weight: 600; color: var(--g); white-space: nowrap; }
+.http-badge { font-family: 'SF Mono', monospace; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+.http-400 { background: var(--amber-tint); color: var(--amber-dark); }
+.http-401 { background: var(--red-tint); color: var(--red-dark); }
+.http-403 { background: var(--red-tint); color: var(--red-dark); }
+.http-404 { background: var(--blue-tint); color: var(--blue-dark); }
+.http-405 { background: var(--surface-1); color: var(--text-muted); border: 0.5px solid var(--border); }
+.http-429 { background: var(--g-tint); color: var(--g); }
+.http-500 { background: var(--blue-tint); color: var(--blue-dark); }
+.endpoint-tag { font-family: 'SF Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.error-msg { font-size: 12px; color: var(--text-primary); font-weight: 500; }
+.error-cause { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
-.tv-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
-.tv-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
-.tv-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
-.tv-info { background: var(--info-bg); color: var(--info); border: 1px solid var(--info-border); }
-.tv-neutral { background: var(--neutral-bg); color: var(--neutral); border: 1px solid var(--neutral-border); }
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.stat-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center; }
+.stat-value { font-size: 28px; font-weight: 500; color: var(--g); line-height: 1.1; }
+.stat-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
 
-.internal-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--muted); }
-.msg { font-size: 13px; color: var(--fg); }
+.overflow-x { overflow-x: auto; }
 
-.note { background: var(--info-bg); border: 1px solid var(--info-border); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--info); line-height: 1.6; margin-top: 32px; }
-.note strong { font-weight: 700; }
-
+@media (max-width: 560px) {
+  .toc-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .error-table { font-size: 11px; }
+}
 @media print {
   body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .doc { padding: 24px !important; max-width: 100% !important; }
-  * { color-scheme: light !important; }
+  @page { margin: 1.5cm; size: A4; }
 }
-@page { margin: 1.5cm; size: A4; }
 </style>
 </head>
 <body>
 <div class="doc">
 
-  <div class="header">
-    <div class="logo-row">
-      <span class="logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 315.4" style="height:24px;width:auto;" fill="var(--fg)"><path d="M166.16,76.05h-38.04c-9.67,0-17.5,7.84-17.5,17.5v19.25h-19.62v40.34h19.62v69.63c0,15.38,4.4,27.03,13.19,34.95,8.8,7.92,21.85,11.88,39.17,11.88,4.97,0,10.27-.3,15.89-.9,5.62-.6,11.61-1.77,17.96-3.52l-6.63-39.65c-1.01.37-3.11.76-6.29,1.17s-5.6.62-7.25.62c-3.68,0-6.36-.81-8.01-2.42-1.66-1.61-2.49-4.03-2.49-7.25v-64.52h30.67v-40.34h-30.67v-36.75Z"/><path d="M323.7,122.67c-11.88-6.58-26.21-9.87-42.97-9.87s-31.13,3.29-43.11,9.87c-11.97,6.58-21.12,15.75-27.43,27.5-6.31,11.75-9.46,25.43-9.46,41.04s3.15,29.29,9.46,41.04c6.31,11.75,15.45,20.92,27.43,27.5,11.97,6.58,26.34,9.87,43.11,9.87s31.09-3.29,42.97-9.87c11.88-6.58,20.98-15.74,27.29-27.5,6.31-11.75,9.46-25.43,9.46-41.04s-3.16-29.29-9.46-41.04c-6.31-11.75-15.4-20.92-27.29-27.5ZM301.04,211.28c-1.84,5.67-4.49,10.01-7.94,13-3.45,2.99-7.58,4.49-12.37,4.49s-9.07-1.5-12.57-4.49c-3.5-2.99-6.17-7.33-8.01-13-1.84-5.67-2.76-12.46-2.76-20.35s.92-14.75,2.76-20.28c1.84-5.53,4.51-9.75,8.01-12.66,3.5-2.9,7.69-4.36,12.57-4.36s8.91,1.45,12.37,4.36c3.45,2.91,6.1,7.13,7.94,12.66,1.84,5.54,2.76,12.3,2.76,20.28s-.92,14.68-2.76,20.35Z"/><path d="M453.01,184.33c-2.86,10.66-5.39,21.51-7.6,32.54,0,.04-.02.08-.02.12-.52,2.6-4.17,2.61-4.7,0-.01-.07-.03-.13-.04-.19-2.26-11.08-4.86-21.9-7.81-32.47l-20.03-71.53h-58.3l50.82,144.91c2.5,7.13,9.16,11.9,16.61,11.9h40.52c7.35,0,13.9-4.69,16.38-11.71l51.14-145.1h-57.47l-19.48,71.53Z"/><path d="M564.65,96.63c7.55,0,14-2.49,19.34-7.46,5.34-4.97,8.01-10.96,8.01-17.96s-2.67-13.1-8.01-18.03c-5.34-4.93-11.79-7.39-19.34-7.39s-14,2.47-19.34,7.39c-5.34,4.93-8.01,10.94-8.01,18.03s2.67,12.99,8.01,17.96c5.34,4.97,11.79,7.46,19.34,7.46Z"/><path d="M574.75,112.67h-20.2c-9.75,0-17.66,7.91-17.66,17.66v139.28h55.54v-139.27c0-9.76-7.91-17.68-17.68-17.68Z"/><path d="M745.85,143.14c-3.36-6.04-8.2-11.34-14.51-15.89-6.31-4.54-13.91-8.09-22.8-10.64-8.89-2.54-18.81-3.82-29.77-3.82-14.46,0-26.73,2.09-36.82,6.27-10.09,4.18-17.99,9.77-23.69,16.77-4.34,5.32-7.45,11.09-9.34,17.3l51.02,4.99c.41-.6.86-1.17,1.36-1.7,1.89-2,4.26-3.5,7.12-4.5,2.85-1,6.03-1.5,9.53-1.5s6.68.48,9.26,1.43c2.58.95,4.58,2.34,6.01,4.16,1.43,1.82,2.14,4.05,2.14,6.68v.55c0,2.91-1.18,5.25-3.52,7.02-2.35,1.77-6.13,3.12-11.33,4.02-5.2.91-12.14,1.68-20.79,2.32-8.01.55-15.45,1.84-22.31,3.89-6.86,2.05-12.87,4.96-18.03,8.73-5.16,3.77-9.17,8.61-12.02,14.52-2.86,5.91-4.28,13.05-4.28,21.41,0,10.09,2.12,18.41,6.36,24.95,4.24,6.54,10.15,11.43,17.75,14.66,7.6,3.23,16.32,4.84,26.18,4.84,6.72,0,12.85-.82,18.38-2.45,5.53-1.64,10.48-4.2,14.85-7.7,4.37-3.5,8.13-8.11,11.26-13.84h1.1v23.99h34.52c9.63,0,17.43-10.15,17.43-19.65v-87.25c0-7-1.68-13.52-5.04-19.57ZM695.9,213.16c0,4.64-1.17,8.57-3.52,11.8-2.35,3.23-5.39,5.71-9.12,7.43-3.73,1.73-7.72,2.59-11.95,2.59-3.13,0-5.9-.5-8.29-1.5-2.4-1-4.28-2.48-5.66-4.43-1.38-1.95-2.07-4.34-2.07-7.16,0-2.64.64-5.02,1.93-7.16,1.29-2.13,3.29-3.95,6.01-5.45,2.72-1.5,6.24-2.57,10.57-3.2,2.21-.36,4.3-.73,6.29-1.09,1.98-.36,3.91-.77,5.8-1.23,1.89-.45,3.66-.95,5.32-1.5,1.66-.55,3.22-1.09,4.7-1.64v12.55Z"/></svg></span>
-      <span class="doc-badge">Documento interno</span>
+  <div class="cover">
+    <div class="cover-eyebrow">Referência técnica</div>
+    <h1>Códigos de erro</h1>
+    <div class="cover-sub">
+      Catálogo completo de erros da API do Tovia. Cada erro tem um código público (TV-xxx), o HTTP status correspondente, a mensagem exibida ao usuário e a causa raiz para resolução rápida.
     </div>
-    <h1>Códigos de Erro</h1>
-    <p class="subtitle">
-      Catálogo de todos os erros identificados no Tovia. Cada erro tem um código público
-      (visível ao organizador) e um código interno para resolução rápida pelo suporte.
-    </p>
-    <p class="updated">Atualizado em 20 de julho de 2026</p>
-  </div>
-
-  <!-- FAIXAS -->
-  <div class="section">
-    <div class="section-title">Faixas reservadas</div>
-    <div class="section-desc">Cada módulo do Tovia tem uma faixa de 100 códigos. Conforme novos erros forem identificados, devem ser registrados dentro da faixa correspondente.</div>
-
-    <div class="range-card">
-      <span class="range-code">TV001 — TV099</span>
-      <span class="range-label">Gateway de pagamento</span>
-      <span class="range-status range-active">Ativo</span>
-    </div>
-    <div class="range-card">
-      <span class="range-code">TV100 — TV199</span>
-      <span class="range-label">Checkout e cobranças</span>
-      <span class="range-status range-reserved">Reservado</span>
-    </div>
-    <div class="range-card">
-      <span class="range-code">TV200 — TV299</span>
-      <span class="range-label">Inscrições</span>
-      <span class="range-status range-reserved">Reservado</span>
-    </div>
-    <div class="range-card">
-      <span class="range-code">TV300 — TV399</span>
-      <span class="range-label">Conta e perfil</span>
-      <span class="range-status range-reserved">Reservado</span>
-    </div>
-    <div class="range-card">
-      <span class="range-code">TV400 — TV499</span>
-      <span class="range-label">Eventos</span>
-      <span class="range-status range-reserved">Reservado</span>
-    </div>
-    <div class="range-card">
-      <span class="range-code">TV500 — TV599</span>
-      <span class="range-label">Notificações e e-mails</span>
-      <span class="range-status range-reserved">Reservado</span>
+    <div class="cover-meta">
+      <span>11 endpoints</span>
+      <span>·</span>
+      <span>47 respostas de erro mapeadas</span>
+      <span>·</span>
+      <span>Atualizado em 23 jul 2026</span>
     </div>
   </div>
 
-  <!-- TABELA DE ERROS -->
-  <div class="section">
-    <div class="section-title">Erros catalogados</div>
-    <div class="section-desc">Tabela completa de erros identificados. Ao abrir um ticket de suporte, o organizador deve informar o código exibido na tela (ex: ERRO TV001).</div>
+  <nav class="toc">
+    <div class="toc-title">Índice</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#visao"><span class="toc-num">1</span> Visão geral</a>
+      <a class="toc-item" href="#checkout"><span class="toc-num">5</span> createCheckout</a>
+      <a class="toc-item" href="#globais"><span class="toc-num">2</span> Erros globais</a>
+      <a class="toc-item" href="#billing"><span class="toc-num">6</span> getBillingInfo</a>
+      <a class="toc-item" href="#webhooks"><span class="toc-num">3</span> Webhooks</a>
+      <a class="toc-item" href="#email"><span class="toc-num">7</span> Emails e verificação</a>
+      <a class="toc-item" href="#equipe"><span class="toc-num">4</span> equipeJoin</a>
+      <a class="toc-item" href="#inscricao"><span class="toc-num">8</span> Inscrição pública</a>
+    </div>
+  </nav>
 
+  <!-- 1. Visão geral -->
+  <section id="visao">
+    <div class="section-label">Visão geral</div>
+    <h2>Estrutura dos códigos</h2>
+    <p>Todos os erros seguem o padrão <strong>TV-XXX</strong>, onde o prefixo indica a categoria e os dois últimos dígitos são sequenciais dentro da categoria.</p>
+    <div class="callout">
+      <p><strong>Formato da resposta:</strong> todo erro retorna <code>{ "error": "mensagem" }</code>. Os webhooks (Asaas e eventPayment) retornam texto simples (<code>"ok"</code> ou <code>"Unauthorized"</code>) por convenção do gateway.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">47</div>
+        <div class="stat-label">Erros mapeados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">6</div>
+        <div class="stat-label">HTTP Status</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">11</div>
+        <div class="stat-label">Endpoints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">38</div>
+        <div class="stat-label">Testes cobrindo</div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 2. Erros globais -->
+  <section id="globais">
+    <div class="section-label">Globais</div>
+    <h2>Erros comuns a todos os endpoints</h2>
+    <p>Estes erros podem ocorrer em qualquer endpoint da API. São tratados antes da lógica de negócio.</p>
+    <div class="overflow-x">
     <table class="error-table">
       <thead>
-        <tr>
-          <th style="width:110px">Público</th>
-          <th style="width:120px">Interno</th>
-          <th>Mensagem exibida ao organizador</th>
-          <th style="width:90px">Severidade</th>
-        </tr>
+        <tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr>
       </thead>
       <tbody>
-        <!-- Gateway -->
-        <tr class="group-row"><td colspan="4">🔌 Gateway de pagamento (TV001–TV099)</td></tr>
         <tr>
-          <td><span class="tv-code tv-danger">TV001</span></td>
-          <td><span class="internal-code">GW-AUTH-401</span></td>
-          <td class="msg">Chave de API não autorizada. Verifique se está correta e ativa.</td>
-          <td><span class="tv-code tv-danger">Crítico</span></td>
+          <td><span class="error-code">TV-001</span></td>
+          <td><span class="http-badge http-405">405</span></td>
+          <td><span class="error-msg">Method not allowed / Método não permitido</span></td>
+          <td>Requisição com método diferente de POST</td>
         </tr>
         <tr>
-          <td><span class="tv-code tv-danger">TV002</span></td>
-          <td><span class="internal-code">GW-PERM-403</span></td>
-          <td class="msg">Sua chave não tem permissão de acesso. Verifique no painel Asaas.</td>
-          <td><span class="tv-code tv-danger">Crítico</span></td>
+          <td><span class="error-code">TV-002</span></td>
+          <td><span class="http-badge http-400">400</span></td>
+          <td><span class="error-msg">Validação Zod (campo específico)</span></td>
+          <td>Body da requisição não passou no schema Zod — campo obrigatório ausente, tipo errado ou valor inválido</td>
         </tr>
         <tr>
-          <td><span class="tv-code tv-warn">TV003</span></td>
-          <td><span class="internal-code">GW-URL-404</span></td>
-          <td class="msg">Ambiente incorreto. Confira se selecionou Sandbox ou Produção.</td>
-          <td><span class="tv-code tv-warn">Médio</span></td>
+          <td><span class="error-code">TV-003</span></td>
+          <td><span class="http-badge http-401">401</span></td>
+          <td><span class="error-msg">Token ausente ou inválido</span></td>
+          <td>Header Authorization ausente, expirado ou com token inválido (Firebase Auth)</td>
         </tr>
         <tr>
-          <td><span class="tv-code tv-warn">TV004</span></td>
-          <td><span class="internal-code">GW-LIMIT-429</span></td>
-          <td class="msg">Muitas tentativas. Aguarde alguns minutos e tente novamente.</td>
-          <td><span class="tv-code tv-warn">Médio</span></td>
+          <td><span class="error-code">TV-004</span></td>
+          <td><span class="http-badge http-403">403</span></td>
+          <td><span class="error-msg">UID mismatch / Acesso negado</span></td>
+          <td>O userId do body não confere com o UID do token autenticado</td>
         </tr>
         <tr>
-          <td><span class="tv-code tv-neutral">TV005</span></td>
-          <td><span class="internal-code">GW-ASAAS-500</span></td>
-          <td class="msg">Erro temporário no gateway. Tente novamente em alguns minutos.</td>
-          <td><span class="tv-code tv-info">Baixo</span></td>
-        </tr>
-        <tr>
-          <td><span class="tv-code tv-neutral">TV006</span></td>
-          <td><span class="internal-code">GW-ASAAS-503</span></td>
-          <td class="msg">Gateway temporariamente indisponível. Tente mais tarde.</td>
-          <td><span class="tv-code tv-info">Baixo</span></td>
-        </tr>
-        <tr>
-          <td><span class="tv-code tv-neutral">TV007</span></td>
-          <td><span class="internal-code">GW-NET-000</span></td>
-          <td class="msg">Falha de conexão. Verifique sua internet e tente novamente.</td>
-          <td><span class="tv-code tv-warn">Médio</span></td>
-        </tr>
-
-        <!-- Checkout -->
-        <tr class="group-row"><td colspan="4">💳 Checkout e cobranças (TV100–TV199)</td></tr>
-        <tr>
-          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
-        </tr>
-
-        <!-- Inscrições -->
-        <tr class="group-row"><td colspan="4">📋 Inscrições (TV200–TV299)</td></tr>
-        <tr>
-          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
-        </tr>
-
-        <!-- Conta -->
-        <tr class="group-row"><td colspan="4">👤 Conta e perfil (TV300–TV399)</td></tr>
-        <tr>
-          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
-        </tr>
-
-        <!-- Eventos -->
-        <tr class="group-row"><td colspan="4">📅 Eventos (TV400–TV499)</td></tr>
-        <tr>
-          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
-        </tr>
-
-        <!-- Notificações -->
-        <tr class="group-row"><td colspan="4">📧 Notificações e e-mails (TV500–TV599)</td></tr>
-        <tr>
-          <td colspan="4" style="color: var(--muted); font-size: 12px; font-style: italic; text-align: center; padding: 16px;">Nenhum erro catalogado ainda</td>
+          <td><span class="error-code">TV-005</span></td>
+          <td><span class="http-badge http-429">429</span></td>
+          <td><span class="error-msg">Muitas tentativas. Aguarde alguns minutos.</span></td>
+          <td>Rate limit atingido — máximo 3 requisições por e-mail/usuário a cada 10 minutos</td>
         </tr>
       </tbody>
     </table>
-
-    <div class="note">
-      <strong>Como registrar um novo erro:</strong> Ao identificar um novo erro no Tovia,
-      adicione-o na faixa correspondente com o próximo número disponível. Defina o código interno
-      descritivo (ex: <code>GW-AUTH-401</code>), a mensagem amigável para o organizador e a severidade.
-      O código público nunca deve ser reutilizado, mesmo que o erro seja corrigido.
     </div>
-  </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 3. Webhooks -->
+  <section id="webhooks">
+    <div class="section-label">Webhooks</div>
+    <h2>Webhooks de pagamento</h2>
+    <p>Recebem notificações do Asaas. Retornam texto simples (não JSON). Erros silenciosos retornam <code>200 ok</code> para evitar retentativas do gateway.</p>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">eventPaymentWebhook</span>
+        <span class="error-group-badge badge-auth">Segurança</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Resposta</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-100</span></td>
+            <td><span class="http-badge http-401">401</span></td>
+            <td><span class="error-msg">Unauthorized</span></td>
+            <td>Evento não tem webhook_token_hash configurado</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-101</span></td>
+            <td><span class="http-badge http-401">401</span></td>
+            <td><span class="error-msg">Unauthorized</span></td>
+            <td>Token do webhook não confere com o hash armazenado no evento</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-102</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">error</span></td>
+            <td>Erro inesperado ao processar o webhook (catch genérico)</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">asaasWebhook</span>
+        <span class="error-group-badge badge-auth">Segurança</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Resposta</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-110</span></td>
+            <td><span class="http-badge http-401">401</span></td>
+            <td><span class="error-msg">Unauthorized</span></td>
+            <td>Header asaas-access-token ausente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-111</span></td>
+            <td><span class="http-badge http-401">401</span></td>
+            <td><span class="error-msg">Unauthorized</span></td>
+            <td>Token não confere com ASAAS_WEBHOOK_TOKEN do ambiente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-112</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">error</span></td>
+            <td>Erro inesperado ao processar o webhook (catch genérico)</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 4. equipeJoin -->
+  <section id="equipe">
+    <div class="section-label">Equipe</div>
+    <h2>equipeJoin</h2>
+    <p>Aceita convite e adiciona membro à equipe do evento.</p>
+    <div class="overflow-x">
+    <table class="error-table">
+      <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="error-code">TV-200</span></td>
+          <td><span class="http-badge http-403">403</span></td>
+          <td><span class="error-msg">Operação não permitida.</span></td>
+          <td>Token autenticado não tem email associado</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-201</span></td>
+          <td><span class="http-badge http-404">404</span></td>
+          <td><span class="error-msg">Evento não encontrado.</span></td>
+          <td>eventoId informado não existe no Firestore</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-202</span></td>
+          <td><span class="http-badge http-403">403</span></td>
+          <td><span class="error-msg">Nenhum convite encontrado para este e-mail neste evento.</span></td>
+          <td>Não existe convite pendente para o email do usuário nesse evento</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-203</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro interno.</span></td>
+          <td>Erro inesperado ao processar a entrada na equipe</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 5. createCheckout -->
+  <section id="checkout">
+    <div class="section-label">Pagamentos</div>
+    <h2>createCheckout</h2>
+    <p>Cria assinatura ou pagamento avulso no Asaas para ativação de plano.</p>
+    <div class="overflow-x">
+    <table class="error-table">
+      <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="error-code">TV-300</span></td>
+          <td><span class="http-badge http-400">400</span></td>
+          <td><span class="error-msg">Plano inválido.</span></td>
+          <td>planLevel não é petach, koach ou chalem (validação Zod)</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-301</span></td>
+          <td><span class="http-badge http-400">400</span></td>
+          <td><span class="error-msg">Preço não encontrado.</span></td>
+          <td>Combinação planLevel + period não tem preço configurado</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-302</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Configuração de pagamento ausente.</span></td>
+          <td>Chave API do Asaas não configurada nem no Firestore nem em variáveis de ambiente</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-303</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro ao criar cliente no Asaas.</span></td>
+          <td>API do Asaas rejeitou a criação do cliente (CPF inválido, dados incompletos)</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-304</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro ao criar assinatura no Asaas.</span></td>
+          <td>API do Asaas rejeitou a criação da assinatura mensal</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-305</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Assinatura criada, mas link de pagamento indisponível.</span></td>
+          <td>Assinatura criada com sucesso mas o Asaas não retornou paymentLink</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-306</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro ao criar pagamento no Asaas.</span></td>
+          <td>API do Asaas rejeitou a criação do pagamento avulso (anual)</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-307</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Pagamento criado, mas link indisponível.</span></td>
+          <td>Pagamento anual criado mas Asaas não retornou invoiceUrl</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-308</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro ao processar pagamento.</span></td>
+          <td>Erro inesperado no fluxo de checkout (catch genérico)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 6. getBillingInfo -->
+  <section id="billing">
+    <div class="section-label">Faturamento</div>
+    <h2>getBillingInfo</h2>
+    <p>Retorna dados de assinatura, pagamentos e cliente do Asaas para o painel de faturamento.</p>
+    <div class="overflow-x">
+    <table class="error-table">
+      <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="error-code">TV-400</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Configuração de pagamento ausente.</span></td>
+          <td>Chave API do Asaas não configurada</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-401</span></td>
+          <td><span class="http-badge http-404">404</span></td>
+          <td><span class="error-msg">Usuário não encontrado.</span></td>
+          <td>userId não existe na coleção users do Firestore</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-402</span></td>
+          <td><span class="http-badge http-404">404</span></td>
+          <td><span class="error-msg">Dados do usuário ausentes.</span></td>
+          <td>Documento do usuário existe mas não tem dados (data() retornou undefined)</td>
+        </tr>
+        <tr>
+          <td><span class="error-code">TV-403</span></td>
+          <td><span class="http-badge http-500">500</span></td>
+          <td><span class="error-msg">Erro ao buscar dados de faturamento.</span></td>
+          <td>Erro ao comunicar com API do Asaas (timeout, chave inválida, etc.)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 7. Emails e verificação -->
+  <section id="email">
+    <div class="section-label">Emails</div>
+    <h2>Emails e verificação</h2>
+    <p>Endpoints de envio de emails transacionais e verificação de conta.</p>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">sendEmail</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-500</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Acesso negado.</span></td>
+            <td>Usuário autenticado não é admin e tentou enviar email</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-501</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Falha ao enviar e-mail.</span></td>
+            <td>API do Resend retornou erro (chave inválida, domínio bloqueado, etc.)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-502</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro interno ao enviar e-mail.</span></td>
+            <td>Erro inesperado no envio (catch genérico)</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">enviarCodigoVerificacao</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-510</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Serviço de e-mail não configurado.</span></td>
+            <td>RESEND_API_KEY não está nas variáveis de ambiente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-511</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Não foi possível enviar o e-mail.</span></td>
+            <td>Resend retornou erro ou exceção ao enviar email de verificação</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">confirmarCodigoVerificacao</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-520</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Link inválido ou já utilizado.</span></td>
+            <td>Token de verificação não existe no Firestore (já usado ou nunca existiu)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-521</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Link expirado. Solicite um novo.</span></td>
+            <td>Token expirou (válido por 30 minutos)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-522</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro ao verificar. Tente novamente.</span></td>
+            <td>Erro inesperado ao confirmar verificação</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">enviarRedefinicaoSenha</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-530</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Não foi possível enviar o e-mail.</span></td>
+            <td>Erro ao gerar link de redefinição ou enviar email via Resend</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+
+  <!-- 8. Inscrição pública -->
+  <section id="inscricao">
+    <div class="section-label">Inscrição</div>
+    <h2>Inscrição pública</h2>
+    <p>Fluxo de consulta de inscrições por participantes (não-usuários). Usa OTP via email sem necessidade de autenticação Firebase.</p>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">enviarCodigoInscricao</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-600</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Serviço de e-mail não configurado.</span></td>
+            <td>RESEND_API_KEY não está nas variáveis de ambiente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-601</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Não foi possível enviar o código.</span></td>
+            <td>Resend retornou erro ao enviar o OTP de inscrição</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">
+        <span class="endpoint-tag">confirmarCodigoInscricao</span>
+      </div>
+      <div class="overflow-x">
+      <table class="error-table">
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-610</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Nenhum código encontrado. Solicite um novo.</span></td>
+            <td>Não existe OTP para o email informado (nunca solicitado ou já expirado/deletado)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-611</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Código inválido.</span></td>
+            <td>OTP digitado não confere com o armazenado — incrementa contador de tentativas</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-612</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Código expirado. Solicite um novo.</span></td>
+            <td>OTP expirou (válido por 10 minutos)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-613</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Muitas tentativas incorretas. Solicite um novo código.</span></td>
+            <td>Atingiu 5 tentativas erradas para o mesmo OTP</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-614</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro interno. Tente novamente.</span></td>
+            <td>Erro inesperado ao confirmar código de inscrição</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
 
 </div>
 </body>

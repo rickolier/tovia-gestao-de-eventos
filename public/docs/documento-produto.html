@@ -638,6 +638,18 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div><div class="infra-stage-label">Monitoramento</div><div class="infra-stage-scale">Sentry</div></div>
         <div class="infra-tools">Rastreamento de erros em produção com stack traces, breadcrumbs e contexto de sessão. Alertas automáticos para erros críticos. Permite identificar e corrigir problemas antes que impactem múltiplos organizadores.</div>
       </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Testes automatizados</div><div class="infra-stage-scale">Vitest</div></div>
+        <div class="infra-tools">38 testes automatizados cobrindo os 3 endpoints mais críticos: webhook de pagamento de eventos (12 testes), webhook Asaas de assinaturas (14 testes) e checkout (12 testes). Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">CI/CD</div><div class="infra-stage-scale">GitHub Actions</div></div>
+        <div class="infra-tools">Pipeline automático que roda lint e testes a cada push para main/staging e em pull requests. Bloqueia deploy se algum teste falhar. Integrado com Vercel para deploy contínuo.</div>
+      </div>
+      <div class="infra-stage">
+        <div><div class="infra-stage-label">Validação de entrada</div><div class="infra-stage-scale">Zod</div></div>
+        <div class="infra-tools">Todos os 9 endpoints da API usam schemas Zod para validação de entrada. Tipagem forte com TypeScript strict mode (zero @ts-nocheck). Proteção contra dados malformados com mensagens de erro consistentes.</div>
+      </div>
     </div>
   </section>
   <div class="divider"></div>
@@ -906,6 +918,8 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
             <li>Onboarding com tour guiado interativo</li>
             <li>Criptografia AES-256-GCM para chaves de gateway</li>
             <li>Monitoramento de erros em produção via Sentry</li>
+            <li>38 testes automatizados (Vitest) + CI/CD via GitHub Actions</li>
+            <li>Validação de entrada com Zod em todos os endpoints + TypeScript strict (zero @ts-nocheck)</li>
             <li>Domínios registrados (GoDaddy), email corporativo (Zoho Mail), email transacional (Resend)</li>
           </ul>
         </div>
