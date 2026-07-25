@@ -56,7 +56,7 @@
 4. Financeiro (Dollar/currency icon)
 5. Suporte (Question mark icon)
 
-Estilo da tab bar: fundo branco (light) / surface escuro (dark), aba ativa em laranja primário com ícone preenchido, abas inativas em cinza.
+Estilo da tab bar: fundo sempre roxo escuro (#2D1470), aba ativa em laranja primário com ícone preenchido, abas inativas em creme semitransparente.
 
 ---
 
@@ -333,7 +333,7 @@ Botão "Pular" no canto superior direito nos slides 1–3. Botão "Começar" no 
 | Feature | Chinám | Pétach | Koách | Chalém |
 |---|---|---|---|---|
 | Check-in por lista | ✓ | ✓ | ✓ | ✓ |
-| Check-in por QR Code | — | — | ✓ | ✓ |
+| Check-in por QR Code | ✓ | ✓ | ✓ | ✓ |
 | Aba Tarefas | — | — | ✓ | ✓ |
 | Membros de equipe | — | — | até 5 | até 10 |
 | Eventos ativos | 1 | 3 | 5 | 10 |

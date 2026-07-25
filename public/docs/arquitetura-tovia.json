@@ -165,7 +165,7 @@
     ]
   },
   "plans": {
-    "chinam": { "name": "Chinám", "price": 0, "events": 1, "participants": 50, "tickets": 1, "team": 0, "features": ["Inscrições básicas", "Check-in QR"] },
+    "chinam": { "name": "Chinám", "price": 0, "events": 1, "participants": 100, "tickets": 1, "team": 0, "features": ["Inscrições básicas", "Check-in QR"] },
     "petach": { "name": "Pétach", "price": 49, "events": 3, "participants": 200, "tickets": 3, "team": 0, "features": ["Financeiro manual", "Relatórios", "Formulários personalizados"] },
     "koach": { "name": "Koách", "price": 129, "events": 5, "participants": 500, "tickets": 5, "team": 5, "features": ["Equipe", "Tarefas", "Gestão completa"] },
     "chalem": { "name": "Chalém", "price": 299, "events": 10, "participants": -1, "tickets": 10, "team": 10, "features": ["Pagamentos automáticos", "Gateway BYOG", "Sem limites de participantes"] }
