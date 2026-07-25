@@ -298,7 +298,7 @@ service cloud.firestore {
     match /tickets/{ticketId} {
       allow create: if isSignedIn() && incoming().userId == request.auth.uid;
       allow get:    if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow list:   if isAdmin() || isSignedIn();
+      allow list:   if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
     }
