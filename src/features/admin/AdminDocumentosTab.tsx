@@ -71,7 +71,10 @@ const DOCS: Doc[] = [
   },
 ];
 
-export default function AdminDocumentosTab() {
+const SUPORTE_DOC_IDS = ['codigos-erro'];
+
+export default function AdminDocumentosTab({ filterSupporte = false }: { filterSupporte?: boolean }) {
+  const docs = filterSupporte ? DOCS.filter(d => SUPORTE_DOC_IDS.includes(d.id)) : DOCS;
   const handleView = (doc: Doc) => {
     window.open(doc.file, '_blank');
   };
@@ -120,7 +123,7 @@ export default function AdminDocumentosTab() {
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {DOCS.map(doc => (
+        {docs.map(doc => (
           <div
             key={doc.id}
             className="bg-card border border-border rounded-xl p-5 flex flex-col gap-4"

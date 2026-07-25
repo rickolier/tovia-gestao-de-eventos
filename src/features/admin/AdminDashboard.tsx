@@ -40,7 +40,7 @@ interface NavGroup {
   items: NavItem[];
 }
 
-const NAV: NavGroup[] = [
+const NAV_CRIADOR: NavGroup[] = [
   {
     section: 'Geral', roles: ['criador'],
     items: [
@@ -51,13 +51,13 @@ const NAV: NavGroup[] = [
     ],
   },
   {
-    section: 'Clientes', roles: ['criador', 'suporte'],
+    section: 'Clientes', roles: ['criador'],
     items: [
-      { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['criador', 'suporte'] },
+      { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['criador'] },
       { id: 'clientes',       label: 'Clientes',             icon: Users,      roles: ['criador'] },
       { id: 'gateway',        label: 'Monitor Gateway',      icon: Wifi,       roles: ['criador'] },
-      { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['criador', 'suporte'] },
-      { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['criador', 'suporte'] },
+      { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['criador'] },
+      { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['criador'] },
     ],
   },
   {
@@ -68,6 +68,15 @@ const NAV: NavGroup[] = [
       { id: 'comunicados',        label: 'Comunicados',          icon: Megaphone,  roles: ['criador'] },
     ],
   },
+];
+
+const NAV_SUPORTE: NavItem[] = [
+  { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['suporte'] },
+  { id: 'gateway',        label: 'Monitor Gateway',      icon: Wifi,       roles: ['suporte'] },
+  { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['suporte'] },
+  { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['suporte'] },
+  { id: 'comunicados',    label: 'Comunicados',          icon: Megaphone,  roles: ['suporte'] },
+  { id: 'documentos',     label: 'Documentos',           icon: FileText,   roles: ['suporte'] },
 ];
 
 const TAB_TITLES: Record<string, string> = {
@@ -102,7 +111,7 @@ export default function AdminDashboard() {
       return next;
     });
 
-  const visibleGroups = NAV
+  const visibleGroups = role === 'suporte' ? [] : NAV_CRIADOR
     .filter(g => g.roles.includes(role))
     .map(g => ({ ...g, items: g.items.filter(i => i.roles.includes(role)) }))
     .filter(g => g.items.length > 0);
@@ -138,42 +147,61 @@ export default function AdminDashboard() {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-1">
-          {visibleGroups.map((group, gi) => {
-            const isCollapsed = collapsed.has(group.section);
-            return (
-              <div key={group.section}>
-                <button
-                  onClick={() => toggleSection(group.section)}
-                  className={cn(
-                    'w-full flex items-center justify-between px-3 py-1.5 rounded-lg transition-colors',
-                    gi === 0 ? 'mt-0' : 'mt-3',
-                    'text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white/60',
+          {role === 'suporte' ? (
+            <div className="space-y-0.5">
+              {NAV_SUPORTE.map(item => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => { setActiveTab(item.id); setMobileOpen(false); }}
+                    className={cn('sidebar-nav-item', isActive && 'active')}
+                  >
+                    <Icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            visibleGroups.map((group, gi) => {
+              const isCollapsed = collapsed.has(group.section);
+              return (
+                <div key={group.section}>
+                  <button
+                    onClick={() => toggleSection(group.section)}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-1.5 rounded-lg transition-colors',
+                      gi === 0 ? 'mt-0' : 'mt-3',
+                      'text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white/60',
+                    )}
+                  >
+                    {group.section}
+                    <ChevronDown className={cn('w-3 h-3 transition-transform duration-200', isCollapsed && '-rotate-90')} />
+                  </button>
+                  {!isCollapsed && (
+                    <div className="space-y-0.5 mt-0.5">
+                      {group.items.map(item => {
+                        const Icon = item.icon;
+                        const isActive = activeTab === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => { setActiveTab(item.id); setMobileOpen(false); }}
+                            className={cn('sidebar-nav-item', isActive && 'active')}
+                          >
+                            <Icon className="w-4 h-4 shrink-0" />
+                            {item.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                >
-                  {group.section}
-                  <ChevronDown className={cn('w-3 h-3 transition-transform duration-200', isCollapsed && '-rotate-90')} />
-                </button>
-                {!isCollapsed && (
-                  <div className="space-y-0.5 mt-0.5">
-                    {group.items.map(item => {
-                      const Icon = item.icon;
-                      const isActive = activeTab === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => { setActiveTab(item.id); setMobileOpen(false); }}
-                          className={cn('sidebar-nav-item', isActive && 'active')}
-                        >
-                          <Icon className="w-4 h-4 shrink-0" />
-                          {item.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })
+          )}
         </nav>
 
         {/* Logout */}
@@ -222,7 +250,7 @@ export default function AdminDashboard() {
           {activeTab === 'calculator'         && <AdminCalculatorTab />}
           {activeTab === 'comunicados'        && <AdminComunicadosTab />}
           {activeTab === 'leads'              && <AdminLeadsTab />}
-          {activeTab === 'documentos'         && <AdminDocumentosTab />}
+          {activeTab === 'documentos'         && <AdminDocumentosTab filterSupporte={role === 'suporte'} />}
         </main>
       </div>
     </div>
