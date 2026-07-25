@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Arquitetura Tovia — Mapa</title>
+<style>
+:root {
+  --bg: #f5f5f3;
+  --card: #fff;
+  --text: #1a1a18;
+  --muted: #888;
+  --border: #ddd;
+  --line: #ccc;
+  --primary: #FF6B1A;
+  --blue: #2563eb;
+  --green: #16a34a;
+  --purple: #7c3aed;
+  --red: #dc2626;
+  --yellow: #d97706;
+  --teal: #0d9488;
+  --pink: #db2777;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111110; --card:#1e1e1c; --text:#f5f5f3; --muted:#888; --border:#333; --line:#444; }
+}
+:root[data-theme="dark"] { --bg:#111110; --card:#1e1e1c; --text:#f5f5f3; --muted:#888; --border:#333; --line:#444; }
+:root[data-theme="light"] { --bg:#f5f5f3; --card:#fff; --text:#1a1a18; --muted:#888; --border:#ddd; --line:#ccc; }
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); overflow:hidden; height:100vh; width:100vw; }
+
+/* ─── TOOLBAR ─── */
+.toolbar {
+  position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:20;
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:6px 12px; display:flex; gap:8px; align-items:center;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);
+}
+.toolbar button {
+  background:none; border:1px solid var(--border); border-radius:8px;
+  color:var(--text); font-size:16px; width:32px; height:32px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.toolbar button:hover { background:var(--bg); }
+.toolbar .title { font-size:13px; font-weight:800; color:var(--primary); padding:0 8px; letter-spacing:-0.3px; }
+.toolbar .sep { width:1px; height:20px; background:var(--border); }
+.toolbar .hint { font-size:11px; color:var(--muted); }
+
+/* ─── CANVAS ─── */
+.canvas {
+  width:100%; height:100%; position:relative; cursor:grab;
+}
+.canvas.grabbing { cursor:grabbing; }
+.world { position:absolute; top:0; left:0; transform-origin:0 0; }
+
+/* ─── SVG LINES ─── */
+svg.lines { position:absolute; top:0; left:0; pointer-events:none; overflow:visible; }
+
+/* ─── NODES ─── */
+.node {
+  position:absolute;
+  background:var(--card);
+  border:2px solid var(--border);
+  border-radius:14px;
+  padding:10px 16px;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  user-select:none;
+  transition:box-shadow .15s, border-color .15s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.node:hover { box-shadow:0 4px 16px rgba(0,0,0,.12); }
+.node.expanded { border-color:var(--primary); }
+.node .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.node .label { line-height:1.3; }
+.node .sub { font-size:10px; font-weight:500; color:var(--muted); display:block; }
+.node .toggle {
+  font-size:10px; color:var(--muted); margin-left:4px;
+  transition:transform .2s;
+}
+.node.expanded .toggle { transform:rotate(90deg); }
+
+/* root node */
+.node.root {
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+  font-size:18px;
+  font-weight:900;
+  padding:16px 28px;
+  border-radius:20px;
+  letter-spacing:-0.5px;
+}
+.node.root .sub { color:rgba(255,255,255,.7); }
+
+/* level 1 */
+.node.l1 { font-size:13px; padding:12px 18px; border-radius:16px; }
+
+/* ─── MINIMAP ─── */
+.minimap {
+  position:fixed; bottom:16px; right:16px; z-index:20;
+  width:180px; height:120px;
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.1);
+}
+.minimap canvas { width:100%; height:100%; }
+.minimap-viewport {
+  position:absolute; border:2px solid var(--primary); border-radius:2px;
+  pointer-events:none;
+}
+
+@media print {
+  .toolbar, .minimap { display:none!important; }
+  body { overflow:visible; height:auto; }
+  .canvas { overflow:visible; height:auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="title">tovia</span>
+  <div class="sep"></div>
+  <button onclick="zoomBy(1.2)" title="Zoom in">+</button>
+  <button onclick="zoomBy(0.8)" title="Zoom out">&minus;</button>
+  <button onclick="resetView()" title="Reset">&#8634;</button>
+  <button onclick="expandAll()" title="Expandir tudo">&#9654;&#9654;</button>
+  <button onclick="collapseAll()" title="Fechar tudo">&#9664;&#9664;</button>
+  <div class="sep"></div>
+  <span class="hint">Arraste para mover &middot; Scroll para zoom</span>
+</div>
+
+<div class="canvas" id="canvas">
+  <div class="world" id="world">
+    <svg class="lines" id="lines"></svg>
+  </div>
+</div>
+
+<script>
+const TREE = {
+  id:'root', label:'Tovia', sub:'Gestão de Eventos', color:'var(--primary)', children:[
+    { id:'frontend', label:'Frontend', sub:'React 19 + Vite', color:'var(--blue)', children:[
+      { id:'pages', label:'Páginas', sub:'25 rotas', color:'var(--blue)', children:[
+        { id:'pub', label:'Públicas', sub:'16 rotas', color:'var(--green)', children:[
+          { id:'r-landing', label:'/ Landing Page', color:'var(--green)' },
+          { id:'r-login', label:'/login', color:'var(--green)' },
+          { id:'r-leads', label:'/leads Captação', color:'var(--green)' },
+          { id:'r-priv', label:'/privacidade LGPD', color:'var(--green)' },
+          { id:'r-termos', label:'/termos-de-uso', color:'var(--green)' },
+          { id:'r-kb', label:'/base-de-conhecimento', color:'var(--green)' },
+          { id:'r-consulta', label:'/consultar-inscricao', color:'var(--green)' },
+          { id:'r-sales', label:'/e/:id/:slug Página Venda', color:'var(--green)' },
+          { id:'r-orgp', label:'/o/:id Perfil Organizador', color:'var(--green)' },
+          { id:'r-sat', label:'/satisfacao', color:'var(--green)' },
+        ]},
+        { id:'priv', label:'Privadas', sub:'8 rotas', color:'var(--primary)', children:[
+          { id:'r-dash', label:'/dashboard', color:'var(--primary)' },
+          { id:'r-onb', label:'/onboarding', color:'var(--primary)' },
+          { id:'r-planos', label:'/planos', color:'var(--primary)' },
+          { id:'r-checkout', label:'/checkout-plano', color:'var(--primary)' },
+          { id:'r-novo', label:'/eventos/novo', color:'var(--primary)' },
+          { id:'r-edit', label:'/eventos/:id/editar', color:'var(--primary)' },
+          { id:'r-detail', label:'/eventos/:id/* Detalhe', color:'var(--primary)' },
+          { id:'r-checkin', label:'/eventos/:id/checkin QR', color:'var(--primary)' },
+        ]},
+        { id:'adm-route', label:'Admin', sub:'/admin/*', color:'var(--red)' },
+      ]},
+      { id:'dash-tabs', label:'Dashboard', sub:'10 tabs', color:'var(--blue)', children:[
+        { id:'dt-home', label:'Home', color:'var(--blue)' },
+        { id:'dt-perfil', label:'Perfil', color:'var(--blue)' },
+        { id:'dt-equipe', label:'Equipe Global', color:'var(--blue)' },
+        { id:'dt-billing', label:'Assinatura', color:'var(--blue)' },
+        { id:'dt-gw', label:'Gateway Config', color:'var(--blue)' },
+        { id:'dt-reports', label:'Relatórios', color:'var(--blue)' },
+        { id:'dt-cal', label:'Calendário', color:'var(--blue)' },
+        { id:'dt-calc', label:'Calculadora', color:'var(--blue)' },
+        { id:'dt-config', label:'Configurações', color:'var(--blue)' },
+        { id:'dt-ds', label:'Design System', color:'var(--blue)' },
+      ]},
+      { id:'ev-tabs', label:'Evento', sub:'14 tabs', color:'var(--teal)', children:[
+        { id:'et-over', label:'Visão Geral', color:'var(--teal)' },
+        { id:'et-insc', label:'Inscrições', color:'var(--teal)' },
+        { id:'et-tick', label:'Ingressos', color:'var(--teal)' },
+        { id:'et-sales', label:'Páginas Venda', color:'var(--teal)' },
+        { id:'et-fin', label:'Financeiro', color:'var(--yellow)' },
+        { id:'et-don', label:'Doações', color:'var(--yellow)' },
+        { id:'et-gest', label:'Gestão', color:'var(--purple)' },
+        { id:'et-rooms', label:'Quartos', color:'var(--purple)' },
+        { id:'et-equipe', label:'Equipe', color:'var(--purple)' },
+        { id:'et-tasks', label:'Tarefas', color:'var(--purple)' },
+        { id:'et-cupons', label:'Cupons', color:'var(--teal)' },
+        { id:'et-checkin', label:'Check-in QR', color:'var(--teal)' },
+        { id:'et-notif', label:'Notificações', color:'var(--teal)' },
+        { id:'et-rep', label:'Relatórios', color:'var(--yellow)' },
+      ]},
+      { id:'admin-tabs', label:'Central Admin', sub:'14 tabs', color:'var(--red)', children:[
+        { id:'at-over', label:'Overview', color:'var(--red)' },
+        { id:'at-users', label:'Usuários', color:'var(--red)' },
+        { id:'at-cli', label:'Clientes', color:'var(--red)' },
+        { id:'at-subs', label:'Assinaturas', color:'var(--red)' },
+        { id:'at-fin', label:'Financeiro', color:'var(--red)' },
+        { id:'at-gw', label:'Gateway', color:'var(--red)' },
+        { id:'at-bill', label:'Billing Key', color:'var(--red)' },
+        { id:'at-tickets', label:'Tickets Suporte', color:'var(--red)' },
+        { id:'at-leads', label:'Leads', color:'var(--red)' },
+        { id:'at-com', label:'Comunicados', color:'var(--red)' },
+        { id:'at-cs', label:'CS Panel', color:'var(--red)' },
+        { id:'at-kb', label:'Base Conhecimento', color:'var(--red)' },
+        { id:'at-calc', label:'Calculadora', color:'var(--red)' },
+        { id:'at-docs', label:'Documentos', color:'var(--red)' },
+      ]},
+      { id:'landing-sec', label:'Landing Page', sub:'14 seções', color:'var(--teal)', children:[
+        { id:'ls-nav', label:'Navbar', color:'var(--teal)' },
+        { id:'ls-hero', label:'Hero', color:'var(--teal)' },
+        { id:'ls-sobre', label:'Sobre', color:'var(--teal)' },
+        { id:'ls-nome', label:'Nome', color:'var(--teal)' },
+        { id:'ls-demo', label:'DemoMockups', color:'var(--teal)' },
+        { id:'ls-como', label:'ComoFunciona', color:'var(--teal)' },
+        { id:'ls-func', label:'Funcionalidades', color:'var(--teal)' },
+        { id:'ls-plan', label:'Planos', color:'var(--teal)' },
+        { id:'ls-gw', label:'Gateway', color:'var(--teal)' },
+        { id:'ls-faq', label:'FAQ', color:'var(--teal)' },
+        { id:'ls-prova', label:'Prova Social', color:'var(--teal)' },
+        { id:'ls-cta', label:'CTA Final', color:'var(--teal)' },
+        { id:'ls-foot', label:'Footer', color:'var(--teal)' },
+      ]},
+      { id:'libs', label:'Bibliotecas', sub:'UI + Tools', color:'var(--blue)', children:[
+        { id:'lib-shad', label:'shadcn/ui', color:'var(--blue)' },
+        { id:'lib-motion', label:'Motion (Framer)', color:'var(--blue)' },
+        { id:'lib-recharts', label:'Recharts', color:'var(--blue)' },
+        { id:'lib-tiptap', label:'TipTap (Rich Text)', color:'var(--blue)' },
+        { id:'lib-rhf', label:'React Hook Form + Zod', color:'var(--blue)' },
+        { id:'lib-pdf', label:'@react-pdf/renderer', color:'var(--blue)' },
+        { id:'lib-qr', label:'QR Code (scan + gen)', color:'var(--blue)' },
+        { id:'lib-dnd', label:'Drag & Drop', color:'var(--blue)' },
+        { id:'lib-xlsx', label:'XLSX + PapaParse', color:'var(--blue)' },
+      ]},
+    ]},
+    { id:'backend', label:'Backend', sub:'Vercel Serverless', color:'var(--primary)', children:[
+      { id:'api-routes', label:'API Routes', sub:'11 endpoints', color:'var(--primary)', children:[
+        { id:'api-wh1', label:'/api/asaasWebhook', sub:'Planos', color:'var(--yellow)' },
+        { id:'api-wh2', label:'/api/eventPaymentWebhook', sub:'Inscrições', color:'var(--yellow)' },
+        { id:'api-checkout', label:'/api/createCheckout', sub:'Cria cobrança Asaas', color:'var(--primary)' },
+        { id:'api-billing', label:'/api/getBillingInfo', sub:'Info do organizador', color:'var(--primary)' },
+        { id:'api-equipe', label:'/api/equipeJoin', sub:'Admin SDK', color:'var(--primary)' },
+        { id:'api-email', label:'/api/sendEmail', sub:'Via Resend', color:'var(--purple)' },
+        { id:'api-cod1', label:'/api/enviarCodigoInscricao', color:'var(--primary)' },
+        { id:'api-cod2', label:'/api/confirmarCodigoInscricao', color:'var(--primary)' },
+        { id:'api-ver1', label:'/api/enviarCodigoVerificacao', color:'var(--primary)' },
+        { id:'api-ver2', label:'/api/confirmarCodigoVerificacao', color:'var(--primary)' },
+        { id:'api-reset', label:'/api/enviarRedefinicaoSenha', color:'var(--primary)' },
+      ]},
+      { id:'api-helpers', label:'Helpers', sub:'4 arquivos', color:'var(--muted)', children:[
+        { id:'ah-fb', label:'_firebase.ts Admin SDK', color:'var(--muted)' },
+        { id:'ah-val', label:'_validate.ts Rate Limiter', color:'var(--muted)' },
+        { id:'ah-sch', label:'_schemas.ts Zod', color:'var(--muted)' },
+        { id:'ah-typ', label:'_types.ts', color:'var(--muted)' },
+      ]},
+    ]},
+    { id:'data', label:'Dados', sub:'Cloud Firestore', color:'var(--green)', children:[
+      { id:'fs-top', label:'Collections', sub:'16 top-level', color:'var(--green)', children:[
+        { id:'c-users', label:'users', sub:'Organizadores', color:'var(--green)' },
+        { id:'c-eventos', label:'eventos', sub:'Eventos', color:'var(--green)' },
+        { id:'c-notif', label:'notificacoes', sub:'In-app', color:'var(--green)' },
+        { id:'c-equipes', label:'equipes', sub:'Equipe global', color:'var(--green)' },
+        { id:'c-conv', label:'convites', sub:'Pendentes', color:'var(--green)' },
+        { id:'c-tickets', label:'tickets', sub:'Suporte', color:'var(--green)' },
+        { id:'c-leads', label:'leads', sub:'Captação', color:'var(--green)' },
+        { id:'c-kb', label:'base_conhecimento', sub:'Artigos', color:'var(--green)' },
+        { id:'c-orgpub', label:'organizer_public', sub:'Webhook hash', color:'var(--green)' },
+        { id:'c-logs', label:'access_logs', sub:'Login tracking', color:'var(--green)' },
+        { id:'c-config', label:'config', sub:'Global', color:'var(--green)' },
+        { id:'c-rl', label:'_rate_limits', color:'var(--green)' },
+      ]},
+      { id:'fs-sub', label:'Subcollections', sub:'eventos/{id}/*', color:'var(--teal)', children:[
+        { id:'sc-insc', label:'inscricoes', sub:'Participantes', color:'var(--teal)' },
+        { id:'sc-tick', label:'tickets', sub:'Tipos ingresso', color:'var(--teal)' },
+        { id:'sc-pag', label:'pagamentos', sub:'Manual + auto', color:'var(--teal)' },
+        { id:'sc-pv', label:'paginas_venda', sub:'URLs custom', color:'var(--teal)' },
+        { id:'sc-doac', label:'doacoes', sub:'Livres + direcionadas', color:'var(--teal)' },
+        { id:'sc-trans', label:'transacoes', sub:'Entradas/saídas', color:'var(--teal)' },
+        { id:'sc-taref', label:'tarefas', sub:'Kanban', color:'var(--teal)' },
+        { id:'sc-quart', label:'quartos', sub:'Hospedagem', color:'var(--teal)' },
+        { id:'sc-cup', label:'cupons', sub:'Descontos', color:'var(--teal)' },
+        { id:'sc-pess', label:'pessoas', sub:'Cadastro', color:'var(--teal)' },
+      ]},
+    ]},
+    { id:'auth', label:'Autenticação', sub:'Firebase Auth', color:'var(--yellow)', children:[
+      { id:'auth-google', label:'Google Sign-In', color:'var(--yellow)' },
+      { id:'auth-email', label:'Email + Senha', color:'var(--yellow)' },
+      { id:'auth-ctx', label:'AuthContext', sub:'React Context', color:'var(--yellow)' },
+      { id:'auth-guard', label:'PrivateRoute', sub:'Guard de rota', color:'var(--yellow)' },
+      { id:'auth-admin', label:'AdminRoute', sub:'isAdminEmail()', color:'var(--red)' },
+    ]},
+    { id:'payments', label:'Pagamentos', sub:'Asaas BYOG', color:'var(--green)', children:[
+      { id:'pay-byog', label:'BYOG Model', sub:'Organizador conecta gateway', color:'var(--green)' },
+      { id:'pay-methods', label:'Métodos', sub:'PIX, Boleto, Cartão', color:'var(--green)' },
+      { id:'pay-wh-plan', label:'Webhook Planos', sub:'asaasWebhook.ts', color:'var(--yellow)' },
+      { id:'pay-wh-ev', label:'Webhook Eventos', sub:'eventPaymentWebhook.ts', color:'var(--yellow)' },
+      { id:'pay-encrypt', label:'Chaves Criptografadas', sub:'AES-256', color:'var(--red)' },
+    ]},
+    { id:'services', label:'Serviços', sub:'Integrações externas', color:'var(--purple)', children:[
+      { id:'sv-resend', label:'Resend', sub:'Emails transacionais', color:'var(--purple)' },
+      { id:'sv-sentry', label:'Sentry', sub:'Error tracking', color:'var(--red)' },
+      { id:'sv-storage', label:'Firebase Storage', sub:'Imagens', color:'var(--green)' },
+      { id:'sv-genai', label:'Google GenAI', sub:'IA integrada', color:'var(--teal)' },
+    ]},
+    { id:'security', label:'Segurança', sub:'Headers + Auth + Encryption', color:'var(--red)', children:[
+      { id:'sec-csp', label:'CSP', sub:'Content Security Policy', color:'var(--red)' },
+      { id:'sec-hsts', label:'HSTS', sub:'Strict Transport', color:'var(--red)' },
+      { id:'sec-xfo', label:'X-Frame-Options DENY', color:'var(--red)' },
+      { id:'sec-xcto', label:'X-Content-Type nosniff', color:'var(--red)' },
+      { id:'sec-ref', label:'Referrer-Policy', color:'var(--red)' },
+      { id:'sec-perm', label:'Permissions-Policy', color:'var(--red)' },
+      { id:'sec-env', label:'.env (gitignored)', sub:'Secrets em process.env', color:'var(--red)' },
+    ]},
+    { id:'plans', label:'Planos', sub:'4 níveis', color:'var(--primary)', children:[
+      { id:'pl-chi', label:'Chinám', sub:'Grátis — 1 evento, 50 part.', color:'var(--muted)' },
+      { id:'pl-pet', label:'Pétach R$49', sub:'3 eventos, financeiro', color:'var(--primary)' },
+      { id:'pl-koa', label:'Koách R$129', sub:'5 eventos, equipe', color:'var(--green)' },
+      { id:'pl-cha', label:'Chalém R$299', sub:'10 eventos, gateway', color:'var(--yellow)' },
+    ]},
+  ]
+};
+
+// ─── LAYOUT ENGINE ───
+const NODE_H = 44;
+const NODE_PAD = 8;
+const LEVEL_GAP = 200;
+const SIBLING_GAP = 6;
+
+const state = {};
+const nodeEls = {};
+
+function initState(node) {
+  state[node.id] = { expanded: false };
+  if (node.children) node.children.forEach(c => initState(c));
+}
+initState(TREE);
+state.root.expanded = true;
+
+function measureLabel(node) {
+  const label = node.label + (node.sub ? '  ' + node.sub : '');
+  return Math.max(100, label.length * 7 + 60);
+}
+
+function layoutTree(node, x, y, depth) {
+  const w = measureLabel(node);
+  const result = { id:node.id, x, y, w, h:NODE_H, depth, node, children:[] };
+  if (!state[node.id].expanded || !node.children) {
+    result.totalH = NODE_H;
+    return result;
+  }
+  let cy = y;
+  for (const child of node.children) {
+    const childLayout = layoutTree(child, x + w + LEVEL_GAP, cy, depth+1);
+    result.children.push(childLayout);
+    cy += childLayout.totalH + SIBLING_GAP;
+  }
+  const totalChildH = cy - y - SIBLING_GAP;
+  result.totalH = Math.max(NODE_H, totalChildH);
+  // center parent vertically
+  if (result.children.length > 0) {
+    const firstY = result.children[0].y + result.children[0].h/2;
+    const lastY = result.children[result.children.length-1].y + result.children[result.children.length-1].h/2;
+    result.y = (firstY + lastY) / 2 - NODE_H/2;
+  }
+  return result;
+}
+
+function flattenLayout(layout, arr=[]) {
+  arr.push(layout);
+  layout.children.forEach(c => flattenLayout(c, arr));
+  return arr;
+}
+
+// ─── RENDERING ───
+const world = document.getElementById('world');
+const svgLines = document.getElementById('lines');
+
+function render() {
+  const layout = layoutTree(TREE, 60, 60, 0);
+  const flat = flattenLayout(layout);
+
+  // clear old
+  Object.keys(nodeEls).forEach(k => { if (nodeEls[k].parentNode) nodeEls[k].remove(); delete nodeEls[k]; });
+  svgLines.innerHTML = '';
+
+  // compute bounding box
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  flat.forEach(n => {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.w);
+    maxY = Math.max(maxY, n.y + n.h);
+  });
+  svgLines.style.width = (maxX+100)+'px';
+  svgLines.style.height = (maxY+100)+'px';
+
+  // draw lines
+  flat.forEach(n => {
+    n.children.forEach(child => {
+      const x1 = n.x + n.w;
+      const y1 = n.y + n.h/2;
+      const x2 = child.x;
+      const y2 = child.y + child.h/2;
+      const mx = (x1+x2)/2;
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+      path.setAttribute('fill','none');
+      path.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--line').trim());
+      path.setAttribute('stroke-width','2');
+      svgLines.appendChild(path);
+    });
+  });
+
+  // draw nodes
+  flat.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'node' + (n.depth===0?' root':'') + (n.depth===1?' l1':'') + (state[n.id].expanded?' expanded':'');
+    el.style.left = n.x+'px';
+    el.style.top = n.y+'px';
+    if (n.depth > 0) {
+      el.innerHTML = `<span class="dot" style="background:${n.node.color}"></span>`;
+    }
+    let html = `<span class="label">${n.node.label}`;
+    if (n.node.sub) html += `<span class="sub">${n.node.sub}</span>`;
+    html += '</span>';
+    if (n.node.children) html += '<span class="toggle">▶</span>';
+    el.innerHTML += html;
+
+    el.addEventListener('click', () => {
+      if (!n.node.children) return;
+      state[n.id].expanded = !state[n.id].expanded;
+      render();
+    });
+
+    world.appendChild(el);
+    nodeEls[n.id] = el;
+  });
+}
+
+// ─── PAN & ZOOM ───
+let scale = 0.85, panX = 0, panY = 80;
+function applyTransform() {
+  world.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+}
+
+const canvas = document.getElementById('canvas');
+let dragging = false, lastMX, lastMY;
+
+canvas.addEventListener('pointerdown', e => {
+  if (e.target.closest('.node')) return;
+  dragging = true; lastMX = e.clientX; lastMY = e.clientY;
+  canvas.classList.add('grabbing');
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  panX += e.clientX - lastMX;
+  panY += e.clientY - lastMY;
+  lastMX = e.clientX; lastMY = e.clientY;
+  applyTransform();
+});
+canvas.addEventListener('pointerup', () => { dragging = false; canvas.classList.remove('grabbing'); });
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const ns = Math.max(0.15, Math.min(3, scale * delta));
+  panX = mx - (mx - panX) * (ns / scale);
+  panY = my - (my - panY) * (ns / scale);
+  scale = ns;
+  applyTransform();
+}, { passive: false });
+
+function zoomBy(factor) {
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  const ns = Math.max(0.15, Math.min(3, scale * factor));
+  panX = cx - (cx - panX) * (ns / scale);
+  panY = cy - (cy - panY) * (ns / scale);
+  scale = ns;
+  applyTransform();
+}
+function resetView() {
+  scale = 0.85; panX = 0; panY = 80;
+  applyTransform();
+}
+function expandAll() {
+  Object.keys(state).forEach(k => state[k].expanded = true);
+  render();
+}
+function collapseAll() {
+  Object.keys(state).forEach(k => state[k].expanded = false);
+  state.root.expanded = true;
+  render();
+}
+
+// ─── INIT ───
+render();
+applyTransform();
+</script>
+</body>
+</html>

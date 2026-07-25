@@ -8,6 +8,7 @@ interface Doc {
   file: string;
   hasPreview: boolean;
   updatedAt: string;
+  downloadFile?: string;
 }
 
 const DOCS: Doc[] = [
@@ -41,6 +42,15 @@ const DOCS: Doc[] = [
     description: 'Spec completa do app mobile: telas, navegação, componentes, feature gating por plano.',
     file: '/docs/tovia-mobile-spec.md',
     hasPreview: false,
+    updatedAt: '2026-07-24',
+  },
+  {
+    id: 'arquitetura',
+    title: 'Arquitetura Tovia',
+    description: 'Mapa mental interativo da arquitetura completa. Visualize o mapa ou baixe os dados em JSON.',
+    file: '/docs/arquitetura-tovia.html',
+    hasPreview: true,
+    downloadFile: '/docs/arquitetura-tovia.json',
     updatedAt: '2026-07-24',
   },
   {
@@ -121,28 +131,39 @@ export default function AdminDocumentosTab() {
             </div>
             <div className="flex gap-2 mt-auto">
               {doc.hasPreview && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-xs"
-                    onClick={() => handleView(doc)}
-                  >
-                    <Eye className="w-3.5 h-3.5 mr-1.5" />
-                    Visualizar
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-xs"
-                    onClick={() => handleExportPdf(doc)}
-                  >
-                    <Download className="w-3.5 h-3.5 mr-1.5" />
-                    Exportar PDF
-                  </Button>
-                </>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 text-xs"
+                  onClick={() => handleView(doc)}
+                >
+                  <Eye className="w-3.5 h-3.5 mr-1.5" />
+                  Visualizar
+                </Button>
               )}
-              {!doc.hasPreview && (
+              {doc.hasPreview && !doc.downloadFile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 text-xs"
+                  onClick={() => handleExportPdf(doc)}
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" />
+                  Exportar PDF
+                </Button>
+              )}
+              {doc.downloadFile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 text-xs"
+                  onClick={() => handleDownload({ ...doc, file: doc.downloadFile! })}
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" />
+                  Baixar JSON
+                </Button>
+              )}
+              {!doc.hasPreview && !doc.downloadFile && (
                 <Button
                   variant="outline"
                   size="sm"

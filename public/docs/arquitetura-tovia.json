@@ -1,0 +1,210 @@
+{
+  "project": "Tovia — Gestão de Eventos",
+  "version": "1.0.0",
+  "updated": "2026-07-24",
+  "stack": {
+    "frontend": {
+      "framework": "React 19",
+      "bundler": "Vite",
+      "styling": "Tailwind CSS 4",
+      "routing": "React Router 7",
+      "ui_components": "shadcn/ui + Lucide Icons",
+      "animations": "Motion (Framer Motion)",
+      "forms": "React Hook Form + Zod",
+      "charts": "Recharts",
+      "rich_text": "TipTap",
+      "pdf": "@react-pdf/renderer",
+      "qr": "qrcode.react + qr-scanner",
+      "drag_drop": "@hello-pangea/dnd",
+      "dates": "date-fns + react-day-picker",
+      "export": "xlsx + PapaParse"
+    },
+    "backend": {
+      "hosting": "Vercel (serverless)",
+      "api": "Vercel Serverless Functions (Node.js)",
+      "database": "Cloud Firestore",
+      "auth": "Firebase Authentication (Google + Email/Password)",
+      "storage": "Firebase Storage",
+      "email": "Resend API",
+      "payments": "Asaas (BYOG — organizador conecta próprio gateway)",
+      "monitoring": "Sentry",
+      "ai": "Google GenAI SDK"
+    },
+    "security": {
+      "headers": ["CSP", "HSTS", "X-Frame-Options", "X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy"],
+      "auth_method": "Firebase Auth (localStorage/indexedDB tokens, sem cookies)",
+      "api_auth": "Firebase ID Token verification",
+      "webhook_auth": "SHA-256 token hash (event payments) + timing-safe compare (plan payments)",
+      "encryption": "AES-256 for gateway API keys",
+      "secrets": "Vercel environment variables (process.env)"
+    }
+  },
+  "routes": {
+    "public": [
+      { "path": "/", "component": "LandingPage", "description": "Landing page com SEO" },
+      { "path": "/login", "component": "Login", "description": "Login com Google ou Email" },
+      { "path": "/entrar", "component": "Login", "description": "Alias do login" },
+      { "path": "/leads", "component": "CaptacaoPage", "description": "Página de captação de leads" },
+      { "path": "/verificar-email", "component": "VerificarEmail", "description": "Verificação de email" },
+      { "path": "/confirmar-email", "component": "ConfirmarEmail", "description": "Confirmação de email" },
+      { "path": "/privacidade", "component": "PrivacyPolicy", "description": "Política de privacidade e LGPD" },
+      { "path": "/termos-de-uso", "component": "TermosDeUso", "description": "Termos de uso" },
+      { "path": "/satisfacao", "component": "SatisfacaoPage", "description": "Pesquisa de satisfação" },
+      { "path": "/base-de-conhecimento", "component": "BaseConhecimento", "description": "Central de ajuda" },
+      { "path": "/base-de-conhecimento/:slug", "component": "ArtigoBaseConhecimento", "description": "Artigo da base" },
+      { "path": "/consultar-inscricao", "component": "ConsultarInscricao", "description": "Consulta pública de inscrição" },
+      { "path": "/e/:eventoId/:slug", "component": "PublicSalesPage", "description": "Página de venda pública (por ID)" },
+      { "path": "/:orgCodigo/:eventoCodigo/:paginaCodigo", "component": "PublicSalesPageByCodigo", "description": "Página de venda pública (por código)" },
+      { "path": "/o/:userId", "component": "PublicOrganizerProfile", "description": "Perfil público do organizador" },
+      { "path": "/:orgCodigo", "component": "PublicOrganizerProfileByCodigo", "description": "Perfil público (por código)" }
+    ],
+    "private": [
+      { "path": "/onboarding", "component": "Onboarding", "description": "Setup inicial do organizador" },
+      { "path": "/planos", "component": "Plans", "description": "Seleção de planos" },
+      { "path": "/planos/aguardando", "component": "AguardandoPagamento", "description": "Aguardando confirmação de pagamento" },
+      { "path": "/checkout-plano", "component": "CheckoutPlano", "description": "Checkout do plano" },
+      { "path": "/dashboard", "component": "Dashboard", "description": "Painel principal do organizador" },
+      { "path": "/eventos/novo", "component": "CreateEvent", "description": "Criar evento" },
+      { "path": "/eventos/:id/editar", "component": "EditEvent", "description": "Editar evento" },
+      { "path": "/eventos/:id/checkin", "component": "CheckinPage", "description": "Check-in QR Code" },
+      { "path": "/eventos/:id/*", "component": "EventDetail", "description": "Detalhe do evento (tabs)" }
+    ],
+    "admin": [
+      { "path": "/admin/*", "component": "AdminDashboard", "description": "Central administrativa (super admin)" }
+    ]
+  },
+  "dashboard_tabs": [
+    { "id": "home", "component": "HomeTab", "description": "Visão geral, eventos recentes, métricas" },
+    { "id": "profile", "component": "ProfileTab", "description": "Perfil do organizador" },
+    { "id": "equipe", "component": "EquipeDashTab", "description": "Gestão de equipe global" },
+    { "id": "billing", "component": "BillingTab", "description": "Assinatura e faturamento" },
+    { "id": "gateway", "component": "GatewayTab", "description": "Configuração do gateway de pagamento" },
+    { "id": "reports", "component": "ReportsTab", "description": "Relatórios consolidados" },
+    { "id": "calendar", "component": "CalendarTab", "description": "Calendário de eventos" },
+    { "id": "calculator", "component": "CalculatorTab", "description": "Calculadora de custos" },
+    { "id": "config", "component": "ConfiguracoesTab", "description": "Configurações gerais" },
+    { "id": "design-system", "component": "DesignSystemTab", "description": "Design system interno" }
+  ],
+  "event_tabs": [
+    { "id": "overview", "component": "OverviewTab", "description": "Visão geral do evento" },
+    { "id": "registrations", "component": "RegistrationsTab", "description": "Inscrições e participantes" },
+    { "id": "tickets", "component": "TicketsTab", "description": "Ingressos e tipos de entrada" },
+    { "id": "sales-pages", "component": "SalesPagesTab", "description": "Páginas de venda personalizadas" },
+    { "id": "financial", "component": "FinancialTab", "description": "Financeiro: pagamentos, receitas, despesas" },
+    { "id": "donations", "component": "DonationsTab", "description": "Doações direcionadas e livres" },
+    { "id": "management", "component": "ManagementTab", "description": "Gestão de recursos e grupos" },
+    { "id": "rooms", "component": "RoomsTab", "description": "Quartos e hospedagem" },
+    { "id": "equipe", "component": "EquipeTab", "description": "Equipe do evento" },
+    { "id": "tasks", "component": "TasksTab", "description": "Tarefas e atividades" },
+    { "id": "cupons", "component": "CuponsTab", "description": "Cupons de desconto" },
+    { "id": "checkin", "component": "CheckinTab", "description": "Check-in com QR Code" },
+    { "id": "notifications", "component": "NotificationsTab", "description": "Notificações e comunicação" },
+    { "id": "reports", "component": "ReportsTab", "description": "Relatórios do evento" }
+  ],
+  "admin_tabs": [
+    { "id": "overview", "component": "AdminOverviewTab", "description": "Métricas globais da plataforma" },
+    { "id": "users", "component": "AdminUsersTab", "description": "Gestão de usuários" },
+    { "id": "clientes", "component": "AdminClientesTab", "description": "Clientes e organizadores" },
+    { "id": "subscriptions", "component": "AdminSubscriptionsTab", "description": "Assinaturas ativas" },
+    { "id": "financial", "component": "AdminFinancialTab", "description": "Financeiro da plataforma" },
+    { "id": "gateway", "component": "AdminGatewayTab", "description": "Status dos gateways" },
+    { "id": "billing-key", "component": "AdminBillingKeyTab", "description": "Chaves de cobrança" },
+    { "id": "tickets", "component": "AdminTicketsTab", "description": "Tickets de suporte" },
+    { "id": "leads", "component": "AdminLeadsTab", "description": "Leads capturados" },
+    { "id": "comunicados", "component": "AdminComunicadosTab", "description": "Comunicados para usuários" },
+    { "id": "cs-panel", "component": "AdminCSPanelTab", "description": "Painel de Customer Success" },
+    { "id": "knowledge-base", "component": "AdminKnowledgeBaseTab", "description": "Base de conhecimento" },
+    { "id": "calculator", "component": "AdminCalculatorTab", "description": "Calculadora" },
+    { "id": "documentos", "component": "AdminDocumentosTab", "description": "Documentos internos" }
+  ],
+  "api_routes": [
+    { "path": "/api/asaasWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de planos (ativa/cancela plano do organizador)", "auth": "ASAAS_WEBHOOK_TOKEN (timing-safe)" },
+    { "path": "/api/eventPaymentWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de eventos (atualiza inscrição para pago)", "auth": "SHA-256 hash do token por organizador" },
+    { "path": "/api/createCheckout", "method": "POST", "description": "Cria cobrança no Asaas para inscrição em evento", "auth": "Firebase ID Token" },
+    { "path": "/api/getBillingInfo", "method": "POST", "description": "Consulta info de cobrança do organizador no Asaas", "auth": "Firebase ID Token" },
+    { "path": "/api/equipeJoin", "method": "POST", "description": "Adiciona membro à equipe do evento (admin SDK)", "auth": "Firebase ID Token" },
+    { "path": "/api/sendEmail", "method": "POST", "description": "Envia email transacional via Resend", "auth": "Interno (chamado pelo frontend)" },
+    { "path": "/api/enviarCodigoInscricao", "method": "POST", "description": "Envia código de consulta de inscrição por email", "auth": "Rate limited" },
+    { "path": "/api/confirmarCodigoInscricao", "method": "POST", "description": "Valida código de consulta de inscrição", "auth": "Rate limited" },
+    { "path": "/api/enviarCodigoVerificacao", "method": "POST", "description": "Envia código de verificação de email", "auth": "Rate limited" },
+    { "path": "/api/confirmarCodigoVerificacao", "method": "POST", "description": "Confirma código de verificação de email", "auth": "Rate limited" },
+    { "path": "/api/enviarRedefinicaoSenha", "method": "POST", "description": "Envia email de redefinição de senha", "auth": "Rate limited" }
+  ],
+  "firestore_collections": {
+    "top_level": [
+      { "name": "users", "description": "Perfis de organizadores", "key_fields": ["uid", "nome", "email", "plano", "gateway", "codigo"] },
+      { "name": "eventos", "description": "Eventos criados pelos organizadores", "key_fields": ["id", "nome", "criado_por", "data_inicio", "config_pagamento", "config_comunicacao"] },
+      { "name": "notificacoes", "description": "Notificações in-app", "key_fields": ["userId", "tipo", "titulo", "lida"] },
+      { "name": "equipes", "description": "Membros de equipe global", "key_fields": ["donoId", "userId", "email", "status"] },
+      { "name": "convites", "description": "Convites pendentes de equipe", "key_fields": ["email", "eventoId", "permissoes"] },
+      { "name": "tickets", "description": "Tickets de suporte", "key_fields": ["userId", "status", "assunto"] },
+      { "name": "leads", "description": "Leads capturados pela landing page", "key_fields": ["email", "nome", "origem"] },
+      { "name": "base_conhecimento", "description": "Artigos da base de conhecimento", "key_fields": ["slug", "titulo", "conteudo", "tags"] },
+      { "name": "organizer_public", "description": "Dados públicos do organizador (webhook hash)", "key_fields": ["webhook_token_hash"] },
+      { "name": "comunicado_grupos", "description": "Grupos de comunicados", "key_fields": [] },
+      { "name": "comunicados_enviados", "description": "Histórico de comunicados enviados", "key_fields": [] },
+      { "name": "access_logs", "description": "Log de acesso dos usuários", "key_fields": ["uid", "email", "timestamp", "userAgent"] },
+      { "name": "config", "description": "Configurações globais da plataforma", "key_fields": [] },
+      { "name": "verification_tokens", "description": "Tokens temporários de verificação", "key_fields": [] },
+      { "name": "inscricao_codes", "description": "Códigos temporários de consulta de inscrição", "key_fields": [] },
+      { "name": "_rate_limits", "description": "Rate limiting das APIs", "key_fields": [] }
+    ],
+    "subcollections_of_eventos": [
+      { "name": "inscricoes", "description": "Inscrições de participantes", "key_fields": ["nome", "email", "status", "ticketId", "valor_total"] },
+      { "name": "tickets", "description": "Tipos de ingresso do evento", "key_fields": ["nome", "tipo", "valor", "limite_vagas"] },
+      { "name": "pagamentos", "description": "Pagamentos registrados", "key_fields": ["inscricaoId", "valor", "status", "metodo", "origem"] },
+      { "name": "paginas_venda", "description": "Páginas de venda personalizadas", "key_fields": ["slug", "nome", "ticketIds", "campos_formulario"] },
+      { "name": "doacoes", "description": "Doações recebidas", "key_fields": ["valor", "destino", "status", "doadorNome"] },
+      { "name": "transacoes", "description": "Transações financeiras (entradas/saídas)", "key_fields": ["tipo", "categoria", "valor"] },
+      { "name": "tarefas", "description": "Tarefas da equipe", "key_fields": ["titulo", "responsavel", "status", "prioridade"] },
+      { "name": "quartos", "description": "Quartos e hospedagem", "key_fields": ["nome", "vagas", "genero", "hospedes"] },
+      { "name": "cupons", "description": "Cupons de desconto", "key_fields": ["codigo", "tipo", "valor", "ativo"] },
+      { "name": "pessoas", "description": "Pessoas (cadastro legado)", "key_fields": ["nome", "cpf", "email"] },
+      { "name": "divisoes", "description": "Divisões de quartos", "key_fields": [] },
+      { "name": "alocacoes_doacoes", "description": "Alocação de doações a inscritos", "key_fields": [] }
+    ]
+  },
+  "plans": {
+    "chinam": { "name": "Chinám", "price": 0, "events": 1, "participants": 50, "tickets": 1, "team": 0, "features": ["Inscrições básicas", "Check-in QR"] },
+    "petach": { "name": "Pétach", "price": 49, "events": 3, "participants": 200, "tickets": 3, "team": 0, "features": ["Financeiro manual", "Relatórios", "Formulários personalizados"] },
+    "koach": { "name": "Koách", "price": 129, "events": 5, "participants": 500, "tickets": 5, "team": 5, "features": ["Equipe", "Tarefas", "Gestão completa"] },
+    "chalem": { "name": "Chalém", "price": 299, "events": 10, "participants": -1, "tickets": 10, "team": 10, "features": ["Pagamentos automáticos", "Gateway BYOG", "Sem limites de participantes"] }
+  },
+  "directory_structure": {
+    "src/": {
+      "main.tsx": "Entry point",
+      "App.tsx": "Router + routes + auth guards",
+      "types.ts": "TypeScript interfaces globais",
+      "context/": ["AuthContext.tsx", "ThemeProvider.tsx"],
+      "services/": ["firebase.ts", "firestore.ts", "email.ts", "email-templates.ts", "storageConfig.ts"],
+      "utils/": ["admin-config.ts", "codigos.ts", "notifications.ts", "plan-limits.ts", "validators.ts"],
+      "components/": ["ToviaLogo.tsx", "Logo.tsx", "ImageCropper.tsx"],
+      "data/": ["knowledgeBaseSeeds.ts"],
+      "pages/": "Páginas de rota direta (Login, Plans, Landing, etc.)",
+      "pages/landing/": "Seções da landing page + mockups + animações",
+      "features/dashboard/": "Dashboard do organizador (tabs)",
+      "features/events/": "CRUD de eventos + tabs de detalhe",
+      "features/admin/": "Central administrativa (super admin)",
+      "features/public-pages/": "Páginas públicas (sales page, perfil organizador)",
+      "features/pdf/": "Geração de PDFs (relatório, ficha de inscrição)"
+    },
+    "api/": {
+      "_firebase.ts": "Firebase Admin SDK init",
+      "_validate.ts": "Validação e rate limiting",
+      "_schemas.ts": "Schemas Zod para validação",
+      "_types.ts": "Types compartilhados",
+      "*.ts": "Serverless functions (Vercel)"
+    },
+    "public/docs/": "Documentos HTML/MD internos"
+  },
+  "external_services": [
+    { "service": "Firebase Auth", "purpose": "Autenticação (Google + Email/Password)", "data_flow": "Frontend → Firebase → Firestore" },
+    { "service": "Cloud Firestore", "purpose": "Banco de dados principal", "data_flow": "Frontend ↔ Firestore (via SDK + regras)" },
+    { "service": "Firebase Storage", "purpose": "Upload de imagens (perfil, eventos)", "data_flow": "Frontend → Storage → CDN" },
+    { "service": "Vercel", "purpose": "Hosting + serverless functions", "data_flow": "DNS → Vercel Edge → SPA ou API" },
+    { "service": "Asaas", "purpose": "Gateway de pagamento (planos + eventos)", "data_flow": "API → Asaas → Webhook → API" },
+    { "service": "Resend", "purpose": "Envio de emails transacionais", "data_flow": "API → Resend → Destinatário" },
+    { "service": "Sentry", "purpose": "Monitoramento de erros", "data_flow": "Frontend → Sentry Cloud" },
+    { "service": "Google GenAI", "purpose": "Funcionalidades de IA (SDK integrado)", "data_flow": "Frontend → Google AI" }
+  ]
+}
