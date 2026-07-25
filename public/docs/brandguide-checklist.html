@@ -1,0 +1,354 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia — Brand Guide Checklist</title>
+<style>
+:root {
+  --bg: #F5F0E8; --fg: #1E0B4B; --primary: #FF6B1A; --accent: #9B5FFF;
+  --card: #fff; --border: #E0D8CC; --muted: #6b5fa0; --sidebar: #2D1470;
+  --success: #16a34a; --success-light: #dcfce7;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E0520; --fg: #F5F0E8; --card: #1A0B3B; --border: #2A1660; --muted: #a899cc;
+  --success-light: #052e16;
+}}
+:root[data-theme="dark"] {
+  --bg: #0E0520; --fg: #F5F0E8; --card: #1A0B3B; --border: #2A1660; --muted: #a899cc;
+  --success-light: #052e16;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+
+.header { background: var(--sidebar); color: #F5F0E8; padding: 40px 32px 32px; }
+.header h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 12px; }
+.header h1 .logo { height: 32px; width: auto; }
+.header h1 span { color: rgba(245,240,232,0.6); font-weight: 400; font-size: 22px; }
+.header p { font-size: 13px; color: rgba(245,240,232,0.5); margin-top: 4px; }
+.progress-bar { margin-top: 20px; }
+.progress-bar .bar-bg { height: 8px; background: rgba(245,240,232,0.1); border-radius: 4px; overflow: hidden; }
+.progress-bar .bar-fill { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.4s ease; }
+.progress-bar .bar-label { font-size: 12px; color: rgba(245,240,232,0.6); margin-top: 6px; display: flex; justify-content: space-between; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+
+.chapter { margin-bottom: 32px; }
+.chapter-header {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  cursor: pointer; user-select: none; transition: all 0.2s;
+}
+.chapter-header:hover { border-color: var(--primary); }
+.chapter-header.all-done { border-color: var(--success); background: var(--success-light); }
+.chapter-num { font-size: 13px; font-weight: 800; color: var(--primary); min-width: 28px; }
+.chapter-title { font-size: 15px; font-weight: 700; flex: 1; }
+.chapter-count { font-size: 11px; color: var(--muted); font-weight: 500; }
+.chapter-arrow { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+.chapter-header.open .chapter-arrow { transform: rotate(90deg); }
+
+.chapter-items {
+  display: none; padding: 8px 0 0 0; margin-left: 16px;
+  border-left: 2px solid var(--border); padding-left: 20px;
+}
+.chapter-items.open { display: block; }
+
+.item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: 8px; transition: background 0.15s; }
+.item:hover { background: var(--card); }
+.item.sub-header { padding-top: 16px; }
+.item.sub-header .item-label { font-weight: 700; font-size: 13px; color: var(--primary); }
+
+.item input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; width: 20px; height: 20px; min-width: 20px;
+  border: 2px solid var(--border); border-radius: 6px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  transition: all 0.2s; background: var(--card);
+}
+.item input[type="checkbox"]:checked {
+  background: var(--primary); border-color: var(--primary);
+}
+.item input[type="checkbox"]:checked::after {
+  content: '✓'; color: white; font-size: 13px; font-weight: 700;
+}
+.item-label { font-size: 13px; padding-top: 1px; }
+.item.checked .item-label { text-decoration: line-through; color: var(--muted); }
+
+.mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+@media (max-width: 600px) { .mockup-grid { grid-template-columns: 1fr; } }
+
+.footer { text-align: center; padding: 32px; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.reset-btn {
+  position: fixed; bottom: 24px; right: 24px; background: var(--sidebar); color: #F5F0E8;
+  border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 600;
+  cursor: pointer; opacity: 0.7; transition: opacity 0.2s; font-family: inherit;
+}
+.reset-btn:hover { opacity: 1; }
+</style>
+</head><body>
+
+<div class="header">
+  <h1><svg class="logo" viewBox="0 0 841.89 285.55" xmlns="http://www.w3.org/2000/svg"><path fill="#FF6B1A" d="M95.89,38.6h-48.53c-12.33,0-22.33,10-22.33,22.33v24.55H0v51.47h25.03v88.84c0,19.63,5.61,34.49,16.83,44.6,11.22,10.11,27.88,15.16,49.97,15.16,6.35,0,13.1-.38,20.27-1.15,7.17-.77,14.81-2.26,22.91-4.49l-8.46-50.59c-1.29.47-3.97.97-8.02,1.5-4.05.53-7.14.79-9.25.79-4.7,0-8.11-1.03-10.22-3.08-2.12-2.05-3.17-5.14-3.17-9.25v-82.32h39.13v-51.47h-39.13v-46.89Z"/><path fill="#FF6B1A" d="M296.88,98.08c-15.16-8.39-33.43-12.59-54.82-12.59s-39.72,4.2-55,12.59c-15.28,8.4-26.94,20.09-34.99,35.08-8.05,14.99-12.07,32.45-12.07,52.36s4.02,37.37,12.07,52.36c8.05,14.99,19.71,26.69,34.99,35.08,15.27,8.4,33.61,12.59,55,12.59s39.66-4.2,54.82-12.59c15.16-8.39,26.76-20.09,34.81-35.08,8.05-14.99,12.07-32.45,12.07-52.36s-4.03-37.37-12.07-52.36c-8.05-14.99-19.65-26.68-34.81-35.08ZM267.97,211.14c-2.35,7.24-5.73,12.76-10.14,16.59-4.41,3.82-9.67,5.73-15.78,5.73s-11.58-1.91-16.04-5.73c-4.47-3.82-7.87-9.35-10.22-16.59-2.35-7.23-3.53-15.89-3.53-25.96s1.17-18.81,3.53-25.88c2.35-7.06,5.76-12.44,10.22-16.15,4.46-3.7,9.81-5.56,16.04-5.56s11.37,1.85,15.78,5.56c4.41,3.71,7.78,9.09,10.14,16.15,2.35,7.06,3.53,15.69,3.53,25.88s-1.18,18.73-3.53,25.96Z"/><path fill="#FF6B1A" d="M461.86,176.75c-3.64,13.6-6.87,27.44-9.69,41.52-.01.05-.02.1-.03.15-.66,3.32-5.33,3.33-6,0-.02-.08-.03-.17-.05-.25-2.88-14.14-6.2-27.94-9.96-41.43l-25.56-91.26h-74.39l64.83,184.88c3.19,9.1,11.68,15.18,21.2,15.18h51.7c9.37,0,17.74-5.98,20.89-14.94l65.24-185.12h-73.33l-24.85,91.26Z"/><path fill="#FF6B1A" d="M604.29,64.87c9.64,0,17.86-3.17,24.68-9.52,6.81-6.35,10.22-13.98,10.22-22.91s-3.41-16.72-10.22-23c-6.82-6.29-15.04-9.43-24.68-9.43s-17.86,3.15-24.68,9.43c-6.82,6.29-10.22,13.95-10.22,23s3.41,16.57,10.22,22.91c6.81,6.35,15.04,9.52,24.68,9.52Z"/><path fill="#FF6B1A" d="M617.17,85.32h-25.78c-12.44,0-22.53,10.09-22.53,22.53v177.7h70.86V107.88c0-12.45-10.1-22.55-22.55-22.55Z"/><path fill="#FF6B1A" d="M835.45,124.2c-4.29-7.71-10.46-14.47-18.51-20.27-8.05-5.8-17.75-10.32-29.08-13.57-11.34-3.25-24-4.87-37.98-4.87-18.45,0-34.11,2.67-46.97,8-12.87,5.34-22.95,12.47-30.23,21.4-5.54,6.79-9.5,14.15-11.92,22.07l65.09,6.37c.52-.77,1.1-1.5,1.73-2.17,2.41-2.55,5.43-4.46,9.08-5.74,3.64-1.27,7.69-1.91,12.16-1.91s8.52.61,11.81,1.83c3.29,1.22,5.85,2.99,7.67,5.31,1.82,2.32,2.73,5.16,2.73,8.52v.7c0,3.71-1.5,6.7-4.5,8.96-3,2.26-7.82,3.97-14.45,5.13-6.64,1.16-15.48,2.15-26.53,2.96-10.22.7-19.71,2.35-28.47,4.96-8.76,2.61-16.42,6.32-23,11.13-6.58,4.81-11.69,10.99-15.34,18.53-3.64,7.54-5.46,16.64-5.46,27.31,0,12.87,2.7,23.49,8.11,31.84,5.4,8.35,12.95,14.59,22.65,18.7,9.7,4.12,20.83,6.18,33.4,6.18,8.58,0,16.39-1.04,23.44-3.13,7.05-2.09,13.37-5.36,18.95-9.83,5.58-4.46,10.37-10.35,14.37-17.66h1.41v30.61h44.04c12.28,0,22.24-12.95,22.24-25.07v-111.31c0-8.93-2.15-17.25-6.43-24.96ZM771.73,213.53c0,5.92-1.5,10.93-4.49,15.05-3,4.12-6.87,7.28-11.63,9.48-4.76,2.2-9.84,3.31-15.25,3.31-4,0-7.52-.64-10.58-1.91-3.06-1.27-5.46-3.16-7.23-5.65-1.76-2.49-2.64-5.54-2.64-9.13,0-3.36.82-6.41,2.47-9.13,1.64-2.72,4.2-5.05,7.67-6.96,3.47-1.91,7.96-3.28,13.49-4.09,2.82-.46,5.49-.93,8.02-1.39,2.52-.46,4.99-.98,7.4-1.57,2.41-.58,4.67-1.22,6.79-1.91,2.12-.7,4.11-1.39,5.99-2.09v16.01Z"/></svg> <span>brand guide</span></h1>
+  <p>Checklist de desenvolvimento — marque os itens conforme for criando cada peça</p>
+  <div class="progress-bar">
+    <div class="bar-bg"><div class="bar-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="bar-label"><span id="progressText">0 de 0 itens</span><span id="progressPct">0%</span></div>
+  </div>
+</div>
+
+<div class="container" id="content"></div>
+
+<div class="footer">Tovia Gestão de Eventos · Brand Guide v1.0 · 2026</div>
+<button class="reset-btn" onclick="resetAll()">Resetar tudo</button>
+
+<script>
+const DATA = [
+  { ch: "1", title: "Fundação da Marca", items: [
+    "1.1 Propósito e Missão",
+    "1.2 Visão",
+    "1.3 Valores",
+    "1.4 Público-alvo (personas)",
+    "1.5 Posicionamento e Proposta de Valor",
+    "1.6 Personalidade da marca (atributos)",
+    "1.7 Tom e Voz — diretrizes de escrita"
+  ]},
+  { ch: "2", title: "Logo", items: [
+    "2.1 Logo principal (wordmark)",
+    "2.2 Logo decorativa (handwritten / meow)",
+    "2.3 Ícone / Favicon",
+    "2.4 Versões: fundo claro, fundo escuro, fundo roxo (sidebar)",
+    "2.5 Área de proteção e tamanho mínimo",
+    "2.6 Logo + tagline (Gestão de Eventos)",
+    "2.7 Usos incorretos (o que NÃO fazer)",
+    "2.8 Co-branding — logo Tovia ao lado de parceiros"
+  ]},
+  { ch: "3", title: "Cores", items: [
+    "3.1 Paleta primária: Roxo, Laranja, Creme",
+    "3.2 Paleta estendida: Accent, Sidebar, Dark",
+    "3.3 Cores semânticas: sucesso, erro, alerta, info",
+    "3.4 Modo claro vs. modo escuro (tabela de tokens)",
+    "3.5 Proporções de uso (60/30/10)",
+    "3.6 Valores HEX, RGB e CMYK para impressão"
+  ]},
+  { ch: "4", title: "Tipografia", items: [
+    "4.1 Fonte primária: Inter (UI, corpo, labels)",
+    "4.2 Fonte display: Poppins (marketing)",
+    "4.3 Escala tipográfica completa",
+    "4.4 Pesos e usos",
+    "4.5 Regras: numerais tabulares, labels uppercase",
+    "4.6 Mobile: fontes do sistema"
+  ]},
+  { ch: "5", title: "Iconografia e Imagens", items: [
+    "5.1 Estilo de ícones (Lucide, outline)",
+    "5.2 Direção de fotografia",
+    "5.3 Ilustrações para empty states",
+    "5.4 Estilo de mockups (fundo preto, Sottozero)"
+  ]},
+  { ch: "6", title: "Design System — Componentes", items: [
+    "6.1 Botões (6 variantes)",
+    "6.2 Cards e elevação (flat, raised, floating)",
+    "6.3 Badges e Status Chips",
+    "6.4 Inputs e formulários",
+    "6.5 Glassmorphism",
+    "6.6 Border radius (escala sm→full)",
+    "6.7 Sombras (tintadas)",
+    "6.8 Sidebar"
+  ]},
+  { ch: "7", title: "Produto — Web", items: [
+    "7.1 Dashboard: layout, grid, sidebar + conteúdo",
+    "7.2 Landing page: estrutura e tom",
+    "7.3 Páginas institucionais (Termos, Privacidade)",
+    "7.4 Responsividade (breakpoints)",
+    "7.5 Dark mode: tokens e comportamento"
+  ]},
+  { ch: "8", title: "Produto — Mobile", items: [
+    "8.1 Estrutura: 5 abas",
+    "8.2 Paleta mobile (espelha web)",
+    "8.3 Tab bar (sempre roxo escuro)",
+    "8.4 Espaçamento e touch targets (min 44px)",
+    "8.5 Onboarding screens"
+  ]},
+  { ch: "9", title: "Tom e Voz", items: [
+    "9.1 Princípios: direto, acolhedor, operacional",
+    "9.2 Exemplos por contexto",
+    "9.3 Vocabulário da marca",
+    "9.4 Naming dos planos: Chinám, Pétach, Koách, Chalém"
+  ]},
+  { ch: "10", title: "Aplicações — Mockups de Branding", sub: [
+    { label: "10.1 Papelaria / Escritório", items: [
+      "Cartão de visita (frente)", "Cartão de visita (verso)", "Papel timbrado / Letterhead",
+      "Envelope", "Envelope quadrado", "Pasta / Folder", "Carimbo / Stamp",
+      "Selo de cera / Wax seal", "Cartão de agradecimento", "Bloco de notas / Notepad",
+      "Clipboard", "Caderno / Notebook", "Fita adesiva de escritório", "Tag / Etiqueta",
+      "Caixa de papelão / Box", "Sacola de papel / Paper bag"
+    ]},
+    { label: "10.2 Vestuário", items: [
+      "Camiseta / T-shirt", "Boné / Cap", "Avental / Apron", "Moletom / Hoodie"
+    ]},
+    { label: "10.3 Acessórios para Eventos", items: [
+      "Copo de papel / Paper cup", "Garrafa de água", "Crachá / ID Card",
+      "Cordão / Lanyard", "Pulseira de evento / Wristband", "Caneca / Mug",
+      "Pin / Botton", "Tote bag"
+    ]},
+    { label: "10.4 Adesivos", items: [
+      "Adesivo circular", "Adesivo retangular", "Adesivo die-cut (formato do logo)"
+    ]},
+    { label: "10.5 Tech / Digital", items: [
+      "Smartphone (tela do app)", "Laptop / MacBook (tela do dashboard)", "Tablet / iPad"
+    ]},
+    { label: "10.6 Sinalização", items: [
+      "Banner vertical / Roll-up", "Placa / Sign board", "Poster", "Outdoor / Billboard",
+      "Bandeira / Flag banner", "Totem digital", "Painel de LED / Lightbox",
+      "Backdrop (fundo para fotos)", "Fachada / Storefront", "Letreiro 3D / Wall sign",
+      "Telão de palco", "Balcão de credenciamento"
+    ]},
+    { label: "10.7 Outros", items: [
+      "Fita adesiva brandada", "Caixa de presente / Gift box"
+    ]},
+    { label: "10.8 Publicações", items: [
+      "Book cover", "Catálogo institucional"
+    ]}
+  ]},
+  { ch: "11", title: "Redes Sociais", items: [
+    "11.1 Formatos de post (feed, stories, reels)",
+    "11.2 Templates para cards de divulgação",
+    "11.3 Foto de perfil e capa",
+    "11.4 Hashtags e identidade verbal"
+  ]},
+  { ch: "12", title: "Regras Gerais", items: [
+    "12.1 Do's and Don'ts (exemplos visuais)",
+    "12.2 Checklist de consistência para novos materiais",
+    "12.3 Contatos e responsáveis pela marca"
+  ]}
+];
+
+const STORAGE_KEY = 'tovia-brandguide-progress';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function getAllKeys() {
+  const keys = [];
+  DATA.forEach(ch => {
+    if (ch.items) ch.items.forEach(it => keys.push(ch.ch + ':' + it));
+    if (ch.sub) ch.sub.forEach(s => s.items.forEach(it => keys.push(ch.ch + ':' + s.label + ':' + it)));
+  });
+  return keys;
+}
+
+function updateProgress() {
+  const state = loadState();
+  const all = getAllKeys();
+  const done = all.filter(k => state[k]).length;
+  const pct = all.length ? Math.round(done / all.length * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = done + ' de ' + all.length + ' itens';
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  // Update chapter headers
+  DATA.forEach(ch => {
+    const chKeys = getAllKeys().filter(k => k.startsWith(ch.ch + ':'));
+    const chDone = chKeys.filter(k => state[k]).length;
+    const hdr = document.querySelector(`[data-ch="${ch.ch}"]`);
+    if (hdr) {
+      const cnt = hdr.querySelector('.chapter-count');
+      cnt.textContent = chDone + '/' + chKeys.length;
+      hdr.classList.toggle('all-done', chDone === chKeys.length && chKeys.length > 0);
+    }
+  });
+}
+
+function toggleChapter(chNum) {
+  const hdr = document.querySelector(`[data-ch="${chNum}"]`);
+  const items = document.querySelector(`[data-items="${chNum}"]`);
+  hdr.classList.toggle('open');
+  items.classList.toggle('open');
+}
+
+function handleCheck(key, checkbox) {
+  const state = loadState();
+  state[key] = checkbox.checked;
+  saveState(state);
+  checkbox.closest('.item').classList.toggle('checked', checkbox.checked);
+  updateProgress();
+}
+
+function resetAll() {
+  if (!confirm('Tem certeza que deseja resetar todo o progresso?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+    cb.closest('.item').classList.remove('checked');
+  });
+  updateProgress();
+}
+
+function render() {
+  const container = document.getElementById('content');
+  const state = loadState();
+
+  DATA.forEach(ch => {
+    const chDiv = document.createElement('div');
+    chDiv.className = 'chapter';
+
+    const allKeys = [];
+    if (ch.items) ch.items.forEach(it => allKeys.push(ch.ch + ':' + it));
+    if (ch.sub) ch.sub.forEach(s => s.items.forEach(it => allKeys.push(ch.ch + ':' + s.label + ':' + it)));
+    const doneCount = allKeys.filter(k => state[k]).length;
+
+    chDiv.innerHTML = `
+      <div class="chapter-header${doneCount === allKeys.length && allKeys.length > 0 ? ' all-done' : ''}" data-ch="${ch.ch}" onclick="toggleChapter('${ch.ch}')">
+        <span class="chapter-num">${ch.ch.padStart(2,'0')}</span>
+        <span class="chapter-title">${ch.title}</span>
+        <span class="chapter-count">${doneCount}/${allKeys.length}</span>
+        <span class="chapter-arrow">▶</span>
+      </div>
+      <div class="chapter-items" data-items="${ch.ch}"></div>
+    `;
+
+    const itemsDiv = chDiv.querySelector('.chapter-items');
+
+    if (ch.items) {
+      ch.items.forEach(it => {
+        const key = ch.ch + ':' + it;
+        const checked = !!state[key];
+        const d = document.createElement('div');
+        d.className = 'item' + (checked ? ' checked' : '');
+        d.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} onchange="handleCheck('${key.replace(/'/g,"\\'")}', this)"><span class="item-label">${it}</span>`;
+        itemsDiv.appendChild(d);
+      });
+    }
+
+    if (ch.sub) {
+      const isMockups = ch.ch === '10';
+      ch.sub.forEach(sub => {
+        const sh = document.createElement('div');
+        sh.className = 'item sub-header';
+        sh.innerHTML = `<span class="item-label">${sub.label} (${sub.items.length})</span>`;
+        itemsDiv.appendChild(sh);
+
+        const gridWrap = document.createElement('div');
+        if (isMockups) gridWrap.className = 'mockup-grid';
+
+        sub.items.forEach(it => {
+          const key = ch.ch + ':' + sub.label + ':' + it;
+          const checked = !!state[key];
+          const d = document.createElement('div');
+          d.className = 'item' + (checked ? ' checked' : '');
+          d.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} onchange="handleCheck('${key.replace(/'/g,"\\'")}', this)"><span class="item-label">${it}</span>`;
+          if (isMockups) gridWrap.appendChild(d); else itemsDiv.appendChild(d);
+        });
+
+        if (isMockups) itemsDiv.appendChild(gridWrap);
+      });
+    }
+
+    container.appendChild(chDiv);
+  });
+
+  updateProgress();
+}
+
+render();
+</script>
+</body></html>

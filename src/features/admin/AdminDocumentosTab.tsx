@@ -61,6 +61,14 @@ const DOCS: Doc[] = [
     hasPreview: true,
     updatedAt: '2026-07-24',
   },
+  {
+    id: 'brandguide',
+    title: 'Brand Guide — Checklist',
+    description: 'Checklist interativo dos 12 capítulos do brand guide. Marque os itens conforme for desenvolvendo cada peça.',
+    file: '/docs/brandguide-checklist.html',
+    hasPreview: true,
+    updatedAt: '2026-07-25',
+  },
 ];
 
 export default function AdminDocumentosTab() {
