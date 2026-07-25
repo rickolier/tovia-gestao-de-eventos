@@ -26,10 +26,10 @@ export function Sobre() {
             Uma plataforma feita para quem organiza com propósito
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            O Tovia nasceu para resolver um problema real: igrejas e organizações que precisam de uma ferramenta profissional para gerenciar eventos, mas sem a complexidade de sistemas corporativos.
+            Inscrições, pagamentos, check-in, equipe e financeiro — tudo centralizado em um só lugar. Sem planilhas, sem retrabalho, sem depender de grupos de WhatsApp.
           </p>
           <p className="text-muted-foreground leading-relaxed mb-8">
-            Simples para o organizador. Claro para o participante. Completo para o evento.
+            Feito para igrejas, ministérios e organizações que precisam de uma ferramenta profissional, mas sem a complexidade de sistemas corporativos.
           </p>
           <Link to="/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
             Criar minha conta <ArrowRight className="w-4 h-4" />

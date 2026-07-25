@@ -31,21 +31,14 @@ export function AntesDoTovia() {
           <div>
             <span className="text-xs font-black uppercase tracking-widest text-destructive">Parece familiar?</span>
             <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mt-3 leading-tight">
-              E aí, que tal simplificar a organização dos seus eventos?
+              Que tal simplificar a organização dos seus eventos?
             </h2>
             <p className="text-muted-foreground mt-4 leading-relaxed">
-              Se você organiza eventos em igrejas, comunidades ou ministérios, provavelmente já passou por isso. Planilhas, grupos de WhatsApp, cobranças manuais, retrabalho...
+              Organizar um evento deveria ser simples, mas na prática vira uma corrida entre planilhas, grupos de WhatsApp e cobranças que se perdem pelo caminho.
             </p>
             <p className="text-muted-foreground mt-3 leading-relaxed">
-              <strong className="text-foreground">O Tovia nasceu pra resolver exatamente isso.</strong>{' '}
-              Uma plataforma só, tudo no lugar.
+              Se você se identificou com algum desses, <strong className="text-foreground">você não está sozinho.</strong>
             </p>
-            <a
-              href="#como-funciona"
-              className="inline-flex items-center gap-2 mt-6 text-sm font-bold text-primary hover:underline"
-            >
-              Veja como funciona ↓
-            </a>
           </div>
 
           {/* Right — image with floating pain cards */}

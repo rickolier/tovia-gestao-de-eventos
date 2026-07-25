@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 
 export function CTAFinal() {
   return (
-    <section className="bg-gradient-to-br from-sidebar to-primary py-20 px-6 relative overflow-hidden">
+    <section className="bg-sidebar py-20 px-6 relative overflow-hidden">
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
       <div className="max-w-4xl mx-auto relative text-center">
@@ -16,7 +16,7 @@ export function CTAFinal() {
         <div className="flex justify-center">
           <Link
             to="/login?cadastro=true"
-            className="inline-flex items-center gap-2 bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
+            className="inline-flex items-center gap-2 bg-primary text-white font-black px-10 py-4 rounded-2xl hover:bg-primary/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
           >
             Criar conta grátis <ArrowRight className="w-4 h-4" />
           </Link>

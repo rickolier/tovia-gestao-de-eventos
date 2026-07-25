@@ -20,9 +20,9 @@ export default function LandingPage() {
       <Navbar />
       <Hero />
       <ConsultarStrip />
-      <Sobre />
-      <Nome />
       <AntesDoTovia />
+      <Nome />
+      <Sobre />
       <MarqueeStrip />
       <ComoFunciona />
       <Funcionalidades />
