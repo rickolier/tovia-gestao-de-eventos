@@ -57,6 +57,7 @@ export interface UserProfile {
   subscriptionExpiresAt?: string | null;
   isDemo?: boolean;
   pagina_publica?: boolean;
+  onboardingComplete?: boolean;
   desativado?: boolean;
   gateway_connected?: boolean;
   gateway?: GatewayConfig;

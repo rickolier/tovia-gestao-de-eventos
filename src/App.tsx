@@ -49,6 +49,15 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   // Email não verificado — bloqueia acesso ao app (contas demo são isentas)
   if (!user.emailVerified && !isDemoEmail(user.email)) return <Navigate to="/verificar-email" replace />;
 
+  // Onboarding incompleto — redireciona para escolha de plano
+  if (!profile?.onboardingComplete && !isDemoEmail(user.email)) {
+    const allowedPaths = ['/onboarding', '/checkout-plano', '/planos', '/planos/aguardando'];
+    const currentPath = window.location.pathname;
+    if (!allowedPaths.includes(currentPath)) {
+      return <Navigate to="/onboarding" replace />;
+    }
+  }
+
   // Conta desativada
   if (profile?.desativado) {
     return (

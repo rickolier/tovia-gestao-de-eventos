@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { auth } from '~/services/firebase';
+import { updateDocument } from '~/services/firestore';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle2, RefreshCw } from 'lucide-react';
@@ -40,6 +41,7 @@ export default function AguardandoPagamento() {
   // Pagamento confirmado → redireciona
   useEffect(() => {
     if (profile?.plano && !profile?.planoPendente) {
+      if (user) updateDocument('users', user.uid, { onboardingComplete: true }).catch(() => {});
       navigate('/dashboard');
     }
   }, [profile, navigate]);

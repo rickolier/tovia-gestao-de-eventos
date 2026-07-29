@@ -191,6 +191,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               email: firebaseUser.email || '',
               plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'chinam',
               codigo: isAdmin ? undefined : gerarCodigoProdutor(),
+              onboardingComplete: isAdmin ? true : false,
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {
@@ -200,6 +201,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Usuários antigos sem plano recebem chinam automaticamente
             userProfile = { ...userProfile, plano: 'chinam' };
             updateDocument('users', firebaseUser.uid, { plano: 'chinam' }).catch(() => {});
+          }
+
+          // Usuários existentes antes do onboarding gate são considerados completos
+          if (userProfile && userProfile.onboardingComplete === undefined && !isAdminEmail(firebaseUser.email)) {
+            userProfile = { ...userProfile, onboardingComplete: true };
+            updateDocument('users', firebaseUser.uid, { onboardingComplete: true }).catch(() => {});
           }
 
           await processarConvites(firebaseUser);

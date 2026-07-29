@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
+import { updateDocument } from '~/services/firestore';
 import { PlanLevel } from '~/types';
 import { PLAN_CONFIGS, PLAN_ORDER } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
@@ -31,6 +32,7 @@ export default function Onboarding() {
   const handleConfirm = () => {
     if (!user) return;
     if (selected === 'chinam') {
+      updateDocument('users', user.uid, { onboardingComplete: true }).catch(() => {});
       navigate('/dashboard');
       return;
     }

@@ -76,11 +76,8 @@ export default function Login() {
       if (isNew && result.user.email && result.user.displayName) {
         Email.boasVindasPlano(result.user.email, result.user.displayName, 'chinam');
       }
-      if (isNew && !isAdminEmail(result.user.email)) {
-        navigate('/onboarding');
-      } else {
-        navigate(isAdminEmail(result.user.email) ? '/admin' : (redirectParam || '/dashboard'));
-      }
+      // PrivateRoute redireciona para /onboarding se onboardingComplete === false
+      navigate(isAdminEmail(result.user.email) ? '/admin' : (redirectParam || '/dashboard'));
     } catch (error: any) {
       toast.error('Erro ao entrar com Google: ' + error.message);
     }
