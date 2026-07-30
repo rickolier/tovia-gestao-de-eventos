@@ -30,9 +30,9 @@ export function ComoFunciona() {
               <span className="inline-flex text-xs font-black text-primary/70 bg-white/10 border border-white/10 px-3 py-1 rounded-full w-fit mb-4">
                 {step}º Passo
               </span>
-              <h3 className="text-xl font-black text-white leading-tight mb-2 max-w-[58%]">{title}</h3>
-              <p className="text-xs text-white/50 leading-relaxed max-w-[55%]">{desc}</p>
-              <div className="absolute bottom-0 right-4 flex items-end">
+              <h3 className="text-xl font-black text-white leading-tight mb-2 max-w-[60%] sm:max-w-[58%]">{title}</h3>
+              <p className="text-xs text-white/50 leading-relaxed max-w-full sm:max-w-[55%] mb-4 sm:mb-0">{desc}</p>
+              <div className="hidden sm:flex absolute bottom-0 right-4 items-end">
                 <Anim />
               </div>
             </div>

@@ -24,15 +24,16 @@ type Period = 'monthly' | 'annual';
 type PaymentMethod = 'credit_card' | 'pix';
 
 export default function Onboarding() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<PlanLevel>('koach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!user) return;
     if (selected === 'chinam') {
-      updateDocument('users', user.uid, { onboardingComplete: true }).catch(() => {});
+      await updateDocument('users', user.uid, { onboardingComplete: true });
+      await refreshProfile();
       navigate('/dashboard');
       return;
     }

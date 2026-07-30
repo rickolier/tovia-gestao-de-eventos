@@ -22,7 +22,13 @@ function wrap(content: string, preview = '') {
   <meta name="x-apple-disable-message-reformatting" />
   <style>
     :root { color-scheme: light only; }
-    body { margin: 0 !important; padding: 0 !important; background-color: #f5f3f0 !important; }
+    body { margin: 0 !important; padding: 0 !important; background-color: #f5f3f0 !important; color: #1a1a1a !important; }
+    h1, h2, h3, p, span, td, li, a, strong { color: inherit !important; }
+    [data-ogsc] h1, [data-ogsc] p, [data-ogsc] span, [data-ogsc] td { color: #1a1a1a !important; }
+    [data-ogsc] .email-muted { color: #6b7280 !important; }
+    [data-ogsc] .email-body { background-color: #ffffff !important; }
+    [data-ogsc] .email-header { background-color: #FF6B1A !important; }
+    u + .body { background-color: #f5f3f0 !important; }
   </style>
   ${preview ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preview}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>` : ''}
 </head>
@@ -33,7 +39,7 @@ function wrap(content: string, preview = '') {
 
         <!-- Header -->
         <tr>
-          <td bgcolor="${PRIMARY}" style="background-color:${PRIMARY} !important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
+          <td class="email-header" bgcolor="${PRIMARY}" style="background-color:${PRIMARY} !important;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
             <span style="font-size:28px;font-weight:900;color:#ffffff !important;letter-spacing:-1px;-webkit-text-fill-color:#ffffff;">tovia</span>
             <span style="font-size:11px;font-weight:600;color:#FFB380 !important;-webkit-text-fill-color:#FFB380;display:block;letter-spacing:3px;margin-top:4px;">GESTÃO DE EVENTOS</span>
           </td>
@@ -41,7 +47,7 @@ function wrap(content: string, preview = '') {
 
         <!-- Body -->
         <tr>
-          <td bgcolor="#ffffff" style="background-color:#ffffff !important;padding:40px;border-radius:0 0 16px 16px;">
+          <td class="email-body" bgcolor="#ffffff" style="background-color:#ffffff !important;color:#1a1a1a !important;padding:40px;border-radius:0 0 16px 16px;">
             ${content}
           </td>
         </tr>
@@ -49,8 +55,8 @@ function wrap(content: string, preview = '') {
         <!-- Footer -->
         <tr>
           <td style="padding:24px 40px;text-align:center;">
-            <p style="font-size:12px;color:${MUTED};margin:0;">© ${new Date().getFullYear()} Tovia Gestão de Eventos · Todos os direitos reservados</p>
-            <p style="font-size:12px;color:${MUTED};margin:4px 0 0;">Você recebeu este e-mail porque tem uma conta na plataforma Tovia.</p>
+            <p class="email-muted" style="font-size:12px;color:${MUTED} !important;margin:0;">© ${new Date().getFullYear()} Tovia Gestão de Eventos · Todos os direitos reservados</p>
+            <p class="email-muted" style="font-size:12px;color:${MUTED} !important;margin:4px 0 0;">Você recebeu este e-mail porque tem uma conta na plataforma Tovia.</p>
           </td>
         </tr>
 
@@ -66,11 +72,11 @@ function btn(label: string, href: string) {
 }
 
 function h1(text: string) {
-  return `<h1 style="font-size:26px;font-weight:900;color:${TEXT};margin:0 0 12px;line-height:1.2;">${text}</h1>`;
+  return `<h1 style="font-size:26px;font-weight:900;color:${TEXT} !important;margin:0 0 12px;line-height:1.2;">${text}</h1>`;
 }
 
 function p(text: string) {
-  return `<p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 12px;">${text}</p>`;
+  return `<p class="email-muted" style="font-size:15px;color:${MUTED} !important;line-height:1.7;margin:0 0 12px;">${text}</p>`;
 }
 
 function divider() {
@@ -84,8 +90,8 @@ function feature(icon: string, title: string, desc: string) {
       <table cellpadding="0" cellspacing="0"><tr>
         <td style="font-size:22px;padding-right:14px;vertical-align:top;">${icon}</td>
         <td>
-          <p style="font-size:14px;font-weight:700;color:${TEXT};margin:0 0 2px;">${title}</p>
-          <p style="font-size:13px;color:${MUTED};margin:0;">${desc}</p>
+          <p style="font-size:14px;font-weight:700;color:${TEXT} !important;margin:0 0 2px;">${title}</p>
+          <p class="email-muted" style="font-size:13px;color:${MUTED} !important;margin:0;">${desc}</p>
         </td>
       </tr></table>
     </td>
