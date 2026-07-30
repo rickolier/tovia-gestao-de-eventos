@@ -62,6 +62,14 @@ const DOCS: Doc[] = [
     updatedAt: '2026-07-24',
   },
   {
+    id: 'plano-split',
+    title: 'Plano de Pagamentos — Asaas Split',
+    description: 'Plano de implementação de pagamentos com Asaas: subcontas, split, segurança, comparativo BYOG vs Subcontas.',
+    file: '/docs/plano-split-asaas.html',
+    hasPreview: true,
+    updatedAt: '2026-07-30',
+  },
+  {
     id: 'brandguide',
     title: 'Brand Guide — Checklist',
     description: 'Checklist interativo dos 12 capítulos do brand guide. Marque os itens conforme for desenvolvendo cada peça.',
