@@ -90,8 +90,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const billingDoc = await db.collection('config').doc('billing').get();
     const billing = billingDoc.exists ? billingDoc.data() : null;
     apiKey = billing?.asaas_api_key?.trim() || process.env.ASAAS_API_KEY?.trim() || '';
-    const isSandbox = billing ? billing.sandbox !== false : true;
+    // Detecta ambiente pela chave: $aact_ = produção, $aact_hmlg_ = sandbox
+    const isSandbox = billing?.sandbox === true || (!billing?.sandbox && apiKey.includes('_hmlg_'));
     ASAAS_BASE_URL = isSandbox ? ASAAS_SANDBOX_URL : ASAAS_PRODUCTION_URL;
+    console.log('Asaas env:', isSandbox ? 'SANDBOX' : 'PRODUCTION', '| URL:', ASAAS_BASE_URL);
   } catch {
     apiKey = process.env.ASAAS_API_KEY?.trim() || '';
     ASAAS_BASE_URL = ASAAS_SANDBOX_URL;
