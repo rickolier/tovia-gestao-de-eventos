@@ -158,7 +158,7 @@
 <body>
 <div class="doc">
   <h1>Backlog Tovia</h1>
-  <p class="subtitle">Atualizado em 24 de julho de 2026 &mdash; 35 itens, 4 fases &mdash; IDOR corrigido, Firestore Rules deployadas</p>
+  <p class="subtitle">Atualizado em 30 de julho de 2026 &mdash; 40 itens, 4 fases &mdash; Notas Fiscais adicionadas ao backlog</p>
 
   <!-- BUGS -->
   <div class="section">
@@ -277,16 +277,29 @@
     </table>
   </div>
 
+  <!-- NOTAS FISCAIS -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-purple">NF</span> Notas Fiscais (pós-pagamentos)</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr><td>28</td><td><div class="item-title">NF da taxa Tovia (automatizável)</div><div class="item-desc">Emitir NFS-e automaticamente a cada pagamento confirmado. Asaas suporta via <code>POST /v3/invoices</code> vinculado à cobrança, e <code>invoiceSettings</code> para assinaturas recorrentes. Requer configuração fiscal da conta Tovia: inscrição municipal, CNAE, série RPS, credenciais da prefeitura (<code>POST /v3/fiscalInfo</code>). Configuração única.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>29</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Cada organizador configura dados fiscais próprios (CNAE, inscrição municipal, RPS, credenciais da prefeitura). Complexo: Simples Nacional vs Lucro Presumido têm regras PIS/COFINS diferentes. Sugestão: oferecer como feature premium (Koách/Chalém) com suporte guiado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>30</td><td><div class="item-title">Webhooks de NF</div><div class="item-desc">8 eventos: INVOICE_CREATED, INVOICE_UPDATED, INVOICE_SYNCHRONIZED, INVOICE_AUTHORIZED, INVOICE_PROCESSING_CANCELLATION, INVOICE_CANCELED, INVOICE_CANCELLATION_DENIED, INVOICE_ERROR. Fluxo normal: CREATED → SYNCHRONIZED → AUTHORIZED. Salvar pdfUrl, xmlUrl, number, validationCode.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>31</td><td><div class="item-title">Páginas de NF</div><div class="item-desc">3 componentes: ConfiguracaoFiscalTab (formulário fiscal), NotasFiscaisTab (lista de NFs), AdminNotasFiscaisTab (visão admin). 4 endpoints: setupFiscalConfig, listMunicipalServices, createInvoice, listInvoices.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>32</td><td><div class="item-title">Retenção PIS/COFINS</div><div class="item-desc">Para não-optantes do Simples Nacional: campos pisCofinsTaxStatus, operationPis, operationCofins. 7 valores possíveis (NONE, STANDARD, DIFFERENTIATED, ZERO_RATE, EXEMPT, NON_TAXABLE, SUSPENSION). Regras variam por status tributário.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
   <!-- SWOT -->
   <div class="section">
     <div class="section-title"><span class="badge badge-yellow">SWOT</span> Fraquezas a endereçar</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Depende de</th></tr>
-      <tr><td>28</td><td><div class="item-title">Zero usuários pagantes</div></td><td>#8 Beta</td></tr>
-      <tr><td>29</td><td><div class="item-title">Sem brand awareness</div></td><td>#7 + #9</td></tr>
-      <tr><td>30</td><td><div class="item-title">Dependência de pessoa única</div><div class="item-desc">Mitigar com documentação e automação.</div></td><td>&mdash;</td></tr>
-      <tr><td>31</td><td><div class="item-title">Relatórios financeiros limitados</div></td><td>#14</td></tr>
-      <tr><td>32</td><td><div class="item-title">Sem integração Sympla/Even3</div></td><td>Fase 3/4</td></tr>
+      <tr><td>33</td><td><div class="item-title">Zero usuários pagantes</div></td><td>#8 Beta</td></tr>
+      <tr><td>34</td><td><div class="item-title">Sem brand awareness</div></td><td>#7 + #9</td></tr>
+      <tr><td>35</td><td><div class="item-title">Dependência de pessoa única</div><div class="item-desc">Mitigar com documentação e automação.</div></td><td>&mdash;</td></tr>
+      <tr><td>36</td><td><div class="item-title">Relatórios financeiros limitados</div></td><td>#14</td></tr>
+      <tr><td>37</td><td><div class="item-title">Sem integração Sympla/Even3</div></td><td>Fase 3/4</td></tr>
     </table>
   </div>
 
@@ -296,7 +309,7 @@
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
       <tr>
-        <td>33</td>
+        <td>38</td>
         <td>
           <div class="item-title done">IDOR tickets de suporte &mdash; list restrito ao próprio usuário</div>
           <div class="item-desc done">Qualquer logado podia listar tickets de todos. Corrigido em firestore.rules e deployado.</div>
@@ -304,7 +317,7 @@
         <td><span class="status-dot dot-green"></span>Corrigido</td>
       </tr>
       <tr>
-        <td>34</td>
+        <td>39</td>
         <td>
           <div class="item-title">eventos/{id} GET público expõe config_pagamento</div>
           <div class="item-desc">Necessário para páginas de venda, mas expõe dados internos. Ideal: doc público separado.</div>
@@ -312,7 +325,7 @@
         <td><span class="status-dot dot-yellow"></span>Risco baixo</td>
       </tr>
       <tr>
-        <td>35</td>
+        <td>40</td>
         <td>
           <div class="item-title">organizer_public expõe webhook_token_hash</div>
           <div class="item-desc">SHA-256 one-way, risco baixo. Considerar restringir read no futuro.</div>
