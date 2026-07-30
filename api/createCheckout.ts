@@ -161,12 +161,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         await db.collection('users').doc(userId).set({ asaasCustomerId: newId }, { merge: true });
         return newId;
       } catch (custErr: unknown) {
-        const ce = custErr as { response?: { data?: { errors?: Array<{ description?: string; code?: string }> } }; message?: string };
-        const asaasErrors = ce?.response?.data?.errors;
+        const ce = custErr as { response?: { status?: number; data?: unknown }; message?: string };
+        const responseData = ce?.response?.data;
+        const asaasErrors = (responseData as any)?.errors;
         const detail = Array.isArray(asaasErrors)
-          ? asaasErrors.map((e) => e.description || e.code).join('; ')
-          : JSON.stringify(ce?.response?.data ?? ce?.message);
-        console.error('Erro ao criar cliente Asaas:', detail);
+          ? asaasErrors.map((e: any) => `${e.code || ''}: ${e.description || ''}`).join('; ')
+          : JSON.stringify(responseData ?? ce?.message ?? 'unknown');
+        console.error('Erro ao criar cliente Asaas:', detail, '| Status:', ce?.response?.status, '| Payload:', JSON.stringify(customerPayload));
         throw new Error(`Erro ao registrar cliente no Asaas: ${detail}`);
       }
     };
