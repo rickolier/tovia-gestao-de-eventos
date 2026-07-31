@@ -40,8 +40,9 @@ const DOCS: Doc[] = [
     id: 'mobile-spec',
     title: 'Tovia Mobile — Especificação',
     description: 'Spec completa do app mobile: telas, navegação, componentes, feature gating por plano.',
-    file: '/docs/tovia-mobile-spec.md',
-    hasPreview: false,
+    file: '/docs/tovia-mobile-spec.html',
+    hasPreview: true,
+    downloadFile: '/docs/tovia-mobile-spec.md',
     updatedAt: '2026-07-24',
   },
   {

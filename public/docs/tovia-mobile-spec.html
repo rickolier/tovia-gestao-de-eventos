@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia Mobile — Especificação de Design</title>
+<style>
+:root {
+  --g: #FF6B1A; --g-dark: #E55A08; --g-tint: #FFF4EE; --g-mid: #FFC9A8;
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da;
+  --green: #22c55e; --green-tint: #f0fdf4;
+  --red: #ef4444; --red-tint: #fef2f2;
+  --amber: #f59e0b; --amber-tint: #fffbeb;
+  --blue: #3b82f6; --blue-tint: #eff6ff;
+  --purple: #2D1470; --purple-light: #9B5FFF;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-0: #111110; --surface-1: #1c1c1a;
+    --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+    --border: #2e2e2a; --g-tint: #3D1506;
+    --green-tint: #0a1f12; --red-tint: #2a0f0f; --amber-tint: #2a1f08; --blue-tint: #0d1e38;
+  }
+}
+:root[data-theme="dark"] {
+  --surface-0: #111110; --surface-1: #1c1c1a;
+  --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+  --border: #2e2e2a; --g-tint: #3D1506;
+  --green-tint: #0a1f12; --red-tint: #2a0f0f; --amber-tint: #2a1f08; --blue-tint: #0d1e38;
+}
+:root[data-theme="light"] {
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da; --g-tint: #FFF4EE;
+  --green-tint: #f0fdf4; --red-tint: #fef2f2; --amber-tint: #fffbeb; --blue-tint: #eff6ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface-0); color: var(--text-primary); font-size: 15px; line-height: 1.7; }
+.doc { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 32px; color: var(--g); }
+h2 { font-size: 20px; font-weight: 900; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--g-mid); }
+h3 { font-size: 17px; font-weight: 800; margin: 32px 0 12px; color: var(--g-dark); }
+h4 { font-size: 15px; font-weight: 700; margin: 24px 0 8px; }
+p { margin: 0 0 14px; color: var(--text-secondary); }
+strong { color: var(--text-primary); font-weight: 700; }
+hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+ul, ol { margin: 0 0 16px; padding-left: 24px; color: var(--text-secondary); }
+li { margin-bottom: 6px; }
+li strong { color: var(--text-primary); }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 16px 0; }
+.card-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--g); margin-bottom: 12px; }
+.color-row { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+.color-swatch { width: 20px; height: 20px; border-radius: 6px; border: 1px solid var(--border); flex-shrink: 0; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+.badge-green { background: var(--green-tint); color: var(--green); }
+.badge-red { background: var(--red-tint); color: var(--red); }
+.badge-amber { background: var(--amber-tint); color: var(--amber); }
+.badge-blue { background: var(--blue-tint); color: var(--blue); }
+.badge-orange { background: var(--g-tint); color: var(--g); }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+th { text-align: left; padding: 10px 12px; background: var(--g-tint); color: var(--g-dark); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid var(--g-mid); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+tr:last-child td { border-bottom: none; }
+.overflow-x { overflow-x: auto; }
+.screen-section { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin: 20px 0; border-left: 4px solid var(--g); }
+.screen-section h3 { margin-top: 0; }
+.tab-bar-demo { display: flex; gap: 0; background: var(--purple); border-radius: 14px; padding: 12px 0; margin: 16px 0; }
+.tab-item { flex: 1; text-align: center; font-size: 10px; font-weight: 700; color: rgba(245,240,232,0.5); padding: 6px 0; }
+.tab-item.active { color: var(--g); }
+.meta { font-size: 12px; color: var(--text-muted); margin-top: 48px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+<h1>Tovia Mobile — Especificação de Design</h1>
+
+<div class="card">
+  <div class="card-title">Identidade do App</div>
+  <p><strong>Nome:</strong> Tovia Mobile</p>
+  <p><strong>Tagline:</strong> O app do organizador de eventos</p>
+  <p><strong>Plataforma:</strong> iOS e Android</p>
+  <p><strong>Propósito:</strong> Companheiro operacional para organizadores de eventos — check-in, tarefas e visão financeira. A gestão completa acontece na web (toviaapp.com.br).</p>
+</div>
+
+<h2>Identidade Visual</h2>
+
+<div class="card">
+  <div class="card-title">Paleta de Cores</div>
+  <div class="color-row"><span class="color-swatch" style="background:#FF6B1A"></span> <strong>#FF6B1A</strong> — Primária (laranja Tovia)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#FFF4EE"></span> <strong>#FFF4EE</strong> — Primária light (backgrounds)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#E55A08"></span> <strong>#E55A08</strong> — Primária dark (hover, pressed)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#FFC9A8"></span> <strong>#FFC9A8</strong> — Primária mid (borders sutis)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#22c55e"></span> <strong>#22c55e</strong> — Success (check-in, presença)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#ef4444"></span> <strong>#ef4444</strong> — Danger (bloqueado, erro)</div>
+  <div class="color-row"><span class="color-swatch" style="background:#f59e0b"></span> <strong>#f59e0b</strong> — Warning (pendente, atenção)</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Backgrounds</div>
+  <p><strong>Light mode:</strong> Screen #f5f5f3 · Card #ffffff · Subtle #FFF4EE · Border #e2e0da</p>
+  <p><strong>Dark mode:</strong> Screen #111110 · Card #1c1c1a · Subtle #3D1506 · Border #2e2e2a</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Tipografia & Dimensões</div>
+  <p><strong>Font:</strong> System default (SF Pro iOS, Roboto Android)</p>
+  <p><strong>Headings:</strong> Bold / Black weight · <strong>Body:</strong> Regular, 15–16sp</p>
+  <p><strong>Labels:</strong> 11sp, uppercase, letter-spacing 0.08em · <strong>Dados numéricos:</strong> Tabular nums</p>
+  <p><strong>Radius:</strong> 14dp cards · 8dp elementos pequenos · 999dp pills/badges</p>
+  <p><strong>Shadows:</strong> 0 2 12 rgba(255,107,26,0.08)</p>
+</div>
+
+<h2>Estrutura de Navegação</h2>
+
+<div class="card">
+  <div class="card-title">Top Bar (persistente)</div>
+  <p><strong>Esquerda:</strong> Logo Tovia Mobile (wordmark, accent laranja no "Mobile")</p>
+  <p><strong>Direita:</strong> Avatar do usuário (círculo, fallback iniciais) + nome — abre profile bottom sheet</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Bottom Navigation — 5 Abas</div>
+  <div class="tab-bar-demo">
+    <div class="tab-item active">Início</div>
+    <div class="tab-item">Check-in</div>
+    <div class="tab-item">Tarefas</div>
+    <div class="tab-item">Financeiro</div>
+    <div class="tab-item">Suporte</div>
+  </div>
+  <p>Fundo sempre roxo escuro (#2D1470). Aba ativa em laranja primário com ícone preenchido. Abas inativas em creme semitransparente.</p>
+</div>
+
+<h2>Telas</h2>
+
+<div class="screen-section">
+  <h3>Profile Bottom Sheet</h3>
+  <p>Ativado ao tocar no avatar ou nome na top bar. Sobe a partir de baixo.</p>
+  <ul>
+    <li><strong>Handle bar</strong> no topo central</li>
+    <li><strong>Header:</strong> Avatar grande (64dp, círculo), nome completo em bold 18sp, email em muted 13sp</li>
+    <li><strong>Plan badge:</strong> Pill com nome do plano (Chinám / Pétach / Koách / Chalém) em laranja</li>
+    <li><strong>Trial banner</strong> (se aplicável): pill amarelo "Trial — X dias restantes"</li>
+    <li><strong>Editar perfil</strong> — outlined, largura total — abre toviaapp.com.br no navegador</li>
+    <li><strong>Sair</strong> — texto vermelho, sem chevron</li>
+  </ul>
+</div>
+
+<div class="screen-section">
+  <h3>Tela 1 — Início (Home)</h3>
+  <p><strong>Header:</strong> "Meus Eventos" em bold 22sp. Subtítulo: contagem de eventos ativos.</p>
+  <p><strong>Event cards</strong> (lista com scroll vertical):</p>
+  <ul>
+    <li>Nome do evento em bold 16sp</li>
+    <li>Data e local em muted 13sp</li>
+    <li>Contagem de inscritos: "128 inscritos"</li>
+    <li>Toggle switch à direita: laranja = ativo, cinza = inativo</li>
+    <li>Tap no card → tela de detalhe do evento (somente leitura)</li>
+  </ul>
+  <p><strong>Seções:</strong></p>
+  <ul>
+    <li><span class="badge badge-orange">Em andamento</span> — eventos acontecendo hoje (borda esquerda laranja)</li>
+    <li><strong>Próximos eventos</strong> — eventos futuros</li>
+    <li><strong>Encerrados</strong> — eventos passados (levemente escurecidos)</li>
+  </ul>
+  <p><strong>Estado vazio:</strong> Ilustração de calendário + "Você ainda não tem eventos. Crie o seu primeiro em toviaapp.com.br"</p>
+</div>
+
+<div class="screen-section">
+  <h3>Tela 2 — Check-in</h3>
+
+  <h4>2A — Seleção de Evento</h4>
+  <p>Título: "Check-in" bold 22sp. Subtítulo: "Eventos disponíveis hoje".</p>
+  <p>Event cards apenas para eventos acontecendo hoje: nome, horário, barra de progresso check-ins feitos / total, "48 / 120 presentes" em laranja.</p>
+  <p><strong>Estado vazio:</strong> "Nenhum evento disponível para check-in hoje."</p>
+
+  <h4>2B — Seleção de Modo de Check-in</h4>
+  <p>Após selecionar um evento, dois cards grandes:</p>
+  <ul>
+    <li><strong>QR Code</strong> — ícone QR grande (48dp), "Abra a câmera para escanear", background laranja preenchido</li>
+    <li><strong>Lista</strong> — ícone lista grande (48dp), "Marque a presença manualmente", card branco com borda laranja</li>
+  </ul>
+  <p><strong>Botão de download offline</strong> — largura total:</p>
+  <ul>
+    <li>Não baixado: "Baixar lista para uso offline" — outlined laranja</li>
+    <li>Baixado: "Lista salva • Pronto para offline" — laranja preenchido, desabilitado</li>
+  </ul>
+
+  <h4>2C — Scanner QR Code</h4>
+  <p>Tela cheia com câmera. Overlay de scan: quadro centralizado com cantos em branco, linha de scan animada.</p>
+  <ul>
+    <li>Top bar: seta voltar + nome do evento</li>
+    <li>Painel inferior: card do último scan (nome + <span class="badge badge-green">Presente ✓</span> ou <span class="badge badge-red">Bloqueado ✗</span> + motivo)</li>
+    <li>Botão "Ver lista" — navega para 2D</li>
+    <li>Badge offline: "● Offline — sincronizando depois"</li>
+  </ul>
+  <p><strong>Feedback do scan:</strong> Sucesso: flash verde + haptic + som. Falha: flash vermelho + haptic.</p>
+
+  <h4>2D — Lista de Inscritos</h4>
+  <p>Barra de busca fixa "Buscar por nome…". Contador: "48 / 120 presentes" em bold laranja.</p>
+  <p>Lista alfabética com headers de seção (A, B, C…):</p>
+  <ul>
+    <li>Círculo avatar com iniciais (40dp)</li>
+    <li>Nome completo em bold 15sp</li>
+    <li>Checkbox à direita — marcado = laranja preenchido</li>
+    <li>Linhas marcadas: background com tint laranja sutil</li>
+  </ul>
+  <p><strong>FAB:</strong> ícone câmera — "Usar QR" — alterna para scanner.<br>
+  <strong>Indicador offline:</strong> banner no topo "Modo offline — X pendentes para sincronizar"</p>
+</div>
+
+<div class="screen-section">
+  <h3>Tela 3 — Tarefas</h3>
+
+  <h4>3A — Seleção de Evento</h4>
+  <p>Event cards com badge mostrando contagem de tarefas pendentes: <span class="badge badge-orange">3 pendentes</span></p>
+
+  <h4>3B — Lista de Tarefas do Evento</h4>
+  <p><strong>Filter chips:</strong> "Todas" · "Pendentes" · "Em andamento" · "Concluídas"</p>
+  <ul>
+    <li>Checkbox (tap para completar — swipe direita também completa)</li>
+    <li>Título da tarefa em bold 14sp</li>
+    <li>Data limite e avatar do responsável em muted 12sp</li>
+    <li>Status chip: <span class="badge" style="background:var(--border);color:var(--text-secondary)">Pendente</span> / <span class="badge badge-blue">Em andamento</span> / <span class="badge badge-green">Concluída</span></li>
+  </ul>
+  <p><strong>FAB:</strong> "+" — cria nova tarefa.</p>
+  <p><strong>Estado vazio:</strong> "Nenhuma tarefa ainda. Crie a primeira!"</p>
+
+  <h4>3C — Detalhe / Edição de Tarefa</h4>
+  <p>Formulário tela cheia:</p>
+  <ul>
+    <li>Título da tarefa (campo de texto editável)</li>
+    <li>Descrição (campo multiline)</li>
+    <li>Data limite (date picker)</li>
+    <li>Responsável (avatar picker, lista de membros)</li>
+    <li>Seletor de status (segmented control)</li>
+    <li>Botão "Salvar" — laranja primário, largura total</li>
+  </ul>
+</div>
+
+<div class="screen-section">
+  <h3>Tela 4 — Financeiro</h3>
+  <p><strong>Sub-abas:</strong> "Pagamentos" | "Relatórios"</p>
+
+  <h4>4A — Pagamentos</h4>
+  <p>Barra de busca "Buscar inscrito…". Filter chips: "Todos" · "Pago" · "Pendente" · "Gratuito"</p>
+  <ul>
+    <li>Nome em bold 14sp</li>
+    <li>Status chip: <span class="badge badge-green">Pago</span> / <span class="badge badge-amber">Pendente</span> / <span class="badge" style="background:var(--border);color:var(--text-secondary)">Gratuito</span> / <span class="badge badge-red">Expirado</span></li>
+    <li>Tap → detalhe (nome, ingresso, data, status com explicação) — somente leitura</li>
+  </ul>
+
+  <h4>4B — Relatórios</h4>
+  <p><strong>Cards resumo (scroll horizontal):</strong></p>
+  <ul>
+    <li>"Total arrecadado" — valor R$ em bold laranja</li>
+    <li>"Pendente" — valor R$ em amarelo</li>
+    <li>"Presença" — percentual em bold</li>
+  </ul>
+  <p><strong>Sparkline chart:</strong> Inscrições por dia, últimos 30 dias. Preenchimento laranja, grid sutil.</p>
+  <p><strong>Estatísticas de check-in:</strong> % presença, horário de pico (bar chart). Somente leitura, sem exportação.</p>
+</div>
+
+<div class="screen-section">
+  <h3>Tela 5 — Suporte</h3>
+  <ul>
+    <li><strong>Base de Conhecimento</strong> → abre toviaapp.com.br/base-conhecimento</li>
+    <li><strong>Fale Conosco</strong> → abre email ou WhatsApp</li>
+    <li><strong>Rever tutorial</strong> → reabre fluxo de onboarding</li>
+    <li><strong>Sobre o Tovia Mobile</strong> → versão, data do build</li>
+    <li><strong>Política de Privacidade</strong> / <strong>Termos de Uso</strong> → abre navegador</li>
+    <li><strong>Sair</strong> — texto vermelho, alerta de confirmação</li>
+  </ul>
+</div>
+
+<div class="screen-section">
+  <h3>Tela de Bloqueio Admin</h3>
+  <p>Exibida imediatamente após login para emails de admin (antes de qualquer aba carregar).</p>
+  <ul>
+    <li>Ícone de cadeado (48dp, laranja), centralizado</li>
+    <li>Título: "Acesso restrito" bold 20sp</li>
+    <li>Corpo: "A Central Tovia é acessada exclusivamente via web."</li>
+    <li>Botão: "Abrir toviaapp.com.br" — laranja primário, largura total</li>
+    <li>Link "Sair" — muted, faz logout</li>
+  </ul>
+</div>
+
+<div class="screen-section">
+  <h3>Onboarding (Primeiro Acesso)</h3>
+  <p>4 slides deslizáveis com page dots. Botão "Pular" nos slides 1–3. "Começar" no slide 4.</p>
+  <ul>
+    <li><strong>Slide 1 — Bem-vindo:</strong> Logo Tovia Mobile, "Olá, [Nome]!", descrição do app</li>
+    <li><strong>Slide 2 — Check-in:</strong> Ilustração scanner QR, destaque para download offline</li>
+    <li><strong>Slide 3 — Tarefas:</strong> Ilustração checklist, equipe em tempo real</li>
+    <li><strong>Slide 4 — Pronto!:</strong> Checkmark laranja, botão "Começar"</li>
+  </ul>
+</div>
+
+<h2>Inventário de Componentes</h2>
+
+<div class="overflow-x">
+<table>
+  <thead>
+    <tr><th>Componente</th><th>Notas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>EventCard</strong></td><td>Toggle switch, label de seção, tap para detalhe</td></tr>
+    <tr><td><strong>CheckinProgressBar</strong></td><td>Preenchimento laranja, label "X / Y"</td></tr>
+    <tr><td><strong>OfflineDownloadButton</strong></td><td>Dois estados: download / pronto</td></tr>
+    <tr><td><strong>AttendeeRow</strong></td><td>Avatar com iniciais, nome, checkbox</td></tr>
+    <tr><td><strong>TaskRow</strong></td><td>Checkbox, título, data limite, status chip, swipe-to-complete</td></tr>
+    <tr><td><strong>StatusChip</strong></td><td>Pago / Pendente / Gratuito / Expirado / Ativo / Inativo</td></tr>
+    <tr><td><strong>PlanBadge</strong></td><td>Chinám / Pétach / Koách / Chalém</td></tr>
+    <tr><td><strong>BottomSheet</strong></td><td>Profile sheet, drag handle, backdrop blur</td></tr>
+    <tr><td><strong>ScanOverlay</strong></td><td>Cantos, animação de scan</td></tr>
+    <tr><td><strong>ScanResultCard</strong></td><td>Nome + status, flutuando sobre câmera</td></tr>
+    <tr><td><strong>SparklineChart</strong></td><td>Preenchimento laranja, janela de 30 dias</td></tr>
+    <tr><td><strong>EmptyState</strong></td><td>Ilustração + mensagem + CTA opcional</td></tr>
+    <tr><td><strong>AdminBlockScreen</strong></td><td>Tela cheia, centralizado, sem navegação</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Feature Gating por Plano</h2>
+
+<div class="overflow-x">
+<table>
+  <thead>
+    <tr><th>Feature</th><th>Chinám</th><th>Pétach</th><th>Koách</th><th>Chalém</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Check-in por lista</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Check-in por QR Code</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Aba Tarefas</td><td>—</td><td>—</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Membros de equipe</td><td>—</td><td>—</td><td>até 5</td><td>até 10</td></tr>
+    <tr><td>Eventos ativos</td><td>1</td><td>3</td><td>5</td><td>10</td></tr>
+    <tr><td>Vagas por evento</td><td>100</td><td>200</td><td>500</td><td>Ilimitado</td></tr>
+    <tr><td>Ingressos por evento</td><td>1</td><td>3</td><td>5</td><td>10</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Quando uma feature está bloqueada: mostrar card com o nome do plano necessário e botão "Ver planos" que abre toviaapp.com.br. Nunca esconder silenciosamente.</p>
+
+<p class="meta">Tovia Mobile — Especificação de Design · Atualizado em julho de 2026</p>
+
+</div>
+</body>
+</html>
