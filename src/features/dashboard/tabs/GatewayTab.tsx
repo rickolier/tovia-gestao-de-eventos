@@ -25,8 +25,8 @@ export default function GatewayTab() {
   const [sandbox, setSandbox] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [loading, setLoading] = useState(false);
-  // Estado local para atualizar o banner imediatamente após conectar/desconectar
-  // null = usa profile do contexto; true/false = override local
+  const [confirming, setConfirming] = useState(false);
+  const [accountInfo, setAccountInfo] = useState<Record<string, string> | null>(null);
   const [localConnected, setLocalConnected] = useState<boolean | null>(null);
   const [localSandbox, setLocalSandbox] = useState<boolean | null>(null);
   const [localConnectedAt, setLocalConnectedAt] = useState<string | null>(null);
@@ -42,15 +42,38 @@ export default function GatewayTab() {
       })
     : null;
 
-  const handleConnect = async () => {
-    if (!apiKey.trim()) {
-      toast.error('Insira a chave de API.');
-      return;
+  const handleValidate = async () => {
+    if (!apiKey.trim()) { toast.error('Insira a chave de API.'); return; }
+    setLoading(true);
+    setAccountInfo(null);
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      const gwRes = await fetch('/api/saveGatewayConfig?step=validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
+      });
+      const gwData = await gwRes.json();
+      if (!gwRes.ok) throw new Error(gwData.error || 'Erro ao validar a chave.');
+      if (gwData.accountInfo && gwData.accountInfo.name) {
+        setAccountInfo(gwData.accountInfo);
+        setConfirming(true);
+      } else {
+        setConfirming(true);
+        setAccountInfo(null);
+      }
+    } catch (err: any) {
+      toast.error(err?.message ?? 'Erro ao validar a chave.');
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleConfirm = async () => {
     setLoading(true);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const gwRes = await fetch('/api/saveGatewayConfig', {
+      const gwRes = await fetch('/api/saveGatewayConfig?step=confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
         body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
@@ -60,15 +83,21 @@ export default function GatewayTab() {
       setLocalConnected(true);
       setLocalSandbox(sandbox);
       setLocalConnectedAt(new Date().toISOString());
-      refreshProfile(); // atualiza contexto em background, sem bloquear a UI
+      setConfirming(false);
+      setAccountInfo(null);
+      refreshProfile();
       toast.success('Gateway conectado! Pagamentos automáticos habilitados.');
       setApiKey('');
     } catch (err: any) {
-      const msg = err?.message ?? 'Erro ao conectar o gateway.';
-      toast.error(msg);
+      toast.error(err?.message ?? 'Erro ao conectar o gateway.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelConfirm = () => {
+    setConfirming(false);
+    setAccountInfo(null);
   };
 
   const handleDisconnect = async () => {
@@ -253,7 +282,7 @@ export default function GatewayTab() {
                       onChange={e => setApiKey(e.target.value)}
                       placeholder="$aact_..."
                       className="h-12 rounded-2xl border-none bg-muted/40 pr-12 font-mono text-sm"
-                      onKeyDown={e => e.key === 'Enter' && handleConnect()}
+                      onKeyDown={e => e.key === 'Enter' && handleValidate()}
                     />
                     <button
                       type="button"
@@ -269,18 +298,97 @@ export default function GatewayTab() {
                 </div>
 
                 <Button
-                  onClick={handleConnect}
-                  disabled={loading || !apiKey.trim()}
+                  onClick={handleValidate}
+                  disabled={loading || confirming || !apiKey.trim()}
                   className="w-full h-12 rounded-2xl font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95"
                 >
-                  {loading ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Validando e conectando…</>
+                  {loading && !confirming ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Validando chave…</>
                   ) : (
-                    <>Conectar e validar chave <ArrowRight className="w-4 h-4 ml-2" /></>
+                    <>Validar chave <ArrowRight className="w-4 h-4 ml-2" /></>
                   )}
                 </Button>
               </div>
             </Card>
+
+            {confirming && (
+              <Card className="p-6 rounded-3xl border-2 border-primary/30 bg-primary/5 shadow-lg">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-black text-sm text-foreground">Chave válida! Confirme a conta</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Verifique se os dados abaixo correspondem à sua conta Asaas.
+                      </p>
+                    </div>
+                  </div>
+
+                  {accountInfo ? (
+                    <div className="rounded-2xl bg-card border border-border p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Titular</span>
+                        <span className="text-sm font-black text-foreground">{accountInfo.name}</span>
+                      </div>
+                      {accountInfo.tradingName && accountInfo.tradingName !== accountInfo.name && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Nome fantasia</span>
+                          <span className="text-sm font-semibold text-foreground">{accountInfo.tradingName}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest">
+                          {accountInfo.personType === 'JURIDICA' ? 'CNPJ' : 'CPF'}
+                        </span>
+                        <span className="text-sm font-mono font-semibold text-foreground">{accountInfo.cpfCnpjMasked}</span>
+                      </div>
+                      {accountInfo.email && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest">E-mail</span>
+                          <span className="text-sm text-foreground">{accountInfo.email}</span>
+                        </div>
+                      )}
+                      {accountInfo.city && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Cidade</span>
+                          <span className="text-sm text-foreground">{accountInfo.city}{accountInfo.state ? ` — ${accountInfo.state}` : ''}</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
+                      <p className="text-xs text-amber-700">
+                        Não foi possível recuperar os dados da conta. Você pode continuar, mas confirme que a chave pertence à sua conta Asaas.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleConfirm}
+                      disabled={loading}
+                      className="flex-1 h-11 rounded-2xl font-black bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 transition-all active:scale-95"
+                    >
+                      {loading ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Conectando…</>
+                      ) : (
+                        <>Confirmar e conectar</>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={handleCancelConfirm}
+                      disabled={loading}
+                      variant="outline"
+                      className="h-11 rounded-2xl font-bold"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
 
           {howItWorks}

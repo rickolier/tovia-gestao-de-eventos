@@ -80,6 +80,7 @@ export const saveGatewayConfigSchema = z.object({
   gatewayType: z.literal('asaas', { message: 'Gateway inválido.' }),
   apiKey: z.string().min(1, 'Chave de API obrigatória.'),
   sandbox: z.boolean({ message: 'Campo sandbox obrigatório.' }),
+  step: z.enum(['validate', 'confirm']).optional(),
 });
 
 // ── createEventCharge ───────────────────────────────────────────────────────
