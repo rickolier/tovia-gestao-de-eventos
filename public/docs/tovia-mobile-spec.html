@@ -66,9 +66,13 @@ tr:last-child td { border-bottom: none; }
 .overflow-x { overflow-x: auto; }
 .screen-section { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin: 20px 0; border-left: 4px solid var(--g); }
 .screen-section h3 { margin-top: 0; }
-.tab-bar-demo { display: flex; gap: 0; background: var(--purple); border-radius: 14px; padding: 12px 0; margin: 16px 0; }
-.tab-item { flex: 1; text-align: center; font-size: 10px; font-weight: 700; color: rgba(245,240,232,0.5); padding: 6px 0; }
+.tab-bar-demo { display: flex; align-items: flex-end; background: var(--purple); border-radius: 14px; padding: 14px 0 12px; margin: 16px 0; position: relative; }
+.tab-item { flex: 1; text-align: center; font-size: 11px; font-weight: 700; color: #ffffff; padding: 6px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .tab-item.active { color: var(--g); }
+.tab-item svg { width: 22px; height: 22px; }
+.tab-item.fab { margin-top: -32px; }
+.tab-fab-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--g); display: flex; align-items: center; justify-content: center; border: 4px solid var(--purple); box-shadow: 0 6px 10px rgba(0,0,0,0.3); }
+.tab-fab-circle svg { width: 24px; height: 24px; color: #fff; }
 .meta { font-size: 12px; color: var(--text-muted); margin-top: 48px; text-align: center; }
 </style>
 </head>
@@ -124,13 +128,30 @@ tr:last-child td { border-bottom: none; }
 <div class="card">
   <div class="card-title">Bottom Navigation — 5 Abas</div>
   <div class="tab-bar-demo">
-    <div class="tab-item active">Início</div>
-    <div class="tab-item">Check-in</div>
-    <div class="tab-item">Tarefas</div>
-    <div class="tab-item">Financeiro</div>
-    <div class="tab-item">Suporte</div>
+    <div class="tab-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Financeiro
+    </div>
+    <div class="tab-item fab">
+      <div class="tab-fab-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      Check-in
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Tarefas
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Suporte
+    </div>
   </div>
-  <p>Fundo sempre roxo escuro (#2D1470). Aba ativa em laranja primário com ícone preenchido. Abas inativas em creme semitransparente.</p>
+  <p>Fundo sempre roxo escuro (#2D1470). Aba ativa em laranja primário com ícone preenchido. Abas inativas em branco puro (#ffffff). Check-in central com FAB flutuante (círculo laranja com borda roxa).</p>
 </div>
 
 <h2>Telas</h2>
