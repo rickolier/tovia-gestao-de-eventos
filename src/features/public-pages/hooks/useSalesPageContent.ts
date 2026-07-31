@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 import { getDocument, createDocument, listDocuments, updateDocument } from '~/services/firestore';
 import { Evento, Ticket, PaginaVenda, UserProfile, Donation, Cupom } from '~/types';
 import { validateEmail, validateTelefone, validateCPF } from '~/utils/validators';
@@ -189,29 +188,34 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
         setInscricaoId(doacaoId);
 
         if (useDonationGateway) {
-          const fns = getFunctions(app, 'us-central1');
-          const createCharge = httpsCallable(fns, 'createEventCharge');
           const [expiryMonth, expiryYear] = card.expiry.split('/');
-          const result = await createCharge({
-            eventoId,
-            inscricaoId: doacaoId,
-            isDonation: true,
-            paymentMethod: selectedMethod,
-            attendeeName: nome,
-            attendeeEmail: email,
-            attendeeCpf: cpf.replace(/\D/g, ''),
-            attendeePhone: telefone,
-            installments: installments > 1 ? installments : undefined,
-            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
-              holderName: card.holderName,
-              number: card.number.replace(/\s/g, ''),
-              expiryMonth: expiryMonth ?? '',
-              expiryYear: expiryYear ? `20${expiryYear}` : '',
-              ccv: card.ccv,
-            } : undefined,
-            valor: total,
+          const idToken = await auth.currentUser?.getIdToken();
+          const chargeRes = await fetch('/api/createEventCharge', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+            body: JSON.stringify({
+              eventoId,
+              inscricaoId: doacaoId,
+              isDonation: true,
+              paymentMethod: selectedMethod,
+              attendeeName: nome,
+              attendeeEmail: email,
+              attendeeCpf: cpf.replace(/\D/g, ''),
+              attendeePhone: telefone,
+              installments: installments > 1 ? installments : undefined,
+              creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
+                holderName: card.holderName,
+                number: card.number.replace(/\s/g, ''),
+                expiryMonth: expiryMonth ?? '',
+                expiryYear: expiryYear ? `20${expiryYear}` : '',
+                ccv: card.ccv,
+              } : undefined,
+              valor: total,
+            }),
           });
-          setCheckoutResult(result.data as CheckoutResult);
+          const chargeData = await chargeRes.json();
+          if (!chargeRes.ok) throw new Error(chargeData.error || 'Erro ao criar cobrança.');
+          setCheckoutResult(chargeData as CheckoutResult);
           setStep('checkout');
           return;
         }
@@ -261,28 +265,33 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
         }
 
         if (useGateway) {
-          const fns = getFunctions(app, 'us-central1');
-          const createCharge = httpsCallable(fns, 'createEventCharge');
           const [expiryMonth, expiryYear] = card.expiry.split('/');
-          const result = await createCharge({
-            eventoId,
-            inscricaoId: id,
-            paymentMethod: selectedMethod,
-            attendeeName: nome,
-            attendeeEmail: email,
-            attendeeCpf: cpf.replace(/\D/g, ''),
-            attendeePhone: telefone,
-            installments: installments > 1 ? installments : undefined,
-            creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
-              holderName: card.holderName,
-              number: card.number.replace(/\s/g, ''),
-              expiryMonth: expiryMonth ?? '',
-              expiryYear: expiryYear ? `20${expiryYear}` : '',
-              ccv: card.ccv,
-            } : undefined,
-            valor: valorFinal,
+          const idToken = await auth.currentUser?.getIdToken();
+          const chargeRes = await fetch('/api/createEventCharge', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+            body: JSON.stringify({
+              eventoId,
+              inscricaoId: id,
+              paymentMethod: selectedMethod,
+              attendeeName: nome,
+              attendeeEmail: email,
+              attendeeCpf: cpf.replace(/\D/g, ''),
+              attendeePhone: telefone,
+              installments: installments > 1 ? installments : undefined,
+              creditCard: (selectedMethod === 'credito' || selectedMethod === 'recorrente') ? {
+                holderName: card.holderName,
+                number: card.number.replace(/\s/g, ''),
+                expiryMonth: expiryMonth ?? '',
+                expiryYear: expiryYear ? `20${expiryYear}` : '',
+                ccv: card.ccv,
+              } : undefined,
+              valor: valorFinal,
+            }),
           });
-          setCheckoutResult(result.data as CheckoutResult);
+          const chargeData = await chargeRes.json();
+          if (!chargeRes.ok) throw new Error(chargeData.error || 'Erro ao criar cobrança.');
+          setCheckoutResult(chargeData as CheckoutResult);
           setStep('checkout');
           return;
         }

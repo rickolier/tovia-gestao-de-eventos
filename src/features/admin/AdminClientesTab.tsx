@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { listDocuments, updateDocument } from '~/services/firestore';
 import { UserProfile, PlanLevel } from '~/types';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 import {
   Search, RefreshCw, X, ExternalLink, ChevronRight,
   ShieldOff, ArrowUpCircle, UserX, UserCheck,
@@ -70,8 +69,13 @@ export default function AdminClientesTab() {
     if (!u.uid || !window.confirm(`Desativar conta de ${u.nome || u.email}?`)) return;
     setSuspending(u.uid);
     try {
-      const fns = getFunctions(app, 'us-central1');
-      await httpsCallable(fns, 'suspendUser')({ userId: u.uid });
+      const idToken = await auth.currentUser?.getIdToken();
+      const suspRes = await fetch('/api/suspendUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ userId: u.uid }),
+      });
+      if (!suspRes.ok) { const d = await suspRes.json(); throw new Error(d.error || 'Erro ao desativar.'); }
       patchUsers(u.uid, { desativado: true, plano: null, asaasSubscriptionId: null, planoPendente: null });
       toast.success('Conta desativada.');
     } catch (e: any) {

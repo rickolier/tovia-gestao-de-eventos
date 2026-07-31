@@ -73,3 +73,33 @@ export const confirmarCodigoInscricaoSchema = z.object({
   email: email,
   code: z.string().min(1, 'Código obrigatório.'),
 });
+
+// ── saveGatewayConfig ───────────────────────────────────────────────────────
+
+export const saveGatewayConfigSchema = z.object({
+  gatewayType: z.literal('asaas', { message: 'Gateway inválido.' }),
+  apiKey: z.string().min(1, 'Chave de API obrigatória.'),
+  sandbox: z.boolean({ message: 'Campo sandbox obrigatório.' }),
+});
+
+// ── createEventCharge ───────────────────────────────────────────────────────
+
+export const createEventChargeSchema = z.object({
+  eventoId: z.string().min(1, 'eventoId obrigatório.'),
+  inscricaoId: z.string().min(1, 'inscricaoId obrigatório.'),
+  isDonation: z.boolean().optional(),
+  paymentMethod: z.string().min(1, 'paymentMethod obrigatório.'),
+  installments: z.number().int().min(1).optional(),
+  attendeeName: z.string().min(1, 'attendeeName obrigatório.'),
+  attendeeEmail: email,
+  attendeeCpf: z.string().optional(),
+  attendeePhone: z.string().optional(),
+  creditCard: z.object({
+    holderName: z.string().min(1),
+    number: z.string().min(1),
+    expiryMonth: z.string().min(1),
+    expiryYear: z.string().min(1),
+    ccv: z.string().min(1),
+  }).optional(),
+  valor: z.number().positive('Valor deve ser positivo.'),
+});

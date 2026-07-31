@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '~/context/AuthContext';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { auth } from '~/services/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +18,6 @@ import {
   Loader2,
 } from 'lucide-react';
 import { updateDocument } from '~/services/firestore';
-import app from '~/services/firebase';
 
 export default function GatewayTab() {
   const { profile, user, refreshProfile } = useAuth();
@@ -50,9 +49,14 @@ export default function GatewayTab() {
     }
     setLoading(true);
     try {
-      const fns = getFunctions(app, 'us-central1');
-      const saveGateway = httpsCallable(fns, 'saveGatewayConfig');
-      await saveGateway({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox });
+      const idToken = await auth.currentUser?.getIdToken();
+      const gwRes = await fetch('/api/saveGatewayConfig', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
+      });
+      const gwData = await gwRes.json();
+      if (!gwRes.ok) throw new Error(gwData.error || 'Erro ao conectar o gateway.');
       setLocalConnected(true);
       setLocalSandbox(sandbox);
       setLocalConnectedAt(new Date().toISOString());

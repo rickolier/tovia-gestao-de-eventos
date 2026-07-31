@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 import { toast } from 'sonner';
 
 export function useEventImageUpload(initialUrl = '') {
@@ -45,11 +44,16 @@ export function useEventImageUpload(initialUrl = '') {
       reader.readAsDataURL(imagemFile);
     });
     setUploadProgresso(40);
-    const fns = getFunctions(app, 'us-central1');
-    const uploadCover = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadEventCover');
-    const result = await uploadCover({ eventoId, imageBase64, contentType: imagemFile.type });
+    const idToken = await auth.currentUser?.getIdToken();
+    const uploadRes = await fetch('/api/uploadEventCover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+      body: JSON.stringify({ eventoId, imageBase64, contentType: imagemFile.type }),
+    });
+    const uploadData = await uploadRes.json();
+    if (!uploadRes.ok) throw new Error(uploadData.error || 'Erro ao fazer upload.');
     setUploadProgresso(100);
-    const url = result.data.downloadUrl;
+    const url = uploadData.downloadUrl;
     return url.includes('?t=') ? url : `${url}?t=${Date.now()}`;
   };
 

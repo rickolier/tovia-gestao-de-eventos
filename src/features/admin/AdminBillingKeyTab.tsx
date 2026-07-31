@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { KeyRound, Eye, EyeOff, Save, CheckCircle2, AlertCircle, Loader2, ShieldCheck, ShieldX, ShieldQuestion } from 'lucide-react';
 import { getDocument, updateDocument, createDocument } from '~/services/firestore';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 
 const CONFIG_COLLECTION = 'config';
 const CONFIG_DOC_ID = 'billing';
@@ -114,13 +113,17 @@ export default function AdminBillingKeyTab() {
     setValidating(true);
     setValidateError(null);
     try {
-      const fns = getFunctions(app, 'us-central1');
-      const validate = httpsCallable<object, { valid: boolean; sandbox?: boolean; baseUrl?: string; debugInfo?: string }>(fns, 'validateBillingKey');
-      const result = await validate({});
-      const updated = { ...(currentConfig ?? config)!, is_valid: result.data.valid, last_validated_at: new Date().toISOString() };
+      const idToken = await auth.currentUser?.getIdToken();
+      const valRes = await fetch('/api/validateBillingKey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+      });
+      const valData = await valRes.json();
+      if (!valRes.ok) throw new Error(valData.error || 'Erro ao verificar.');
+      const updated = { ...(currentConfig ?? config)!, is_valid: valData.valid, last_validated_at: new Date().toISOString() };
       setConfig(updated);
-      if (!result.data.valid) {
-        setValidateError(`Sandbox=${result.data.sandbox} | URL=${result.data.baseUrl} | ${result.data.debugInfo}`);
+      if (!valData.valid) {
+        setValidateError(`Sandbox=${valData.sandbox} | URL=${valData.baseUrl} | ${valData.debugInfo}`);
       }
     } catch (e: any) {
       setValidateError(e?.message ?? 'Erro ao verificar a chave.');

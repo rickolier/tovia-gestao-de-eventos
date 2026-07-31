@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 import { updateDocument } from '~/services/firestore';
 import { useAuth } from '~/context/AuthContext';
 import { toast } from 'sonner';
@@ -82,10 +81,15 @@ export function useProfileTab() {
         reader.onerror = reject;
         reader.readAsDataURL(croppedFile);
       });
-      const fns = getFunctions(app, 'us-central1');
-      const uploadFn = httpsCallable<unknown, { downloadUrl: string }>(fns, 'uploadProfilePhoto');
-      const result = await uploadFn({ imageBase64, contentType: croppedFile.type || 'image/jpeg' });
-      const url = result.data.downloadUrl;
+      const idToken = await auth.currentUser?.getIdToken();
+      const uploadRes = await fetch('/api/uploadProfilePhoto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ imageBase64, contentType: croppedFile.type || 'image/jpeg' }),
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw new Error(uploadData.error || 'Erro ao fazer upload.');
+      const url = uploadData.downloadUrl;
       setFormData(prev => ({ ...prev, imagem_url: url }));
       await refreshProfile();
       toast.success('Foto atualizada!');

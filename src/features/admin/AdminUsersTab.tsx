@@ -9,8 +9,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import { PlanLevel } from '~/types';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '~/services/firebase';
+import { auth } from '~/services/firebase';
 
 const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
 
@@ -35,9 +34,13 @@ export default function AdminUsersTab() {
     if (!window.confirm(`Desativar conta de ${u.nome || u.email}? O acesso será bloqueado e a assinatura cancelada.`)) return;
     setSuspending(u.uid);
     try {
-      const fns = getFunctions(app, 'us-central1');
-      const suspendUser = httpsCallable(fns, 'suspendUser');
-      await suspendUser({ userId: u.uid });
+      const idToken = await auth.currentUser?.getIdToken();
+      const suspRes = await fetch('/api/suspendUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ userId: u.uid }),
+      });
+      if (!suspRes.ok) { const d = await suspRes.json(); throw new Error(d.error || 'Erro ao desativar.'); }
       setUsers(prev => prev.map(x => x.uid === u.uid ? { ...x, desativado: true, plano: null, asaasSubscriptionId: null, planoPendente: null } : x));
       toast.success(`Conta de ${u.nome || u.email} desativada.`);
     } catch (e: any) {
