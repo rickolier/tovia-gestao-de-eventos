@@ -114,7 +114,7 @@ export default function AdminBillingKeyTab() {
     setValidateError(null);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const valRes = await fetch('/api/validateBillingKey', {
+      const valRes = await fetch('/api/admin?action=validateBillingKey', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
       });

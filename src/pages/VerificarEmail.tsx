@@ -52,7 +52,7 @@ export default function VerificarEmail() {
     setResending(true);
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch('/api/enviarCodigoVerificacao', {
+      const res = await fetch('/api/auth?action=enviarCodigoVerificacao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
         body: JSON.stringify({ userId: user.uid }),

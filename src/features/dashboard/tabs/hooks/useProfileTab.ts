@@ -49,7 +49,7 @@ export function useProfileTab() {
     if (!user?.email) return;
     setSendingReset(true);
     try {
-      const res = await fetch('/api/enviarRedefinicaoSenha', {
+      const res = await fetch('/api/auth?action=enviarRedefinicaoSenha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email }),
@@ -82,7 +82,7 @@ export function useProfileTab() {
         reader.readAsDataURL(croppedFile);
       });
       const idToken = await auth.currentUser?.getIdToken();
-      const uploadRes = await fetch('/api/uploadProfilePhoto', {
+      const uploadRes = await fetch('/api/upload?action=uploadProfilePhoto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
         body: JSON.stringify({ imageBase64, contentType: croppedFile.type || 'image/jpeg' }),

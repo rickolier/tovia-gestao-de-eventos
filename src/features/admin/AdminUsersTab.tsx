@@ -35,7 +35,7 @@ export default function AdminUsersTab() {
     setSuspending(u.uid);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const suspRes = await fetch('/api/suspendUser', {
+      const suspRes = await fetch('/api/admin?action=suspendUser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
         body: JSON.stringify({ userId: u.uid }),

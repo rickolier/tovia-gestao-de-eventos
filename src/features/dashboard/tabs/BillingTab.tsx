@@ -181,7 +181,7 @@ export default function BillingTab() {
     setError(null);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const res = await fetch('/api/getBillingInfo', {
+      const res = await fetch('/api/admin?action=getBillingInfo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({ userId: user.uid }),

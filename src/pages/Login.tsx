@@ -89,7 +89,7 @@ export default function Login() {
       return;
     }
     try {
-      await fetch('/api/enviarRedefinicaoSenha', {
+      await fetch('/api/auth?action=enviarRedefinicaoSenha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -120,7 +120,7 @@ export default function Login() {
           }
         }
         const idToken = await userCredential.user.getIdToken();
-        fetch('/api/enviarCodigoVerificacao', {
+        fetch('/api/auth?action=enviarCodigoVerificacao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
           body: JSON.stringify({ userId: userCredential.user.uid }),
@@ -147,7 +147,7 @@ export default function Login() {
         setLoginAttempts(next);
         if (next >= 3) {
           try {
-            await fetch('/api/enviarRedefinicaoSenha', {
+            await fetch('/api/auth?action=enviarRedefinicaoSenha', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email }),

@@ -262,7 +262,7 @@ export default function ConsultarInscricao() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/enviarCodigoInscricao', {
+      const res = await fetch('/api/auth?action=enviarCodigoInscricao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
@@ -284,7 +284,7 @@ export default function ConsultarInscricao() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/enviarCodigoInscricao', {
+      const res = await fetch('/api/auth?action=enviarCodigoInscricao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
@@ -307,7 +307,7 @@ export default function ConsultarInscricao() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/confirmarCodigoInscricao', {
+      const res = await fetch('/api/auth?action=confirmarCodigoInscricao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase(), code: codeClean }),
