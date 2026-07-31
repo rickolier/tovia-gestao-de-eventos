@@ -87,11 +87,40 @@ async function handleValidateBillingKey(req: VercelRequest, res: VercelResponse)
       debugInfo = `status=${status} body=${body}`;
     }
 
+    let accountInfo: Record<string, any> = {};
+    if (valid) {
+      try {
+        const acctRes = await axios.get(`${baseUrl}/myAccount/commercialInfo`, {
+          headers: { access_token: apiKey, 'Content-Type': 'application/json' },
+          timeout: 10000,
+        });
+        const d = acctRes.data;
+        const cpfCnpj = d.cpfCnpj || '';
+        const masked = cpfCnpj.length === 11
+          ? `***.***.${cpfCnpj.slice(6, 9)}-${cpfCnpj.slice(9)}`
+          : cpfCnpj.length === 14
+            ? `**.***.${cpfCnpj.slice(5, 8)}/${cpfCnpj.slice(8, 12)}-${cpfCnpj.slice(12)}`
+            : cpfCnpj;
+        accountInfo = {
+          name: d.name || d.companyName || '',
+          tradingName: d.tradingName || '',
+          cpfCnpjMasked: masked,
+          personType: d.personType || '',
+          email: d.email || '',
+          city: d.city?.name || '',
+          state: d.city?.state || '',
+          status: d.status || '',
+        };
+      } catch (e) {
+        console.warn('Could not fetch account info (non-fatal):', e);
+      }
+    }
+
     await db.collection('config').doc('billing').update({
       is_valid: valid, last_validated_at: new Date().toISOString(),
     });
 
-    return res.json({ valid, sandbox: !!sandbox, baseUrl, debugInfo });
+    return res.json({ valid, sandbox: !!sandbox, baseUrl, debugInfo, accountInfo });
   } catch (err: unknown) {
     console.error('[validateBillingKey]', err);
     return res.status(500).json({ error: 'Erro ao validar chave.' });

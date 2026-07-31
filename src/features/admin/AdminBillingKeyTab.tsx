@@ -65,6 +65,7 @@ export default function AdminBillingKeyTab() {
   const [saved, setSaved]               = useState(false);
   const [validating, setValidating]     = useState(false);
   const [validateError, setValidateError] = useState<string | null>(null);
+  const [accountInfo, setAccountInfo]   = useState<Record<string, string> | null>(null);
 
   useEffect(() => { load(); }, []);
 
@@ -112,6 +113,7 @@ export default function AdminBillingKeyTab() {
   async function handleValidate(currentConfig?: BillingConfig) {
     setValidating(true);
     setValidateError(null);
+    setAccountInfo(null);
     try {
       const idToken = await auth.currentUser?.getIdToken();
       const valRes = await fetch('/api/admin?action=validateBillingKey', {
@@ -122,6 +124,9 @@ export default function AdminBillingKeyTab() {
       if (!valRes.ok) throw new Error(valData.error || 'Erro ao verificar.');
       const updated = { ...(currentConfig ?? config)!, is_valid: valData.valid, last_validated_at: new Date().toISOString() };
       setConfig(updated);
+      if (valData.valid && valData.accountInfo?.name) {
+        setAccountInfo(valData.accountInfo);
+      }
       if (!valData.valid) {
         setValidateError(`Sandbox=${valData.sandbox} | URL=${valData.baseUrl} | ${valData.debugInfo}`);
       }
@@ -297,6 +302,39 @@ export default function AdminBillingKeyTab() {
           <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-700 border border-red-200">
             <AlertCircle className="w-4 h-4 shrink-0" />
             {validateError}
+          </div>
+        )}
+
+        {/* Account info */}
+        {accountInfo && !editing && (
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4 space-y-2">
+            <p className="text-xs font-bold text-green-800 uppercase tracking-widest mb-2">Conta Asaas identificada</p>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-green-700 font-bold">Titular</span>
+              <span className="text-sm font-bold text-green-900">{accountInfo.name}</span>
+            </div>
+            {accountInfo.tradingName && accountInfo.tradingName !== accountInfo.name && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-green-700 font-bold">Nome fantasia</span>
+                <span className="text-sm text-green-900">{accountInfo.tradingName}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-green-700 font-bold">{accountInfo.personType === 'JURIDICA' ? 'CNPJ' : 'CPF'}</span>
+              <span className="text-sm font-mono font-semibold text-green-900">{accountInfo.cpfCnpjMasked}</span>
+            </div>
+            {accountInfo.email && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-green-700 font-bold">E-mail</span>
+                <span className="text-sm text-green-900">{accountInfo.email}</span>
+              </div>
+            )}
+            {accountInfo.city && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-green-700 font-bold">Cidade</span>
+                <span className="text-sm text-green-900">{accountInfo.city}{accountInfo.state ? ` — ${accountInfo.state}` : ''}</span>
+              </div>
+            )}
           </div>
         )}
 
