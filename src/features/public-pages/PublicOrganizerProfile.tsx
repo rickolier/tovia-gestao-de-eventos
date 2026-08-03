@@ -7,7 +7,7 @@ import { where } from 'firebase/firestore';
 import {
   Calendar, MapPin, Users, Mail, Phone, Globe, Instagram,
   MessageCircle, GlobeLock, ExternalLink, ChevronRight, X,
-  FileText, ArrowRight, Loader2,
+  FileText, ArrowRight, Loader2, CheckCircle,
 } from 'lucide-react';
 import { format, parseISO, isBefore, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -294,6 +294,27 @@ function PublicOrganizerProfileWithUserId({ userId }: { userId: string }) {
           </a>
         </div>
       </header>
+
+      {/* ── Banner consultar inscrição ── */}
+      <div className="bg-orange-50 border-b border-orange-100">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm">
+              <CheckCircle className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="font-black text-gray-900 text-sm">Já se inscreveu em um evento?</p>
+              <p className="text-xs text-gray-500">Consulte seus dados, status de pagamento e QR Code de check-in.</p>
+            </div>
+          </div>
+          <a
+            href="/consultar"
+            className="w-full sm:w-auto shrink-0 bg-primary text-white text-xs font-black uppercase tracking-widest px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-all shadow-sm shadow-primary/20 flex items-center justify-center gap-2 whitespace-nowrap"
+          >
+            Consultar inscrição <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </div>
 
       {/* ── Profile banner ── */}
       <div className="bg-white border-b border-gray-100">
