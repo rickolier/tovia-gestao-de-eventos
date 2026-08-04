@@ -1,7 +1,7 @@
 import { ToviaLogo } from '~/components/ToviaLogo';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2, MessageSquare, Trash2, Clock, ChevronDown, ChevronUp, Send, RefreshCw } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2, MessageSquare, Trash2, Clock, ChevronDown, ChevronUp, Send, RefreshCw, FolderOpen } from 'lucide-react';
 import { useAuth } from '~/context/AuthContext';
 import { listDocuments, updateDocument, removeDocument } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
@@ -46,6 +46,19 @@ const PLAN_FILTERS: { key: PlanKey; label: string }[] = [
 ];
 
 const PINNED_TAGS = ['início', 'configuração', 'eventos', 'financeiro', 'suporte'];
+
+const CATEGORIA_LABELS_BC: Record<string, string> = {
+  'primeiros-passos': 'Primeiros Passos',
+  'eventos': 'Gestão de Eventos',
+  'financeiro': 'Financeiro',
+  'gestao': 'Equipe e Operações',
+  'planos': 'Guias por Plano',
+  'por-perfil': 'Guias por Tipo de Evento',
+  'privacidade': 'Privacidade e Dados',
+  'solucoes': 'Problemas e Soluções',
+};
+
+const CATEGORIA_ORDER = Object.keys(CATEGORIA_LABELS_BC);
 
 const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
 
@@ -106,6 +119,54 @@ const CATEGORIAS: { value: Categoria; label: string }[] = [
   { value: 'outro',     label: 'Outro'            },
 ];
 
+function ArticleCard({ artigo, tagFiltro }: { artigo: ArtigoBC; tagFiltro: string | null }) {
+  const badges      = badgesFromTags(artigo.tags);
+  const accent      = accentFromBadges(badges);
+  const hasBanner   = !!artigo.banner_url;
+  const contentTags = artigo.tags.filter(t => !PLAN_TAG_KEYS.has(t));
+
+  return (
+    <Link
+      to={`/base-de-conhecimento/${artigo.slug}`}
+      className="group flex flex-col bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-200"
+    >
+      {hasBanner ? (
+        <div className="h-36 overflow-hidden shrink-0">
+          <img src={artigo.banner_url} alt={artigo.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        </div>
+      ) : (
+        <div className={cn('h-1.5 shrink-0', accent)} />
+      )}
+      <div className="flex flex-col gap-3 p-5 flex-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          {badges.map(b => (
+            <span key={b} className={cn('text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full', BADGES[b].color)}>
+              {BADGES[b].label}
+            </span>
+          ))}
+        </div>
+        <div className="flex-1">
+          <h2 className="text-[15px] font-black text-foreground leading-tight mb-1.5 group-hover:text-primary transition-colors">{artigo.titulo}</h2>
+          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{artigo.resumo}</p>
+        </div>
+        {contentTags.length > 0 && (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Tag className="w-3 h-3 text-muted-foreground/30 shrink-0" />
+            {contentTags.slice(0, 3).map(tag => (
+              <span key={tag} className={cn('text-[10px] px-2 py-0.5 rounded-full transition-colors', tagFiltro === tag ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground bg-muted')}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+          Ler artigo <ArrowRight className="w-3 h-3" />
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function BaseConhecimento() {
   const { user, profile } = useAuth();
   const [artigos, setArtigos]     = useState<ArtigoBC[]>([]);
@@ -113,6 +174,7 @@ export default function BaseConhecimento() {
   const [busca, setBusca]         = useState('');
   const [planFiltro, setPlanFiltro] = useState<PlanKey | null>(null);
   const [tagFiltro, setTagFiltro]   = useState<string | null>(null);
+  const [categoriaFiltro, setCategoriaFiltro] = useState<string | null>(null);
 
   // Ticket form
   const [ticketOpen, setTicketOpen]       = useState(false);
@@ -308,14 +370,33 @@ export default function BaseConhecimento() {
       result = result.filter(a => a.tags.includes(tagFiltro));
     }
 
-    return result;
-  }, [artigos, busca, planFiltro, tagFiltro]);
+    if (categoriaFiltro) {
+      result = result.filter(a => a.categoria === categoriaFiltro);
+    }
 
-  const hasActiveFilter = planFiltro !== null || tagFiltro !== null;
+    return result;
+  }, [artigos, busca, planFiltro, tagFiltro, categoriaFiltro]);
+
+  const hasActiveFilter = planFiltro !== null || tagFiltro !== null || categoriaFiltro !== null;
+  const isSearching = busca.trim().length > 0 || hasActiveFilter;
+
+  const groupedByCategoria = useMemo(() => {
+    if (isSearching) return null;
+    const groups: Record<string, ArtigoBC[]> = {};
+    for (const artigo of filtered) {
+      const cat = (artigo as ArtigoBC & { categoria?: string }).categoria || 'outros';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(artigo);
+    }
+    return CATEGORIA_ORDER
+      .filter(cat => groups[cat]?.length)
+      .map(cat => ({ key: cat, label: CATEGORIA_LABELS_BC[cat] || cat, artigos: groups[cat] }));
+  }, [filtered, isSearching]);
 
   function clearFilters() {
     setPlanFiltro(null);
     setTagFiltro(null);
+    setCategoriaFiltro(null);
   }
 
   return (
@@ -433,6 +514,28 @@ export default function BaseConhecimento() {
               </div>
             )}
 
+            {/* Category filters */}
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <FolderOpen className="w-3 h-3 text-white/40 shrink-0" />
+              {CATEGORIA_ORDER.map(cat => {
+                const active = categoriaFiltro === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoriaFiltro(active ? null : cat)}
+                    className={cn(
+                      'text-[11px] font-semibold px-3 py-1 rounded-full border transition-all duration-150',
+                      active
+                        ? 'bg-white text-primary border-white'
+                        : 'border-white/25 text-white/70 hover:border-white/50 hover:text-white bg-white/5',
+                    )}
+                  >
+                    {CATEGORIA_LABELS_BC[cat]}
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Clear filters */}
             {hasActiveFilter && (
               <button
@@ -469,94 +572,38 @@ export default function BaseConhecimento() {
           </div>
         ) : (
           <>
-            {(busca || hasActiveFilter) && (
+            {isSearching && (
               <p className="text-sm text-muted-foreground mb-6">
                 {filtered.length} {filtered.length === 1 ? 'artigo encontrado' : 'artigos encontrados'}
                 {busca && ` para "${busca}"`}
               </p>
             )}
 
-            <div className="grid gap-5 md:grid-cols-2">
-              {filtered.map(artigo => {
-                const badges      = badgesFromTags(artigo.tags);
-                const accent      = accentFromBadges(badges);
-                const hasBanner   = !!artigo.banner_url;
-                const contentTags = artigo.tags.filter(t => !PLAN_TAG_KEYS.has(t));
-
-                return (
-                  <Link
-                    key={artigo.id}
-                    to={`/base-de-conhecimento/${artigo.slug}`}
-                    className="group flex flex-col bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-200"
-                  >
-                    {/* Top visual */}
-                    {hasBanner ? (
-                      <div className="h-36 overflow-hidden shrink-0">
-                        <img
-                          src={artigo.banner_url}
-                          alt={artigo.titulo}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                    ) : (
-                      <div className={cn('h-1.5 shrink-0', accent)} />
-                    )}
-
-                    {/* Content */}
-                    <div className="flex flex-col gap-3 p-5 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">
-                          #{artigo.ordem}
-                        </span>
-                        {badges.map(b => (
-                          <span
-                            key={b}
-                            className={cn(
-                              'text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full',
-                              BADGES[b].color,
-                            )}
-                          >
-                            {BADGES[b].label}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="flex-1">
-                        <h2 className="text-[15px] font-black text-foreground leading-tight mb-1.5 group-hover:text-primary transition-colors">
-                          {artigo.titulo}
-                        </h2>
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          {artigo.resumo}
-                        </p>
-                      </div>
-
-                      {contentTags.length > 0 && (
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <Tag className="w-3 h-3 text-muted-foreground/30 shrink-0" />
-                          {contentTags.slice(0, 3).map(tag => (
-                            <span
-                              key={tag}
-                              className={cn(
-                                'text-[10px] px-2 py-0.5 rounded-full transition-colors',
-                                tagFiltro === tag
-                                  ? 'bg-primary/10 text-primary font-semibold'
-                                  : 'text-muted-foreground bg-muted',
-                              )}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ler artigo <ArrowRight className="w-3 h-3" />
-                      </div>
+            {groupedByCategoria ? (
+              <div className="space-y-10">
+                {groupedByCategoria.map(group => (
+                  <section key={group.key}>
+                    <div className="flex items-center gap-3 mb-4 pb-2 border-b border-border">
+                      <h2 className="text-base font-black text-foreground">{group.label}</h2>
+                      <span className="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                        {group.artigos.length}
+                      </span>
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      {group.artigos.map(artigo => (
+                        <ArticleCard key={artigo.id} artigo={artigo} tagFiltro={tagFiltro} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-5 md:grid-cols-2">
+                {filtered.map(artigo => (
+                  <ArticleCard key={artigo.id} artigo={artigo} tagFiltro={tagFiltro} />
+                ))}
+              </div>
+            )}
           </>
         )}
       </main>

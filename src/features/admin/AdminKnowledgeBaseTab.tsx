@@ -32,6 +32,7 @@ const EMPTY_FORM: Omit<ArtigoBC, 'id' | 'criado_em' | 'atualizado_em'> = {
   tags: [],
   ordem: 1,
   slug: '',
+  categoria: '',
   autor: 'Equipe Tovia',
 };
 
@@ -111,6 +112,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
       tags: artigo.tags,
       ordem: artigo.ordem,
       slug: artigo.slug,
+      categoria: artigo.categoria ?? '',
       autor: artigo.autor,
     });
     setTagsInput(artigo.tags.join(', '));

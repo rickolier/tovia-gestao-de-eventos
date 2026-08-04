@@ -7,6 +7,7 @@ export const SEED_ARTIGOS: ArtigoBC[] = [
     id: 'bem-vindo',
     slug: 'bem-vindo',
     ordem: 1,
+    categoria: 'primeiros-passos',
     titulo: 'Bem-vindo ao Tovia!',
     resumo: 'Conheça a plataforma de gestão de eventos do Tovia e saiba como ela pode transformar a organização dos seus eventos.',
     tags: ['introdução', 'visão geral', 'plataforma'],
@@ -35,6 +36,7 @@ Explore cada seção usando o tutorial guiado ou consulte esta Base de Conhecime
     id: 'perfil',
     slug: 'perfil',
     ordem: 2,
+    categoria: 'primeiros-passos',
     titulo: 'Complete o seu perfil!',
     resumo: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
     tags: ['perfil', 'organização', 'configuração'],
@@ -59,6 +61,7 @@ Manter o perfil atualizado garante que as informações de contato nos e-mails a
     id: 'agenda',
     slug: 'agenda',
     ordem: 3,
+    categoria: 'primeiros-passos',
     titulo: 'Agenda de Eventos!',
     resumo: 'Visualize todos os seus eventos num calendário mensal. Ideal para nunca perder uma data importante.',
     tags: ['agenda', 'calendário', 'eventos'],
@@ -81,6 +84,7 @@ Dica: antes de criar um novo evento, consulte a Agenda para garantir que não h�
     id: 'calculadora',
     slug: 'calculadora',
     ordem: 4,
+    categoria: 'primeiros-passos',
     titulo: 'Calcule seu próximo evento!',
     resumo: 'Use a calculadora para estimar o investimento do seu evento antes de criá-lo — defina vagas, custos fixos e variáveis e veja a viabilidade financeira.',
     tags: ['calculadora', 'planejamento', 'financeiro'],
@@ -103,6 +107,7 @@ Use a calculadora antes de divulgar qualquer evento. Definir o preço certo desd
     id: 'relatorios',
     slug: 'relatorios',
     ordem: 5,
+    categoria: 'primeiros-passos',
     titulo: 'Relatórios!',
     resumo: 'Acompanhe os números consolidados de todos os seus eventos: capacidade total, eventos ativos e destaque de desempenho.',
     tags: ['relatórios', 'métricas', 'análise'],
@@ -127,6 +132,7 @@ Os relatórios são atualizados automaticamente conforme novas inscrições são
     id: 'faturamento',
     slug: 'faturamento',
     ordem: 6,
+    categoria: 'primeiros-passos',
     titulo: 'Faturamento!',
     resumo: 'Veja o plano que você contratou, seus limites de eventos e participantes, e o histórico de pagamentos da plataforma.',
     tags: ['faturamento', 'plano', 'assinatura'],
@@ -153,6 +159,7 @@ Em caso de dúvidas sobre sua assinatura ou faturas, entre em contato com o supo
     id: 'seus-eventos',
     slug: 'seus-eventos',
     ordem: 7,
+    categoria: 'primeiros-passos',
     titulo: 'Seus eventos!',
     resumo: 'Na página Início você encontra todos os seus eventos e acessa qualquer um deles com um clique.',
     tags: ['eventos', 'início', 'gestão'],
@@ -177,6 +184,7 @@ Dica: mantenha o nome dos eventos claro e objetivo — ele aparece para os parti
     id: 'criar-evento',
     slug: 'criar-evento',
     ordem: 8,
+    categoria: 'eventos',
     titulo: 'Crie seu primeiro evento!',
     resumo: 'Clique aqui para criar um evento. Você define nome, data, local e todos os dados importantes sobre ele.',
     tags: ['criar evento', 'configuração', 'início'],
@@ -201,6 +209,7 @@ Após criar o evento, a próxima etapa obrigatória é configurar pelo menos um 
     id: 'ingressos',
     slug: 'ingressos',
     ordem: 9,
+    categoria: 'eventos',
     titulo: 'Cada evento precisa dos seus ingressos!',
     resumo: 'Dentro de cada evento, configure os ingressos: gratuitos, pagos ou por doação. Você define vagas, prazo e as formas de pagamento aceitas.',
     tags: ['ingressos', 'tickets', 'vagas', 'pagamento'],
@@ -231,6 +240,7 @@ Dica: crie ingressos com nomes claros que ajudem os participantes a identificar 
     id: 'paginas-inscricao',
     slug: 'paginas-inscricao',
     ordem: 10,
+    categoria: 'eventos',
     titulo: 'Páginas de inscrição!',
     resumo: 'As páginas de inscrição são links públicos que você compartilha com os participantes. Cada página tem ingressos vinculados, formulário personalizado e confirmação automática por e-mail.',
     tags: ['páginas', 'inscrição', 'link', 'formulário'],
@@ -255,6 +265,7 @@ A confirmação de inscrição é enviada automaticamente por e-mail para o part
     id: 'participantes',
     slug: 'participantes',
     ordem: 11,
+    categoria: 'eventos',
     titulo: 'Participantes!',
     resumo: 'Aqui você vê todas as inscrições realizadas: nome, contato, ingresso escolhido, status do pagamento e muito mais. Também é possível exportar a lista.',
     tags: ['participantes', 'inscrições', 'lista', 'exportar'],
@@ -279,6 +290,7 @@ Dica: use o campo de status para acompanhar o processo de confirmação em event
     id: 'base-conhecimento',
     slug: 'base-conhecimento',
     ordem: 12,
+    categoria: 'eventos',
     titulo: 'Base de Conhecimento!',
     resumo: 'Ficou com dúvida? Aqui você encontra tutoriais, explicações e respostas para as perguntas mais frequentes sobre o Tovia.',
     tags: ['ajuda', 'suporte', 'documentação', 'tutoriais'],
@@ -303,6 +315,7 @@ Sugestões de novos artigos são bem-vindas — se você sentiu falta de alguma 
     id: 'configuracoes-financeiras',
     slug: 'configuracoes-financeiras',
     ordem: 13,
+    categoria: 'financeiro',
     titulo: 'Configure os pagamentos do seu evento!',
     resumo: 'Na aba Configurações Financeiras do evento, você pode definir as taxas, os valores reais do seu evento.',
     tags: ['pagamentos', 'financeiro', 'configuração', 'petach'],
@@ -327,6 +340,7 @@ Importante: cada evento tem suas próprias configurações financeiras. Configur
     id: 'financeiro',
     slug: 'financeiro',
     ordem: 14,
+    categoria: 'financeiro',
     titulo: 'Confira ou adicione os pagamentos!',
     resumo: 'Na aba Financeiro você registra e acompanha todos os pagamentos recebidos — parcelas, confirmações manuais e o fluxo de caixa do evento.',
     tags: ['financeiro', 'pagamentos', 'fluxo de caixa', 'petach'],
@@ -353,6 +367,7 @@ Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso 
     id: 'doacoes',
     slug: 'doacoes',
     ordem: 15,
+    categoria: 'financeiro',
     titulo: 'Aqui ficam todas as doações!',
     resumo: 'Na aba Doações você acompanha todas as contribuições realizadas no evento, sejam com valor livre ou com sugestão de valor definida por você. Você pode também alocar uma doação para um participante!',
     tags: ['doações', 'contribuições', 'petach'],
@@ -377,6 +392,7 @@ Dica: use o campo de observações ao registrar uma doação para anotar informa
     id: 'recursos',
     slug: 'recursos',
     ordem: 16,
+    categoria: 'gestao',
     titulo: 'Recursos!',
     resumo: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
     tags: ['recursos', 'equipamentos', 'espaços', 'koach'],
@@ -401,6 +417,7 @@ Dica: cadastre os recursos logo após criar o evento e antes de montar a program
     id: 'grupos',
     slug: 'grupos',
     ordem: 17,
+    categoria: 'gestao',
     titulo: 'Grupos!',
     resumo: 'Divida os participantes em grupos, quartos, mesas ou qualquer outra estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
     tags: ['grupos', 'quartos', 'hospedagem', 'koach'],
@@ -425,6 +442,7 @@ Dica: dê nomes descritivos e intuitivos para os grupos — "Quarto 1" é menos 
     id: 'tarefas',
     slug: 'tarefas',
     ordem: 18,
+    categoria: 'gestao',
     titulo: 'Tarefas!',
     resumo: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
     tags: ['tarefas', 'cronograma', 'equipe', 'koach'],
@@ -449,6 +467,7 @@ Dica: crie as tarefas com pelo menos uma semana de antecedência e atribua respo
     id: 'equipe',
     slug: 'equipe',
     ordem: 19,
+    categoria: 'gestao',
     titulo: 'Equipe!',
     resumo: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Membros convidados têm o plano Chinám gratuito — sem custo para eles.',
     tags: ['equipe', 'colaboradores', 'permissões', 'koach'],
@@ -482,6 +501,7 @@ Dica: use a aba Equipe para delegar funções antes do evento começar. Por exem
     id: 'tudo-pronto',
     slug: 'tudo-pronto',
     ordem: 20,
+    categoria: 'primeiros-passos',
     titulo: 'Tudo pronto!',
     resumo: 'Você conhece tudo que o Tovia tem a oferecer! Para rever este tour a qualquer momento, clique em Tutorial na barra lateral.',
     tags: ['conclusão', 'próximos passos', 'suporte'],
@@ -509,6 +529,7 @@ Boa sorte na organização dos seus próximos eventos! O Tovia foi feito para qu
     id: 'cupons',
     slug: 'cupons',
     ordem: 21,
+    categoria: 'eventos',
     titulo: 'Cupons de desconto!',
     resumo: 'Crie cupons percentuais ou de valor fixo para seus eventos. Compartilhe com o público certo e acompanhe os usos em tempo real.',
     tags: ['cupons', 'desconto', 'promoção', 'inscrições'],
@@ -534,6 +555,7 @@ Dica: evite cupons com desconto de 100% em eventos pagos — prefira criar um in
     id: 'check-in',
     slug: 'check-in',
     ordem: 22,
+    categoria: 'eventos',
     titulo: 'Check-in no dia do evento!',
     resumo: 'Use a tela de check-in para confirmar a presença dos participantes. Busque por nome, CPF ou leia o QR Code do ingresso.',
     tags: ['check-in', 'presença', 'qr code', 'dia do evento'],
@@ -564,6 +586,7 @@ Dica: abra a tela de check-in em um tablet na portaria. Com tela maior, a busca 
     id: 'caminho-start',
     slug: 'caminho-start',
     ordem: 30,
+    categoria: 'planos',
     titulo: 'Plano Chinám: o caminho mais eficiente',
     resumo: 'Você está no plano gratuito. Veja o passo a passo para tirar o máximo proveito do Chinám e quando faz sentido fazer upgrade.',
     tags: ['chinam', 'gratuito', 'caminho', 'guia de uso', 'mapa'],
@@ -609,6 +632,7 @@ O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua di
     id: 'caminho-essencial',
     slug: 'caminho-essencial',
     ordem: 31,
+    categoria: 'planos',
     titulo: 'Plano Pétach: o caminho mais eficiente',
     resumo: 'Você tem o plano Pétach com controle financeiro manual. Veja como configurar seu evento do zero até o relatório final.',
     tags: ['petach', 'financeiro', 'caminho', 'guia de uso', 'mapa'],
@@ -665,6 +689,7 @@ Quando considerar upgrade para o Koách:
     id: 'caminho-pro',
     slug: 'caminho-pro',
     ordem: 32,
+    categoria: 'planos',
     titulo: 'Plano Koách: o caminho mais eficiente',
     resumo: 'Você tem o plano Koách com gestão completa. Veja como usar equipe, grupos, tarefas e recursos para eventos mais complexos.',
     tags: ['koach', 'equipe', 'gestão', 'caminho', 'guia de uso', 'mapa'],
@@ -724,6 +749,7 @@ Quando considerar upgrade para o Chalém:
     id: 'caminho-chalem',
     slug: 'caminho-chalem',
     ordem: 33,
+    categoria: 'planos',
     titulo: 'Plano Chalém: o caminho mais eficiente',
     resumo: 'Você tem o plano Chalém — completo e sem limites de inscritos. Veja como usar pagamentos automáticos e gerir eventos de grande porte.',
     tags: ['chalem', 'pagamentos automáticos', 'gateway', 'caminho', 'guia de uso', 'mapa'],
@@ -776,6 +802,7 @@ Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. 
     id: 'financeiro-gateway',
     slug: 'financeiro-gateway',
     ordem: 34,
+    categoria: 'financeiro',
     titulo: 'Como acompanhar os pagamentos do evento com gateway?',
     resumo: 'Com o gateway conectado, os pagamentos são registrados automaticamente no Tovia. Veja onde acompanhar cada cobrança, o saldo da conta e o histórico completo.',
     tags: ['gateway', 'asaas', 'pagamentos automáticos', 'financeiro', 'chalem'],
@@ -815,6 +842,7 @@ Dica: antes do evento, filtre a lista de participantes por "Pagamento pendente" 
     id: 'seus-dados-exclusao',
     slug: 'seus-dados-exclusao',
     ordem: 35,
+    categoria: 'privacidade',
     titulo: 'Seus dados e direito de exclusão',
     resumo: 'Saiba quais dados o Tovia coleta, como acessá-los, e como solicitar a exclusão completa da sua conta e informações pessoais.',
     tags: ['privacidade', 'lgpd', 'exclusão', 'dados pessoais', 'conta'],
@@ -893,6 +921,7 @@ Para reclamações: Autoridade Nacional de Proteção de Dados (ANPD) — www.go
     id: 'mapa-igrejas',
     slug: 'mapa-igrejas',
     ordem: 40,
+    categoria: 'por-perfil',
     titulo: 'Tovia para Igrejas e Ministérios',
     resumo: 'Como igrejas, ministérios e comunidades de fé usam o Tovia para cultos especiais, células, conferências e eventos de evangelismo.',
     tags: ['igrejas', 'ministérios', 'comunidade', 'mapa', 'perfil'],
@@ -937,6 +966,7 @@ Use o campo "Observações" no formulário de inscrição para perguntas especí
     id: 'mapa-retiros',
     slug: 'mapa-retiros',
     ordem: 41,
+    categoria: 'por-perfil',
     titulo: 'Tovia para Retiros e Acampamentos',
     resumo: 'Como usar o Tovia para eventos com hospedagem: grupos, quartos, alimentação e logística de participantes.',
     tags: ['retiros', 'acampamentos', 'hospedagem', 'grupos', 'mapa', 'perfil'],
@@ -987,6 +1017,7 @@ Inclua no formulário de inscrição: restrição alimentar, tamanho de camiseta
     id: 'mapa-conferencias',
     slug: 'mapa-conferencias',
     ordem: 42,
+    categoria: 'por-perfil',
     titulo: 'Tovia para Conferências e Congressos',
     resumo: 'Como usar o Tovia para conferências com múltiplas sessões, palestrantes, ingressos VIP e grande volume de participantes.',
     tags: ['conferências', 'congressos', 'palestrantes', 'mapa', 'perfil'],
@@ -1046,6 +1077,7 @@ Envie um e-mail de lembrete para os inscritos alguns dias antes com o QR Code �
     id: 'mapa-cursos',
     slug: 'mapa-cursos',
     ordem: 43,
+    categoria: 'por-perfil',
     titulo: 'Tovia para Cursos e Treinamentos',
     resumo: 'Como usar o Tovia para cursos presenciais, treinamentos de equipe e capacitações com controle de presença e certificação.',
     tags: ['cursos', 'treinamentos', 'capacitação', 'mapa', 'perfil'],
@@ -1093,6 +1125,7 @@ Use cupons com código do nome da turma (ex: "LIDER-JAN26") para facilitar a ide
     id: 'mapa-ongs',
     slug: 'mapa-ongs',
     ordem: 44,
+    categoria: 'por-perfil',
     titulo: 'Tovia para ONGs e Projetos Sociais',
     resumo: 'Como ONGs, institutos e projetos sociais usam o Tovia para eventos com bolsas, inscrições gratuitas e prestação de contas a patrocinadores.',
     tags: ['ongs', 'projetos sociais', 'bolsas', 'gratuito', 'mapa', 'perfil'],
@@ -1134,6 +1167,348 @@ Na aba Doações (Pétach+), registre contribuições de apoiadores e mantenedor
 
 DICA:
 A página de inscrição pública do Tovia é simples de usar no celular — o que é essencial quando o público atendido tem acesso limitado a computadores. Teste o fluxo de inscrição no celular antes de divulgar para garantir uma boa experiência.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  // ─── Novos artigos ────────────────────────────────────────────────────────
+
+  {
+    id: 'conectar-gateway',
+    slug: 'conectar-gateway-asaas',
+    ordem: 36,
+    categoria: 'financeiro',
+    titulo: 'Como conectar o gateway de pagamentos (Asaas)',
+    resumo: 'Passo a passo completo para criar sua conta Asaas, localizar a chave de API e conectar ao Tovia para receber pagamentos automaticamente.',
+    tags: ['financeiro', 'gateway', 'asaas', 'pagamentos', 'configuração', 'chalem'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `O gateway de pagamentos permite que seus participantes paguem online (Pix, cartão de crédito, boleto) e o dinheiro caia diretamente na sua conta — o Tovia nunca retém ou intermedia valores.
+
+REQUISITOS:
+• Plano Chalém ativo (R$299/mês)
+• Conta no Asaas (asaas.com) — pessoa física ou jurídica
+
+PASSO 1 — CRIAR CONTA NO ASAAS:
+Acesse asaas.com e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação (geralmente 1-2 dias úteis). Após aprovação, sua conta estará pronta para receber pagamentos.
+
+PASSO 2 — LOCALIZAR SUA CHAVE DE API:
+No painel do Asaas, acesse: Minha Conta → Integrações → Chave de API. Copie a chave de Produção (não a de Sandbox). A chave começa com "$aact_" seguida de caracteres alfanuméricos.
+
+PASSO 3 — CONECTAR NO TOVIA:
+No Tovia, acesse: Configurações → Gateway de Pagamentos. Cole a chave de API no campo indicado e clique em "Validar chave". O Tovia vai verificar os dados da sua conta Asaas (nome, CPF/CNPJ, e-mail, cidade) — confirme que são seus e clique em "Confirmar e conectar".
+
+AMBIENTE SANDBOX vs. PRODUÇÃO:
+O Tovia oferece um toggle entre Sandbox (testes) e Produção (dinheiro real). Use o Sandbox para testar o fluxo de pagamento antes de publicar — pagamentos em sandbox não movimentam dinheiro real. Quando estiver confiante, mude para Produção.
+
+SEGURANÇA:
+Sua chave de API é criptografada com AES-256 antes de ser armazenada. O Tovia nunca exibe a chave completa após a conexão — apenas os últimos caracteres. Se precisar trocar a chave, desconecte e conecte novamente.
+
+IMPORTANTE:
+O saldo dos pagamentos aparece diretamente no seu painel Asaas, não no Tovia. O Tovia registra as transações e atualiza o status de pagamento dos participantes automaticamente, mas o dinheiro é gerenciado inteiramente pelo Asaas.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'consultar-inscricao',
+    slug: 'consultar-inscricao',
+    ordem: 23,
+    categoria: 'eventos',
+    titulo: 'Consultar inscrição — autoatendimento do participante',
+    resumo: 'Seus participantes podem verificar status, pagamento e QR Code de check-in sem precisar criar conta. Saiba como divulgar esse recurso.',
+    tags: ['participantes', 'inscrições', 'check-in', 'autoatendimento', 'suporte'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `O Tovia oferece uma página de autoatendimento onde seus participantes podem consultar seus dados de inscrição sem precisar criar conta ou entrar em contato com você.
+
+COMO FUNCIONA:
+1. O participante acessa tovia.app/consultar (ou clica no banner "Consultar inscrição" na sua página pública de organizador)
+2. Digita o e-mail usado na inscrição
+3. Recebe um código de verificação por e-mail (válido por alguns minutos)
+4. Após digitar o código, vê todas as suas inscrições ativas
+
+O QUE O PARTICIPANTE VISUALIZA:
+• Nome do evento e data
+• Status da inscrição (confirmada, pendente, cancelada)
+• Status de pagamento (pago, pendente, isento)
+• QR Code individual para check-in no dia do evento
+• Dados do formulário preenchido na inscrição
+
+POR QUE ISSO É IMPORTANTE PARA VOCÊ:
+Esse recurso reduz drasticamente as mensagens de "minha inscrição foi confirmada?", "como faço check-in?" e "preciso do comprovante". Em vez de responder cada participante, divulgue o link de consulta.
+
+COMO DIVULGAR:
+• Inclua o link tovia.app/consultar nos e-mails de confirmação (já é feito automaticamente)
+• Compartilhe sua página pública de organizador — ela agora tem um banner de consulta de inscrição no topo
+• Fixe o link no grupo de WhatsApp do evento
+• Coloque no material de divulgação: "Consulte sua inscrição em tovia.app/consultar"
+
+SEGURANÇA:
+O acesso exige verificação por e-mail — ninguém consegue ver dados de outro participante. O código tem validade limitada e só pode ser reenviado após um intervalo de segurança.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'inscricao-manual',
+    slug: 'inscricao-manual',
+    ordem: 24,
+    categoria: 'eventos',
+    titulo: 'Como adicionar inscrição manual',
+    resumo: 'Aprenda a inscrever participantes manualmente — ideal para inscrições presenciais, cortesias e palestrantes.',
+    tags: ['participantes', 'inscrições', 'eventos', 'início'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `A inscrição manual permite que você adicione participantes diretamente pelo painel — sem que eles precisem acessar a página de inscrição pública.
+
+QUANDO USAR:
+• Inscrições feitas presencialmente (no balcão, por telefone)
+• Cortesias e convidados especiais
+• Palestrantes, equipe de apoio e VIPs
+• Migração de inscrições de outro sistema
+
+PRÉ-REQUISITO IMPORTANTE:
+Para realizar uma inscrição manual, o evento precisa ter pelo menos uma página de inscrição com formulário criado. Isso porque o formulário define quais dados serão coletados (nome, e-mail, CPF, campos personalizados, etc.).
+
+Se você ainda não criou uma página de inscrição:
+1. Vá até a aba "Páginas" do evento
+2. Crie uma nova página com os campos de formulário desejados
+3. Volte à aba "Participantes" — o botão de inscrição manual estará disponível
+
+COMO FAZER A INSCRIÇÃO MANUAL:
+1. Acesse a aba "Participantes" do evento
+2. Clique no botão "Inscrição Manual"
+3. Se houver mais de uma página de inscrição, selecione qual formulário usar
+4. Preencha os dados do participante
+5. Escolha o ingresso
+6. Confirme a inscrição
+
+O participante adicionado manualmente aparece na lista como qualquer outro inscrito — pode receber e-mail de confirmação, ter check-in feito por QR Code e ter seus dados exportados normalmente.
+
+DICA:
+Se você vai inscrever muitos participantes de uma vez (ex: migração de planilha), use a função "Importar" na mesma aba — ela aceita arquivos CSV e Excel.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'problemas-comuns',
+    slug: 'problemas-comuns',
+    ordem: 50,
+    categoria: 'solucoes',
+    titulo: 'Problemas comuns e soluções rápidas',
+    resumo: 'Respostas rápidas para as dúvidas mais frequentes: limites de plano, e-mails não recebidos, pagamentos e erros comuns.',
+    tags: ['suporte', 'erros', 'problemas', 'faq'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1531498860502-7c67cf02f657?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `Aqui estão as soluções para os problemas mais comuns relatados por organizadores.
+
+"NÃO CONSIGO CRIAR MAIS EVENTOS"
+Cada plano tem um limite de eventos ativos simultaneamente:
+• Chinám: 1 evento ativo
+• Pétach: 3 eventos ativos
+• Koách: 10 eventos ativos
+• Chalém: ilimitado
+Para liberar espaço, finalize ou desative eventos que já encerraram. Ou faça upgrade do plano.
+
+"MEU PARTICIPANTE NÃO RECEBEU O E-MAIL DE CONFIRMAÇÃO"
+Verifique:
+1. O e-mail foi digitado corretamente na inscrição? (confira na aba Participantes)
+2. Peça ao participante verificar a pasta de spam/lixo eletrônico
+3. E-mails do Tovia são enviados pelo domínio tovia.app — alguns provedores corporativos podem bloquear domínios novos
+4. Se o problema persistir, o participante pode consultar sua inscrição em tovia.app/consultar usando o e-mail cadastrado
+
+"O PAGAMENTO DO PARTICIPANTE NÃO FOI CONFIRMADO"
+Se você usa pagamento manual (Pétach/Koách): o status precisa ser atualizado manualmente na aba Financeiro → clique no participante → marque como pago.
+Se você usa gateway automático (Chalém): o status é atualizado automaticamente quando o Asaas confirma o pagamento. Pode levar alguns minutos para Pix e até 2 dias úteis para boleto.
+
+"NÃO CONSIGO ADICIONAR INSCRIÇÃO MANUAL"
+Você precisa ter pelo menos uma página de inscrição com formulário criada. Vá em Páginas → crie uma página com campos de formulário → depois volte a Participantes.
+
+"QUERO EXCLUIR UM EVENTO MAS NÃO CONSIGO"
+Eventos com inscrições não podem ser excluídos para proteger os dados dos participantes. Você pode desativá-lo (ele sai da lista pública mas os dados ficam acessíveis) ou, se realmente precisar excluir, entre em contato pelo suporte.
+
+"ATINGI O LIMITE DE INSCRITOS DO MEU PLANO"
+Limites por plano:
+• Chinám: 100 inscritos por evento
+• Pétach: 300 inscritos por evento
+• Koách: 1.000 inscritos por evento
+• Chalém: ilimitado
+Faça upgrade do plano para aumentar o limite.
+
+"COMO EXPORTO OS DADOS DOS PARTICIPANTES?"
+Na aba Participantes, clique em "Importar / Exportar" → Exportar. Os dados são gerados em formato CSV, compatível com Excel e Google Planilhas.
+
+"MINHA EQUIPE NÃO CONSEGUE ACESSAR O EVENTO"
+Verifique:
+1. O membro foi convidado pelo e-mail correto?
+2. Ele aceitou o convite e criou conta no Tovia?
+3. As permissões estão configuradas corretamente na aba Equipe?
+Membros de equipe acessam apenas os eventos onde foram adicionados, com as permissões definidas pelo organizador.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'editar-evento',
+    slug: 'editar-duplicar-excluir-evento',
+    ordem: 25,
+    categoria: 'eventos',
+    titulo: 'Editar, duplicar e excluir eventos',
+    resumo: 'Saiba como alterar dados de um evento após a criação, duplicar eventos recorrentes e as regras para exclusão.',
+    tags: ['eventos', 'configuração', 'início'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `Depois de criar um evento, você pode editar seus dados, duplicá-lo para edições recorrentes ou desativá-lo quando encerrar.
+
+EDITAR EVENTO:
+Acesse o evento pelo painel Início e clique no ícone de edição (lápis) no card do evento, ou entre no evento e acesse a Visão Geral. Você pode alterar:
+• Nome, descrição e local
+• Datas e horários (início e fim)
+• Cor do tema
+• Imagem de capa
+• Número de vagas (respeitando o limite do plano)
+
+Alterações são salvas imediatamente. Participantes já inscritos não são notificados automaticamente sobre mudanças — se a alteração for relevante (ex: mudança de local), comunique seus inscritos diretamente.
+
+DUPLICAR EVENTO:
+Se você organiza eventos recorrentes (retiro anual, conferência semestral), pode duplicar um evento existente para reaproveitar a estrutura:
+1. No card do evento na tela Início, clique no menu (três pontos)
+2. Selecione "Duplicar evento"
+3. Um novo evento é criado com o mesmo nome (+ "Cópia"), mesma configuração de ingressos e páginas de inscrição
+4. Ajuste datas, vagas e detalhes do novo evento
+
+A duplicação copia a estrutura, não os dados — participantes, pagamentos e check-ins do evento original não são copiados.
+
+DESATIVAR EVENTO:
+Quando um evento encerra, você pode desativá-lo:
+• O evento sai da lista pública e das páginas de inscrição
+• Os dados (participantes, financeiro, check-ins) continuam acessíveis no painel
+• O evento não conta mais no limite de eventos ativos do seu plano
+
+EXCLUIR EVENTO:
+Eventos com inscrições não podem ser excluídos — isso protege os dados dos participantes (exigência da LGPD). Use a desativação como alternativa. Se o evento não tem nenhuma inscrição, a exclusão é permitida.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'pagina-publica',
+    slug: 'pagina-publica-organizador',
+    ordem: 26,
+    categoria: 'eventos',
+    titulo: 'Sua página pública de organizador',
+    resumo: 'Ative e compartilhe sua vitrine pública com todos os seus eventos. Participantes podem consultar inscrições diretamente por ela.',
+    tags: ['perfil', 'organização', 'eventos', 'configuração'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `A página pública do organizador é uma vitrine que reúne todos os seus eventos ativos em um único link compartilhável.
+
+COMO ATIVAR:
+1. Acesse Meu Perfil na barra lateral
+2. Ative a opção "Página pública"
+3. Defina seu código de organizador (ex: "minha-igreja") — ele forma o link: tovia.app/minha-igreja
+
+O QUE APARECE NA PÁGINA:
+• Logo e nome da sua organização
+• Bio e dados de contato (e-mail, WhatsApp, site, Instagram)
+• Banner de "Consultar inscrição" — para participantes verificarem seus dados
+• Lista de todos os seus eventos ativos (futuros primeiro, encerrados depois)
+• Ao clicar em um evento, o visitante vê as opções de inscrição disponíveis
+
+COMO COMPARTILHAR:
+Use o link curto tovia.app/seu-codigo em:
+• Bio do Instagram
+• Grupos de WhatsApp
+• Site da organização
+• Materiais impressos e digitais de divulgação
+
+O link é permanente — sempre mostra seus eventos mais recentes sem precisar atualizar.
+
+DICA:
+Mantenha seu perfil completo (logo, bio, contatos) para transmitir profissionalismo. A primeira impressão do participante muitas vezes é pela página pública.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'notificacoes',
+    slug: 'notificacoes-evento',
+    ordem: 27,
+    categoria: 'eventos',
+    titulo: 'Notificações do evento',
+    resumo: 'Entenda a central de notificações: alertas automáticos, resumo financeiro diário e como acompanhar tudo que acontece no seu evento.',
+    tags: ['eventos', 'configuração', 'financeiro'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1614680376408-81e91bbe261f?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `Cada evento no Tovia tem uma central de notificações que registra tudo o que acontece — inscrições, pagamentos, alertas e ações da equipe.
+
+ONDE ENCONTRAR:
+Acesse o evento e clique na aba "Notificações" (ícone de sino). Notificações não lidas aparecem com um badge vermelho no menu.
+
+TIPOS DE NOTIFICAÇÃO:
+• Nova inscrição realizada
+• Pagamento confirmado ou cancelado
+• Membro da equipe adicionado
+• Alterações em ingressos ou páginas
+• Alertas do sistema (limite de vagas se aproximando, evento próximo)
+
+RESUMO FINANCEIRO DIÁRIO:
+Após as 18h, o Tovia gera automaticamente uma notificação com o resumo financeiro do dia — total de entradas, saídas e saldo. Esse recurso funciona sem nenhuma configuração: se houve movimentação financeira no dia, o resumo aparece.
+
+NOTIFICAÇÕES GERAIS (FORA DO EVENTO):
+Na barra lateral do painel principal, o ícone de sino mostra notificações gerais da conta: confirmações de ticket de suporte, atualizações de plano, avisos do sistema.
+
+DICA:
+Confira as notificações do evento regularmente, especialmente nos dias que antecedem o evento — elas ajudam a identificar problemas (inscrições incompletas, pagamentos pendentes) antes que seja tarde.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'seguranca-conta',
+    slug: 'seguranca-conta',
+    ordem: 51,
+    categoria: 'solucoes',
+    titulo: 'Segurança da sua conta',
+    resumo: 'Saiba como proteger sua conta: verificação de e-mail, troca de senha e exclusão de conta.',
+    tags: ['configuração', 'suporte', 'privacidade'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `Sua conta no Tovia armazena dados sensíveis: informações de participantes, dados financeiros e configurações de pagamento. Mantê-la segura é essencial.
+
+VERIFICAÇÃO DE E-MAIL:
+Ao criar sua conta, o Tovia envia um e-mail de verificação. Você precisa confirmar seu e-mail para acessar todas as funcionalidades. Se não recebeu, verifique a pasta de spam ou solicite reenvio na tela de verificação.
+
+SENHA:
+• Use uma senha forte (mínimo 8 caracteres, com letras e números)
+• Para trocar sua senha, use a opção "Esqueci minha senha" na tela de login — um link de redefinição será enviado ao seu e-mail
+• O Tovia não armazena sua senha em texto — ela é criptografada antes do armazenamento
+
+SESSÕES:
+• Sessões expiram após um período de inatividade
+• Para ações sensíveis (exclusão de conta, alteração de gateway), o Tovia pode solicitar reautenticação mesmo durante uma sessão ativa
+
+EXCLUSÃO DE CONTA:
+Você tem o direito de excluir sua conta a qualquer momento:
+1. Acesse Configurações → Faturamento
+2. Role até "Excluir conta"
+3. Digite "EXCLUIR" para confirmar
+4. Reautentique-se se solicitado
+
+A exclusão remove permanentemente: seu perfil, eventos, dados de participantes e configurações. Essa ação não pode ser desfeita. Certifique-se de exportar qualquer dado importante antes.
+
+GATEWAY DE PAGAMENTOS:
+Se você conectou um gateway (Asaas), sua chave de API é criptografada com AES-256. O Tovia nunca exibe a chave completa. Se suspeitar de comprometimento, desconecte o gateway imediatamente e gere uma nova chave no painel do Asaas.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,

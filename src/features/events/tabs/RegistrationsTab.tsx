@@ -144,24 +144,31 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               <Upload className="w-5 h-5 shrink-0" />
               Importar / Exportar
             </Button>
-            <Button
-              onClick={() => {
-                const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
-                if (paginasComFormulario.length === 0) {
-                  toast.error('Crie uma página de vendas com formulário antes de realizar inscrições manuais.');
-                  return;
-                }
-                resetForm();
-                setEditingId(null);
-                setSelectedPagina(null);
-                setDynamicValues({});
-                setShowPageSelector(true);
-              }}
-              className="bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95 flex-1 md:flex-none"
-            >
-              <UserPlus className="w-5 h-5 shrink-0" />
-              Inscrição Manual
-            </Button>
+            <div className="flex-1 md:flex-none flex flex-col">
+              <Button
+                onClick={() => {
+                  const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
+                  if (paginasComFormulario.length === 0) {
+                    toast.error('Para inscrever manualmente, primeiro crie uma página de inscrição com formulário na aba "Páginas" deste evento.', { duration: 6000 });
+                    return;
+                  }
+                  resetForm();
+                  setEditingId(null);
+                  setSelectedPagina(null);
+                  setDynamicValues({});
+                  setShowPageSelector(true);
+                }}
+                className="w-full bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95"
+              >
+                <UserPlus className="w-5 h-5 shrink-0" />
+                Inscrição Manual
+              </Button>
+              {paginas.filter(p => p.campos_formulario?.length > 0).length === 0 && (
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                  Crie uma página de inscrição com formulário na aba "Páginas" para habilitar inscrições manuais.
+                </p>
+              )}
+            </div>
           </div>
         )}
 

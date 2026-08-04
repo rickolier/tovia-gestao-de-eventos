@@ -10,6 +10,7 @@ export interface ArtigoBC {
   tags: string[];
   ordem: number;
   slug: string;
+  categoria: string;
   autor: string;
   criado_em: string;
   atualizado_em: string;
