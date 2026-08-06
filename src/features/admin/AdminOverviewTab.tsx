@@ -33,7 +33,7 @@ export default function AdminOverviewTab() {
 
   users.forEach(u => {
     if (u.planoPendente) { pending++; return; }
-    const normalizedPlano = u.plano ? ({ start: 'chinam', essencial: 'petach', pro: 'koach', personalizado: 'chalem' }[u.plano] ?? u.plano) : null;
+    const normalizedPlano = u.plano ? ({ start: 'chinam', essencial: 'petach', pro: 'koach', personalizado: 'chalem', chinam: 'chinam', petach: 'petach', koach: 'koach', chalem: 'chalem' } as Record<string, string>)[u.plano] ?? u.plano : null;
     if (normalizedPlano && byPlan[normalizedPlano] !== undefined) {
       byPlan[normalizedPlano]++;
       mrr += PLAN_PRICES[normalizedPlano] || 0;

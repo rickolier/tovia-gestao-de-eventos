@@ -346,7 +346,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Tipo de grupo</Label>
-              <Select value={novaDivisaoForm.tipoGrupoKey} onValueChange={v => setNovaDivisaoForm(f => ({ ...f, tipoGrupoKey: v }))}>
+              <Select value={novaDivisaoForm.tipoGrupoKey} onValueChange={v => setNovaDivisaoForm(f => ({ ...f, tipoGrupoKey: v ?? '' }))}>
                 <SelectTrigger className="rounded-xl border-border h-11 font-semibold">
                   <SelectValue />
                 </SelectTrigger>
@@ -442,14 +442,14 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
                 <span className="text-[10px] normal-case font-normal text-muted-foreground/60 ml-1">— filtra e pré-seleciona participantes</span>
               </Label>
               <div className="grid grid-cols-2 gap-3">
-                <Select value={form.criterioField} onValueChange={v => setForm({ ...form, criterioField: v, criterioValue: '', hospedes: [] })}>
+                <Select value={form.criterioField} onValueChange={v => setForm({ ...form, criterioField: v ?? '', criterioValue: '', hospedes: [] })}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-semibold shadow-sm text-sm"><SelectValue placeholder="Campo..." /></SelectTrigger>
                   <SelectContent className="rounded-xl shadow-xl border-border">
                     <SelectItem value="">Sem critério</SelectItem>
                     {criterioFields.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                <Select value={form.criterioValue} onValueChange={v => setForm({ ...form, criterioValue: v })} disabled={!form.criterioField || criterioValues.length === 0}>
+                <Select value={form.criterioValue} onValueChange={v => setForm({ ...form, criterioValue: v ?? '' })} disabled={!form.criterioField || criterioValues.length === 0}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-semibold shadow-sm text-sm disabled:opacity-40"><SelectValue placeholder="Valor..." /></SelectTrigger>
                   <SelectContent className="rounded-xl shadow-xl border-border">
                     {criterioValues.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
@@ -540,7 +540,7 @@ export default function RoomsTab({ eventoId }: { eventoId: string }) {
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Critério de distribuição</Label>
-              <Select value={autoConfig.criterio} onValueChange={v => setAutoConfig({ ...autoConfig, criterio: v })}>
+              <Select value={autoConfig.criterio} onValueChange={v => setAutoConfig({ ...autoConfig, criterio: v ?? '' })}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl border-none shadow-2xl">
                   {criterioFields.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}

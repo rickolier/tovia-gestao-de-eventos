@@ -304,7 +304,7 @@ export default function AdminGatewayTab() {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number) => [`${v} cobranças`, '']}
+                    formatter={((v: number) => [`${v} cobranças`, '']) as any}
                     contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.1)' }}
                   />
                   <Legend

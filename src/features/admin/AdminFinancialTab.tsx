@@ -323,7 +323,7 @@ export default function AdminFinancialTab() {
                   <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip
                     contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', fontSize: 12 }}
-                    formatter={(v: number) => [v, 'Inscrições']}
+                    formatter={((v: number) => [v, 'Inscrições']) as any}
                   />
                   <Area type="monotone" dataKey="count" stroke="#16a34a" strokeWidth={2} fill="url(#inscGradient)" dot={false} activeDot={{ r: 4 }} />
                 </AreaChart>
@@ -349,7 +349,7 @@ export default function AdminFinancialTab() {
                     </Pie>
                     <Tooltip
                       contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', fontSize: 12 }}
-                      formatter={(v: number, name: string) => [v, name]}
+                      formatter={((v: number, name: string) => [v, name]) as any}
                     />
                   </PieChart>
                 </ResponsiveContainer>

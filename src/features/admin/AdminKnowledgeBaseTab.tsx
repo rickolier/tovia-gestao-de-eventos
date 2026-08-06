@@ -156,7 +156,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   };
 
   const uploadBanner = async (articleSlug: string): Promise<string> => {
-    if (!bannerFile) return form.banner_url;
+    if (!bannerFile) return form.banner_url ?? '';
     const ext = bannerFile.type === 'image/png' ? 'png' : 'jpg';
     const storageRef = ref(storage, `base_conhecimento/${articleSlug}/banner.${ext}`);
     return new Promise<string>((resolve, reject) => {

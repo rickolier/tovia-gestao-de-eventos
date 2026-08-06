@@ -35,7 +35,7 @@ export default function GatewayTab() {
   const gatewayType = profile?.gateway?.type ?? 'asaas';
   const isSandbox = localSandbox !== null ? localSandbox : profile?.gateway?.sandbox;
   const connectedAt = (localConnectedAt ?? profile?.gateway?.connected_at)
-    ? new Date(profile.gateway.connected_at).toLocaleDateString('pt-BR', {
+    ? new Date((localConnectedAt ?? profile?.gateway?.connected_at)!).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric',

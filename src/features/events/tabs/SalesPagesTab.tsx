@@ -186,8 +186,8 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
-                    <span className={`text-[10px] font-semibold tabular-nums ${form.descricao.length > 400 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {form.descricao.length}/500
+                    <span className={`text-[10px] font-semibold tabular-nums ${(form.descricao?.length ?? 0) > 400 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      {form.descricao?.length ?? 0}/500
                     </span>
                   </div>
                   <Textarea

@@ -154,7 +154,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Forma de Pagamento</Label>
-                <Select value={formData.formaPagamento} onValueChange={v => setFormData({...formData, formaPagamento: v})}>
+                <Select value={formData.formaPagamento} onValueChange={v => setFormData({...formData, formaPagamento: v ?? ''})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
@@ -192,7 +192,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Tipo de Destino</Label>
-                  <Select value={formData.destino} onValueChange={(v: 'inscrito' | 'livre') => setFormData({...formData, destino: v})}>
+                  <Select value={formData.destino} onValueChange={(v) => v && setFormData({...formData, destino: v as 'inscrito' | 'livre'})}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                       <SelectValue />
                     </SelectTrigger>
@@ -207,7 +207,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
             {formData.destino === 'inscrito' ? (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Vincular a Inscrito</Label>
-                <Select value={formData.inscritoId} onValueChange={v => setFormData({...formData, inscritoId: v})}>
+                <Select value={formData.inscritoId} onValueChange={v => setFormData({...formData, inscritoId: v ?? ''})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue placeholder="Selecione o inscrito" />
                   </SelectTrigger>
@@ -426,7 +426,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
           <form onSubmit={handleAllocate} className="space-y-6 pt-2">
             <div className="space-y-2">
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Escolher Doação Disponível</Label>
-              <Select value={allocationForm.doacaoId} onValueChange={v => setAllocationForm({...allocationForm, doacaoId: v})}>
+              <Select value={allocationForm.doacaoId} onValueChange={v => setAllocationForm({...allocationForm, doacaoId: v ?? ''})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                   {allocationForm.doacaoId
                     ? <span className="truncate">{(() => { const d = donations.find(d => d.id === allocationForm.doacaoId); return d ? `${d.doadorNome || 'Anônima'} — ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorRestante)} (Disp.)` : 'Selecione uma doação com saldo'; })()}</span>
@@ -451,7 +451,7 @@ export default function DonationsTab({ eventoId }: { eventoId: string }) {
 
             <div className="space-y-2">
               <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Inscrito Destinatário</Label>
-              <Select value={allocationForm.inscritoId} onValueChange={v => setAllocationForm({...allocationForm, inscritoId: v})}>
+              <Select value={allocationForm.inscritoId} onValueChange={v => setAllocationForm({...allocationForm, inscritoId: v ?? ''})}>
                 <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                   {allocationForm.inscritoId
                     ? <span className="truncate">{(() => { const r = registrations.find(r => r.id === allocationForm.inscritoId); return r ? (r.pessoa?.nome || r.nome || 'Inscrito') : 'Selecione o inscrito'; })()}</span>

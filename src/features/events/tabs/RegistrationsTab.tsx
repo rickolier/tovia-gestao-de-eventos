@@ -190,7 +190,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Lote para as inscrições</Label>
-                  <Select value={importTicketId} onValueChange={setImportTicketId}>
+                  <Select value={importTicketId} onValueChange={v => setImportTicketId(v ?? '')}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold focus:ring-primary">
                       <SelectValue placeholder="Selecione o Lote" />
                     </SelectTrigger>
@@ -439,7 +439,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                       {campo.tipo === 'select' ? (
                         <Select
                           value={String(dynamicValues[campo.id] || '')}
-                          onValueChange={v => setDynamicValues(prev => ({ ...prev, [campo.id]: v }))}
+                          onValueChange={v => setDynamicValues(prev => ({ ...prev, [campo.id]: v ?? '' }))}
                         >
                           <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                             <SelectValue placeholder={campo.placeholder || 'Selecione...'} />
@@ -483,7 +483,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                   {/* Ingresso select — filtered to page's ticketIds */}
                   <div className="space-y-2">
                     <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Ingresso</Label>
-                    <Select value={formData.ticketId} onValueChange={v => setFormData(prev => ({ ...prev, ticketId: v }))}>
+                    <Select value={formData.ticketId} onValueChange={v => setFormData(prev => ({ ...prev, ticketId: v ?? '' }))}>
                       <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                         <SelectValue placeholder="Selecione um ingresso">
                           {formData.ticketId ? tickets.find(t => t.id === formData.ticketId)?.nome : 'Selecione um ingresso'}

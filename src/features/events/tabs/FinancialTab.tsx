@@ -333,7 +333,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                   <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md shrink-0">Fixado</span>
                 </div>
               ) : (
-                <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v})}>
+                <Select value={formData.inscricaoId} onValueChange={v => setFormData({...formData, inscricaoId: v ?? ''})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
                     {formData.inscricaoId
                       ? <span className="truncate">{(() => { const r = registrations.find(r => r.id === formData.inscricaoId); return r ? getInscritoNome(r) : 'Selecione o inscrito'; })()}</span>

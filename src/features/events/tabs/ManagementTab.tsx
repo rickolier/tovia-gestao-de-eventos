@@ -434,7 +434,7 @@ export default function ManagementTab({ evento, onUpdate }: { evento: Evento, on
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest px-1">Categoria</Label>
-                <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v})}>
+                <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v ?? ''})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>

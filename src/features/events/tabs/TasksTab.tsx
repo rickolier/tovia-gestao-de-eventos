@@ -369,7 +369,7 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Categoria</Label>
-                <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v})}>
+                <Select value={formData.categoria} onValueChange={v => setFormData({...formData, categoria: v ?? ''})}>
                   <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
@@ -399,7 +399,7 @@ export default function TasksTab({ eventoId, equipe = [], donoId, onEquipeUpdate
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Responsável</Label>
                 {memberOptions.length > 0 ? (
-                  <Select value={formData.responsavel} onValueChange={v => setFormData({...formData, responsavel: v})}>
+                  <Select value={formData.responsavel} onValueChange={v => setFormData({...formData, responsavel: v ?? ''})}>
                     <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm">
                       <span>{formData.responsavel || <span className="text-muted-foreground font-normal">Selecione</span>}</span>
                     </SelectTrigger>
