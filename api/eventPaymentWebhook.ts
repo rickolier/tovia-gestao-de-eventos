@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createHash } from 'crypto';
+import { createHash, timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -91,7 +91,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
   const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
-  if (incomingHash !== storedHash) {
+  const hashA = Buffer.from(incomingHash, 'hex');
+  const hashB = Buffer.from(storedHash, 'hex');
+  if (hashA.length !== hashB.length || !timingSafeEqual(hashA, hashB)) {
     console.warn(`[eventPaymentWebhook] token mismatch para evento ${eventoId}`);
     return res.status(401).send('Unauthorized');
   }

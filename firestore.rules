@@ -260,7 +260,10 @@ service cloud.firestore {
     }
 
     // ===============================================================
-    // Metadados públicos do organizador — apenas gateway_connected
+    // Metadados públicos do organizador (gateway_connected, pagina_publica)
+    // webhook_token_hash (SHA-256) é público — risco baixo (one-way).
+    // Será removido na migração Split Asaas (backlog #50).
+    // Firestore rules não suportam projeção de campos.
     // ===============================================================
     match /organizer_public/{userId} {
       allow read: if true;
