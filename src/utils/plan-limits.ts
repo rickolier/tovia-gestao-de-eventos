@@ -147,7 +147,7 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       registrations: true,
       manualPayments: true,
       donations: true,
-      autoPayments: true,
+      autoPayments: false,
       eventManagement: true,
       tasksAndTeam: true,
       reports: true,

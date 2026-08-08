@@ -159,6 +159,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const evData = evDoc.exists ? evDoc.data()! : {};
         const eventoNome: string = evData.nome ?? 'evento';
         const cfgEmail = !isDonation ? evData.config_comunicacao?.email_confirmacao : null;
+        const linkPagamento: string = evData.config_comunicacao?.link_pagamento ?? '';
 
         let subject: string;
         let body: string;
@@ -169,16 +170,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             evento: eventoNome,
             data: evData.data_inicio ? new Date(evData.data_inicio).toLocaleDateString('pt-BR') : '',
             local: evData.local ?? '',
+            link_pagamento: linkPagamento,
           };
           subject = interpolate(cfgEmail.assunto || `Inscrição confirmada — ${eventoNome}`, vars);
           body = wrapCustomEmail(interpolate(cfgEmail.corpo, vars));
         } else {
+          const payBtn = linkPagamento
+            ? `<p style="margin:20px 0;"><a href="${linkPagamento}" style="display:inline-block;background:#FF6B1A;color:#fff;font-weight:700;font-size:14px;padding:12px 28px;border-radius:12px;text-decoration:none;">Realizar pagamento</a></p>`
+            : '';
           subject = isDonation
             ? `Doação confirmada — ${eventoNome} ✅`
             : `Inscrição confirmada — ${eventoNome} ✅`;
           body = isDonation
             ? `<p>Olá, <strong>${recipientName}</strong>! Sua doação para <strong>${eventoNome}</strong> foi confirmada. Obrigado!</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>`
-            : `<p>Olá, <strong>${recipientName}</strong>! Sua inscrição em <strong>${eventoNome}</strong> está garantida.</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>`;
+            : `<p>Olá, <strong>${recipientName}</strong>! Sua inscrição em <strong>${eventoNome}</strong> está garantida.</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>${payBtn}`;
         }
 
         await sendEmail(inscricao.email, subject, body);

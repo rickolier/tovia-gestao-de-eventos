@@ -355,10 +355,10 @@ function useRegistrationForm(
     if (participanteEmail) {
       const cfgEmail = evento?.config_comunicacao?.email_confirmacao;
       if (cfgEmail?.ativo && cfgEmail.corpo) {
-        const vars = { nome: participanteNome, evento: evento?.nome || '', data: evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '', local: evento?.local || '' };
+        const vars = { nome: participanteNome, evento: evento?.nome || '', data: evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '', local: evento?.local || '', link_pagamento: evento?.config_comunicacao?.link_pagamento || '' };
         Email.custom(participanteEmail, interpolate(cfgEmail.assunto || `Inscrição confirmada: ${evento?.nome}`, vars), interpolate(cfgEmail.corpo, vars), `Inscrição confirmada em ${evento?.nome}`);
       } else {
-        Email.confirmacaoInscricao(participanteEmail, participanteNome, evento?.nome || '', evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '', evento?.local || '');
+        Email.confirmacaoInscricao(participanteEmail, participanteNome, evento?.nome || '', evento?.data_inicio ? new Date(evento.data_inicio).toLocaleDateString('pt-BR') : '', evento?.local || '', undefined, evento?.config_comunicacao?.link_pagamento);
       }
     }
     toast.success('Inscrição manual realizada!');

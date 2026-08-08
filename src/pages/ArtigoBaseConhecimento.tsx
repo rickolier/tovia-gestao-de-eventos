@@ -119,8 +119,8 @@ export default function ArtigoBaseConhecimento() {
     ])
       .then(([current, all]) => {
         const found = current[0] ?? null;
-        setArtigo(found);
-        if (found) setRelated(getRelated(found, all));
+        setArtigo(found?.visivel === false ? null : found);
+        if (found && found.visivel !== false) setRelated(getRelated(found, all.filter(a => a.visivel !== false)));
       })
       .catch(() => {})
       .finally(() => setLoading(false));

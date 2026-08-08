@@ -10,7 +10,6 @@ import {
   emailBoasVindasChinam,
   emailBoasVindasPetach,
   emailBoasVindasKoach,
-  emailBoasVindasChalem,
   emailTicketCriado,
   emailTicketRespondido,
   emailTicketFechado,
@@ -45,8 +44,8 @@ export const Email = {
   primeiroEvento: (to: string, nome: string, eventoNome: string) =>
     send(to, `${eventoNome} foi criado com sucesso! 🚀`, emailPrimeiroEvento(nome, eventoNome)),
 
-  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string) =>
-    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal, acessoUrl)),
+  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string, linkPagamento?: string) =>
+    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal, acessoUrl, linkPagamento)),
 
   pagamentoNaoRealizado: (to: string, nome: string, plano: string, vencimento: string) =>
     send(to, 'Atenção: pagamento pendente na sua conta Tovia ⚠️', emailPagamentoNaoRealizado(nome, plano, vencimento)),
@@ -72,7 +71,6 @@ export const Email = {
   boasVindasPlano: (to: string, nome: string, plano: 'chinam' | 'petach' | 'koach' | 'chalem', valor?: string, proxVencimento?: string) => {
     if (plano === 'petach') return send(to, 'Bem-vindo ao Tovia Pétach! 🚪', emailBoasVindasPetach(nome, valor || 'R$ 49/mês', proxVencimento || ''));
     if (plano === 'koach')  return send(to, 'Bem-vindo ao Tovia Koách! ⚡',  emailBoasVindasKoach(nome, valor || 'R$ 129/mês', proxVencimento || ''));
-    if (plano === 'chalem') return send(to, 'Bem-vindo ao Tovia Chalém! 🌟', emailBoasVindasChalem(nome, valor || 'R$ 299/mês', proxVencimento || ''));
     return send(to, 'Bem-vindo ao Tovia! 🌱', emailBoasVindasChinam(nome));
   },
 

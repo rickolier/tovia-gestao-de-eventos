@@ -14,6 +14,7 @@ export interface ArtigoBC {
   autor: string;
   criado_em: string;
   atualizado_em: string;
+  visivel?: boolean;
 }
 
 export interface GatewayConfig {
@@ -147,6 +148,7 @@ export interface Evento {
       corpo: string;
       ativo: boolean;
     };
+    link_pagamento?: string;
   };
   
   campos_customizados: FormField[];

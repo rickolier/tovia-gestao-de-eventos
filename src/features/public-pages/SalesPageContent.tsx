@@ -275,6 +275,16 @@ const SuccessScreen: React.FC<{
             Protocolo: {inscricaoId.slice(0, 8).toUpperCase()}
           </p>
         )}
+        {evento.config_comunicacao?.link_pagamento && !isDoacaoSubmission && (
+          <a
+            href={evento.config_comunicacao.link_pagamento}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md"
+          >
+            Realizar pagamento
+          </a>
+        )}
         <div className="flex items-center gap-2 mt-2">
           <Logo showTagline={false} />
           <span className="text-xs text-gray-400">Powered by Tovia</span>

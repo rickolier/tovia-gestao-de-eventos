@@ -46,28 +46,28 @@ export const TOUR_DEFS: TourMeta[] = [
     label: 'Tutorial Inicial',
     description: 'Conheça o painel do Tovia: navegação, perfil, agenda e como criar seu primeiro evento.',
     icon: <Sparkles className="w-4 h-4" />,
-    plans: ['chinam', 'petach', 'koach', 'chalem'],
+    plans: ['chinam', 'petach', 'koach'],
   },
   {
     id: 'inscricoes',
     label: 'Módulo de Inscrições',
     description: 'Ingressos, páginas de venda, participantes, cupons e check-in — dentro do seu evento.',
     icon: <Ticket className="w-4 h-4" />,
-    plans: ['chinam', 'petach', 'koach', 'chalem'],
+    plans: ['chinam', 'petach', 'koach'],
   },
   {
     id: 'financeiro',
     label: 'Módulo Financeiro',
     description: 'Configuração financeira, pagamentos manuais e doações.',
     icon: <DollarSign className="w-4 h-4" />,
-    plans: ['petach', 'koach', 'chalem'],
+    plans: ['petach', 'koach'],
   },
   {
     id: 'gestao',
     label: 'Módulo de Gestão',
     description: 'Recursos, grupos, tarefas, equipe e calculadora de eventos.',
     icon: <ListChecks className="w-4 h-4" />,
-    plans: ['koach', 'chalem'],
+    plans: ['koach'],
   },
 ];
 

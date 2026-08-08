@@ -8,7 +8,7 @@ import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
   TicketIcon, DollarSign, Wallet, ArrowRight,
-  CreditCard, QrCode, Zap, Check,
+  CreditCard, QrCode, Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -99,8 +99,8 @@ export default function Onboarding() {
         </div>
 
         {/* Cards — always fully expanded */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-          {PLAN_ORDER.map((level) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {PLAN_ORDER.filter(l => l !== 'chalem').map((level) => {
             const config = PLAN_CONFIGS[level];
             const isSelected = selected === level;
             const moduleCount = config.modulesCount;
@@ -116,16 +116,6 @@ export default function Onboarding() {
                     : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40',
                 )}
               >
-                {/* Chalém auto-payments banner */}
-                {level === 'chalem' && (
-                  <div className={cn(
-                    'flex items-center gap-1.5 px-4 py-2 text-xs font-bold',
-                    isSelected ? 'bg-primary text-white' : 'bg-white/20 text-white',
-                  )}>
-                    <Zap className="w-3.5 h-3.5 shrink-0" />
-                    Único com pagamentos automáticos
-                  </div>
-                )}
 
                 <div className="p-6 flex flex-col gap-5 flex-1">
                   {/* Plan badge + check */}

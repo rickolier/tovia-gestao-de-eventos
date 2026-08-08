@@ -18,14 +18,12 @@ const BADGES = {
   chinam: { label: 'Chinám', color: 'bg-orange-50 text-primary' },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
   koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
-  chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
 };
 
 const ACCENT: Record<string, string> = {
   chinam: 'bg-primary',
   petach: 'bg-blue-400',
   koach:  'bg-violet-500',
-  chalem: 'bg-amber-500',
 };
 
 // Active filter pill styles (shown on the banner dark bg)
@@ -33,16 +31,14 @@ const PLAN_FILTER_ACTIVE: Record<string, string> = {
   chinam: 'bg-primary text-white border-primary',
   petach: 'bg-blue-500 text-white border-blue-500',
   koach:  'bg-violet-500 text-white border-violet-500',
-  chalem: 'bg-amber-500 text-white border-amber-500',
 };
 
-type PlanKey = 'chinam' | 'petach' | 'koach' | 'chalem';
+type PlanKey = 'chinam' | 'petach' | 'koach';
 
 const PLAN_FILTERS: { key: PlanKey; label: string }[] = [
   { key: 'chinam', label: 'Chinám'  },
   { key: 'petach', label: 'Pétach'  },
   { key: 'koach',  label: 'Koách'   },
-  { key: 'chalem', label: 'Chalém'  },
 ];
 
 const PINNED_TAGS = ['início', 'configuração', 'eventos', 'financeiro', 'suporte'];
@@ -63,17 +59,14 @@ const CATEGORIA_ORDER = Object.keys(CATEGORIA_LABELS_BC);
 const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
 
 function badgesFromTags(tags: string[]): PlanKey[] {
-  const hasChalem = tags.includes('chalem');
   const hasKoach  = tags.includes('koach');
   const hasPetach = tags.includes('petach');
-  if (hasChalem && !hasKoach && !hasPetach) return ['chalem'];
-  if (hasKoach)  return ['koach', 'chalem'];
-  if (hasPetach) return ['petach', 'koach', 'chalem'];
-  return ['chinam', 'petach', 'koach', 'chalem'];
+  if (hasKoach)  return ['koach'];
+  if (hasPetach) return ['petach', 'koach'];
+  return ['chinam', 'petach', 'koach'];
 }
 
 function accentFromBadges(badges: PlanKey[]): string {
-  if (badges[0] === 'chalem') return ACCENT.chalem;
   if (badges[0] === 'koach')  return ACCENT.koach;
   if (badges[0] === 'petach') return ACCENT.petach;
   return ACCENT.chinam;
@@ -350,7 +343,7 @@ export default function BaseConhecimento() {
   const topTags = PINNED_TAGS;
 
   const filtered = useMemo(() => {
-    let result = artigos;
+    let result = artigos.filter(a => a.visivel !== false);
 
     if (busca.trim()) {
       const q = busca.toLowerCase();

@@ -19,11 +19,10 @@ A plataforma foi criada para simplificar o que normalmente é complicado: recebe
 
 Ao acessar o Tovia, você encontrará uma barra lateral com as principais seções: Início (seus eventos), Meu Perfil, Agenda, Calculadora, Relatórios e Faturamento. Cada evento criado tem suas próprias abas internas: Visão Geral, Ingressos, Páginas de Inscrição, Participantes e outras funcionalidades conforme o plano contratado.
 
-O Tovia é organizado em quatro planos com nomes em hebraico:
+O Tovia é organizado em três planos com nomes em hebraico:
 • Chinám (חינם) — gratuito, permanente. Ideal para começar.
 • Pétach (פֶּתַח) — R$49/mês. Abre o controle financeiro e pagamentos manuais.
 • Koách (כֹּחַ) — R$129/mês. Força total: equipe, grupos e tarefas.
-• Chalém (שָׁלֵם) — R$299/mês. Completo: pagamentos automáticos e inscritos ilimitados.
 
 Todo usuário começa com o plano Chinám e pode fazer upgrade conforme o evento crescer. Membros de equipe convidados por um organizador também recebem o plano Chinám gratuitamente — eles acessam o evento específico onde foram adicionados, com as permissões que o organizador definiu.
 
@@ -96,7 +95,7 @@ Na calculadora, você preenche: número de vagas, valor do ingresso (ou meta de 
 
 Isso é muito útil para saber se o preço do ingresso está adequado ou se a capacidade planejada é suficiente para tornar o evento viável financeiramente.
 
-A calculadora está disponível em todos os planos — inclusive no Chinám (gratuito). Nos planos Pétach, Koách e Chalém, após fazer os cálculos, você pode clicar em Criar Evento para que os dados da calculadora sejam transferidos automaticamente para as configurações financeiras do evento.
+A calculadora está disponível em todos os planos — inclusive no Chinám (gratuito). Nos planos Pétach e Koách, após fazer os cálculos, você pode clicar em Criar Evento para que os dados da calculadora sejam transferidos automaticamente para as configurações financeiras do evento.
 
 Use a calculadora antes de divulgar qualquer evento. Definir o preço certo desde o início evita problemas financeiros durante o evento.`,
     video_url: '',
@@ -140,7 +139,7 @@ Os relatórios são atualizados automaticamente conforme novas inscrições são
     banner_url: 'https://images.unsplash.com/photo-1609429019995-8c40f49535a5?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Faturamento mostra as informações da sua assinatura no Tovia: qual plano você contratou, os limites de eventos e participantes incluídos, e o histórico de pagamentos da plataforma.
 
-Nessa página você encontra: o plano atual (Chinám, Pétach, Koách ou Chalém), a data de renovação, o valor pago mensalmente e o status de cada cobrança (pago, pendente, vencido).
+Nessa página você encontra: o plano atual (Chinám, Pétach ou Koách), a data de renovação, o valor pago mensalmente e o status de cada cobrança (pago, pendente, vencido).
 
 Os limites de cada plano são exibidos com indicadores de uso: por exemplo, "2 de 3 eventos utilizados" ou "87 de 200 participantes". Isso te ajuda a planejar quando pode ser necessário fazer upgrade para o próximo plano.
 
@@ -227,9 +226,8 @@ Disponibilidade por plano:
 • Chinám — 1 ingresso por evento (gratuito)
 • Pétach — até 3 ingressos por evento (gratuito, pago ou doação)
 • Koách — até 5 ingressos por evento
-• Chalém — até 10 ingressos por evento
 
-Os pagamentos manuais (Pix, dinheiro, transferência) estão disponíveis a partir do plano Pétach. Os pagamentos automáticos via gateway (PIX, boleto e cartão online) são exclusivos do plano Chalém.
+Os pagamentos manuais (Pix, dinheiro, transferência) estão disponíveis a partir do plano Pétach.
 
 Dica: crie ingressos com nomes claros que ajudem os participantes a identificar qual categoria se aplica a eles. Evite termos técnicos ou internos que só fazem sentido para a equipe organizadora.`,
     video_url: '',
@@ -275,7 +273,7 @@ A confirmação de inscrição é enviada automaticamente por e-mail para o part
 
 Nessa aba você pode filtrar participantes por ingresso, por status de pagamento ou pesquisar pelo nome. Isso facilita encontrar um participante específico em eventos com muitas inscrições.
 
-O status de cada inscrição indica a situação do pagamento: Pendente (ainda não pagou), Pago (confirmado), Cancelado e outros. Nos planos Pétach, Koách e Chalém, você pode atualizar o status manualmente conforme confirma os recebimentos. No plano Chalém com gateway conectado, o status é atualizado automaticamente quando o pagamento online é confirmado.
+O status de cada inscrição indica a situação do pagamento: Pendente (ainda não pagou), Pago (confirmado), Cancelado e outros. Nos planos Pétach e Koách, você pode atualizar o status manualmente conforme confirma os recebimentos.
 
 Você pode registrar informações adicionais em cada inscrição, como observações internas ou notas da equipe — isso não é visível para o participante.
 
@@ -298,7 +296,7 @@ Dica: use o campo de status para acompanhar o processo de confirmação em event
     banner_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A Base de Conhecimento é o repositório de artigos e tutoriais sobre o Tovia. Aqui você encontra explicações detalhadas sobre cada funcionalidade da plataforma, dicas de uso e respostas para as perguntas mais frequentes.
 
-Os artigos estão organizados na mesma sequência do Tutorial Guiado — seguindo a lógica de uso da plataforma, do básico ao avançado, e agrupados por plano (Chinám, Pétach, Koách e Chalém).
+Os artigos estão organizados na mesma sequência do Tutorial Guiado — seguindo a lógica de uso da plataforma, do básico ao avançado, e agrupados por plano (Chinám, Pétach e Koách).
 
 Para encontrar um artigo específico, use a barra de busca no topo da página. A busca pesquisa dentro do título, das tags e do conteúdo dos artigos, então você pode buscar por termos como "ingresso", "página de inscrição" ou "exportar".
 
@@ -354,8 +352,6 @@ A aba mostra: o total arrecadado até o momento, o saldo pendente (participantes
 
 Para pagamentos em parcelas, registre cada parcela separadamente informando o valor parcial. O sistema acumula as parcelas e você acompanha o total pago por participante com clareza.
 
-No plano Chalém com gateway conectado, os pagamentos via PIX, boleto e cartão são registrados automaticamente — sem necessidade de lançamento manual.
-
 Todos os registros ficam visíveis apenas para você e sua equipe — os participantes não têm acesso ao painel financeiro.
 
 Dica: mantenha o registro atualizado conforme os pagamentos vão chegando. Isso facilita a prestação de contas para parceiros, patrocinadores ou lideranças após o evento, e evita cobranças duplicadas na entrada.`,
@@ -398,7 +394,7 @@ Dica: use o campo de observações ao registrar uma doação para anotar informa
     tags: ['recursos', 'equipamentos', 'espaços', 'koach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1629327896333-7ecec1515ae5?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Recursos (disponível nos planos Koách e Chalém) permite cadastrar e gerenciar tudo que o evento precisa de infraestrutura: equipamentos, espaços físicos, materiais e qualquer outro recurso que precise de controle de disponibilidade.
+    conteudo: `A aba Recursos (disponível nos planos Koách) permite cadastrar e gerenciar tudo que o evento precisa de infraestrutura: equipamentos, espaços físicos, materiais e qualquer outro recurso que precise de controle de disponibilidade.
 
 Para cada recurso você define: nome, tipo (equipamento, espaço, material, etc.), quantidade disponível, responsável e observações. Você pode então alocar recursos para horários específicos dentro do evento, garantindo que não haverá conflito de uso.
 
@@ -423,7 +419,7 @@ Dica: cadastre os recursos logo após criar o evento e antes de montar a program
     tags: ['grupos', 'quartos', 'hospedagem', 'koach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1630068846062-3ffe78aa5049?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Grupos (disponível nos planos Koách e Chalém) permite dividir os participantes do evento em grupos, quartos, mesas ou qualquer outra estrutura de agrupamento. É ideal para acampamentos, retiros, conferências com hospedagem e eventos com mesas temáticas.
+    conteudo: `A aba Grupos (disponível nos planos Koách) permite dividir os participantes do evento em grupos, quartos, mesas ou qualquer outra estrutura de agrupamento. É ideal para acampamentos, retiros, conferências com hospedagem e eventos com mesas temáticas.
 
 Para cada grupo você define: nome, capacidade máxima, tipo (quarto, mesa, ônibus, célula, etc.) e a lista de participantes alocados. A aba exibe quantas vagas cada grupo tem disponíveis e quem já foi alocado.
 
@@ -448,7 +444,7 @@ Dica: dê nomes descritivos e intuitivos para os grupos — "Quarto 1" é menos 
     tags: ['tarefas', 'cronograma', 'equipe', 'koach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1754548930574-6a995e5eb5a7?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Tarefas (disponível nos planos Koách e Chalém) é onde você monta o cronograma operacional do evento, com cada atividade organizada em tarefas que podem ser atribuídas a membros da equipe.
+    conteudo: `A aba Tarefas (disponível nos planos Koách) é onde você monta o cronograma operacional do evento, com cada atividade organizada em tarefas que podem ser atribuídas a membros da equipe.
 
 Para cada tarefa você define: título, descrição, responsável, data/horário de início e término, status (a fazer, em andamento, concluída) e a prioridade. As tarefas aparecem em uma lista organizada por data, facilitando a visão do que precisa ser feito e quando.
 
@@ -473,7 +469,7 @@ Dica: crie as tarefas com pelo menos uma semana de antecedência e atribua respo
     tags: ['equipe', 'colaboradores', 'permissões', 'koach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Equipe (disponível nos planos Koách e Chalém) permite adicionar colaboradores ao seu evento para que outras pessoas possam ajudar a gerenciar inscrições, financeiro, recursos e tarefas.
+    conteudo: `A aba Equipe (disponível nos planos Koách) permite adicionar colaboradores ao seu evento para que outras pessoas possam ajudar a gerenciar inscrições, financeiro, recursos e tarefas.
 
 COMO FUNCIONA PARA O MEMBRO CONVIDADO:
 A pessoa convidada não precisa assinar nenhum plano pago. Ao criar uma conta no Tovia, ela recebe automaticamente o plano Chinám (gratuito) e acessa o evento específico onde foi adicionada — com as permissões que você definiu. O custo do Tovia é do organizador, não da equipe.
@@ -509,7 +505,7 @@ Dica: use a aba Equipe para delegar funções antes do evento começar. Por exem
     banner_url: 'https://images.unsplash.com/photo-1503266980949-bd30d04d0b7a?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Parabéns por completar o tour do Tovia! Você agora conhece todas as ferramentas disponíveis na plataforma e como cada uma contribui para a organização de eventos de sucesso.
 
-A jornada recomendada para um novo evento é: criar o evento → configurar ingressos → criar a página de inscrição → divulgar o link → acompanhar as inscrições e participantes → gerenciar o financeiro (Pétach+) → coordenar equipe, grupos e tarefas (Koách+) → pagamentos automáticos (Chalém).
+A jornada recomendada para um novo evento é: criar o evento → configurar ingressos → criar a página de inscrição → divulgar o link → acompanhar as inscrições e participantes → gerenciar o financeiro (Pétach+) → coordenar equipe, grupos e tarefas (Koách+).
 
 Para rever qualquer etapa do tutorial, clique em Tutorial na barra lateral do painel a qualquer momento. O tutorial foi pensado para ser consultado quantas vezes forem necessárias.
 
@@ -735,11 +731,7 @@ NO DIA:
 PÓS-EVENTO:
 14. Consulte relatório financeiro e exporte participantes
 
-Quando considerar upgrade para o Chalém:
-• Se você precisa de pagamentos automáticos via PIX, boleto ou cartão online
-• Se seus eventos ultrapassam 500 participantes
-• Se organiza mais de 5 eventos simultâneos
-• Se precisa de mais de 5 membros de equipe ou mais de 5 ingressos por evento`,
+Precisa de algo mais? Entre em contato com o suporte para avaliarmos juntos.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -750,6 +742,7 @@ Quando considerar upgrade para o Chalém:
     slug: 'caminho-chalem',
     ordem: 33,
     categoria: 'planos',
+    visivel: false,
     titulo: 'Plano Chalém: o caminho mais eficiente',
     resumo: 'Você tem o plano Chalém — completo e sem limites de inscritos. Veja como usar pagamentos automáticos e gerir eventos de grande porte.',
     tags: ['chalem', 'pagamentos automáticos', 'gateway', 'caminho', 'guia de uso', 'mapa'],
@@ -803,6 +796,7 @@ Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. 
     slug: 'financeiro-gateway',
     ordem: 34,
     categoria: 'financeiro',
+    visivel: false,
     titulo: 'Como acompanhar os pagamentos do evento com gateway?',
     resumo: 'Com o gateway conectado, os pagamentos são registrados automaticamente no Tovia. Veja onde acompanhar cada cobrança, o saldo da conta e o histórico completo.',
     tags: ['gateway', 'asaas', 'pagamentos automáticos', 'financeiro', 'chalem'],
@@ -941,18 +935,16 @@ CONFIGURAÇÃO TÍPICA:
 Chinám → ideal para evento único gratuito com até 100 participantes (culto especial pequeno, reunião de célula)
 Pétach → ideal para eventos com oferta/contribuição manual (retiros com taxa de participação)
 Koách → ideal para conferências com equipe, grupos de hospedagem e programação de múltiplas salas
-Chalém → ideal para conferências de grande porte com checkout online e inscritos ilimitados
-
 INGRESSOS RECOMENDADOS:
 • "Inscrição Geral" (gratuita) para eventos abertos
 • "Contribuição de R$X" para retiros e conferências com custos
 • "Doação Livre" para quem não tem condição de pagar o valor cheio
 • Cupom "LIDER" com desconto para líderes de célula ou pastores
 
-GRUPOS/QUARTOS (Koách/Chalém):
+GRUPOS/QUARTOS (Koách):
 Retiros e acampamentos se beneficiam muito da aba Grupos. Configure quartos separados por gênero e faixa etária (ex: "Feminino Adulto", "Masculino Jovem") e aloque os participantes conforme chegam as inscrições.
 
-EQUIPE (Koách/Chalém):
+EQUIPE (Koách):
 Adicione a secretaria como gestora de inscrições e o tesoureiro como gestor financeiro. Os membros de equipe têm o plano Chinám gratuito — não precisam pagar para ajudar no evento. Cada um cuida da sua área sem precisar compartilhar senha.
 
 DICA PARA IGREJAS:
@@ -972,7 +964,7 @@ Use o campo "Observações" no formulário de inscrição para perguntas especí
     tags: ['retiros', 'acampamentos', 'hospedagem', 'grupos', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1584068921546-2d799f7aaf1d?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `Retiros e acampamentos têm desafios únicos de logística: hospedagem em grupos, alimentação, transporte e cronograma operacional com equipe. Os planos Koách e Chalém do Tovia foram projetados para esse cenário.
+    conteudo: `Retiros e acampamentos têm desafios únicos de logística: hospedagem em grupos, alimentação, transporte e cronograma operacional com equipe. Os planos Koách do Tovia foram projetados para esse cenário.
 
 CARACTERÍSTICAS DO PERFIL:
 • Participantes precisam ser organizados em quartos, cabanas ou ônibus
@@ -993,7 +985,6 @@ Use a Calculadora de Evento: defina número de vagas, valor da taxa de participa
 3. INSCRIÇÕES E PAGAMENTOS
 • Abra as inscrições com antecedência suficiente
 • Registre os pagamentos na aba Financeiro conforme chegam (Pétach/Koách)
-• No Chalém com gateway conectado, os pagamentos são registrados automaticamente
 • Acompanhe o total arrecadado vs. custo previsto em tempo real
 
 4. ORGANIZAÇÃO (semana antes)
@@ -1023,7 +1014,7 @@ Inclua no formulário de inscrição: restrição alimentar, tamanho de camiseta
     tags: ['conferências', 'congressos', 'palestrantes', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `Conferências e congressos reúnem grande volume de participantes, múltiplos ingressos (meia, inteira, VIP, estudante) e uma equipe numerosa na organização. Os planos Koách e Chalém atendem esse perfil com recursos de gestão de equipe, múltiplos ingressos e check-in ágil.
+    conteudo: `Conferências e congressos reúnem grande volume de participantes, múltiplos ingressos (meia, inteira, VIP, estudante) e uma equipe numerosa na organização. Os planos Koách atendem esse perfil com recursos de gestão de equipe, múltiplos ingressos e check-in ágil.
 
 CARACTERÍSTICAS DO PERFIL:
 • Volume alto de participantes (centenas a milhares)
@@ -1037,7 +1028,7 @@ FLUXO RECOMENDADO:
 1. PLANEJAMENTO
 Comece pela Calculadora de Evento. Em conferências, os custos fixos (local, AV, palestrantes) são altos — calcule o ponto de equilíbrio com realismo antes de definir o preço dos ingressos.
 
-2. INGRESSOS (Koách: até 5 / Chalém: até 10)
+2. INGRESSOS (Koách: até 5)
 Crie múltiplos tipos de ingresso:
 • "Inteira" — valor cheio
 • "Meia" — estudantes com carteirinha
@@ -1045,7 +1036,7 @@ Crie múltiplos tipos de ingresso:
 • "Early Bird" — desconto por tempo limitado (defina prazo de encerramento)
 • "Equipe" — gratuito para voluntários e staff
 
-3. PÁGINAS DE INSCRIÇÃO (Koách: até 5 / Chalém: até 10)
+3. PÁGINAS DE INSCRIÇÃO (Koách: até 5)
 • Crie uma página principal para o público geral
 • Crie uma segunda para imprensa e parceiros (com link exclusivo e formulário diferente)
 • Crie uma terceira para credenciamento interno da equipe
@@ -1054,16 +1045,13 @@ Crie múltiplos tipos de ingresso:
 • Cupom de porcentagem para organizações parceiras
 • Cupom de valor fixo para influenciadores e embaixadores
 
-5. EQUIPE (Koách: até 5 membros / Chalém: até 10 membros)
+5. EQUIPE (Koách: até 5 membros)
 Adicione cada coordenador de área com a permissão correspondente. Os membros de equipe têm o plano Chinám gratuito — não há custo adicional para eles.
 • Coordenador de inscrições → acesso a Participantes e Check-in
 • Tesoureiro → acesso ao Financeiro
 • Coordenador de logística → acesso a Recursos e Tarefas
 
-6. PAGAMENTOS AUTOMÁTICOS (Chalém)
-Com o gateway conectado (Asaas), os participantes pagam via PIX, boleto ou cartão diretamente na página de inscrição — sem precisar enviar comprovante.
-
-7. CHECK-IN
+6. CHECK-IN
 Com muitos participantes, o check-in por QR Code é essencial. Distribua tablets na entrada, um por fila. Cada tablet abre a tela de Check-in do evento.
 
 DICA:
@@ -1143,7 +1131,6 @@ CONFIGURAÇÃO TÍPICA:
 Chinám → ideal para ONGs com 1 evento por vez e até 100 participantes — custo zero para a organização
 Pétach → quando há uma taxa de participação ou controle de doações
 Koách → quando há múltiplos eventos simultâneos com equipe voluntária
-Chalém → para eventos de grande impacto com inscrições ilimitadas e pagamento online
 
 INGRESSOS RECOMENDADOS:
 • "Inscrição Gratuita" — para o público geral (Chinám é suficiente para isso)
@@ -1179,6 +1166,7 @@ A página de inscrição pública do Tovia é simples de usar no celular — o q
     slug: 'conectar-gateway-asaas',
     ordem: 36,
     categoria: 'financeiro',
+    visivel: false,
     titulo: 'Como conectar o gateway de pagamentos (Asaas)',
     resumo: 'Passo a passo completo para criar sua conta Asaas, localizar a chave de API e conectar ao Tovia para receber pagamentos automaticamente.',
     tags: ['financeiro', 'gateway', 'asaas', 'pagamentos', 'configuração', 'chalem'],
@@ -1313,7 +1301,6 @@ Cada plano tem um limite de eventos ativos simultaneamente:
 • Chinám: 1 evento ativo
 • Pétach: 3 eventos ativos
 • Koách: 10 eventos ativos
-• Chalém: ilimitado
 Para liberar espaço, finalize ou desative eventos que já encerraram. Ou faça upgrade do plano.
 
 "MEU PARTICIPANTE NÃO RECEBEU O E-MAIL DE CONFIRMAÇÃO"
@@ -1324,8 +1311,7 @@ Verifique:
 4. Se o problema persistir, o participante pode consultar sua inscrição em tovia.app/consultar usando o e-mail cadastrado
 
 "O PAGAMENTO DO PARTICIPANTE NÃO FOI CONFIRMADO"
-Se você usa pagamento manual (Pétach/Koách): o status precisa ser atualizado manualmente na aba Financeiro → clique no participante → marque como pago.
-Se você usa gateway automático (Chalém): o status é atualizado automaticamente quando o Asaas confirma o pagamento. Pode levar alguns minutos para Pix e até 2 dias úteis para boleto.
+O status precisa ser atualizado manualmente na aba Financeiro → clique no participante → marque como pago.
 
 "NÃO CONSIGO ADICIONAR INSCRIÇÃO MANUAL"
 Você precisa ter pelo menos uma página de inscrição com formulário criada. Vá em Páginas → crie uma página com campos de formulário → depois volte a Participantes.
@@ -1338,7 +1324,6 @@ Limites por plano:
 • Chinám: 100 inscritos por evento
 • Pétach: 300 inscritos por evento
 • Koách: 1.000 inscritos por evento
-• Chalém: ilimitado
 Faça upgrade do plano para aumentar o limite.
 
 "COMO EXPORTO OS DADOS DOS PARTICIPANTES?"
@@ -1509,6 +1494,39 @@ A exclusão remove permanentemente: seu perfil, eventos, dados de participantes 
 
 GATEWAY DE PAGAMENTOS:
 Se você conectou um gateway (Asaas), sua chave de API é criptografada com AES-256. O Tovia nunca exibe a chave completa. Se suspeitar de comprometimento, desconecte o gateway imediatamente e gere uma nova chave no painel do Asaas.`,
+    video_url: '',
+    criado_em: NOW,
+    atualizado_em: NOW,
+  },
+
+  {
+    id: 'link-pagamento',
+    slug: 'link-pagamento-externo',
+    ordem: 42,
+    categoria: 'financeiro',
+    titulo: 'Como adicionar um link de pagamento externo?',
+    resumo: 'Configure um link de pagamento no e-mail de confirmação para que os participantes paguem pelo meio que você preferir.',
+    tags: ['financeiro', 'pagamento', 'link', 'configuração', 'inscrição'],
+    autor: 'Equipe Tovia',
+    banner_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80&auto=format&fit=crop',
+    conteudo: `O Tovia permite que você inclua um link de pagamento externo no e-mail de confirmação de inscrição. Assim, o participante recebe o link logo após se inscrever e pode pagar pelo meio que você preferir — Sympla, PagSeguro, Asaas, Mercado Pago, Pix do banco, ou qualquer outro.
+
+COMO CONFIGURAR:
+1. Acesse o evento no painel
+2. Na aba Visão Geral, localize o card "Link de pagamento"
+3. Clique em "Adicionar" e cole o link completo (ex: https://pay.asaas.com/seu-link)
+4. Salve — pronto!
+
+ONDE O LINK APARECE:
+• No e-mail de confirmação da inscrição (botão "Realizar pagamento")
+• Na tela de sucesso após o participante se inscrever
+
+O link é enviado para todos os participantes que se inscrevem naquele evento. Se você quiser remover, basta editar e deixar o campo vazio.
+
+DICA: use links de pagamento que já incluam o valor do ingresso. Assim o participante não precisa digitar o valor manualmente.
+
+VARIÁVEL PARA E-MAIL CUSTOMIZADO:
+Se você usa o e-mail personalizado (em Comunicação), pode inserir o link usando a variável {link_pagamento} no corpo do e-mail. Ela será substituída pelo link configurado.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,

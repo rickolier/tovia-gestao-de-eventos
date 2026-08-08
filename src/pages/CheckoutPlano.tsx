@@ -8,7 +8,7 @@ import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Loader2, ArrowRight, TicketIcon, DollarSign, Wallet, Zap, CreditCard, QrCode } from 'lucide-react';
+import { ArrowLeft, Loader2, ArrowRight, TicketIcon, DollarSign, Wallet, CreditCard, QrCode } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -318,12 +318,6 @@ export default function CheckoutPlano() {
         <div className="space-y-4 lg:sticky lg:top-6">
           <div className="bg-card rounded-2xl border overflow-hidden">
             {/* Plan header */}
-            {planLevel === 'chalem' && (
-              <div className="flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white text-xs font-bold">
-                <Zap className="w-3.5 h-3.5" />
-                Único com pagamentos automáticos
-              </div>
-            )}
             <div className="p-6 space-y-5">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-primary/10 text-primary">

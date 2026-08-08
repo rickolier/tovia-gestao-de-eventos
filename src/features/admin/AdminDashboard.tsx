@@ -6,7 +6,7 @@ import { ADMIN_EMAILS } from '~/utils/admin-config';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, TrendingUp, LogOut, ShieldCheck,
-  Menu, X, BookOpen, Calculator, Wifi, Headphones, LifeBuoy, Megaphone, KeyRound,
+  Menu, X, BookOpen, Calculator, Headphones, LifeBuoy, Megaphone, KeyRound,
   ChevronDown, FileText,
 } from 'lucide-react';
 import AdminOverviewTab from './AdminOverviewTab';
@@ -14,7 +14,6 @@ import AdminFinancialTab from './AdminFinancialTab';
 import AdminClientesTab from './AdminClientesTab';
 import AdminKnowledgeBaseTab from './AdminKnowledgeBaseTab';
 import AdminCalculatorTab from './AdminCalculatorTab';
-import AdminGatewayTab from './AdminGatewayTab';
 import AdminTicketsTab from './AdminTicketsTab';
 import AdminCSPanelTab from './AdminCSPanelTab';
 import AdminComunicadosTab from './AdminComunicadosTab';
@@ -55,7 +54,6 @@ const NAV_CRIADOR: NavGroup[] = [
     items: [
       { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['criador'] },
       { id: 'clientes',       label: 'Clientes',             icon: Users,      roles: ['criador'] },
-      { id: 'gateway',        label: 'Monitor Gateway',      icon: Wifi,       roles: ['criador'] },
       { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['criador'] },
       { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['criador'] },
     ],
@@ -72,7 +70,6 @@ const NAV_CRIADOR: NavGroup[] = [
 
 const NAV_SUPORTE: NavItem[] = [
   { id: 'tickets',        label: 'Suporte',              icon: LifeBuoy,   roles: ['suporte'] },
-  { id: 'gateway',        label: 'Monitor Gateway',      icon: Wifi,       roles: ['suporte'] },
   { id: 'knowledge-base', label: 'Base de Conhecimento', icon: BookOpen,   roles: ['suporte'] },
   { id: 'cs-panel',       label: 'Painel CS',            icon: Headphones, roles: ['suporte'] },
   { id: 'comunicados',    label: 'Comunicados',          icon: Megaphone,  roles: ['suporte'] },
@@ -85,7 +82,6 @@ const TAB_TITLES: Record<string, string> = {
   'billing-key':        'Configuração de API',
   'knowledge-base':     'Base de Conhecimento',
   clientes:             'Clientes',
-  gateway:              'Monitor Gateway',
   'cs-panel':           'Painel CS',
   tickets:              'Suporte',
   calculator:           'Calculadora',
@@ -244,7 +240,6 @@ export default function AdminDashboard() {
           {activeTab === 'billing-key'        && <AdminBillingKeyTab />}
           {activeTab === 'knowledge-base'     && <AdminKnowledgeBaseTab readOnly={role === 'suporte'} />}
           {activeTab === 'clientes'           && <AdminClientesTab />}
-          {activeTab === 'gateway'            && <AdminGatewayTab />}
           {activeTab === 'cs-panel'           && <AdminCSPanelTab />}
           {activeTab === 'tickets'            && <AdminTicketsTab />}
           {activeTab === 'calculator'         && <AdminCalculatorTab />}
