@@ -98,18 +98,18 @@ const PLAN_WELCOME: Record<PlanLevel, string> = {
   koach:
     'Plano Koách: até 5 eventos com 500 participantes cada, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
   chalem:
-    'Plano Chalém: 10 eventos, inscritos ilimitados, pagamentos automáticos via PIX, boleto e cartão, e equipe com até 10 membros. O plano completo do Tovia!',
+    'Plano Koách: até 5 eventos com 500 participantes cada, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
 };
 
 const PLAN_TICKET_DESC: Record<PlanLevel, string> = {
   chinam:
     'No plano Chinám você cria 1 ingresso gratuito por evento, com número de vagas e prazo. Para criar ingressos pagos ou múltiplos tipos, faça upgrade para o Pétach.',
   petach:
-    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento. Para pagamentos automáticos online, conheça o plano Chalém.',
+    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento.',
   koach:
-    'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes. Para pagamentos automáticos, conheça o plano Chalém.',
+    'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes.',
   chalem:
-    'Crie até 10 tipos de ingresso: gratuitos, pagos e doações. Com pagamentos automáticos (BYOG), seus participantes pagam via PIX, boleto ou cartão direto para sua conta.',
+    'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes.',
 };
 
 const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
@@ -120,7 +120,7 @@ const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
   koach:
     'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
   chalem:
-    'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
+    'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão para usar o Tovia ao máximo.',
 };
 
 function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
