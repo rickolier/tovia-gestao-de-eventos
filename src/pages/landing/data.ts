@@ -31,7 +31,7 @@ export const FEATURES = [
   {
     icon: DollarSign,
     title: 'Controle Financeiro',
-    description: 'Registre entradas, saídas e doações por categoria e acompanhe o saldo do evento em tempo real. No Plano 4 - Chalém, conecte seu próprio gateway e receba PIX, boleto e cartão direto na sua conta.',
+    description: 'Registre entradas, saídas e doações por categoria e acompanhe o saldo do evento em tempo real.',
     color: 'bg-orange-50 text-orange-600',
   },
   {
@@ -69,11 +69,11 @@ export const FAQ_ITEMS = [
   },
   {
     q: 'Posso cobrar pelos ingressos?',
-    a: 'Sim. No Plano 2 - Pétach você define o valor dos ingressos e registra os pagamentos manualmente (Pix, dinheiro, transferência). No Plano 4 - Chalém você conecta seu próprio gateway de pagamento e os participantes pagam online — com PIX, boleto ou cartão.',
+    a: 'Sim. No Plano 2 - Pétach você define o valor dos ingressos e registra os pagamentos manualmente (Pix, dinheiro, transferência). Você também pode adicionar um link de pagamento externo que será enviado no e-mail de confirmação da inscrição.',
   },
   {
     q: 'O dinheiro das inscrições passa pelo Tovia?',
-    a: 'O dinheiro vai direto para a sua conta. No Plano 2 - Pétach, você recebe pelos seus próprios meios e registra no painel. No Plano 4 - Chalém, você conecta seu próprio gateway (como o Asaas) — as transações acontecem entre o participante e o seu gateway, com o valor caindo direto na sua conta.',
+    a: 'Não. O dinheiro vai direto para a sua conta. Você recebe pelos seus próprios meios (Pix, transferência, dinheiro) e registra no painel. O Tovia nunca intermedia o dinheiro.',
   },
   {
     q: 'O que dá para controlar financeiramente?',
