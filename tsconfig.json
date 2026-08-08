@@ -27,5 +27,5 @@
     "noEmit": true,
     "strict": true
   },
-  "exclude": ["node_modules", "functions", "api"]
+  "exclude": ["node_modules", "functions", "api", "mobile"]
 }
