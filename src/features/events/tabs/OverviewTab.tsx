@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Evento, Inscricao, Ticket } from '~/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Users, Info, DollarSign, Edit2, Clock, LinkIcon, Check, X } from 'lucide-react';
-import { listDocuments, updateDocument } from '~/services/firestore';
-import { limit } from 'firebase/firestore';
+import { Calendar, MapPin, Users, Info, DollarSign, Edit2, Clock } from 'lucide-react';
+import { listDocuments } from '~/services/firestore';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { limit } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
 
 function getCountdown(dataInicio: string) {
   const now = new Date();
@@ -32,9 +30,7 @@ export default function OverviewTab({ evento, onRefresh }: { evento: Evento; onR
   const [occupiedSlots, setOccupiedSlots] = useState(0);
   const [paidCount, setPaidCount]         = useState(0);
   const [totalRevenue, setTotalRevenue]   = useState(0);
-  const [linkPagamento, setLinkPagamento] = useState(evento.config_comunicacao?.link_pagamento ?? '');
-  const [editingLink, setEditingLink]     = useState(false);
-  const [savingLink, setSavingLink]       = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -206,69 +202,7 @@ export default function OverviewTab({ evento, onRefresh }: { evento: Evento; onR
           </CardContent>
         </Card>
 
-        {/* Link de pagamento */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <LinkIcon className="w-4 h-4 text-primary" />
-              Link de pagamento
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground mb-3">
-              Inclua um link externo de pagamento no e-mail de confirmação de inscrição.
-            </p>
-            {editingLink ? (
-              <div className="flex gap-2">
-                <Input
-                  type="url"
-                  placeholder="https://..."
-                  value={linkPagamento}
-                  onChange={e => setLinkPagamento(e.target.value)}
-                  className="text-sm"
-                />
-                <Button
-                  size="sm"
-                  disabled={savingLink}
-                  onClick={async () => {
-                    setSavingLink(true);
-                    try {
-                      await updateDocument('eventos', evento.id, {
-                        'config_comunicacao.link_pagamento': linkPagamento.trim() || null,
-                      } as any);
-                      toast.success(linkPagamento.trim() ? 'Link salvo!' : 'Link removido.');
-                      setEditingLink(false);
-                      onRefresh?.();
-                    } catch {
-                      toast.error('Erro ao salvar link.');
-                    } finally {
-                      setSavingLink(false);
-                    }
-                  }}
-                >
-                  <Check className="w-3.5 h-3.5" />
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setEditingLink(false); setLinkPagamento(evento.config_comunicacao?.link_pagamento ?? ''); }}>
-                  <X className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                {linkPagamento ? (
-                  <a href={linkPagamento} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline truncate max-w-[250px]">
-                    {linkPagamento}
-                  </a>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">Nenhum link configurado</span>
-                )}
-                <Button size="sm" variant="outline" onClick={() => setEditingLink(true)} className="ml-auto shrink-0">
-                  <Edit2 className="w-3.5 h-3.5 mr-1" />
-                  {linkPagamento ? 'Editar' : 'Adicionar'}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+
 
       </div>
     </div>

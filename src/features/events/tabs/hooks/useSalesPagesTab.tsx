@@ -59,6 +59,7 @@ export function useSalesPagesTab(eventoId: string) {
     ativa: true,
     descricao: '',
     ticketIds: [],
+    link_pagamento: '',
     campos_formulario: CAMPOS_PADRAO.slice(0, 3).map(c => ({ ...c, id: uuidv4() })),
   });
   const [form, setForm] = useState(emptyForm());
@@ -90,7 +91,7 @@ export function useSalesPagesTab(eventoId: string) {
 
   const openEdit = (p: PaginaVenda) => {
     setEditingId(p.id);
-    setForm({ nome: p.nome, slug: p.slug, ativa: p.ativa, descricao: p.descricao || '', ticketIds: p.ticketIds, campos_formulario: p.campos_formulario });
+    setForm({ nome: p.nome, slug: p.slug, ativa: p.ativa, descricao: p.descricao || '', ticketIds: p.ticketIds, link_pagamento: p.link_pagamento || '', campos_formulario: p.campos_formulario });
     setActiveSection('tickets');
     setIsDialogOpen(true);
   };

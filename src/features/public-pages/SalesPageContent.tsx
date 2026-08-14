@@ -247,9 +247,10 @@ const CheckoutScreen: React.FC<{
 // ─── Success screen ────────────────────────────────────────────────────────────
 const SuccessScreen: React.FC<{
   evento: Evento;
+  pagina?: PaginaVenda;
   isDoacaoSubmission: boolean;
   inscricaoId: string | null;
-}> = ({ evento, isDoacaoSubmission, inscricaoId }) => {
+}> = ({ evento, pagina, isDoacaoSubmission, inscricaoId }) => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <header className="border-b border-gray-100 px-6 py-4">
@@ -275,9 +276,9 @@ const SuccessScreen: React.FC<{
             Protocolo: {inscricaoId.slice(0, 8).toUpperCase()}
           </p>
         )}
-        {evento.config_comunicacao?.link_pagamento && !isDoacaoSubmission && (
+        {pagina?.link_pagamento && !isDoacaoSubmission && (
           <a
-            href={evento.config_comunicacao.link_pagamento}
+            href={pagina.link_pagamento}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md"
@@ -1144,6 +1145,7 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
     return (
       <SuccessScreen
         evento={evento}
+        pagina={pagina}
         isDoacaoSubmission={isDoacaoSubmission}
         inscricaoId={inscricaoId}
       />

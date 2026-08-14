@@ -15,7 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Plus, Copy, Trash2, ExternalLink, Globe, GlobeLock,
   Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft, FileDown, Loader2,
-  ChevronUp, ChevronDown,
+  ChevronUp, ChevronDown, LinkIcon,
 } from 'lucide-react';
 import { PaginaVenda, CampoFormulario } from '~/types';
 import SalesPageContent from '~/features/public-pages/SalesPageContent';
@@ -224,6 +224,20 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                       ))}
                     </div>
                   )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Link de pagamento externo (opcional)</Label>
+                  <div className="relative">
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="https://exemplo.com/pagamento"
+                      value={form.link_pagamento}
+                      onChange={e => setForm(prev => ({ ...prev, link_pagamento: e.target.value }))}
+                      className="rounded-xl border-none bg-muted/50 h-12 pl-10 shadow-sm"
+                    />
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">Será exibido na tela de confirmação e no e-mail de inscrição.</p>
                 </div>
 
                 <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl">

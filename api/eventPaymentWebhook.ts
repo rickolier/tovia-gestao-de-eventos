@@ -159,7 +159,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const evData = evDoc.exists ? evDoc.data()! : {};
         const eventoNome: string = evData.nome ?? 'evento';
         const cfgEmail = !isDonation ? evData.config_comunicacao?.email_confirmacao : null;
-        const linkPagamento: string = evData.config_comunicacao?.link_pagamento ?? '';
+        let linkPagamento = '';
+        const paginaVendaId = inscricao.pagina_venda_id || inscricao.paginaVendaId;
+        if (paginaVendaId) {
+          const paginaDoc = await db.collection(`eventos/${eventoId}/paginas_venda`).doc(paginaVendaId).get();
+          if (paginaDoc.exists) linkPagamento = paginaDoc.data()?.link_pagamento ?? '';
+        }
 
         let subject: string;
         let body: string;
