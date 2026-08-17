@@ -106,7 +106,7 @@ export function CTALeadForm() {
             <span className="inline-block text-xs font-black uppercase tracking-[0.25em] bg-[#1E0B4B] text-white px-4 py-1.5 rounded-full mb-6">
               Experimente grátis
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-5">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-5 uppercase">
               Quer conhecer<br />o Tovia?
             </h2>
             <p className="text-white/80 text-base md:text-lg leading-relaxed mb-8 max-w-md">
