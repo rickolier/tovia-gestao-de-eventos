@@ -103,7 +103,7 @@ export function CTALeadForm() {
 
           {/* Lado esquerdo — texto */}
           <div className="text-white">
-            <span className="inline-block text-xs font-black uppercase tracking-[0.25em] bg-white/20 text-white px-4 py-1.5 rounded-full mb-6">
+            <span className="inline-block text-xs font-black uppercase tracking-[0.25em] bg-[#1E0B4B] text-white px-4 py-1.5 rounded-full mb-6">
               Experimente grátis
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-5">
@@ -116,7 +116,7 @@ export function CTALeadForm() {
             <div className="space-y-4">
               {BENEFICIOS.map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[#1E0B4B]/30 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-white/90 text-sm font-semibold">{text}</span>
@@ -124,11 +124,11 @@ export function CTALeadForm() {
               ))}
             </div>
 
-            <div className="mt-10 pt-8 border-t border-white/15">
-              <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-3">Ideal para</p>
+            <div className="mt-10 pt-8 border-t border-[#1E0B4B]/20">
+              <p className="text-[#1E0B4B]/70 text-xs uppercase tracking-widest font-bold mb-3">Ideal para</p>
               <div className="flex flex-wrap gap-2">
                 {['Igrejas', 'Ministérios', 'ONGs', 'Escolas', 'Comunidades'].map(tag => (
-                  <span key={tag} className="text-xs font-bold text-white/70 bg-white/10 px-3 py-1.5 rounded-full">
+                  <span key={tag} className="text-xs font-bold text-white bg-[#1E0B4B]/25 px-3 py-1.5 rounded-full">
                     {tag}
                   </span>
                 ))}
