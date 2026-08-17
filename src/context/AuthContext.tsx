@@ -189,9 +189,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'chinam',
+              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'koach',
               codigo: isAdmin ? undefined : gerarCodigoProdutor(),
-              onboardingComplete: isAdmin ? true : false,
+              onboardingComplete: true,
             };
             await createDocument('users', firebaseUser.uid, userProfile);
           } else if (getTestPlan(firebaseUser.email) && userProfile.plano !== getTestPlan(firebaseUser.email)) {

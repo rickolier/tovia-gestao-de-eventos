@@ -8,7 +8,7 @@ import { MarqueeStrip } from './landing/sections/MarqueeStrip';
 import { ComoFunciona } from './landing/sections/ComoFunciona';
 import { Funcionalidades } from './landing/sections/Funcionalidades';
 import { DemoMockups } from './landing/sections/DemoMockups';
-import { Planos } from './landing/sections/Planos';
+import { CTALeadForm } from './landing/sections/CTALeadForm';
 import { FAQ } from './landing/sections/FAQ';
 import { CTAFinal } from './landing/sections/CTAFinal';
 import { Footer } from './landing/sections/Footer';
@@ -26,7 +26,7 @@ export default function LandingPage() {
       <ComoFunciona />
       <Funcionalidades />
       <DemoMockups />
-      <Planos />
+      <CTALeadForm />
       <FAQ />
       <CTAFinal />
       <Footer />

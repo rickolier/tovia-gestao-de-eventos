@@ -4,7 +4,7 @@ export const NAV_LINKS = [
   { label: 'Como funciona', href: '#como-funciona' },
   { label: 'Para quem é', href: '#para-quem' },
   { label: 'Funcionalidades', href: '#funcionalidades' },
-  { label: 'Planos', href: '#planos' },
+  { label: 'Cadastro', href: '#planos' },
 ];
 
 export const NAV_ROUTE_LINKS: { label: string; to: string }[] = [];
