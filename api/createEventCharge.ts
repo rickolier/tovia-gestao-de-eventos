@@ -3,13 +3,9 @@ import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './_types.js';
 import { createEventChargeSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
-import {
-  decrypt,
-  createOrFindAsaasCustomer,
-  createAsaasCharge,
-  createAsaasSubscription,
-  mapBillingType,
-} from './_gateway-utils.js';
+import { decrypt } from './_gateway-utils.js';
+import { createPaymentProvider } from './payments/factory.js';
+import type { GatewayType } from './payments/types.js';
 
 const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const RATE_LIMIT = 15;
@@ -103,18 +99,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const apiKey = decrypt(orgData.gateway.encrypted_api_key, encKey);
     const sandbox: boolean = orgData.gateway.sandbox ?? false;
+    const gatewayType: GatewayType = orgData.gateway.type ?? 'asaas';
 
-    // Cria ou reutiliza cliente Asaas do participante
+    const provider = createPaymentProvider(gatewayType, apiKey, sandbox);
+
     let customerId: string;
     try {
-      customerId = await createOrFindAsaasCustomer(
-        apiKey,
-        sandbox,
-        attendeeName,
-        attendeeEmail,
-        `attendee:${inscricaoId}`,
-        attendeeCpf,
-      );
+      const customer = await provider.createCustomer({
+        name: attendeeName,
+        email: attendeeEmail,
+        externalRef: `attendee:${inscricaoId}`,
+        document: attendeeCpf,
+      });
+      customerId = customer.id;
     } catch (e: any) {
       console.error('[createEventCharge] createCustomer failed — status:', e?.response?.status ?? 'unknown');
       return res.status(500).json({ error: 'Erro ao criar cliente no gateway. Tente novamente.' });
@@ -144,15 +141,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       let subscription: { id: string; status: string };
       try {
-        subscription = await createAsaasSubscription(apiKey, sandbox, {
+        subscription = await provider.createSubscription({
           customerId,
           installmentValue,
           nextDueDate: dueDateStr,
           description: `Inscrição — ${evento.nome} (${totalInstallments}x recorrente)`,
           maxPayments: totalInstallments,
-          externalReference: `event:${eventoId}:${inscricaoId}`,
+          externalRef: `event:${eventoId}:${inscricaoId}`,
           creditCard,
-          creditCardHolderInfo: holderInfo!,
+          cardHolder: holderInfo!,
         });
       } catch (e: any) {
         console.error('[createEventCharge] createSubscription failed — status:', e?.response?.status ?? 'unknown');
@@ -181,18 +178,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // ── Cobrança única / crédito parcelado ────────────────────────────────────
-    let charge: Awaited<ReturnType<typeof createAsaasCharge>>;
+    let charge;
     try {
-      charge = await createAsaasCharge(apiKey, sandbox, {
+      charge = await provider.createCharge({
         customerId,
         value: valor,
         dueDate: dueDateStr,
         description: `Inscrição — ${evento.nome}`,
-        billingType: mapBillingType(paymentMethod),
-        installmentCount: installments,
-        externalReference: `event:${eventoId}:${inscricaoId}`,
+        paymentMethod: paymentMethod as any,
+        installments,
+        externalRef: `event:${eventoId}:${inscricaoId}`,
         creditCard,
-        creditCardHolderInfo: holderInfo,
+        cardHolder: holderInfo,
       });
     } catch (e: any) {
       console.error('[createEventCharge] createCharge failed — status:', e?.response?.status ?? 'unknown');
@@ -212,7 +209,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       paymentUrl: charge.invoiceUrl,
       pixQrCode: charge.pixQrCode ?? null,
       bankSlipUrl: charge.bankSlipUrl ?? null,
-      identificationField: charge.identificationField ?? null,
+      identificationField: charge.bankSlipBarcode ?? null,
       chargeId: charge.id,
       installmentValue: null,
       installmentCount: null,

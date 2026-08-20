@@ -16,8 +16,16 @@ import OnboardingTour from '~/features/dashboard/OnboardingTour';
 import { useAuth } from '~/context/AuthContext';
 import { Progress } from '@/components/ui/progress';
 
+const GATEWAY_LABELS: Record<string, string> = {
+  asaas: 'Asaas',
+  stripe: 'Stripe',
+  mercadopago: 'Mercado Pago',
+  pagarme: 'Pagar.me',
+};
+
 export default function FinancialTab({ eventoId, isActive }: { eventoId: string; isActive?: boolean }) {
   const { user, profile } = useAuth();
+  const gwLabel = GATEWAY_LABELS[profile?.gateway?.type ?? 'asaas'] ?? profile?.gateway?.type ?? 'gateway';
   const {
     payments, registrations, transactions, loading, plan,
     financialTourOpen, setFinancialTourOpen,
@@ -122,7 +130,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
           <div className="flex items-center gap-3 p-4 rounded-2xl bg-green-50 border border-green-200">
             <PlugZap className="w-5 h-5 text-green-600 shrink-0" />
             <div>
-              <p className="text-sm font-black text-green-900">Pagamentos automáticos via Asaas</p>
+              <p className="text-sm font-black text-green-900">Pagamentos automáticos via {gwLabel}</p>
               <p className="text-xs text-green-700 mt-0.5">As cobranças são geradas automaticamente na hora da inscrição. O participante paga na página do evento.</p>
             </div>
           </div>
@@ -132,7 +140,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
               <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
               <div>
                 <p className="text-sm font-black text-amber-900">Gateway não conectado</p>
-                <p className="text-xs text-amber-700 mt-0.5">Conecte seu Asaas para ativar cobranças automáticas. Enquanto isso, o controle é manual.</p>
+                <p className="text-xs text-amber-700 mt-0.5">Conecte seu gateway para ativar cobranças automáticas. Enquanto isso, o controle é manual.</p>
               </div>
             </div>
             <a href="/dashboard?tab=configuracoes&sub=gateway" className="shrink-0">

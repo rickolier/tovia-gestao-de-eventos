@@ -26,7 +26,7 @@ async function checkCheckoutRateLimit(uid: string): Promise<boolean> {
 }
 
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
-const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';
+const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/v3';
 
 const MONTHLY_PRICES: Record<string, number> = {
   petach: 49,

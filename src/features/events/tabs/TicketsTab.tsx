@@ -12,7 +12,17 @@ import CuponsTab from './CuponsTab';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '~/context/AuthContext';
+const GATEWAY_LABELS: Record<string, string> = {
+  asaas: 'Asaas',
+  stripe: 'Stripe',
+  mercadopago: 'Mercado Pago',
+  pagarme: 'Pagar.me',
+};
+
 export default function TicketsTab({ eventoId }: { eventoId: string }) {
+  const { profile } = useAuth();
+  const gwLabel = GATEWAY_LABELS[profile?.gateway?.type ?? 'asaas'] ?? 'gateway';
   const [subTab, setSubTab] = useState<'ingressos' | 'cupons'>('ingressos');
   const {
     tickets, loading, plan, onlyFreeTickets, gatewayConnected, reachedTicketLimit, defaultMetodos,
@@ -236,13 +246,13 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                       <div>
                         <p className="text-xs font-bold text-amber-800">Gateway não conectado</p>
                         <p className="text-[11px] text-amber-700 mt-0.5">
-                          Conecte o Asaas no <strong>Dashboard → Gateway</strong> para definir as formas de pagamento.
+                          Conecte seu gateway no <strong>Dashboard → Gateway</strong> para definir as formas de pagamento.
                         </p>
                       </div>
                     </div>
                   ) : plan.modules.autoPayments ? (
                     <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento (Asaas)</Label>
+                      <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Formas de Pagamento ({gwLabel})</Label>
                       <div className="p-4 bg-muted/30 rounded-xl space-y-3">
                         {[
                           { id: 'pix', label: 'PIX' },
@@ -340,7 +350,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                         )}
                       </div>
                       <p className="text-[11px] text-muted-foreground px-1">
-                        A cobrança será gerada automaticamente no Asaas no momento da inscrição.
+                        A cobrança será gerada automaticamente no {gwLabel} no momento da inscrição.
                         O campo <strong>CPF</strong> é solicitado obrigatoriamente no formulário.
                       </p>
                     </div>

@@ -4,8 +4,9 @@ import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './_types.js';
 import { saveGatewayConfigSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
-import { encrypt, genToken, registerAsaasWebhook } from './_gateway-utils.js';
-import axios from 'axios';
+import { encrypt, genToken } from './_gateway-utils.js';
+import { createPaymentProvider } from './payments/factory.js';
+import type { GatewayType } from './payments/types.js';
 
 // ── Rate limit: 10 requests per hour ────────────────────────────────────────
 const RATE_WINDOW_MS = 60 * 60 * 1000;
@@ -63,19 +64,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
   }
 
-  const baseUrl = sandbox ? 'https://sandbox.asaas.com/api/v3' : 'https://api.asaas.com/v3';
-  const headers = { access_token: apiKey, 'Content-Type': 'application/json' };
+  const provider = createPaymentProvider(gatewayType as GatewayType, apiKey, !!sandbox);
   const step = (req.query.step as string) || data.step || 'validate';
 
   // ── Step 1: validate key and return account info for confirmation ──
   if (step === 'validate') {
+    let result;
     try {
-      const validateRes = await axios.get(`${baseUrl}/customers`, {
-        params: { limit: 1 }, headers, timeout: 10000,
-      });
-      if (validateRes.status !== 200) {
-        return res.status(400).json({ error: `GW-ERR-${validateRes.status}: Resposta inesperada do gateway.` });
-      }
+      result = await provider.validateCredentials();
     } catch (e: any) {
       const status = e?.response?.status;
       const msg = status && ERROR_MAP[status]
@@ -84,48 +80,65 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: msg });
     }
 
-    let accountInfo: Record<string, any> = {};
-    try {
-      const acctRes = await axios.get(`${baseUrl}/myAccount/commercialInfo`, { headers, timeout: 10000 });
-      const d = acctRes.data;
-      const cpfCnpj = d.cpfCnpj || '';
-      const masked = cpfCnpj.length === 11
-        ? `***.***.${cpfCnpj.slice(6, 9)}-${cpfCnpj.slice(9)}`
-        : cpfCnpj.length === 14
-          ? `**.***.${cpfCnpj.slice(5, 8)}/${cpfCnpj.slice(8, 12)}-${cpfCnpj.slice(12)}`
-          : cpfCnpj;
-      accountInfo = {
-        name: d.name || d.companyName || '',
-        tradingName: d.tradingName || '',
-        cpfCnpjMasked: masked,
-        personType: d.personType || '',
-        email: d.email || '',
-        city: d.city?.name || '',
-        state: d.city?.state || '',
-        status: d.status || '',
-      };
-    } catch (e) {
-      console.warn('Could not fetch account info (non-fatal):', e);
+    if (!result.valid) {
+      return res.status(400).json({ error: ERROR_MAP[401] });
     }
 
-    return res.json({ validated: true, accountInfo });
+    // Validação de CPF/CNPJ: deve bater com o cadastro do organizador
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userData = userDoc.exists ? userDoc.data()! : {};
+    const userDocument = (userData.cpf_cnpj || userData.cpfCnpj || '').replace(/\D/g, '');
+    const gatewayDocument = (result.document || '').replace(/\D/g, '');
+
+    if (userDocument && gatewayDocument && userDocument !== gatewayDocument) {
+      return res.status(400).json({
+        error: 'O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia. Verifique seus dados.',
+      });
+    }
+
+    const cpfCnpj = gatewayDocument;
+    const masked = cpfCnpj.length === 11
+      ? `***.***.${cpfCnpj.slice(6, 9)}-${cpfCnpj.slice(9)}`
+      : cpfCnpj.length === 14
+        ? `**.***.${cpfCnpj.slice(5, 8)}/${cpfCnpj.slice(8, 12)}-${cpfCnpj.slice(12)}`
+        : cpfCnpj;
+
+    return res.json({
+      validated: true,
+      accountInfo: {
+        name: result.accountName || '',
+        cpfCnpjMasked: masked,
+      },
+    });
   }
 
   // ── Step 2: confirm — save encrypted config ──
   if (step === 'confirm') {
+    let result;
     try {
-      const validateRes = await axios.get(`${baseUrl}/customers`, {
-        params: { limit: 1 }, headers, timeout: 10000,
-      });
-      if (validateRes.status !== 200) {
-        return res.status(400).json({ error: 'Chave inválida. Tente novamente.' });
-      }
+      result = await provider.validateCredentials();
     } catch (e: any) {
       const status = e?.response?.status;
       const msg = status && ERROR_MAP[status]
         ? ERROR_MAP[status]
         : 'ERRO TV007 — Falha de conexão. Verifique sua internet e tente novamente.';
       return res.status(400).json({ error: msg });
+    }
+
+    if (!result.valid) {
+      return res.status(400).json({ error: 'Chave inválida. Tente novamente.' });
+    }
+
+    // Revalida CPF/CNPJ no confirm também
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userData = userDoc.exists ? userDoc.data()! : {};
+    const userDocument = (userData.cpf_cnpj || userData.cpfCnpj || '').replace(/\D/g, '');
+    const gatewayDocument = (result.document || '').replace(/\D/g, '');
+
+    if (userDocument && gatewayDocument && userDocument !== gatewayDocument) {
+      return res.status(400).json({
+        error: 'O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia.',
+      });
     }
 
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
@@ -135,7 +148,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const webhookUrl = 'https://tovia.app/api/event-payment-webhook';
     try {
-      await registerAsaasWebhook(apiKey, sandbox, webhookUrl, webhookToken);
+      await provider.registerWebhook(webhookUrl, webhookToken);
     } catch (e) {
       console.warn('Webhook registration failed (non-fatal):', e);
     }

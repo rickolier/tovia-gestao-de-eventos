@@ -19,6 +19,13 @@ import {
 } from 'lucide-react';
 import { updateDocument } from '~/services/firestore';
 
+const GATEWAY_LABELS: Record<string, string> = {
+  asaas: 'Asaas',
+  stripe: 'Stripe',
+  mercadopago: 'Mercado Pago',
+  pagarme: 'Pagar.me',
+};
+
 export default function GatewayTab() {
   const { profile, user, refreshProfile } = useAuth();
   const [apiKey, setApiKey] = useState('');
@@ -135,18 +142,18 @@ export default function GatewayTab() {
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
-            title: 'Tovia cria a cobrança na sua conta Asaas',
+            title: `Tovia cria a cobrança na sua conta ${GATEWAY_LABELS[gatewayType] ?? gatewayType}`,
             desc: 'Usando sua chave, geramos a cobrança automaticamente no momento da inscrição.',
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
-            title: 'Pagamento confirmado pelo Asaas',
-            desc: 'O Asaas nos notifica via webhook e a inscrição é marcada como paga.',
+            title: `Pagamento confirmado pelo ${GATEWAY_LABELS[gatewayType] ?? gatewayType}`,
+            desc: 'O gateway nos notifica via webhook e a inscrição é marcada como paga.',
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
             title: 'Dinheiro cai direto na sua conta',
-            desc: 'O Tovia nunca toca no dinheiro. Tudo vai para a sua conta Asaas conforme as regras do gateway.',
+            desc: `O Tovia nunca toca no dinheiro. Tudo vai para a sua conta ${GATEWAY_LABELS[gatewayType] ?? gatewayType} conforme as regras do gateway.`,
           },
         ].map((item, i) => (
           <div key={i} className="flex items-start gap-3">
@@ -185,7 +192,7 @@ export default function GatewayTab() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-black text-green-900">
-                        {gatewayType === 'asaas' ? 'Asaas' : gatewayType} conectado
+                        {GATEWAY_LABELS[gatewayType] ?? gatewayType} conectado
                       </p>
                       <Badge className="bg-green-500 text-white text-[10px] font-black">ATIVO</Badge>
                       {isSandbox && (
@@ -225,7 +232,7 @@ export default function GatewayTab() {
                 <div>
                   <p className="font-black text-amber-900 text-sm">Nenhum gateway conectado</p>
                   <p className="text-xs text-amber-700 mt-0.5">
-                    Inscrições pagas ficam em modo manual. Conecte seu Asaas para automatizar.
+                    Inscrições pagas ficam em modo manual. Conecte seu gateway para automatizar.
                   </p>
                 </div>
               </div>
@@ -238,7 +245,7 @@ export default function GatewayTab() {
                     <Shield className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-black text-sm">Conectar Asaas</p>
+                    <p className="font-black text-sm">Conectar Gateway</p>
                     <p className="text-[11px] text-muted-foreground">
                       Sua chave é criptografada com AES-256 antes de ser armazenada. Nunca fica em texto puro.
                     </p>
@@ -321,7 +328,7 @@ export default function GatewayTab() {
                     <div>
                       <p className="font-black text-sm text-foreground">Chave válida! Confirme a conta</p>
                       <p className="text-[11px] text-muted-foreground">
-                        Verifique se os dados abaixo correspondem à sua conta Asaas.
+                        Verifique se os dados abaixo correspondem à sua conta no gateway.
                       </p>
                     </div>
                   </div>
@@ -360,7 +367,7 @@ export default function GatewayTab() {
                   ) : (
                     <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
                       <p className="text-xs text-amber-700">
-                        Não foi possível recuperar os dados da conta. Você pode continuar, mas confirme que a chave pertence à sua conta Asaas.
+                        Não foi possível recuperar os dados da conta. Você pode continuar, mas confirme que a chave pertence à sua conta no gateway.
                       </p>
                     </div>
                   )}

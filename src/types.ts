@@ -18,7 +18,7 @@ export interface ArtigoBC {
 }
 
 export interface GatewayConfig {
-  type: 'asaas';
+  type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';
   encrypted_api_key: string;
   sandbox: boolean;
   connected_at: string;

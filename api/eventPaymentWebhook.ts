@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createHash, timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
+import { createPaymentProvider } from './payments/factory.js';
+import type { GatewayType } from './payments/types.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
@@ -49,28 +51,17 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
-function mapBillingType(billingType: string): string {
-  const map: Record<string, string> = {
-    PIX: 'pix',
-    BOLETO: 'boleto',
-    CREDIT_CARD: 'cartao',
-    DEBIT_CARD: 'cartao',
-  };
-  return map[billingType] ?? 'pix';
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const event = req.body;
-  const eventType: string = event?.event;
-  const payment = event?.payment;
+  const rawBody = req.body;
+  const rawEvent: string = rawBody?.event;
+  const rawPayment = rawBody?.payment;
 
-  if (!payment) return res.status(200).send('ok');
+  if (!rawPayment) return res.status(200).send('ok');
 
-  const externalRef: string = payment.externalReference || '';
+  const externalRef: string = rawPayment.externalReference || '';
 
-  // Este webhook trata apenas cobranças de eventos (prefixo "event:")
   if (!externalRef.startsWith('event:')) return res.status(200).send('ok');
 
   const parts = externalRef.split(':');
@@ -79,7 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (!eventoId || !inscricaoId) return res.status(200).send('ok');
 
-  // Valida token do Asaas via SHA256 — obrigatório, sem bypass por exceção
+  // Valida token via SHA256
   const eventoDoc = await db.collection('eventos').doc(eventoId).get();
   if (!eventoDoc.exists) return res.status(200).send('ok');
   const organizerId: string = eventoDoc.data()!.criado_por;
@@ -98,8 +89,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(401).send('Unauthorized');
   }
 
-  const paidEvents = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'];
-  const canceledEvents = ['PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUNDED'];
+  // Determina o gateway do organizador e parseia o evento
+  const orgDoc = await db.collection('users').doc(organizerId).get();
+  const gatewayType: GatewayType = orgDoc.exists ? (orgDoc.data()!.gateway?.type ?? 'asaas') : 'asaas';
+  const provider = createPaymentProvider(gatewayType, '', false);
+
+  const headers: Record<string, string> = {};
+  for (const [k, v] of Object.entries(req.headers)) {
+    if (typeof v === 'string') headers[k] = v;
+  }
+
+  const parsedEvent = provider.parseWebhookEvent(headers, rawBody);
+  if (!parsedEvent) return res.status(200).send('ok');
+
+  const paidTypes = ['payment_confirmed'];
+  const canceledTypes = ['payment_overdue', 'payment_deleted', 'payment_refunded'];
 
   try {
     let inscricaoRef = db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId);
@@ -107,7 +111,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let isDonation = false;
 
     if (!inscricaoDoc.exists) {
-      // Fallback: pode ser uma doação
       inscricaoRef = db.collection(`eventos/${eventoId}/doacoes`).doc(inscricaoId);
       inscricaoDoc = await inscricaoRef.get();
       isDonation = true;
@@ -116,43 +119,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const inscricao = inscricaoDoc.data()!;
 
-    if (paidEvents.includes(eventType)) {
-      const dataPagamento = payment.paymentDate
-        ? new Date(payment.paymentDate).toISOString()
-        : new Date().toISOString();
+    if (paidTypes.includes(parsedEvent.type)) {
+      const dataPagamento = parsedEvent.paymentDate ?? new Date().toISOString();
 
       if (isDonation) {
         await inscricaoRef.update({
           status: 'aprovada',
-          valor_pago: payment.value,
+          valor_pago: parsedEvent.value,
           data_pagamento: dataPagamento,
-          formaPagamento: mapBillingType(payment.billingType),
+          formaPagamento: parsedEvent.paymentMethod,
         });
       } else {
         await inscricaoRef.update({
           status: 'pago',
-          valor_pago: payment.value,
+          valor_pago: parsedEvent.value,
           data_pagamento: dataPagamento,
           validada_manual: true,
         });
       }
 
-      // Registra o pagamento automático
       const pagamentoId = `auto_${inscricaoId}`;
       await db.collection(`eventos/${eventoId}/pagamentos`).doc(pagamentoId).set({
         id: pagamentoId,
         inscricaoId,
         eventoId,
-        valor: payment.value,
+        valor: parsedEvent.value,
         status: 'pago',
-        metodo: mapBillingType(payment.billingType),
-        data_vencimento: payment.dueDate ?? dataPagamento,
+        metodo: parsedEvent.paymentMethod,
+        data_vencimento: dataPagamento,
         data_pagamento: dataPagamento,
         origem: 'automatico',
-        gateway_payment_id: payment.id,
+        gateway_payment_id: parsedEvent.paymentId,
       });
 
-      // E-mail de confirmação (não envia para doações — comunicação fica com o organizador)
       const recipientName = isDonation ? (inscricao.doadorNome ?? '') : (inscricao.nome ?? '');
       if (!isDonation && inscricao.email) {
         const evDoc = await db.collection('eventos').doc(eventoId).get();
@@ -195,7 +194,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    if (canceledEvents.includes(eventType)) {
+    if (canceledTypes.includes(parsedEvent.type)) {
       await inscricaoRef.update({ status: 'cancelada' });
     }
 
