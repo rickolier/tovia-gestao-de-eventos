@@ -1,149 +1,122 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Check, Crown } from 'lucide-react';
+
+const plans = [
+  {
+    name: 'Chinám',
+    sub: 'Plano 1 · חינם',
+    desc: 'Gratuito e permanente. Comece a organizar sem custo.',
+    highlight: false,
+    features: [
+      '1 evento ativo',
+      'Até 100 vagas por evento',
+      '1 Ingresso cadastrado',
+      'Página de inscrição pública',
+      'Relatórios básicos',
+    ],
+  },
+  {
+    name: 'Pétach',
+    sub: 'Plano 2 · פֶּתַח',
+    desc: 'A porta de entrada para eventos com cobrança.',
+    highlight: false,
+    features: [
+      '3 eventos ativos',
+      'Até 200 vagas por evento',
+      '3 Ingressos cadastrados',
+      'Financeiro manual',
+      'Painel de Doações',
+    ],
+  },
+  {
+    name: 'Koách',
+    sub: 'Plano 3 · כֹּחַ',
+    desc: 'Gestão completa: recursos, grupos, tarefas e equipe.',
+    highlight: false,
+    features: [
+      '5 eventos ativos',
+      'Até 500 vagas por evento',
+      '5 Ingressos cadastrados',
+      '5 membros de equipe',
+      'Grupos, quartos e mesas',
+      'Tarefas e equipe integrada',
+    ],
+  },
+  {
+    name: 'Chalém',
+    sub: 'Plano 4 · שָׁלֵם',
+    desc: 'O plano completo: inscritos ilimitados e pagamentos automáticos via BYOG.',
+    highlight: true,
+    features: [
+      '10 eventos ativos',
+      'Inscritos ilimitados',
+      '10 Ingressos cadastrados',
+      '10 membros de equipe',
+      'Pagamentos automáticos (BYOG)',
+      'PIX, boleto, cartão e recorrente',
+      'Tudo do Koách incluso',
+    ],
+  },
+];
 
 export function Planos() {
-  const [billing, setBilling] = useState<'mensal' | 'anual'>('mensal');
-
   return (
     <section id="planos" className="py-20 px-4 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Planos</span>
           <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
-            Escolha o plano ideal<br />para o seu evento
+            Do gratuito ao completo
           </h2>
-          <p className="text-muted-foreground mt-3 text-sm">Do gratuito ao completo — escolha o plano certo para o seu evento.</p>
-          <div className="inline-flex items-center gap-1 bg-muted rounded-2xl p-1 mt-6">
-            <button
-              onClick={() => setBilling('mensal')}
-              className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all', billing === 'mensal' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
-            >Mensal</button>
-            <button
-              onClick={() => setBilling('anual')}
-              className={cn('px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2', billing === 'anual' ? 'bg-white shadow text-foreground' : 'text-muted-foreground hover:text-foreground')}
+          <p className="text-muted-foreground mt-3 text-sm max-w-lg mx-auto">
+            Quatro planos para acompanhar o crescimento do seu evento. Comece grátis e evolua quando precisar.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
+          {plans.map(plan => (
+            <div
+              key={plan.name}
+              className={
+                plan.highlight
+                  ? 'rounded-3xl bg-primary p-7 flex flex-col gap-5 shadow-xl shadow-primary/25 relative overflow-hidden'
+                  : 'rounded-3xl border border-border bg-card p-7 flex flex-col gap-5'
+              }
             >
-              Anual
-              <span className="text-[10px] font-black bg-primary text-white px-2 py-0.5 rounded-full">2 meses grátis</span>
-            </button>
-          </div>
-        </div>
+              {plan.highlight && (
+                <>
+                  <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
+                  <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
+                </>
+              )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-
-          {/* Chinám */}
-          <div className="rounded-3xl border border-border bg-card p-7 flex flex-col gap-5">
-            <div>
-              <p className="text-3xl font-black text-foreground tracking-tight">Chinám</p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">Plano 1 · חינם</p>
-              <p className="text-sm text-muted-foreground mt-2">Gratuito e permanente. Comece a organizar sem custo.</p>
-              <div className="mt-3 h-px bg-border w-full" />
-            </div>
-            <div className="rounded-2xl bg-muted px-5 py-4">
-              <span className="text-3xl font-black text-foreground">Gratuito</span>
-              <p className="text-xs text-muted-foreground mt-1">Para sempre</p>
-            </div>
-            <ul className="flex-1 space-y-2.5 text-sm">
-              {['1 evento ativo', 'Até 100 vagas por evento', '1 Ingresso cadastrado', 'Página de inscrição pública', 'Relatórios básicos'].map((label, i) => (
-                <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-primary" /></span>
-                  <span className="text-foreground">{label}</span>
-                </li>
-              ))}
-            </ul>
-            <Link to="/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
-              Começar grátis
-            </Link>
-          </div>
-
-          {/* Pétach */}
-          <div className="rounded-3xl border-2 border-primary bg-card p-7 flex flex-col gap-5">
-            <div>
-              <p className="text-3xl font-black text-foreground tracking-tight">Pétach</p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">Plano 2 · פֶּתַח</p>
-              <p className="text-sm text-muted-foreground mt-2">A porta de entrada para eventos com cobrança.</p>
-              <div className="mt-3 h-px bg-border w-full" />
-            </div>
-            <div className="rounded-2xl bg-muted px-5 py-4">
-              <div className="flex items-end gap-1">
-                <span className="text-3xl font-black text-foreground">{billing === 'mensal' ? 'R$49' : 'R$40,83'}</span>
-                <span className="text-muted-foreground text-sm mb-0.5">/mês</span>
+              <div className={plan.highlight ? 'relative' : ''}>
+                <div className="flex items-center gap-2">
+                  <p className={`text-2xl font-black tracking-tight ${plan.highlight ? 'text-white' : 'text-foreground'}`}>
+                    {plan.name}
+                  </p>
+                  {plan.highlight && <Crown className="w-5 h-5 text-white/70" />}
+                </div>
+                <p className={`text-[10px] font-semibold uppercase tracking-widest mt-1 ${plan.highlight ? 'text-white/60' : 'text-muted-foreground'}`}>
+                  {plan.sub}
+                </p>
+                <p className={`text-sm mt-2 ${plan.highlight ? 'text-white/70' : 'text-muted-foreground'}`}>
+                  {plan.desc}
+                </p>
+                <div className={`mt-3 h-px w-full ${plan.highlight ? 'bg-white/20' : 'bg-border'}`} />
               </div>
-              {billing === 'anual' && <p className="text-xs text-muted-foreground mt-1"><span className="line-through">R$588</span>{' → '}<span className="font-bold text-foreground">R$490/ano</span></p>}
-            </div>
-            <ul className="flex-1 space-y-2.5 text-sm">
-              {['3 eventos ativos', 'Até 200 vagas por evento', '3 Ingressos cadastrados', 'Financeiro manual', 'Painel de Doações'].map((label, i) => (
-                <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-violet-50 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-primary" /></span>
-                  <span className="text-foreground">{label}</span>
-                </li>
-              ))}
-            </ul>
-            <Link to="/login?cadastro=true" className="block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-muted hover:bg-muted/70 text-foreground transition-all">
-              Assinar Pétach
-            </Link>
-          </div>
 
-          {/* Koách */}
-          <div className="rounded-3xl bg-primary p-7 flex flex-col gap-5 shadow-xl shadow-primary/25 relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
-            <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
-            <div className="relative">
-              <p className="text-3xl font-black text-white tracking-tight">Koách</p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-white/60 mt-1">Plano 3 · כֹּחַ</p>
-              <p className="text-sm text-white/70 mt-2">Gestão completa: recursos, grupos, tarefas e equipe.</p>
-              <div className="mt-3 h-px bg-white/20 w-full" />
+              <ul className={`flex-1 space-y-2.5 text-sm ${plan.highlight ? 'relative' : ''}`}>
+                {plan.features.map((label, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-white/20' : 'bg-violet-50'}`}>
+                      <Check className={`w-3 h-3 ${plan.highlight ? 'text-white' : 'text-primary'}`} />
+                    </span>
+                    <span className={plan.highlight ? 'text-white' : 'text-foreground'}>{label}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="relative rounded-2xl bg-white/15 border border-white/20 px-5 py-4">
-              <div className="flex items-end gap-1">
-                <span className="text-3xl font-black text-white">{billing === 'mensal' ? 'R$129' : 'R$107,50'}</span>
-                <span className="text-white/70 text-sm mb-0.5">/mês</span>
-              </div>
-              {billing === 'anual' && <p className="text-xs text-white/60 mt-1"><span className="line-through">R$1.548</span>{' → '}<span className="font-bold text-white">R$1.290/ano</span></p>}
-            </div>
-            <ul className="relative flex-1 space-y-1.5 text-sm">
-              {(['5 eventos ativos', 'Até 500 vagas por evento', '5 membros de equipe'] as string[]).map((label, i) => (
-                <li key={i} className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></span>
-                  <span className="text-white">{label}</span>
-                </li>
-              ))}
-              {[
-                { mod: 'Inscrições', items: ['5 Ingressos cadastrados', 'Múltiplas páginas de inscrição'] },
-                { mod: 'Financeiro', items: ['Financeiro manual', 'Painel de Doações'] },
-                { mod: 'Gestão', items: ['Grupos, quartos e mesas', 'Tarefas e equipe integrada'] },
-              ].map(({ mod, items }) => (
-                <li key={mod}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mt-2 mb-1">{mod}</p>
-                  <ul className="space-y-1">
-                    {items.map(item => (
-                      <li key={item} className="flex items-center gap-2.5 pl-1">
-                        <span className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Check className="w-2.5 h-2.5 text-white" /></span>
-                        <span className="text-white text-xs">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-            <Link to="/login?cadastro=true" className="relative block text-center text-sm font-black uppercase tracking-widest py-3.5 rounded-2xl bg-white text-primary hover:bg-white/90 transition-all shadow-lg">
-              Assinar Koách
-            </Link>
-          </div>
-
-        </div>
-
-        <div className="mt-8 rounded-2xl bg-sidebar px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
-          <div>
-            <p className="text-lg font-black text-white">🏢 Precisa de algo além do Koách?</p>
-            <p className="text-sm text-white/70 mt-1.5 max-w-lg">
-              Grandes conferências, múltiplas organizações, integrações específicas ou volume acima do padrão — se o Koách não for suficiente para o seu contexto, a gente conversa e monta algo sob medida para você.
-            </p>
-          </div>
-          <a href="mailto:suporte@toviaapp.com.br" className="shrink-0 bg-white hover:bg-white/90 text-primary text-sm font-black uppercase tracking-widest px-7 py-3.5 rounded-xl transition-all shadow-md whitespace-nowrap">
-            Fale com a gente →
-          </a>
+          ))}
         </div>
       </div>
     </section>
