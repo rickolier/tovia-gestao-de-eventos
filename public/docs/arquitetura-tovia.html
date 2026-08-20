@@ -245,7 +245,7 @@ const TREE = {
       { id:'api-routes', label:'API Routes', sub:'11 endpoints', color:'var(--primary)', children:[
         { id:'api-wh1', label:'/api/asaasWebhook', sub:'Planos', color:'var(--yellow)' },
         { id:'api-wh2', label:'/api/eventPaymentWebhook', sub:'Inscrições', color:'var(--yellow)' },
-        { id:'api-checkout', label:'/api/createCheckout', sub:'Cria cobrança Asaas', color:'var(--primary)' },
+        { id:'api-checkout', label:'/api/createCheckout', sub:'Cria cobrança no gateway', color:'var(--primary)' },
         { id:'api-billing', label:'/api/getBillingInfo', sub:'Info do organizador', color:'var(--primary)' },
         { id:'api-equipe', label:'/api/equipeJoin', sub:'Admin SDK', color:'var(--primary)' },
         { id:'api-email', label:'/api/sendEmail', sub:'Via Resend', color:'var(--purple)' },
@@ -297,9 +297,9 @@ const TREE = {
       { id:'auth-guard', label:'PrivateRoute', sub:'Guard de rota', color:'var(--yellow)' },
       { id:'auth-admin', label:'AdminRoute', sub:'isAdminEmail()', color:'var(--red)' },
     ]},
-    { id:'payments', label:'Pagamentos', sub:'Asaas BYOG', color:'var(--green)', children:[
+    { id:'payments', label:'Pagamentos', sub:'Multi-gateway BYOG', color:'var(--green)', children:[
       { id:'pay-byog', label:'BYOG Model', sub:'Organizador conecta gateway', color:'var(--green)' },
-      { id:'pay-methods', label:'Métodos', sub:'PIX, Boleto, Cartão', color:'var(--green)' },
+      { id:'pay-methods', label:'Métodos', sub:'PIX, Débito, Boleto, Cartão, Recorrente', color:'var(--green)' },
       { id:'pay-wh-plan', label:'Webhook Planos', sub:'asaasWebhook.ts', color:'var(--yellow)' },
       { id:'pay-wh-ev', label:'Webhook Eventos', sub:'eventPaymentWebhook.ts', color:'var(--yellow)' },
       { id:'pay-encrypt', label:'Chaves Criptografadas', sub:'AES-256', color:'var(--red)' },

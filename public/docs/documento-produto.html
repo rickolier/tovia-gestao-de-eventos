@@ -247,7 +247,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <p>O Tovia é uma plataforma SaaS de gestão de eventos voltada para o mercado brasileiro. Ele resolve um problema comum entre organizadores: a fragmentação de ferramentas — inscrições em um lugar, controle financeiro em outro, equipe coordenada pelo WhatsApp, lista de presença em planilha.</p>
     <p>O Tovia unifica tudo isso em um só lugar. O organizador cria o evento, configura ingressos, recebe inscrições, controla o financeiro, gerencia a equipe, faz check-in no dia e se comunica com participantes por email — sem sair da plataforma. Os participantes acessam suas inscrições via código OTP enviado por email, sem precisar criar conta.</p>
     <div class="callout">
-      <p><strong>Modelo BYOG (Bring Your Own Gateway):</strong> cada organizador conecta o próprio gateway Asaas e recebe diretamente dos participantes. O Tovia cuida da gestão — o dinheiro é inteiramente do organizador, sem intermediação da plataforma.</p>
+      <p><strong>Modelo BYOG (Bring Your Own Gateway):</strong> cada organizador conecta o próprio gateway de pagamento (Asaas, Stripe, Mercado Pago ou Pagar.me) e recebe diretamente dos participantes. O Tovia cuida da gestão — o dinheiro é inteiramente do organizador, sem intermediação da plataforma.</p>
     </div>
   </section>
   <div class="divider"></div>
@@ -301,7 +301,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-card"/></svg></div>
         <div class="feature-name">Pagamentos automáticos (BYOG)</div>
-        <div class="feature-desc">4 formas de pagamento via gateway próprio do organizador (Asaas): PIX, boleto, cartão de crédito e crédito recorrente. O recorrente cobra apenas a parcela do mês — ideal para inscrições de alto valor. Confirmação automática por webhook. Dinheiro vai direto para o organizador.</div>
+        <div class="feature-desc">7 formas de pagamento via gateway próprio do organizador: PIX, débito, boleto, boleto parcelado, cartão de crédito, crédito parcelado e crédito recorrente. O recorrente cobra apenas a parcela do mês — ideal para inscrições de alto valor. Confirmação automática por webhook. Dinheiro vai direto para o organizador.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg class="ico ico-lg" aria-hidden="true"><use href="#i-heart"/></svg></div>
@@ -393,7 +393,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <div class="section-label"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-store"/></svg> Negócio</div>
     <h2>Modelo de negócio</h2>
     <p>O Tovia opera como SaaS B2B: os clientes são os organizadores de eventos, que pagam uma assinatura mensal para acessar as funcionalidades da plataforma.</p>
-    <p>Os participantes pagam os ingressos diretamente ao organizador, via gateway próprio (Asaas). O dinheiro cai na conta do organizador — o Tovia é a plataforma de gestão, não o intermediador financeiro.</p>
+    <p>Os participantes pagam os ingressos diretamente ao organizador, via gateway próprio. O dinheiro cai na conta do organizador — o Tovia é a plataforma de gestão, não o intermediador financeiro.</p>
     <p>Essa arquitetura BYOG tem três vantagens estratégicas: o Tovia não assume risco regulatório de intermediação financeira, o organizador mantém controle total sobre sua relação financeira com participantes, e a implantação é mais rápida — sem aprovação de conta de pagamentos para o Tovia.</p>
     <div class="callout">
       <p><strong>Ciclo de receita:</strong> organizador descobre o Tovia → usa o plano gratuito (Chinám) → sente a necessidade de funcionalidades avançadas → converte para um plano pago. O plano gratuito é a porta de entrada, não o destino.</p>
@@ -489,7 +489,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-wallet"/></svg></div>
         <div>
           <div class="diferencial-name">BYOG — o organizador fica com o dinheiro</div>
-          <div class="diferencial-desc">Nenhuma taxa por transação. O organizador conecta o próprio Asaas e recebe diretamente, sem intermediação do Tovia.</div>
+          <div class="diferencial-desc">Nenhuma taxa por transação. O organizador conecta o próprio gateway e recebe diretamente, sem intermediação do Tovia.</div>
         </div>
       </div>
       <div class="diferencial-item">
@@ -510,7 +510,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="diferencial-icon"><svg class="ico ico-lg"><use href="#i-brazil"/></svg></div>
         <div>
           <div class="diferencial-name">Feito para o Brasil</div>
-          <div class="diferencial-desc">PIX, boleto, CPF/CNPJ, LGPD, Asaas — tudo pensado para o contexto regulatório e cultural brasileiro.</div>
+          <div class="diferencial-desc">PIX, boleto, CPF/CNPJ, LGPD, gateways brasileiros — tudo pensado para o contexto regulatório e cultural brasileiro.</div>
         </div>
       </div>
       <div class="diferencial-item">
@@ -581,8 +581,8 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
         <div class="stack-tag">DKIM + domínio</div>
       </div>
       <div class="stack-item">
-        <div><div class="stack-layer">Pagamentos</div><div class="stack-tech">Asaas (BYOG)</div></div>
-        <div class="stack-role">Gateway conectado pelo organizador, webhook de confirmação, PIX/boleto/cartão/crédito recorrente</div>
+        <div><div class="stack-layer">Pagamentos</div><div class="stack-tech">Multi-gateway (BYOG)</div></div>
+        <div class="stack-role">Gateway conectado pelo organizador (Asaas, Stripe, Mercado Pago, Pagar.me), webhook de confirmação, 7 métodos de pagamento</div>
         <div class="stack-tag">AES-256-GCM</div>
       </div>
       <div class="stack-item">
@@ -624,7 +624,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Chaves de gateway</div><div class="infra-stage-scale">Criptografia AES</div></div>
-        <div class="infra-tools">Chaves da API Asaas criptografadas com AES-256-GCM antes de persistir no Firestore. Descriptografadas apenas em serverless function no momento do uso. Chave-mestra fica apenas no ambiente Vercel.</div>
+        <div class="infra-tools">Chaves da API do gateway criptografadas com AES-256-GCM antes de persistir no Firestore. Descriptografadas apenas em serverless function no momento do uso. Chave-mestra fica apenas no ambiente Vercel.</div>
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Email</div><div class="infra-stage-scale">Resend + DKIM</div></div>
@@ -640,7 +640,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Testes automatizados</div><div class="infra-stage-scale">Vitest</div></div>
-        <div class="infra-tools">38 testes automatizados cobrindo os 3 endpoints mais críticos: webhook de pagamento de eventos (12 testes), webhook Asaas de assinaturas (14 testes) e checkout (12 testes). Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
+        <div class="infra-tools">38 testes automatizados cobrindo os 3 endpoints mais críticos: webhook de pagamento de eventos (12 testes), webhook de assinaturas (14 testes) e checkout (12 testes). Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">CI/CD</div><div class="infra-stage-scale">GitHub Actions</div></div>
@@ -701,7 +701,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li>Sympla e Eventbrite têm market share consolidado</li>
           <li>Custo de aquisição pode ser alto sem tração inicial</li>
           <li>Churn fácil se o organizador não escalar eventos</li>
-          <li>Mudanças na API do Asaas podem afetar o modelo BYOG</li>
+          <li>Mudanças na API dos gateways podem afetar o modelo BYOG</li>
           <li>Concorrente bem financiado pode copiar o modelo rapidamente</li>
         </ul>
       </div>
@@ -907,7 +907,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <ul class="roadmap-items">
             <li>Todos os módulos implementados: Inscrições, Financeiro e Gestão + suporte integrado</li>
             <li>Autenticação, Firestore com regras de segurança granulares</li>
-            <li>Pagamentos via BYOG (Asaas): PIX, boleto, cartão e crédito recorrente com webhook de confirmação</li>
+            <li>Pagamentos via BYOG (multi-gateway): PIX, débito, boleto, cartão e crédito recorrente com webhook de confirmação</li>
             <li>Email transacional via Resend com DKIM e templates HTML</li>
             <li>Check-in QR, formulários personalizados, cupons de desconto, calculadora financeira, doações direcionadas</li>
             <li>Equipe com convites, permissões por função e tarefas</li>

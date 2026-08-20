@@ -168,8 +168,8 @@
       <tr>
         <td>1</td>
         <td>
-          <div class="item-title">Webhook Asaas &mdash; status da inscrição</div>
-          <div class="item-desc">Código em <code>eventPaymentWebhook.ts</code> já atualiza <code>inscricoes/{id}.status</code> para "pago". Precisa validar em produção com pagamento real. URL do webhook deve estar correta no painel Asaas do organizador.</div>
+          <div class="item-title">Webhook gateway &mdash; status da inscrição</div>
+          <div class="item-desc">Código em <code>eventPaymentWebhook.ts</code> já atualiza <code>inscricoes/{id}.status</code> para "pago". Precisa validar em produção com pagamento real. URL do webhook deve estar correta no painel do gateway do organizador.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>A verificar</td>
       </tr>
@@ -234,17 +234,17 @@
       <tr><td>9</td><td><div class="item-title">Presença no Instagram</div><div class="item-desc">Campo <code>redes_social.instagram</code> existe no perfil do organizador, mas o Tovia não tem perfil próprio ou estratégia de conteúdo.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>10</td><td><div class="item-title">PWA</div><div class="item-desc"><strong>Verificação ago/2026:</strong> sem <code>manifest.json</code>, sem service worker. App não é instalável.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>11</td><td><div class="item-title">Publicar Tovia Mobile</div><div class="item-desc"><strong>Verificação ago/2026:</strong> projeto Expo existe em <code>mobile/app/</code> com componentes, hooks e contexts funcionais. Não publicado na App Store/Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>12</td><td><div class="item-title">Fluxo de pagamento em produção</div><div class="item-desc"><strong>Verificação ago/2026:</strong> código Asaas integrado, mas URL de sandbox (<code>sandbox.asaas.com</code>) ainda presente no código. Nunca validado end-to-end com dinheiro real.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>12</td><td><div class="item-title">Fluxo de pagamento em produção</div><div class="item-desc"><strong>Verificação ago/2026:</strong> abstração PaymentProvider implementada (multi-gateway). Nunca validado end-to-end com dinheiro real.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>13</td><td><div class="item-title">Plano de conversão beta → pagante</div><div class="item-desc">Estratégia definida no doc de produto, não implementada no sistema.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
     </table>
   </div>
 
   <!-- SPLIT ASAAS -->
   <div class="section">
-    <div class="section-title"><span class="badge badge-purple">Split</span> Migração BYOG → Subcontas Asaas</div>
+    <div class="section-title"><span class="badge badge-purple">Split</span> Migração BYOG → Subcontas (futuro)</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>41</td><td><div class="item-title">Contatar comercial Asaas</div><div class="item-desc">Ativar split de pagamentos e criação de subcontas via API na conta de produção. Pré-requisito para todos os itens desta seção.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>41</td><td><div class="item-title">Contatar comercial do gateway</div><div class="item-desc">Ativar split de pagamentos e criação de subcontas via API na conta de produção. Pré-requisito para todos os itens desta seção.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>42</td><td><div class="item-title">Endpoint createSubAccount.ts</div><div class="item-desc"><code>POST /v3/accounts</code>, rate limit 3/h, salvar <code>apiKey</code> + <code>walletId</code>. Onboarding com upload de documentos via <code>onboardingUrl</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>43</td><td><div class="item-title">Adaptar createEventCharge com split</div><div class="item-desc">Usar chave Tovia (conta principal) + campo <code>splits</code> com <code>walletId</code> do organizador. Split calculado sobre <code>netValue</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
       <tr><td>44</td><td><div class="item-title">Centralizar webhook + handler divergência</div><div class="item-desc">Token fixo Tovia, identificar por <code>externalReference</code>. Handler para <code>PAYMENT_SPLIT_DIVERGENCE_BLOCK</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
@@ -300,7 +300,7 @@
     <div class="section-title"><span class="badge badge-purple">NF</span> Notas Fiscais (pós-pagamentos)</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>28</td><td><div class="item-title">NF da taxa Tovia (automatizável)</div><div class="item-desc">Emitir NFS-e automaticamente a cada pagamento confirmado. Asaas suporta via <code>POST /v3/invoices</code> vinculado à cobrança, e <code>invoiceSettings</code> para assinaturas recorrentes. Requer configuração fiscal da conta Tovia: inscrição municipal, CNAE, série RPS, credenciais da prefeitura (<code>POST /v3/fiscalInfo</code>). Configuração única. <strong>Verificação ago/2026:</strong> nenhum código de NFS-e encontrado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>28</td><td><div class="item-title">NF da taxa Tovia (automatizável)</div><div class="item-desc">Emitir NFS-e automaticamente a cada pagamento confirmado. Gateway suporta via API de invoices vinculado à cobrança, e <code>invoiceSettings</code> para assinaturas recorrentes. Requer configuração fiscal da conta Tovia: inscrição municipal, CNAE, série RPS, credenciais da prefeitura (<code>POST /v3/fiscalInfo</code>). Configuração única. <strong>Verificação ago/2026:</strong> nenhum código de NFS-e encontrado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
       <tr><td>29</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Cada organizador configura dados fiscais próprios (CNAE, inscrição municipal, RPS, credenciais da prefeitura). Complexo: Simples Nacional vs Lucro Presumido têm regras PIS/COFINS diferentes. Sugestão: oferecer como feature premium (Koách/Chalém) com suporte guiado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
       <tr><td>30</td><td><div class="item-title">Webhooks de NF</div><div class="item-desc">8 eventos: INVOICE_CREATED, INVOICE_UPDATED, INVOICE_SYNCHRONIZED, INVOICE_AUTHORIZED, INVOICE_PROCESSING_CANCELLATION, INVOICE_CANCELED, INVOICE_CANCELLATION_DENIED, INVOICE_ERROR. Fluxo normal: CREATED → SYNCHRONIZED → AUTHORIZED. Salvar pdfUrl, xmlUrl, number, validationCode.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
       <tr><td>31</td><td><div class="item-title">Páginas de NF</div><div class="item-desc">3 componentes: ConfiguracaoFiscalTab (formulário fiscal), NotasFiscaisTab (lista de NFs), AdminNotasFiscaisTab (visão admin). 4 endpoints: setupFiscalConfig, listMunicipalServices, createInvoice, listInvoices.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
@@ -382,7 +382,7 @@
       <tr><td>&mdash;</td><td><div class="item-title done">Emails via Resend</div><div class="item-desc done">5 endpoints: sendEmail, auth, asaasWebhook, eventPaymentWebhook, cron</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
       <tr><td>&mdash;</td><td><div class="item-title done">Google GenAI</div><div class="item-desc done"><code>@google/genai</code> ^1.29.0 em <code>package.json</code></div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
       <tr><td>&mdash;</td><td><div class="item-title done">Tovia Mobile (código)</div><div class="item-desc done">Projeto Expo em <code>mobile/app/</code>: App.tsx, contexts, hooks, components, assets</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">GatewayTab (BYOG)</div><div class="item-desc done"><code>GatewayTab.tsx</code>: conectar/desconectar Asaas, validação de chave, ambiente sandbox</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
+      <tr><td>&mdash;</td><td><div class="item-title done">GatewayTab (BYOG)</div><div class="item-desc done"><code>GatewayTab.tsx</code>: conectar/desconectar gateway (multi-gateway BYOG), validação de chave, ambiente sandbox</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
       <tr><td>&mdash;</td><td><div class="item-title done">GATEWAY_ENCRYPTION_KEY</div><div class="item-desc done">Ativa como Firebase Secret. Usada em criptografia AES-256</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
       <tr><td>&mdash;</td><td><div class="item-title done">TypeScript strict mode</div><div class="item-desc done">Ativado em <code>tsconfig.json</code>, 33 erros corrigidos (jul/2026)</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
       <tr><td>&mdash;</td><td><div class="item-title done">Base de Conhecimento — 41 artigos</div><div class="item-desc done">8 artigos novos, campo <code>categoria</code>, filtros por seção, UI com agrupamento</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>

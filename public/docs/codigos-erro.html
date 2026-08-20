@@ -143,7 +143,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     <h2>Estrutura dos códigos</h2>
     <p>Todos os erros seguem o padrão <strong>TV-XXX</strong>, onde o prefixo indica a categoria e os dois últimos dígitos são sequenciais dentro da categoria.</p>
     <div class="callout">
-      <p><strong>Formato da resposta:</strong> todo erro retorna <code>{ "error": "mensagem" }</code>. Os webhooks (Asaas e eventPayment) retornam texto simples (<code>"ok"</code> ou <code>"Unauthorized"</code>) por convenção do gateway.</p>
+      <p><strong>Formato da resposta:</strong> todo erro retorna <code>{ "error": "mensagem" }</code>. Os webhooks de pagamento retornam texto simples (<code>"ok"</code> ou <code>"Unauthorized"</code>) por convenção do gateway.</p>
     </div>
     <div class="stats-row">
       <div class="stat-card">
@@ -217,7 +217,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <section id="webhooks">
     <div class="section-label">Webhooks</div>
     <h2>Webhooks de pagamento</h2>
-    <p>Recebem notificações do Asaas. Retornam texto simples (não JSON). Erros silenciosos retornam <code>200 ok</code> para evitar retentativas do gateway.</p>
+    <p>Recebem notificações do gateway de pagamento. Retornam texto simples (não JSON). Erros silenciosos retornam <code>200 ok</code> para evitar retentativas do gateway.</p>
 
     <div class="error-group">
       <div class="error-group-header">
@@ -328,7 +328,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <section id="checkout">
     <div class="section-label">Pagamentos</div>
     <h2>createCheckout</h2>
-    <p>Cria assinatura ou pagamento avulso no Asaas para ativação de plano.</p>
+    <p>Cria assinatura ou pagamento avulso no gateway para ativação de plano.</p>
     <div class="overflow-x">
     <table class="error-table">
       <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
@@ -349,37 +349,37 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
           <td><span class="error-code">TV-302</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Configuração de pagamento ausente.</span></td>
-          <td>Chave API do Asaas não configurada nem no Firestore nem em variáveis de ambiente</td>
+          <td>Chave API do gateway não configurada nem no Firestore nem em variáveis de ambiente</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-303</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Erro ao criar cliente no Asaas.</span></td>
-          <td>API do Asaas rejeitou a criação do cliente (CPF inválido, dados incompletos)</td>
+          <td>API do gateway rejeitou a criação do cliente (CPF inválido, dados incompletos)</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-304</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Erro ao criar assinatura no Asaas.</span></td>
-          <td>API do Asaas rejeitou a criação da assinatura mensal</td>
+          <td>API do gateway rejeitou a criação da assinatura mensal</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-305</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Assinatura criada, mas link de pagamento indisponível.</span></td>
-          <td>Assinatura criada com sucesso mas o Asaas não retornou paymentLink</td>
+          <td>Assinatura criada com sucesso mas o gateway não retornou paymentLink</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-306</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Erro ao criar pagamento no Asaas.</span></td>
-          <td>API do Asaas rejeitou a criação do pagamento avulso (anual)</td>
+          <td>API do gateway rejeitou a criação do pagamento avulso (anual)</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-307</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Pagamento criado, mas link indisponível.</span></td>
-          <td>Pagamento anual criado mas Asaas não retornou invoiceUrl</td>
+          <td>Pagamento anual criado mas o gateway não retornou invoiceUrl</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-308</span></td>
@@ -397,7 +397,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <section id="billing">
     <div class="section-label">Faturamento</div>
     <h2>getBillingInfo</h2>
-    <p>Retorna dados de assinatura, pagamentos e cliente do Asaas para o painel de faturamento.</p>
+    <p>Retorna dados de assinatura, pagamentos e cliente do gateway para o painel de faturamento.</p>
     <div class="overflow-x">
     <table class="error-table">
       <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa</th></tr></thead>
@@ -406,7 +406,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
           <td><span class="error-code">TV-400</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Configuração de pagamento ausente.</span></td>
-          <td>Chave API do Asaas não configurada</td>
+          <td>Chave API do gateway não configurada</td>
         </tr>
         <tr>
           <td><span class="error-code">TV-401</span></td>
@@ -424,7 +424,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
           <td><span class="error-code">TV-403</span></td>
           <td><span class="http-badge http-500">500</span></td>
           <td><span class="error-msg">Erro ao buscar dados de faturamento.</span></td>
-          <td>Erro ao comunicar com API do Asaas (timeout, chave inválida, etc.)</td>
+          <td>Erro ao comunicar com API do gateway (timeout, chave inválida, etc.)</td>
         </tr>
       </tbody>
     </table>

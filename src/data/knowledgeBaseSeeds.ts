@@ -759,12 +759,12 @@ O que você pode fazer no Chalém (além de tudo do Koách):
 • Os valores vão direto da inscrição para a sua conta bancária
 
 BYOG — Bring Your Own Gateway (Traga Seu Próprio Gateway):
-O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (Asaas) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
+O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
 
 Caminho recomendado no Chalém:
 
 ANTES DE QUALQUER EVENTO:
-1. Acesse Configurações → Gateway de Pagamento e conecte sua conta Asaas
+1. Acesse Configurações → Gateway de Pagamento e conecte sua conta do gateway
 2. Defina as taxas que você vai absorver ou repassar nos ingressos pagos
 
 PLANEJAMENTO DO EVENTO:
@@ -799,7 +799,7 @@ Dica: mesmo com pagamentos automáticos, mantenha um olho no painel financeiro. 
     visivel: false,
     titulo: 'Como acompanhar os pagamentos do evento com gateway?',
     resumo: 'Com o gateway conectado, os pagamentos são registrados automaticamente no Tovia. Veja onde acompanhar cada cobrança, o saldo da conta e o histórico completo.',
-    tags: ['gateway', 'asaas', 'pagamentos automáticos', 'financeiro', 'chalem'],
+    tags: ['gateway', 'pagamentos automáticos', 'financeiro', 'chalem'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Com o plano Chalém e o gateway de pagamento conectado, o Tovia passa a registrar automaticamente cada pagamento confirmado — sem precisar de lançamento manual. O dinheiro vai diretamente para a sua conta bancária vinculada ao gateway, e o Tovia cuida de organizar tudo por evento.
@@ -812,13 +812,13 @@ O painel também mostra: total arrecadado até o momento, inscrições pendentes
 
 ONDE ACOMPANHAR NO GATEWAY:
 
-Cada cobrança gerada pelo Tovia aparece na sua conta Asaas com uma referência única por evento. Lá você acompanha o saldo disponível para saque, o histórico de transferências para o seu banco e o status de cada cobrança emitida.
+Cada cobrança gerada pelo Tovia aparece na sua conta do gateway com uma referência única por evento. Lá você acompanha o saldo disponível para saque, o histórico de transferências para o seu banco e o status de cada cobrança emitida.
 
-O Asaas é a sua conta bancária do evento — o Tovia é o painel de gestão. Use o Tovia para entender os números do evento (quem pagou, quanto falta, qual a meta) e o Asaas para acompanhar saques e o saldo da conta.
+O gateway é a sua conta bancária do evento — o Tovia é o painel de gestão. Use o Tovia para entender os números do evento (quem pagou, quanto falta, qual a meta) e o painel do gateway para acompanhar saques e o saldo da conta.
 
-IMPORTANTE — NÚMEROS DO TOVIA vs. SALDO DO ASAAS:
+IMPORTANTE — NÚMEROS DO TOVIA vs. SALDO DO GATEWAY:
 
-Os valores exibidos no Tovia refletem apenas as cobranças geradas pelo próprio Tovia. Se você usa a mesma conta Asaas para receber pagamentos de outras fontes (vendas avulsas, outras plataformas, cobranças manuais feitas direto no painel do Asaas), esses valores NÃO aparecem no Tovia. Ou seja: o saldo e o extrato que você vê no Asaas podem ser maiores do que os números mostrados no painel financeiro do Tovia. O Tovia mostra a fatia do evento — o Asaas mostra o todo da sua conta.
+Os valores exibidos no Tovia refletem apenas as cobranças geradas pelo próprio Tovia. Se você usa a mesma conta do gateway para receber pagamentos de outras fontes (vendas avulsas, outras plataformas, cobranças manuais feitas direto no painel do gateway), esses valores NÃO aparecem no Tovia. Ou seja: o saldo e o extrato que você vê no gateway podem ser maiores do que os números mostrados no painel financeiro do Tovia. O Tovia mostra a fatia do evento — o gateway mostra o todo da sua conta.
 
 PAGAMENTOS PENDENTES:
 
@@ -849,7 +849,7 @@ QUAIS DADOS O TOVIA COLETA?
 Como organizador:
 • Nome, e-mail e senha (para criar sua conta)
 • Foto de perfil, bio, redes sociais e contatos (opcionais)
-• Dados fiscais como CNPJ e endereço (para cobrança de planos via Asaas)
+• Dados fiscais como CNPJ e endereço (para cobrança de planos)
 
 Como participante de eventos:
 • Nome, e-mail e telefone
@@ -860,7 +860,7 @@ COMO SEUS DADOS SÃO USADOS?
 Usamos seus dados exclusivamente para:
 • Operar a plataforma (criar conta, gerenciar eventos, processar inscrições)
 • Enviar comunicações transacionais (confirmação de cadastro, inscrição e pagamento)
-• Processar pagamentos de planos via gateway Asaas
+• Processar pagamentos de planos via gateway de pagamento
 • Cumprir obrigações legais (retenção fiscal)
 
 Não vendemos nem compartilhamos seus dados com terceiros para fins publicitários.
@@ -894,7 +894,7 @@ O QUE É EXCLUÍDO:
 
 O QUE PODE SER RETIDO:
 • Dados fiscais (CNPJ, endereço) por até 5 anos — obrigação tributária brasileira
-• Transações processadas pelo gateway Asaas — armazenadas pelo próprio Asaas
+• Transações processadas pelo gateway de pagamento — armazenadas pelo próprio gateway
 
 ATENÇÃO: a exclusão é irreversível. Recomendamos exportar seus dados (lista de participantes, relatórios financeiros) antes de solicitar.
 
@@ -1163,29 +1163,29 @@ A página de inscrição pública do Tovia é simples de usar no celular — o q
 
   {
     id: 'conectar-gateway',
-    slug: 'conectar-gateway-asaas',
+    slug: 'conectar-gateway',
     ordem: 36,
     categoria: 'financeiro',
     visivel: false,
-    titulo: 'Como conectar o gateway de pagamentos (Asaas)',
-    resumo: 'Passo a passo completo para criar sua conta Asaas, localizar a chave de API e conectar ao Tovia para receber pagamentos automaticamente.',
-    tags: ['financeiro', 'gateway', 'asaas', 'pagamentos', 'configuração', 'chalem'],
+    titulo: 'Como conectar o gateway de pagamentos',
+    resumo: 'Passo a passo completo para criar sua conta no gateway, localizar a chave de API e conectar ao Tovia para receber pagamentos automaticamente.',
+    tags: ['financeiro', 'gateway', 'pagamentos', 'configuração', 'chalem'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O gateway de pagamentos permite que seus participantes paguem online (Pix, cartão de crédito, boleto) e o dinheiro caia diretamente na sua conta — o Tovia nunca retém ou intermedia valores.
 
 REQUISITOS:
 • Plano Chalém ativo (R$299/mês)
-• Conta no Asaas (asaas.com) — pessoa física ou jurídica
+• Conta em um gateway de pagamento compatível (ex: Asaas, Stripe, Mercado Pago, Pagar.me) — pessoa física ou jurídica
 
-PASSO 1 — CRIAR CONTA NO ASAAS:
-Acesse asaas.com e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação (geralmente 1-2 dias úteis). Após aprovação, sua conta estará pronta para receber pagamentos.
+PASSO 1 — CRIAR CONTA NO GATEWAY:
+Acesse o site do gateway de sua escolha e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação. Após aprovação, sua conta estará pronta para receber pagamentos.
 
 PASSO 2 — LOCALIZAR SUA CHAVE DE API:
-No painel do Asaas, acesse: Minha Conta → Integrações → Chave de API. Copie a chave de Produção (não a de Sandbox). A chave começa com "$aact_" seguida de caracteres alfanuméricos.
+No painel do gateway, localize a seção de Integrações ou API e copie a chave de Produção (não a de Sandbox). Cada gateway tem sua própria formatação de chave.
 
 PASSO 3 — CONECTAR NO TOVIA:
-No Tovia, acesse: Configurações → Gateway de Pagamentos. Cole a chave de API no campo indicado e clique em "Validar chave". O Tovia vai verificar os dados da sua conta Asaas (nome, CPF/CNPJ, e-mail, cidade) — confirme que são seus e clique em "Confirmar e conectar".
+No Tovia, acesse: Configurações → Gateway de Pagamentos. Cole a chave de API no campo indicado e clique em "Validar chave". O Tovia vai verificar os dados da sua conta no gateway (nome, CPF/CNPJ) — o CPF/CNPJ precisa bater com o cadastro do seu perfil no Tovia. Confirme os dados e clique em "Confirmar e conectar".
 
 AMBIENTE SANDBOX vs. PRODUÇÃO:
 O Tovia oferece um toggle entre Sandbox (testes) e Produção (dinheiro real). Use o Sandbox para testar o fluxo de pagamento antes de publicar — pagamentos em sandbox não movimentam dinheiro real. Quando estiver confiante, mude para Produção.
@@ -1194,7 +1194,7 @@ SEGURANÇA:
 Sua chave de API é criptografada com AES-256 antes de ser armazenada. O Tovia nunca exibe a chave completa após a conexão — apenas os últimos caracteres. Se precisar trocar a chave, desconecte e conecte novamente.
 
 IMPORTANTE:
-O saldo dos pagamentos aparece diretamente no seu painel Asaas, não no Tovia. O Tovia registra as transações e atualiza o status de pagamento dos participantes automaticamente, mas o dinheiro é gerenciado inteiramente pelo Asaas.`,
+O saldo dos pagamentos aparece diretamente no painel do seu gateway, não no Tovia. O Tovia registra as transações e atualiza o status de pagamento dos participantes automaticamente, mas o dinheiro é gerenciado inteiramente pelo gateway.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -1493,7 +1493,7 @@ Você tem o direito de excluir sua conta a qualquer momento:
 A exclusão remove permanentemente: seu perfil, eventos, dados de participantes e configurações. Essa ação não pode ser desfeita. Certifique-se de exportar qualquer dado importante antes.
 
 GATEWAY DE PAGAMENTOS:
-Se você conectou um gateway (Asaas), sua chave de API é criptografada com AES-256. O Tovia nunca exibe a chave completa. Se suspeitar de comprometimento, desconecte o gateway imediatamente e gere uma nova chave no painel do Asaas.`,
+Se você conectou um gateway de pagamento, sua chave de API é criptografada com AES-256. O Tovia nunca exibe a chave completa. Se suspeitar de comprometimento, desconecte o gateway imediatamente e gere uma nova chave no painel do seu gateway.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -1509,12 +1509,12 @@ Se você conectou um gateway (Asaas), sua chave de API é criptografada com AES-
     tags: ['financeiro', 'pagamento', 'link', 'configuração', 'inscrição'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O Tovia permite que você inclua um link de pagamento externo no e-mail de confirmação de inscrição. Assim, o participante recebe o link logo após se inscrever e pode pagar pelo meio que você preferir — Sympla, PagSeguro, Asaas, Mercado Pago, Pix do banco, ou qualquer outro.
+    conteudo: `O Tovia permite que você inclua um link de pagamento externo no e-mail de confirmação de inscrição. Assim, o participante recebe o link logo após se inscrever e pode pagar pelo meio que você preferir — Sympla, PagSeguro, Mercado Pago, Pix do banco, ou qualquer outro.
 
 COMO CONFIGURAR:
 1. Acesse o evento no painel
 2. Na aba Visão Geral, localize o card "Link de pagamento"
-3. Clique em "Adicionar" e cole o link completo (ex: https://pay.asaas.com/seu-link)
+3. Clique em "Adicionar" e cole o link completo (ex: https://pay.exemplo.com/seu-link)
 4. Salve — pronto!
 
 ONDE O LINK APARECE:

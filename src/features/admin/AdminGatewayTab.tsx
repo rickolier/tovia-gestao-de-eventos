@@ -11,12 +11,14 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-const GATEWAY_METHODS = ['pix', 'boleto', 'credito', 'recorrente'];
+const GATEWAY_METHODS = ['pix', 'debit_card', 'boleto', 'boleto_installment', 'credit_card', 'credit_card_installment', 'credit_card_subscription'];
 const METHOD_LABELS: Record<string, string> = {
-  pix: 'PIX', boleto: 'Boleto', credito: 'Crédito', recorrente: 'Recorrente',
+  pix: 'PIX', debit_card: 'Débito', boleto: 'Boleto', boleto_installment: 'Boleto Parcelado',
+  credit_card: 'Crédito', credit_card_installment: 'Crédito Parcelado', credit_card_subscription: 'Recorrente',
 };
 const METHOD_COLORS: Record<string, string> = {
-  pix: '#16a34a', boleto: '#f59e0b', credito: '#3b82f6', recorrente: '#8b5cf6',
+  pix: '#16a34a', debit_card: '#06b6d4', boleto: '#f59e0b', boleto_installment: '#d97706',
+  credit_card: '#3b82f6', credit_card_installment: '#6366f1', credit_card_subscription: '#8b5cf6',
 };
 
 function fmt(v: number) {
@@ -175,7 +177,7 @@ export default function AdminGatewayTab() {
       <div>
         <h2 className="text-2xl font-black tracking-tight">Monitor de Gateway</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Volume de uso do Asaas BYOG, erros e status das cobranças no Tovia.
+          Volume de uso do gateway BYOG, erros e status das cobranças no Tovia.
         </p>
       </div>
 
@@ -334,7 +336,7 @@ export default function AdminGatewayTab() {
           <CardContent className="p-5">
             <p className="text-xs text-red-600 mb-4 font-medium">
               Essas cobranças foram iniciadas mas ainda não foram confirmadas ou canceladas. Podem indicar
-              falha de webhook, abandono do participante, ou erro na integração Asaas.
+              falha de webhook, abandono do participante, ou erro na integração do gateway.
             </p>
             <div className="space-y-2">
               {stale.slice(0, 10).map((c, i) => (

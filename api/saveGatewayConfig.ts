@@ -5,8 +5,8 @@ import type { AuthError } from './_types.js';
 import { saveGatewayConfigSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
 import { encrypt, genToken } from './_gateway-utils.js';
-import { createPaymentProvider } from './payments/factory.js';
-import type { GatewayType } from './payments/types.js';
+import { createPaymentProvider } from './_payments/factory.js';
+import type { GatewayType } from './_payments/types.js';
 
 // ── Rate limit: 10 requests per hour ────────────────────────────────────────
 const RATE_WINDOW_MS = 60 * 60 * 1000;

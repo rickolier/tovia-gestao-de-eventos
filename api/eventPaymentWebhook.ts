@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createHash, timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
-import { createPaymentProvider } from './payments/factory.js';
-import type { GatewayType } from './payments/types.js';
+import { createPaymentProvider } from './_payments/factory.js';
+import type { GatewayType } from './_payments/types.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';

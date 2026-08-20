@@ -64,8 +64,8 @@ const DOCS: Doc[] = [
   },
   {
     id: 'plano-split',
-    title: 'Plano de Pagamentos — Asaas Split',
-    description: 'Plano de implementação de pagamentos com Asaas: subcontas, split, segurança, comparativo BYOG vs Subcontas.',
+    title: 'Plano de Pagamentos — Gateway Split',
+    description: 'Plano de implementação de pagamentos: subcontas, split, segurança, comparativo BYOG vs Subcontas.',
     file: '/docs/plano-split-asaas.html',
     hasPreview: true,
     updatedAt: '2026-07-30',
