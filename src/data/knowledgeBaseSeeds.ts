@@ -759,12 +759,12 @@ O que você pode fazer no Chalém (além de tudo do Koách):
 • Os valores vão direto da inscrição para a sua conta bancária
 
 BYOG — Bring Your Own Gateway (Traga Seu Próprio Gateway):
-O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
+O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (hoje o Asaas; em breve Stripe, Mercado Pago e Pagar.me) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
 
 Caminho recomendado no Chalém:
 
 ANTES DE QUALQUER EVENTO:
-1. Acesse Configurações → Gateway de Pagamento e conecte sua conta do gateway
+1. Acesse Configurações → Gateway de Pagamento e conecte sua conta Asaas
 2. Defina as taxas que você vai absorver ou repassar nos ingressos pagos
 
 PLANEJAMENTO DO EVENTO:
@@ -1176,13 +1176,13 @@ A página de inscrição pública do Tovia é simples de usar no celular — o q
 
 REQUISITOS:
 • Plano Chalém ativo (R$299/mês)
-• Conta em um gateway de pagamento compatível (ex: Asaas, Stripe, Mercado Pago, Pagar.me) — pessoa física ou jurídica
+• Conta no Asaas (asaas.com) — pessoa física ou jurídica. Em breve: Stripe, Mercado Pago e Pagar.me.
 
-PASSO 1 — CRIAR CONTA NO GATEWAY:
-Acesse o site do gateway de sua escolha e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação. Após aprovação, sua conta estará pronta para receber pagamentos.
+PASSO 1 — CRIAR CONTA NO ASAAS:
+Acesse asaas.com e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação (geralmente 1-2 dias úteis). Após aprovação, sua conta estará pronta para receber pagamentos.
 
 PASSO 2 — LOCALIZAR SUA CHAVE DE API:
-No painel do gateway, localize a seção de Integrações ou API e copie a chave de Produção (não a de Sandbox). Cada gateway tem sua própria formatação de chave.
+No painel do Asaas, acesse: Minha Conta → Integrações → Chave de API. Copie a chave de Produção (não a de Sandbox). A chave começa com "$aact_" seguida de caracteres alfanuméricos.
 
 PASSO 3 — CONECTAR NO TOVIA:
 No Tovia, acesse: Configurações → Gateway de Pagamentos. Cole a chave de API no campo indicado e clique em "Validar chave". O Tovia vai verificar os dados da sua conta no gateway (nome, CPF/CNPJ) — o CPF/CNPJ precisa bater com o cadastro do seu perfil no Tovia. Confirme os dados e clique em "Confirmar e conectar".

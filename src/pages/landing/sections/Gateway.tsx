@@ -16,7 +16,7 @@ export function Gateway() {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {[
             { step: '1', title: 'Você cria o evento', desc: 'Configure inscrições, valores e formas de pagamento no Tovia.' },
-            { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no Asaas — o valor vai para você.' },
+            { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no gateway — o valor vai para você.' },
             { step: '3', title: 'Dinheiro na sua conta', desc: 'O valor cai na sua conta conforme as regras do seu gateway. Você tem controle total.' },
           ].map(item => (
             <div key={item.step} className="flex gap-4 items-start">
@@ -37,12 +37,15 @@ export function Gateway() {
             className="rounded-3xl p-6 text-white block hover:opacity-90 transition-opacity cursor-pointer"
             style={{ background: '#0033FF' }}
           >
-            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway parceiro</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway disponível</p>
             <div className="mb-4">
               <img src="/asaas-logo.svg" alt="Asaas" className="h-8 w-auto" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
+            </p>
+            <p className="text-xs text-white/50 mt-3">
+              Em breve: Stripe, Mercado Pago e Pagar.me.
             </p>
             <div className="mt-4 pt-4 border-t border-white/20">
               <p className="text-xs text-white/60">Clique e conheça mais sobre o Asaas</p>
@@ -65,7 +68,7 @@ export function Gateway() {
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
-              Taxas cobradas pelo Asaas diretamente ao organizador. Valores podem variar conforme o plano contratado com o Asaas.
+              Taxas cobradas pelo Asaas diretamente ao organizador. Valores podem variar conforme o plano contratado com o gateway.
             </p>
           </div>
         </div>
