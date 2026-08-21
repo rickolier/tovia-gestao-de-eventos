@@ -29,15 +29,15 @@ const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
 const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/v3';
 
 const MONTHLY_PRICES: Record<string, number> = {
-  petach: 49,
-  koach: 129,
-  chalem: 299,
+  petach: 5,
+  koach: 5,
+  chalem: 5,
 };
 
 const ANNUAL_PRICES: Record<string, number> = {
-  petach: 490,
-  koach: 1290,
-  chalem: 2990,
+  petach: 50,
+  koach: 50,
+  chalem: 50,
 };
 
 const PLAN_LABEL: Record<string, string> = {
