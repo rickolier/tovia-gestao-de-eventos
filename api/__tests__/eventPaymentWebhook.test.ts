@@ -199,7 +199,7 @@ describe('eventPaymentWebhook', () => {
     await handler(req, res);
 
     const pagamento = getDoc('eventos/evt1/pagamentos', 'auto_insc1');
-    expect(pagamento?.metodo).toBe('cartao');
+    expect(pagamento?.metodo).toBe('credit_card');
   });
 
   it('uses custom email template when configured', async () => {

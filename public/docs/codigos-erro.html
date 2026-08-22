@@ -115,11 +115,11 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       Catálogo completo de erros da API do Tovia. Cada erro tem um código público (TV-xxx), o HTTP status correspondente, a mensagem exibida ao usuário e a causa raiz para resolução rápida.
     </div>
     <div class="cover-meta">
-      <span>11 endpoints</span>
+      <span>13 endpoints</span>
       <span>·</span>
-      <span>47 respostas de erro mapeadas</span>
+      <span>62 respostas de erro mapeadas</span>
       <span>·</span>
-      <span>Atualizado em 23 jul 2026</span>
+      <span>Atualizado em 21 ago 2026</span>
     </div>
   </div>
 
@@ -134,6 +134,9 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       <a class="toc-item" href="#email"><span class="toc-num">7</span> Emails e verificação</a>
       <a class="toc-item" href="#equipe"><span class="toc-num">4</span> equipeJoin</a>
       <a class="toc-item" href="#inscricao"><span class="toc-num">8</span> Inscrição pública</a>
+      <a class="toc-item" href="#eventcharge"><span class="toc-num">9</span> createEventCharge</a>
+      <a class="toc-item" href="#gatewayconfig"><span class="toc-num">10</span> saveGatewayConfig</a>
+      <a class="toc-item" href="#testes"><span class="toc-num">11</span> Cobertura de testes</a>
     </div>
   </nav>
 
@@ -147,19 +150,19 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">47</div>
+        <div class="stat-value">62</div>
         <div class="stat-label">Erros mapeados</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">6</div>
+        <div class="stat-value">7</div>
         <div class="stat-label">HTTP Status</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">11</div>
+        <div class="stat-value">13</div>
         <div class="stat-label">Endpoints</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">38</div>
+        <div class="stat-value">97</div>
         <div class="stat-label">Testes cobrindo</div>
       </div>
     </div>
@@ -619,6 +622,185 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       </table>
       </div>
     </div>
+  </section>
+
+  <!-- ═══════════ 9. createEventCharge ═══════════ -->
+  <section class="section" id="eventcharge">
+    <h2>9. createEventCharge <span class="badge">POST /api/createEventCharge</span></h2>
+    <p>Cria cobrança para inscrição via gateway BYOG do organizador. Suporta PIX, boleto, cartão e recorrência.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-700</span></td>
+            <td><span class="http-badge http-429">429</span></td>
+            <td><span class="error-msg">Muitas tentativas. Aguarde alguns minutos.</span></td>
+            <td>Rate limit atingido — máx. 3 requisições por minuto por usuário</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-701</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Configuração de criptografia ausente.</span></td>
+            <td>Variável ENCRYPTION_KEY não definida no ambiente. Contactar sustentação</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-702</span></td>
+            <td><span class="http-badge http-404">404</span></td>
+            <td><span class="error-msg">Evento não encontrado.</span></td>
+            <td>O eventoId enviado não existe no Firestore</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-703</span></td>
+            <td><span class="http-badge http-404">404</span></td>
+            <td><span class="error-msg">Inscrição não encontrada neste evento.</span></td>
+            <td>inscricaoId não existe na subcoleção do evento</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-704</span></td>
+            <td><span class="http-badge http-409">409</span></td>
+            <td><span class="error-msg">Esta cobrança já foi processada.</span></td>
+            <td>Inscrição já tem status "pago" — evita duplicata</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-705</span></td>
+            <td><span class="http-badge http-404">404</span></td>
+            <td><span class="error-msg">Organizador não encontrado.</span></td>
+            <td>Documento organizer_public do criador do evento não existe</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-706</span></td>
+            <td><span class="http-badge http-422">422</span></td>
+            <td><span class="error-msg">Organizador não tem gateway configurado.</span></td>
+            <td>Organizador precisa conectar gateway em Configurações → Gateway antes de cobrar</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-707</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro ao criar cliente no gateway. Tente novamente.</span></td>
+            <td>Falha na API do gateway ao criar/buscar customer. Verificar API key e status do gateway</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-708</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Dados do cartão são obrigatórios para cobrança recorrente.</span></td>
+            <td>Método credit_card_subscription exige creditCard e cardHolder no payload</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-709</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro ao criar cobrança recorrente. Tente novamente.</span></td>
+            <td>Falha na API do gateway ao criar subscription</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-710</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro ao criar cobrança. Tente novamente.</span></td>
+            <td>Falha na API do gateway ao criar charge avulso (PIX, boleto ou cartão)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-711</span></td>
+            <td><span class="http-badge http-500">500</span></td>
+            <td><span class="error-msg">Erro ao processar cobrança. Tente novamente.</span></td>
+            <td>Erro inesperado genérico — verificar logs do servidor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 10. saveGatewayConfig ═══════════ -->
+  <section class="section" id="gatewayconfig">
+    <h2>10. saveGatewayConfig <span class="badge">POST /api/saveGatewayConfig</span></h2>
+    <p>Conecta e valida o gateway de pagamento do organizador. Fluxo em 2 etapas: <code>step=validate</code> (testa a chave) → <code>step=confirm</code> (salva e registra webhook).</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV001</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Chave de API não autorizada. Verifique se está correta e ativa.</span></td>
+            <td>Gateway retornou 401 — a API key está incorreta ou desativada</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV002</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Sua chave não tem permissão de acesso. Verifique no painel Asaas.</span></td>
+            <td>Gateway retornou 403 — chave sem permissão suficiente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV003</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Ambiente incorreto. Confira se selecionou Sandbox ou Produção.</span></td>
+            <td>Gateway retornou 404 — provavelmente chave de sandbox usada em produção ou vice-versa</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV004</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Muitas tentativas. Aguarde alguns minutos e tente novamente.</span></td>
+            <td>Gateway retornou 429 — rate limit do gateway excedido</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV005</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Erro temporário no gateway. Tente novamente em alguns minutos.</span></td>
+            <td>Gateway retornou 500 — erro interno do gateway</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV006</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Gateway temporariamente indisponível. Tente mais tarde.</span></td>
+            <td>Gateway retornou 503 — serviço fora do ar</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV007</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Falha de conexão. Verifique sua internet e tente novamente.</span></td>
+            <td>Erro de rede ou status HTTP não mapeado</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">—</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia.</span></td>
+            <td>Documento do organizador no Tovia difere do documento registrado na conta do gateway</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">—</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">step inválido. Use "validate" ou "confirm".</span></td>
+            <td>Parâmetro step não é "validate" nem "confirm"</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">—</span></td>
+            <td><span class="http-badge http-429">429</span></td>
+            <td><span class="error-msg">Muitas tentativas. Aguarde alguns minutos.</span></td>
+            <td>Rate limit do Tovia — máx. 5 requisições por minuto por usuário</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 11. Cobertura de testes ═══════════ -->
+  <section class="section" id="testes">
+    <h2>11. Cobertura de testes automatizados</h2>
+    <p>Suíte Vitest com 97 testes cobrindo schemas, validação, planos, pagamentos e webhooks.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Arquivo de teste</th><th>Testes</th><th>O que cobre</th></tr></thead>
+        <tbody>
+          <tr><td><code>schemas.test.ts</code></td><td>16</td><td>Validação Zod: checkoutSchema, saveGatewayConfigSchema, createEventChargeSchema, sendEmailSchema</td></tr>
+          <tr><td><code>payments.test.ts</code></td><td>15</td><td>Factory de providers, AsaasAdapter (7 métodos de pagamento, createCustomer, createCharge, parseWebhook)</td></tr>
+          <tr><td><code>validate.test.ts</code></td><td>4</td><td>Utilitário validateBody — input válido, inválido, undefined, primeira mensagem de erro</td></tr>
+          <tr><td><code>plan-limits.test.ts</code></td><td>25</td><td>4 planos (limites, módulos, preços R$5), getPlanConfig, legacy mapping, PLAN_ORDER, PLAN_RANK</td></tr>
+          <tr><td><code>createCheckout.test.ts</code></td><td>12</td><td>Billing da plataforma — validação, auth, Asaas customer/subscription/payment, rate limit</td></tr>
+          <tr><td><code>eventPaymentWebhook.test.ts</code></td><td>13</td><td>Webhook BYOG — auth por token hash, confirmação, doações, cancelamento, billing type mapping</td></tr>
+          <tr><td><code>helpers.ts</code></td><td>—</td><td>Mocks compartilhados: mockDb (Firestore in-memory), mockFetch, createMockReq/Res</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem;color:#666;font-size:0.85rem;">Executar: <code>npx vitest run</code> · Última execução: 21 ago 2026 — 97/97 passando</p>
   </section>
 
 </div>

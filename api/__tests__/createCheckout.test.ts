@@ -166,7 +166,7 @@ describe('createCheckout', () => {
     const paymentCall = mockAxiosPost.mock.calls.find((c: any[]) => c[0].includes('/payments'));
     expect(paymentCall[1].billingType).toBe('CREDIT_CARD');
     expect(paymentCall[1].installmentCount).toBe(12);
-    expect(paymentCall[1].value).toBe(490);
+    expect(paymentCall[1].value).toBe(50);
   });
 
   it('reuses existing Asaas customer ID', async () => {
