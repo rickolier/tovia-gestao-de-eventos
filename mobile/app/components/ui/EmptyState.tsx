@@ -11,8 +11,8 @@ interface EmptyStateProps {
 
 export default function EmptyState({
   message = 'Você ainda não tem eventos.',
-  cta = 'Criar em tovia.app',
-  ctaUrl = 'https://tovia.app',
+  cta = 'Criar em toviaapp.com.br',
+  ctaUrl = 'https://toviaapp.com.br',
 }: EmptyStateProps) {
   const { colors } = useTheme();
 

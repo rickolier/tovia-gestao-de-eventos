@@ -19,13 +19,13 @@ export default function AdminBlockScreen() {
           Acesso restrito
         </Text>
         <Text style={[Typography.body, { color: colors.mutedFg, textAlign: 'center', marginTop: 10, lineHeight: 22 }]}>
-          A Central Tovia é acessada exclusivamente via web. Utilize tovia.app no seu navegador.
+          A Central Tovia é acessada exclusivamente via web. Utilize toviaapp.com.br no seu navegador.
         </Text>
         <TouchableOpacity
           style={[styles.btn, { backgroundColor: colors.primary, marginTop: 32 }]}
-          onPress={() => Linking.openURL('https://tovia.app')}
+          onPress={() => Linking.openURL('https://toviaapp.com.br')}
         >
-          <Text style={styles.btnText}>Abrir tovia.app</Text>
+          <Text style={styles.btnText}>Abrir toviaapp.com.br</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => signOut(auth)} style={{ marginTop: 20 }}>
           <Text style={[Typography.body, { color: colors.mutedFg }]}>Sair</Text>

@@ -206,7 +206,7 @@ export default function FinanceiroScreen() {
           {loading ? (
             <FinanceiroSkeleton />
           ) : todos.length === 0 ? (
-            <EmptyState message="Nenhum evento ativo." cta="Criar em tovia.app" ctaUrl="https://tovia.app" />
+            <EmptyState message="Nenhum evento ativo." cta="Criar em toviaapp.com.br" ctaUrl="https://toviaapp.com.br" />
           ) : (
             <ScrollView
               contentContainerStyle={{ paddingTop: 8, paddingBottom: 32 }}

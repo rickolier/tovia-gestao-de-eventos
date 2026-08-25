@@ -354,8 +354,8 @@ function EventoSelector({ onSelect }: { onSelect: (id: string, nome: string) => 
     return (
       <EmptyState
         message="Nenhum evento ativo com tarefas."
-        cta="Criar em tovia.app"
-        ctaUrl="https://tovia.app"
+        cta="Criar em toviaapp.com.br"
+        ctaUrl="https://toviaapp.com.br"
       />
     );
   }

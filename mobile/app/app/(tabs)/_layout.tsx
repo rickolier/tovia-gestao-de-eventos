@@ -68,7 +68,7 @@ function CheckinFab({ focused, scheme, isTablet }: { focused: boolean; scheme: C
       >
         <CheckSquare size={iconSize} color="#fff" strokeWidth={2} />
       </Animated.View>
-      <Text style={{ fontSize: labelSize, fontWeight: '600', marginTop: 4, color: focused ? (colors.primary as string) : TAB_INACTIVE_COLOR }}>
+      <Text numberOfLines={1} style={{ fontSize: labelSize, fontWeight: '600', marginTop: 2, width: 70, textAlign: 'center', color: focused ? (colors.primary as string) : TAB_INACTIVE_COLOR }}>
         Check-in
       </Text>
     </View>
