@@ -78,7 +78,16 @@ export default function AdminLeadsTab() {
                   <td className="px-4 py-3 text-muted-foreground whitespace-nowrap text-xs">{formatDate(lead.criado_em)}</td>
                   <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{lead.nome}</td>
                   <td className="px-4 py-3 text-foreground">{lead.email}</td>
-                  <td className="px-4 py-3 text-foreground whitespace-nowrap">{lead.whatsapp}</td>
+                  <td className="px-4 py-3 text-foreground whitespace-nowrap">
+                    <a
+                      href={`https://wa.me/55${lead.whatsapp.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {lead.whatsapp}
+                    </a>
+                  </td>
                   <td className="px-4 py-3 text-foreground">{lead.instituicao}</td>
                   <td className="px-4 py-3 text-foreground whitespace-nowrap">{lead.tipo_evento}</td>
                   <td className="px-4 py-3 text-foreground whitespace-nowrap">{lead.tamanho_publico}</td>
