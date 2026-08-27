@@ -6,7 +6,7 @@ import { getBillingInfoSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
 
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
-const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/api/v3';
+const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/v3';
 
 async function requireAdmin(req: VercelRequest, res: VercelResponse) {
   let decoded;
