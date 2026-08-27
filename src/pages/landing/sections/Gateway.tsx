@@ -3,14 +3,23 @@ export function Gateway() {
   return (
     <section className="py-16 px-6 bg-white">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="text-xs font-semibold uppercase tracking-widest text-primary">Transparência</span>
-          <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
-            Seu dinheiro vai direto para você
-          </h2>
-          <p className="text-muted-foreground mt-3 text-sm max-w-xl mx-auto">
-            Você conecta seu próprio gateway de pagamento e o dinheiro das inscrições cai direto na sua conta. A plataforma cobra apenas a assinatura mensal.
-          </p>
+        <div className="grid md:grid-cols-2 gap-8 items-center mb-10">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">Transparência</span>
+            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+              Seu dinheiro vai direto para você
+            </h2>
+            <p className="text-muted-foreground mt-3 text-sm max-w-xl">
+              Você conecta seu próprio gateway de pagamento e o dinheiro das inscrições cai direto na sua conta. A plataforma cobra apenas a assinatura mensal.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-violet-50 border border-violet-100 p-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Modelo BYOG</p>
+            <p className="text-sm font-bold text-foreground mb-1">Bring Your Own Gateway</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Você conecta o seu gateway de pagamento e o Tovia gera as cobranças por ele. O dinheiro cai direto na sua conta, sem intermediários.
+            </p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
