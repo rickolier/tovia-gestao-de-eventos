@@ -37,7 +37,7 @@ const plans = [
     desc: 'Gestão completa: recursos, grupos, tarefas e equipe.',
     highlight: false,
     features: [
-      'Tudo do Pétach incluso',
+      'Tudo do plano Pétach incluso',
       '5 eventos ativos',
       'Até 500 vagas por evento',
       '5 Ingressos cadastrados',
@@ -53,7 +53,7 @@ const plans = [
     desc: 'O plano completo: inscritos ilimitados e pagamentos automáticos via BYOG.',
     highlight: true,
     features: [
-      'Tudo do Koách incluso',
+      'Tudo do plano Koách incluso',
       '10 eventos ativos',
       'Inscritos ilimitados',
       '10 Ingressos cadastrados',
