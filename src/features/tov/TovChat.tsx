@@ -182,7 +182,7 @@ export default function TovChat() {
         setDados(d => ({ ...d, nome_evento: val }));
         setTimeout(() => {
           addTovMessages(
-            [`"${val}" — ótimo nome!`, `Quantos **participantes** você espera? (máx. ${plan.maxAttendeesPerEvent} no seu plano)`],
+            [`"${val}" — ótimo nome!`, `Qual o número de **vagas** para esse evento? (máx. ${plan.maxAttendeesPerEvent === Infinity ? '∞' : plan.maxAttendeesPerEvent})`],
             'participantes',
             undefined,
             'number',

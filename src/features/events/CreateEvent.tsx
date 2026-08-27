@@ -247,9 +247,9 @@ export default function CreateEvent() {
       <div className="max-w-3xl mx-auto py-8 px-4 space-y-4">
         {/* Banner informativo de limites do plano */}
         {quantidadeEventosAtivos !== null && quantidadeEventosAtivos < plano.maxActiveEvents && (
-          <div className="rounded-2xl border border-violet-200 bg-violet-50 dark:bg-violet-950/30 dark:border-violet-800 px-5 py-4">
-            <p className="text-sm font-bold text-violet-800 dark:text-violet-300 mb-1">Limites do seu plano ({plano.name})</p>
-            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-violet-600 dark:text-violet-400">
+          <div className="rounded-2xl border-2 border-primary/30 bg-primary/10 dark:bg-violet-950/40 dark:border-violet-700 px-5 py-4">
+            <p className="text-sm font-bold text-foreground dark:text-violet-200 mb-1">Limites do seu plano ({plano.name})</p>
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground dark:text-violet-300">
               <span>Eventos ativos: {quantidadeEventosAtivos} de {plano.maxActiveEvents === Infinity ? '∞' : plano.maxActiveEvents}</span>
               <span>Inscritos por evento: até {plano.maxAttendeesPerEvent === Infinity ? 'ilimitado' : plano.maxAttendeesPerEvent.toLocaleString('pt-BR')}</span>
             </div>

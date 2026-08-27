@@ -18,7 +18,7 @@ export function CTAFinal() {
             to="/login?cadastro=true"
             className="inline-flex items-center gap-2 bg-primary text-white font-black px-10 py-4 rounded-2xl hover:bg-primary/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
           >
-            Criar conta grátis <ArrowRight className="w-4 h-4" />
+            Criar conta <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

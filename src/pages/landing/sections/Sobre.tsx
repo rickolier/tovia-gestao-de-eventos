@@ -32,7 +32,7 @@ export function Sobre() {
             Feito para igrejas, ministérios e organizações que precisam de uma ferramenta profissional, mas sem a complexidade de sistemas corporativos.
           </p>
           <Link to="/login?cadastro=true" className="inline-flex items-center gap-2 bg-primary text-white font-black px-6 py-3 rounded-xl hover:bg-primary/90 transition-all text-sm">
-            Criar minha conta <ArrowRight className="w-4 h-4" />
+            Criar conta <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

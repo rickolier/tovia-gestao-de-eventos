@@ -35,7 +35,7 @@ export function Navbar() {
             Entrar
           </Link>
           <Link to="/login?cadastro=true" className="bg-primary hover:bg-primary/90 text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-primary/20">
-            Criar meu evento
+            Criar conta
           </Link>
         </div>
 
@@ -58,7 +58,7 @@ export function Navbar() {
           ))}
           <div className="pt-2 flex flex-col gap-3">
             <Link to="/login" className="text-center text-sm font-semibold border border-border rounded-xl py-2.5">Entrar</Link>
-            <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar meu evento</Link>
+            <Link to="/login?cadastro=true" className="text-center bg-primary text-white text-sm font-black rounded-xl py-2.5">Criar conta</Link>
           </div>
         </div>
       )}

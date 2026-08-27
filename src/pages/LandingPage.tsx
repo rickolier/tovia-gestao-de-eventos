@@ -1,8 +1,6 @@
 import { Navbar } from './landing/sections/Navbar';
 import { Hero } from './landing/sections/Hero';
 import { ConsultarStrip } from './landing/sections/ConsultarStrip';
-import { Sobre } from './landing/sections/Sobre';
-import { Nome } from './landing/sections/Nome';
 import { AntesDoTovia } from './landing/sections/AntesDoTovia';
 import { MarqueeStrip } from './landing/sections/MarqueeStrip';
 import { ComoFunciona } from './landing/sections/ComoFunciona';
@@ -22,8 +20,6 @@ export default function LandingPage() {
       <Hero />
       <ConsultarStrip />
       <AntesDoTovia />
-      <Nome />
-      <Sobre />
       <MarqueeStrip />
       <ComoFunciona />
       <Funcionalidades />

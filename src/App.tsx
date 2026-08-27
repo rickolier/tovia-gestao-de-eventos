@@ -24,6 +24,7 @@ import ConsultarInscricao from './pages/ConsultarInscricao';
 import CheckinPage from './pages/CheckinPage';
 import CheckoutPlano from './pages/CheckoutPlano';
 import TovChat from '~/features/tov/TovChat';
+import SobrePage from './pages/SobrePage';
 import SatisfacaoPage from './pages/SatisfacaoPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
@@ -104,6 +105,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/leads" element={<CaptacaoPage />} />
+            <Route path="/sobre" element={<SobrePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/entrar" element={<Login />} />
             <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />

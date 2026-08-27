@@ -22,7 +22,7 @@ export function Hero() {
               to="/login?cadastro=true"
               className="inline-flex items-center justify-center gap-2 bg-white text-primary font-black px-8 py-4 rounded-2xl hover:bg-white/90 transition-all shadow-2xl text-sm uppercase tracking-widest"
             >
-              Criar meu evento <ArrowRight className="w-4 h-4" />
+              Criar conta <ArrowRight className="w-4 h-4" />
             </Link>
             <a
               href="#como-funciona"
