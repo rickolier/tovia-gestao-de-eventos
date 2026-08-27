@@ -6,7 +6,7 @@ export function Gateway() {
         <div className="grid md:grid-cols-2 gap-8 items-center mb-10">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Transparência</span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mt-3">
+            <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mt-3">
               Seu dinheiro vai direto para você
             </h2>
             <p className="text-muted-foreground mt-3 text-sm max-w-xl">
