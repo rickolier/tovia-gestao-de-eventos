@@ -19,6 +19,7 @@ import {
   GraduationCap,
   BookOpen,
   Users,
+  Sparkles,
 } from 'lucide-react';
 import { auth } from '~/services/firebase';
 import { signOut } from 'firebase/auth';
@@ -208,7 +209,7 @@ export default function Dashboard() {
           ))}
 
           {/* Criar Evento — destaque */}
-          <div className="pt-6 pb-2 px-3">
+          <div className="pt-6 pb-2 px-3 space-y-2">
             <Link to="/eventos/novo">
               <button
                 data-tour="criar-evento"
@@ -216,6 +217,14 @@ export default function Dashboard() {
               >
                 <Plus className="w-4 h-4" />
                 Criar Evento
+              </button>
+            </Link>
+            <Link to="/tov">
+              <button
+                className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 active:scale-[0.98] text-white font-bold text-sm rounded-2xl py-3 border border-white/10 hover:border-primary/50 transition-all"
+              >
+                <Sparkles className="w-4 h-4" />
+                Criar com Tov
               </button>
             </Link>
           </div>

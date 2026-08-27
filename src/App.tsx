@@ -23,6 +23,7 @@ import ArtigoBaseConhecimento from './pages/ArtigoBaseConhecimento';
 import ConsultarInscricao from './pages/ConsultarInscricao';
 import CheckinPage from './pages/CheckinPage';
 import CheckoutPlano from './pages/CheckoutPlano';
+import TovChat from '~/features/tov/TovChat';
 import SatisfacaoPage from './pages/SatisfacaoPage';
 import { Toaster } from '@/components/ui/sonner';
 import React from 'react';
@@ -116,6 +117,14 @@ export default function App() {
               element={
                 <PrivateRoute>
                   <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tov"
+              element={
+                <PrivateRoute>
+                  <TovChat />
                 </PrivateRoute>
               }
             />
