@@ -26,7 +26,7 @@ export function Sobre() {
             Uma plataforma feita para quem organiza com propósito
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Inscrições, pagamentos, check-in, equipe e financeiro — tudo centralizado em um só lugar. Sem planilhas, sem retrabalho, sem depender de grupos de WhatsApp.
+            Inscrições, pagamentos, check-in, equipe e financeiro, tudo em um só lugar. Sem planilhas, sem retrabalho, sem depender de grupos de WhatsApp.
           </p>
           <p className="text-muted-foreground leading-relaxed mb-8">
             Feito para igrejas, ministérios e organizações que precisam de uma ferramenta profissional, mas sem a complexidade de sistemas corporativos.

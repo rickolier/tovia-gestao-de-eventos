@@ -279,7 +279,7 @@ export default function Plans() {
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 pb-10">
           {selected === 'chinam' ? (
-            <p className="text-white/50 text-sm font-semibold">Este é o plano gratuito — sem pagamento necessário.</p>
+            <p className="text-white/50 text-sm font-semibold">Este é o plano gratuito. Nenhum pagamento necessário.</p>
           ) : (
             <Button
               onClick={handleConfirm}

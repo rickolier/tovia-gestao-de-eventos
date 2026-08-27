@@ -119,7 +119,7 @@ export default function VerificarEmail() {
                 ? 'Enviando...'
                 : resendCooldown > 0
                 ? `Reenviar em ${resendCooldown}s`
-                : 'Não recebi o link — reenviar'}
+                : 'Não recebi o link, reenviar'}
             </button>
           </div>
         </div>

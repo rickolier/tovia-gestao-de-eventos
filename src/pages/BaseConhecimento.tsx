@@ -443,7 +443,7 @@ export default function BaseConhecimento() {
             Base de Conhecimento <ToviaLogo className="h-7 md:h-9 w-auto text-primary" />
           </h1>
           <p className="text-white/60 text-sm max-w-lg mb-7">
-            Tutoriais, guias e explicações sobre cada funcionalidade da plataforma — para você organizar eventos incríveis.
+            Tutoriais, guias e explicações sobre cada funcionalidade da plataforma para você organizar eventos incríveis.
           </p>
 
           {/* Search bar */}
@@ -705,7 +705,7 @@ export default function BaseConhecimento() {
                         <textarea
                           value={ticketDesc}
                           onChange={e => setTicketDesc(e.target.value)}
-                          placeholder="Explique com detalhes — quanto mais informação, mais rápido te ajudamos."
+                          placeholder="Explique com detalhes: quanto mais informação, mais rápido te ajudamos."
                           required
                           rows={4}
                           className="w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"

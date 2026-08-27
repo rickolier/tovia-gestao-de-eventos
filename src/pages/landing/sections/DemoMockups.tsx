@@ -69,7 +69,7 @@ export function DemoMockups() {
                 </div>
                 <h3 className="text-2xl font-black text-white mb-4">Controle de Doações</h3>
                 <p className="text-white/65 leading-relaxed mb-6">
-                  Registre doações livres — que entram direto no caixa do evento — ou vincule uma doação a um inscrito para cobrir o valor da inscrição dele. Tudo visível, tudo rastreado, tudo no caixa do evento.
+                  Registre doações livres (que entram direto no caixa do evento) ou vincule uma doação a um inscrito para cobrir o valor da inscrição dele. Tudo visível, tudo rastreado.
                 </p>
                 <ul className="space-y-3">
                   {['Doações livres ou vinculadas a inscritos', 'Saldo atualizado automaticamente', 'Histórico e status por doação', '100% do valor vai para o seu caixa'].map(item => (

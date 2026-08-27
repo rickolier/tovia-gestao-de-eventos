@@ -13,7 +13,6 @@ import Plans from './pages/Plans';
 import AguardandoPagamento from './pages/AguardandoPagamento';
 import AdminDashboard from '~/features/admin/AdminDashboard';
 import LandingPage from './pages/LandingPage';
-import CaptacaoPage from './pages/CaptacaoPage';
 import PublicSalesPage, { PublicSalesPageByCodigo } from '~/features/public-pages/PublicSalesPage';
 import PublicOrganizerProfile, { PublicOrganizerProfileByCodigo } from '~/features/public-pages/PublicOrganizerProfile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -104,7 +103,6 @@ export default function App() {
         <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/leads" element={<CaptacaoPage />} />
             <Route path="/sobre" element={<SobrePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/entrar" element={<Login />} />

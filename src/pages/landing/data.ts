@@ -20,7 +20,7 @@ export const FEATURES = [
   {
     icon: Globe,
     title: 'Páginas de Inscrição',
-    description: 'Cada evento ganha uma página pública com link próprio — você cria, personaliza e compartilha em minutos, direto no Tovia.',
+    description: 'Cada evento ganha uma página pública com link próprio. Você cria, personaliza e compartilha em minutos, direto no Tovia.',
     color: 'bg-blue-50 text-blue-600',
   },
   {
@@ -58,7 +58,7 @@ export const DEMO_TABS = [
 export const FAQ_ITEMS = [
   {
     q: 'O que é o Tovia?',
-    a: 'O Tovia é uma plataforma de gestão de eventos — você cria páginas de inscrição, gerencia participantes, controla o financeiro, organiza sua equipe e faz o check-in no dia do evento, tudo centralizado em um único lugar.',
+    a: 'O Tovia é uma plataforma de gestão de eventos. Você cria páginas de inscrição, gerencia participantes, controla o financeiro, organiza sua equipe e faz o check-in no dia do evento, tudo em um único lugar.',
   },
   {
     q: 'Para quem é o Tovia?',
@@ -78,14 +78,14 @@ export const FAQ_ITEMS = [
   },
   {
     q: 'O que dá para controlar financeiramente?',
-    a: 'Entradas, saídas e doações por categoria, com saldo atualizado em tempo real. As doações podem ser livres — vão direto para o caixa — ou vinculadas a um inscrito, para cobrir o valor da inscrição dele. Tudo comparado com o custo previsto do evento.',
+    a: 'Entradas, saídas e doações por categoria, com saldo atualizado em tempo real. As doações podem ser livres (vão direto para o caixa) ou vinculadas a um inscrito, para cobrir o valor da inscrição dele. Tudo comparado com o custo previsto do evento.',
   },
   {
     q: 'Como funciona o check-in no dia do evento?',
-    a: 'Cada inscrito recebe um QR Code por e-mail na confirmação. Na entrada do evento, abra o Tovia em qualquer celular ou tablet e escaneie o código — a presença é confirmada na hora. Se o participante não tiver o QR Code, é possível buscar pelo nome.',
+    a: 'Cada inscrito recebe um QR Code por e-mail na confirmação. Na entrada do evento, abra o Tovia em qualquer celular ou tablet e escaneie o código. A presença é confirmada na hora. Se o participante não tiver o QR Code, é possível buscar pelo nome.',
   },
   {
     q: 'O Tovia tem um plano gratuito?',
-    a: 'Sim. O Plano 1 - Chinám é gratuito para sempre — cadastre-se agora e já comece a organizar. Você cria até 1 evento com até 100 participantes e 1 ingresso gratuito. Quando crescer, é só fazer upgrade para o Plano 2 - Pétach ou superior.',
+    a: 'Sim. O Plano 1, Chinám, é gratuito para sempre. Cadastre-se agora e já comece a organizar. Você cria até 1 evento com até 100 participantes e 1 ingresso gratuito. Quando crescer, é só fazer upgrade para o Pétach ou superior.',
   },
 ];

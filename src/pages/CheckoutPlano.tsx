@@ -276,7 +276,7 @@ export default function CheckoutPlano() {
                 <CreditCard className="w-5 h-5 text-primary shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-foreground">Cartão de crédito</p>
-                  <p className="text-xs text-muted-foreground">Assinatura mensal recorrente — você insere os dados do cartão na próxima etapa</p>
+                  <p className="text-xs text-muted-foreground">Assinatura mensal recorrente. Você insere os dados do cartão na próxima etapa.</p>
                 </div>
               </div>
             ) : paymentMethod === 'pix' ? (
@@ -291,7 +291,7 @@ export default function CheckoutPlano() {
               <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <CreditCard className="w-5 h-5 text-primary shrink-0" />
                 <div>
-                  <p className="text-sm font-bold text-foreground">Cartão de crédito — 12x sem juros</p>
+                  <p className="text-sm font-bold text-foreground">Cartão de crédito, 12x sem juros</p>
                   <p className="text-xs text-muted-foreground">Você insere os dados do cartão na próxima etapa</p>
                 </div>
               </div>
@@ -335,7 +335,7 @@ export default function CheckoutPlano() {
                   <p className="text-xs text-muted-foreground mt-0.5">{totalLabel} · cobrado anualmente</p>
                 )}
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {period === 'monthly' ? 'Assinatura mensal — cancele quando quiser' : 'Pagamento único anual'}
+                  {period === 'monthly' ? 'Assinatura mensal, cancele quando quiser' : 'Pagamento único anual'}
                 </p>
               </div>
 
@@ -363,7 +363,7 @@ export default function CheckoutPlano() {
 
           <div className="bg-muted/50 rounded-2xl p-4 text-xs text-muted-foreground space-y-1.5">
             <p className="font-semibold text-foreground">Pagamento seguro</p>
-            <p>Processado pelo Asaas — plataforma brasileira de pagamentos regulamentada pelo Banco Central.</p>
+            <p>Processado pelo Asaas, plataforma brasileira de pagamentos regulamentada pelo Banco Central.</p>
           </div>
         </div>
       </div>

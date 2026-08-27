@@ -17,16 +17,16 @@ export function FAQ() {
         </div>
         <div className="space-y-3">
           {FAQ_ITEMS.map((item, i) => (
-            <div key={i} className="border border-white/20 rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm">
+            <div key={i} className="rounded-2xl overflow-hidden bg-white shadow-sm">
               <button
-                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/10 transition-colors"
+                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors"
                 onClick={() => setOpen(open === i ? null : i)}
               >
-                <span className="font-semibold text-white text-sm pr-4">{item.q}</span>
-                <ChevronDown className={cn('w-4 h-4 text-white/60 shrink-0 transition-transform', open === i && 'rotate-180')} />
+                <span className="font-semibold text-foreground text-sm pr-4">{item.q}</span>
+                <ChevronDown className={cn('w-4 h-4 text-muted-foreground shrink-0 transition-transform', open === i && 'rotate-180')} />
               </button>
               {open === i && (
-                <div className="px-6 pb-5 text-sm text-white/80 leading-relaxed border-t border-white/20 pt-4">
+                <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border pt-4">
                   {item.a}
                 </div>
               )}

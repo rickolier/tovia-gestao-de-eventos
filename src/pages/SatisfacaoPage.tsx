@@ -126,7 +126,7 @@ export default function SatisfacaoPage() {
               </p>
 
               <Textarea
-                placeholder="Comentário opcional — o que podemos melhorar?"
+                placeholder="Comentário opcional: o que podemos melhorar?"
                 value={comentario}
                 onChange={e => setComentario(e.target.value)}
                 className="mb-4 resize-none"

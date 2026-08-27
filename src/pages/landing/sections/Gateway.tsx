@@ -9,14 +9,14 @@ export function Gateway() {
             Seu dinheiro vai direto para você
           </h2>
           <p className="text-muted-foreground mt-3 text-sm max-w-xl mx-auto">
-            Você conecta seu próprio gateway de pagamento — o dinheiro das inscrições cai direto na sua conta, com a plataforma cobrando apenas a assinatura mensal.
+            Você conecta seu próprio gateway de pagamento e o dinheiro das inscrições cai direto na sua conta. A plataforma cobra apenas a assinatura mensal.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {[
             { step: '1', title: 'Você cria o evento', desc: 'Configure inscrições, valores e formas de pagamento no Tovia.' },
-            { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no gateway — o valor vai para você.' },
+            { step: '2', title: 'Participante paga', desc: 'O pagamento é processado direto pela sua conta no gateway. O valor vai para você.' },
             { step: '3', title: 'Dinheiro na sua conta', desc: 'O valor cai na sua conta conforme as regras do seu gateway. Você tem controle total.' },
           ].map(item => (
             <div key={item.step} className="flex gap-4 items-start">
