@@ -7,8 +7,8 @@ export default function SobrePage() {
   return (
     <div className="min-h-screen bg-white font-sans text-foreground pt-16">
       <Navbar />
-      <Nome />
       <Sobre />
+      <Nome />
       <Footer />
     </div>
   );
