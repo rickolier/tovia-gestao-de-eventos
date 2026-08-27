@@ -12,6 +12,7 @@ const plans = [
       '1 Ingresso cadastrado',
       'Página de inscrição pública',
       'Relatórios básicos',
+      'App Tovia Mobile para check-in',
     ],
   },
   {
@@ -25,6 +26,7 @@ const plans = [
       '3 Ingressos cadastrados',
       'Financeiro manual',
       'Painel de Doações',
+      'App Tovia Mobile para check-in',
     ],
   },
   {
@@ -39,6 +41,7 @@ const plans = [
       '5 membros de equipe',
       'Grupos, quartos e mesas',
       'Tarefas e equipe integrada',
+      'App Tovia Mobile para check-in e tarefas',
     ],
   },
   {
@@ -54,6 +57,7 @@ const plans = [
       'Pagamentos automáticos (BYOG)',
       'PIX, boleto, cartão e recorrente',
       'Tudo do Koách incluso',
+      'App Tovia Mobile para check-in e tarefas',
     ],
   },
 ];
