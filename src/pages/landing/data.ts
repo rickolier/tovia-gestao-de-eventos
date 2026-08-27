@@ -1,13 +1,13 @@
 import { TicketIcon, DollarSign, Wallet, Globe, Users, BarChart3, Heart, CheckSquare } from 'lucide-react';
 
 export const NAV_LINKS = [
+  { label: 'Para quem é', href: '#para-quem' },
   { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Funcionalidades', href: '#funcionalidades' },
-  { label: 'Cadastro', href: '#planos' },
+  { label: 'Planos', href: '#planos' },
 ];
 
 export const NAV_ROUTE_LINKS: { label: string; to: string }[] = [
-  { label: 'Sobre', to: '/sobre' },
+  { label: 'Saiba mais', to: '/sobre' },
 ];
 
 export const FEATURES = [

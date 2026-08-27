@@ -24,7 +24,7 @@ const POSITIONS = [
 
 export function AntesDoTovia() {
   return (
-    <section className="py-16 px-6 bg-white overflow-hidden">
+    <section id="para-quem" className="py-16 px-6 bg-white overflow-hidden">
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           {/* Left — text */}
