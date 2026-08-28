@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { NAV_LINKS, NAV_ROUTE_LINKS } from '../data';
 import { ToviaLogo } from '../../../components/ToviaLogo';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border shadow-sm">
@@ -19,7 +21,7 @@ export function Navbar() {
 
         <nav className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map(link => (
-            <a key={link.label} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <a key={link.label} href={isLanding ? link.href : `/${link.href}`} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               {link.label}
             </a>
           ))}
@@ -47,7 +49,7 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border bg-white px-6 py-4 space-y-4">
           {NAV_LINKS.map(link => (
-            <a key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
+            <a key={link.label} href={isLanding ? link.href : `/${link.href}`} onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
               {link.label}
             </a>
           ))}
