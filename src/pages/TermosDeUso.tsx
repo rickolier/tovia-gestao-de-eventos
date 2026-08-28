@@ -35,7 +35,7 @@ export default function TermosDeUso() {
             Ao criar uma conta ou utilizar a plataforma <strong className="font-semibold text-gray-800">Tovia</strong>, você concorda com estes Termos de Uso. Se não concordar com qualquer parte destes termos, não utilize a plataforma.
           </p>
           <p>
-            A Tovia é operada pela <strong className="font-semibold text-gray-800">BIGLAB Solutions</strong>. Dúvidas podem ser enviadas para: <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a>
+            A Tovia é operada pela <strong className="font-semibold text-gray-800">BIGLAB STUDIO</strong>. Dúvidas podem ser enviadas para: <a href="mailto:suporte@toviaapp.com.br" className="text-primary hover:underline font-semibold">suporte@toviaapp.com.br</a>
           </p>
         </Section>
 
@@ -97,7 +97,7 @@ export default function TermosDeUso() {
 
         <Section title="7. Propriedade Intelectual">
           <p>
-            Todo o código, design, marca, logotipo e conteúdo da plataforma Tovia são de propriedade exclusiva da BIGLAB Solutions. É proibida a reprodução, cópia ou distribuição sem autorização expressa.
+            Todo o código, design, marca, logotipo e conteúdo da plataforma Tovia são de propriedade exclusiva da BIGLAB STUDIO. É proibida a reprodução, cópia ou distribuição sem autorização expressa.
           </p>
           <p>
             Os dados e conteúdos inseridos pelos organizadores (eventos, formulários, participantes) permanecem de propriedade do próprio organizador.

@@ -12,7 +12,7 @@ export function Footer() {
             suporte@toviaapp.com.br
           </a>
         </div>
-        <p className="text-foreground/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
+        <p className="text-foreground/30 text-xs">Todos os direitos reservados · BIGLAB STUDIO © 2026</p>
         <div className="flex items-center gap-6 flex-wrap justify-center">
           {NAV_LINKS.map(link => (
             <a key={link.label} href={link.href} className="text-xs text-foreground/40 hover:text-foreground/70 transition-colors">

@@ -1114,7 +1114,7 @@ const SecurityFooter: React.FC<{ organizador: UserProfile | null | undefined }> 
     <div className="bg-sidebar px-6 py-8 mt-0">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <ToviaLogo className="h-7 w-auto text-white" />
-        <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
+        <p className="text-white/30 text-xs">Todos os direitos reservados · BIGLAB STUDIO © 2026</p>
         <a href="/" className="text-xs text-white/40 hover:text-white/70 transition-colors">tovia.app</a>
       </div>
     </div>

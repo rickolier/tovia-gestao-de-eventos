@@ -374,7 +374,7 @@ export default function CheckoutPlano() {
             <ToviaLogo className="h-6 w-auto text-white" />
             <span className="text-xs text-white/40">Gestão de Eventos</span>
           </div>
-          <p className="text-white/30 text-xs text-center">Todos os direitos reservados · BIGLAB Solutions © 2026</p>
+          <p className="text-white/30 text-xs text-center">Todos os direitos reservados · BIGLAB STUDIO © 2026</p>
           <div className="flex items-center gap-5 flex-wrap justify-center">
             <a href="mailto:suporte@toviaapp.com.br" className="text-xs text-white/40 hover:text-white/70 transition-colors">suporte@toviaapp.com.br</a>
             <a href="/privacidade" className="text-xs text-white/40 hover:text-white/70 transition-colors">Privacidade</a>
