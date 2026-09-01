@@ -158,7 +158,7 @@
 <body>
 <div class="doc">
   <h1>Backlog Tovia</h1>
-  <p class="subtitle">Atualizado em 6 de agosto de 2026 &mdash; 54 itens, 5 fases &mdash; Verificado no codebase: 31 pendentes, 7 parciais, 15+ implementados</p>
+  <p class="subtitle">Atualizado em 1 de setembro de 2026 &mdash; 57 itens, 5 fases &mdash; Verificado no codebase: 34 pendentes, 7 parciais, 16+ implementados</p>
 
   <!-- BUGS -->
   <div class="section">
@@ -365,6 +365,46 @@
           <div class="item-desc"><strong>Verificação ago/2026:</strong> 414 linhas de código implementado em <code>src/features/events/tabs/EquipeTab.tsx</code> mas nunca importado em nenhum componente. Feature órfã — decidir: conectar ao EventDetail ou remover.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Órfão</td>
+      </tr>
+      <tr>
+        <td>53</td>
+        <td>
+          <div class="item-title done">npm audit no CI</div>
+          <div class="item-desc done"><strong>Set/2026:</strong> adicionado <code>npm audit --audit-level=high --omit=dev</code> ao pipeline CI. Build quebra se encontrar vulnerabilidade alta ou crítica em dependências de produção.</div>
+        </td>
+        <td><span class="status-dot dot-green"></span>Feito</td>
+      </tr>
+      <tr>
+        <td>54</td>
+        <td>
+          <div class="item-title">Scan de secrets no CI (gitleaks)</div>
+          <div class="item-desc">Adicionar <code>gitleaks</code> ou <code>trufflehog</code> ao pipeline CI para detectar chaves, tokens e senhas commitados acidentalmente. Hoje o <code>.gitignore</code> bloqueia <code>.env*</code>, mas não há varredura automática no histórico ou em novos commits.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>55</td>
+        <td>
+          <div class="item-title">Threat model documentado</div>
+          <div class="item-desc">Mapear ativos (dados de inscritos, chaves de gateway, dados financeiros), atacantes (usuário malicioso, MITM, organizador desonesto) e superfícies de ataque (APIs públicas, webhooks, páginas de inscrição). Gerar checklist de requisitos de segurança. Referência: post @2180_log no TikTok.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>56</td>
+        <td>
+          <div class="item-title">Testes de payload malicioso</div>
+          <div class="item-desc">Criar testes automatizados com payloads de XSS refletido e injection nos endpoints públicos (inscrição, página de vendas, webhook). Validação Zod já existe, mas sem testes que confirmem a rejeição de inputs maliciosos.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>57</td>
+        <td>
+          <div class="item-title">SAST (análise estática de segurança)</div>
+          <div class="item-desc">Adicionar ferramenta SAST ao CI (ex: <code>semgrep</code> ou <code>CodeQL</code> via GitHub Actions). Detecta padrões inseguros como eval(), innerHTML, uso direto de req.body sem validação.</div>
+        </td>
+        <td><span class="status-dot dot-gray"></span>Futuro</td>
       </tr>
     </table>
   </div>
