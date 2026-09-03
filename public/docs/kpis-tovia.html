@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia — KPIs e Métricas</title>
+<style>
+:root {
+  --g: #FF6B1A; --g-dark: #E55A08; --g-tint: #FFF4EE; --g-mid: #FFC9A8;
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da;
+  --green: #16a34a; --green-bg: #f0fdf4;
+  --red: #ef4444; --red-bg: #fef2f2;
+  --amber: #f59e0b; --amber-bg: #fffbeb;
+  --blue: #3b82f6; --blue-bg: #eff6ff;
+  --violet: #9B5FFF; --violet-bg: #f5f0ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface-0: #111110; --surface-1: #1c1c1a;
+    --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+    --border: #2e2e2a; --g-tint: #3D1506;
+    --green-bg: #052e16; --red-bg: #2a0a0a; --amber-bg: #1c1a08; --blue-bg: #0c1a2e; --violet-bg: #1a0e30;
+  }
+}
+:root[data-theme="dark"] {
+  --surface-0: #111110; --surface-1: #1c1c1a;
+  --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+  --border: #2e2e2a; --g-tint: #3D1506;
+  --green-bg: #052e16; --red-bg: #2a0a0a; --amber-bg: #1c1a08; --blue-bg: #0c1a2e; --violet-bg: #1a0e30;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface-0); color: var(--text-primary); font-size: 15px; line-height: 1.7; }
+a { color: var(--g); text-decoration: none; }
+.doc { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+.cover { border-bottom: 0.5px solid var(--border); padding-bottom: 40px; margin-bottom: 56px; }
+.cover-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--g-tint); color: var(--g); font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+.cover h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; letter-spacing: -1px; line-height: 1.1; color: var(--text-primary); margin-bottom: 16px; }
+.cover-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.75; max-width: 580px; margin-bottom: 28px; }
+.cover-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.cover-meta span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+
+.toc { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 56px; }
+.toc-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-item { font-size: 13px; color: var(--g); display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.toc-num { color: var(--text-muted); font-size: 11px; min-width: 18px; }
+
+section { margin-bottom: 64px; scroll-margin-top: 24px; }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--g); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+section h2 { font-size: 24px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 12px; line-height: 1.25; }
+section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+.divider { height: 0.5px; background: var(--border); margin: 48px 0; }
+
+/* Scorecard */
+.scorecard { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 20px; margin-bottom: 20px; }
+.sc-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; }
+.sc-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.sc-value { font-size: 28px; font-weight: 500; color: var(--text-primary); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.sc-value span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+.sc-sub { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 0.5px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+thead { background: var(--surface-1); }
+th { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); padding: 10px 14px; text-align: left; border-bottom: 0.5px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 0.5px solid var(--border); color: var(--text-secondary); }
+tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-1); }
+
+/* Status badges */
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 20px; }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-violet { background: var(--violet-bg); color: var(--violet); }
+
+/* Callouts */
+.callout { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 20px 0; border-left: 3px solid var(--g); }
+.callout-title { font-size: 12px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+.callout p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* Funnel */
+.funnel { display: flex; flex-direction: column; gap: 2px; margin: 20px 0; }
+.funnel-step { display: grid; grid-template-columns: 120px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; background: var(--surface-1); border: 0.5px solid var(--border); }
+.funnel-step:first-child { border-radius: 12px 12px 0 0; }
+.funnel-step:last-child { border-radius: 0 0 12px 12px; }
+.funnel-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.funnel-bar { height: 6px; border-radius: 3px; background: var(--border); position: relative; }
+.funnel-fill { height: 100%; border-radius: 3px; background: var(--g); }
+.funnel-pct { font-size: 12px; font-weight: 500; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
+
+/* OKR */
+.okr-block { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.okr-obj { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.okr-kr { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 0.5px solid var(--border); }
+.okr-kr:first-of-type { border-top: none; }
+.okr-kr-label { font-size: 13px; color: var(--text-secondary); flex: 1; }
+.okr-kr-target { font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+
+/* Finance */
+.fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+.fin-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; }
+.fin-card h4 { font-size: 12px; font-weight: 500; color: var(--text-primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.fin-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; }
+.fin-row-label { color: var(--text-secondary); }
+.fin-row-value { font-weight: 500; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.fin-total { border-top: 0.5px solid var(--border); margin-top: 6px; padding-top: 6px; }
+
+/* Phase cards */
+.phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
+.phase-card { border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; position: relative; }
+.phase-card.active { border-color: var(--g); border-width: 1.5px; }
+.phase-card .phase-tag { font-size: 9px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+.phase-card .phase-tag.current { color: var(--g); }
+.phase-card h4 { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.phase-card ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.phase-card li { font-size: 12px; color: var(--text-secondary); padding-left: 14px; position: relative; }
+.phase-card li::before { content: "→"; position: absolute; left: 0; color: var(--text-muted); font-size: 10px; }
+
+@media (max-width: 600px) {
+  .toc-grid { grid-template-columns: 1fr; }
+  .scorecard { grid-template-columns: 1fr 1fr; }
+  .fin-grid { grid-template-columns: 1fr; }
+  .funnel-step { grid-template-columns: 90px 1fr auto; }
+}
+
+@media print {
+  body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc { padding: 24px !important; max-width: 100% !important; }
+  * { color-scheme: light !important; }
+}
+@page { margin: 1.5cm; size: A4; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <!-- COVER -->
+  <header class="cover">
+    <div class="cover-eyebrow">📊 Métricas</div>
+    <h1>KPIs e Métricas</h1>
+    <p class="cover-sub">
+      Indicadores-chave de performance do Tovia, organizados por fase de maturidade.
+      North Star, funil de conversão, modelo financeiro e OKRs para a fase atual.
+    </p>
+    <div class="cover-meta">
+      <span>Setembro 2026</span>
+      <span>Fase 2 — Captação</span>
+      <span>0 clientes pagantes</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-title">Conteúdo</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#ns"><span class="toc-num">01</span> North Star</a>
+      <a class="toc-item" href="#scorecard"><span class="toc-num">02</span> Scorecard atual</a>
+      <a class="toc-item" href="#funil"><span class="toc-num">03</span> Funil de conversão</a>
+      <a class="toc-item" href="#l1"><span class="toc-num">04</span> Métricas L1</a>
+      <a class="toc-item" href="#financeiro"><span class="toc-num">05</span> Modelo financeiro</a>
+      <a class="toc-item" href="#okrs"><span class="toc-num">06</span> OKRs — Fase 2</a>
+      <a class="toc-item" href="#fases"><span class="toc-num">07</span> Metas por fase</a>
+      <a class="toc-item" href="#cadencia"><span class="toc-num">08</span> Cadência de revisão</a>
+    </div>
+  </nav>
+
+  <!-- 01 NORTH STAR -->
+  <section id="ns">
+    <div class="section-label">01 · North Star</div>
+    <h2>Eventos gerenciados ativamente por mês</h2>
+    <p>
+      A North Star do Tovia é o número de <strong>eventos com pelo menos 1 inscrição nos últimos 30 dias</strong>.
+      Esse indicador captura o valor central do produto: um organizador criou um evento, configurou e recebeu inscrições reais.
+      Ele é leading (prevê receita), acionável (depende de produto + captação) e compreensível.
+    </p>
+    <div class="callout">
+      <div class="callout-title">Por que não MRR como North Star?</div>
+      <p>
+        MRR é consequência, não causa. Um organizador que gerencia eventos ativamente vai pagar pelo plano.
+        Focar em eventos ativos garante que o produto entrega valor antes de cobrar por ele.
+        MRR é métrica L1 de Monetização — acompanhada, mas não a estrela guia.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 02 SCORECARD -->
+  <section id="scorecard">
+    <div class="section-label">02 · Scorecard</div>
+    <h2>Situação atual</h2>
+    <p>Snapshot de setembro/2026. Todos os indicadores começam do zero — a baseline será estabelecida nos primeiros 90 dias de captação.</p>
+
+    <div class="scorecard">
+      <div class="sc-card">
+        <div class="sc-label">North Star</div>
+        <div class="sc-value">0 <span>eventos/mês</span></div>
+        <div class="sc-sub">Meta Fase 2: 5 eventos</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">MRR</div>
+        <div class="sc-value">R$0</div>
+        <div class="sc-sub">Meta Fase 2: R$245+</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">Clientes pagantes</div>
+        <div class="sc-value">0</div>
+        <div class="sc-sub">Meta Fase 2: 5+</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">Chinám (free)</div>
+        <div class="sc-value">0</div>
+        <div class="sc-sub">Meta Fase 2: 15+</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 03 FUNIL -->
+  <section id="funil">
+    <div class="section-label">03 · Funil de Conversão</div>
+    <h2>De visitante a cliente pagante</h2>
+    <p>Funil-alvo para os primeiros 6 meses de captação. As taxas são benchmarks de SaaS B2B ajustados para o contexto brasileiro de eventos.</p>
+
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-name">Visitantes</div>
+        <div class="funnel-bar"><div class="funnel-fill" style="width:100%"></div></div>
+        <div class="funnel-pct">100%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-name">Cadastro (Chinám)</div>
+        <div class="funnel-bar"><div class="funnel-fill" style="width:30%"></div></div>
+        <div class="funnel-pct">5–8%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-name">Ativação</div>
+        <div class="funnel-bar"><div class="funnel-fill" style="width:18%"></div></div>
+        <div class="funnel-pct">60%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-name">Conversão (pago)</div>
+        <div class="funnel-bar"><div class="funnel-fill" style="width:5%"></div></div>
+        <div class="funnel-pct">15–20%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-name">Retenção M3</div>
+        <div class="funnel-bar"><div class="funnel-fill" style="width:3%"></div></div>
+        <div class="funnel-pct">70%+</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Ativação = primeiro evento com inscrição recebida</div>
+      <p>
+        O momento "aha" do Tovia é quando o organizador cria um evento, publica a página de vendas e recebe a primeira inscrição.
+        Isso valida que ele configurou gateway, ingresso e check-in. Tudo antes disso é setup.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 04 L1 -->
+  <section id="l1">
+    <div class="section-label">04 · Métricas L1</div>
+    <h2>Indicadores de saúde do produto</h2>
+    <p>Organizados pelo ciclo de vida do usuário. Cada métrica tem uma definição precisa e um alvo inicial.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Métrica</th>
+            <th>Definição</th>
+            <th>Alvo Fase 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">Aquisição</span></td>
+            <td>Cadastros/mês</td>
+            <td>Novos organizadores no plano Chinám</td>
+            <td>15+/mês</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">Aquisição</span></td>
+            <td>CAC</td>
+            <td>Custo por organizador que se cadastra</td>
+            <td>&lt; R$30</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Ativação</span></td>
+            <td>Taxa de ativação</td>
+            <td>% Chinám que cria evento + recebe 1 inscrição</td>
+            <td>60%</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Ativação</span></td>
+            <td>Tempo p/ ativação</td>
+            <td>Dias entre cadastro e primeira inscrição recebida</td>
+            <td>&lt; 7 dias</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-violet">Engajamento</span></td>
+            <td>WAU</td>
+            <td>Organizadores ativos por semana</td>
+            <td>10+</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-violet">Engajamento</span></td>
+            <td>Eventos criados/mês</td>
+            <td>Novos eventos publicados</td>
+            <td>8+</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">Retenção</span></td>
+            <td>Retenção M1</td>
+            <td>% dos organizadores ativos no mês seguinte ao cadastro</td>
+            <td>70%</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">Retenção</span></td>
+            <td>Churn mensal</td>
+            <td>% de clientes pagantes que cancelam por mês</td>
+            <td>&lt; 10%</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Monetização</span></td>
+            <td>MRR</td>
+            <td>Receita recorrente mensal</td>
+            <td>R$245+</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Monetização</span></td>
+            <td>Conversão free→pago</td>
+            <td>% Chinám que migra para plano pago</td>
+            <td>15–20%</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Monetização</span></td>
+            <td>ARPU</td>
+            <td>Receita média por organizador pagante</td>
+            <td>R$49+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 05 FINANCEIRO -->
+  <section id="financeiro">
+    <div class="section-label">05 · Modelo Financeiro</div>
+    <h2>Custos, break-even e projeções</h2>
+
+    <div class="fin-grid">
+      <div class="fin-card">
+        <h4>Custos fixos mensais</h4>
+        <div class="fin-row"><span class="fin-row-label">Firebase (Blaze)</span><span class="fin-row-value">~R$0*</span></div>
+        <div class="fin-row"><span class="fin-row-label">Vercel (Hobby)</span><span class="fin-row-value">R$0</span></div>
+        <div class="fin-row"><span class="fin-row-label">Domínio (rateio)</span><span class="fin-row-value">~R$8</span></div>
+        <div class="fin-row"><span class="fin-row-label">Sentry (Developer)</span><span class="fin-row-value">R$0</span></div>
+        <div class="fin-row"><span class="fin-row-label">Zoho Mail</span><span class="fin-row-value">~R$6</span></div>
+        <div class="fin-row"><span class="fin-row-label">Resend</span><span class="fin-row-value">R$0**</span></div>
+        <div class="fin-row fin-total"><span class="fin-row-label"><strong>Total fixo</strong></span><span class="fin-row-value"><strong>~R$14/mês</strong></span></div>
+        <div class="sc-sub" style="margin-top:8px">* Firebase cobra por uso; ~R$0 com poucos usuários<br>** Resend gratuito até 3.000 emails/mês</div>
+      </div>
+
+      <div class="fin-card">
+        <h4>Custos variáveis (por cliente)</h4>
+        <div class="fin-row"><span class="fin-row-label">Firebase (reads/writes)</span><span class="fin-row-value">R$2–5</span></div>
+        <div class="fin-row"><span class="fin-row-label">Resend (emails)</span><span class="fin-row-value">R$0–2</span></div>
+        <div class="fin-row"><span class="fin-row-label">Vercel (builds)</span><span class="fin-row-value">R$0–1</span></div>
+        <div class="fin-row"><span class="fin-row-label">Sentry (events)</span><span class="fin-row-value">R$0–2</span></div>
+        <div class="fin-row fin-total"><span class="fin-row-label"><strong>Total por cliente</strong></span><span class="fin-row-value"><strong>R$4–10</strong></span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Investimentos já realizados</div>
+      <p>
+        Claude Code (licença de desenvolvimento), domínio toviaapp.com.br (1 ano), Sentry, Zoho Mail.
+        Investimentos previstos: abertura de CNPJ (MEI/ME), produção de vídeos (base de conhecimento + marketing).
+      </p>
+    </div>
+
+    <h3 style="font-size:16px; font-weight:500; color:var(--text-primary); margin:28px 0 16px;">Cenários de break-even</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cenário</th>
+            <th>Mix de planos</th>
+            <th>MRR</th>
+            <th>Custo estimado</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-green">Mínimo</span></td>
+            <td>5× Pétach (R$49)</td>
+            <td>R$245</td>
+            <td>R$14 + 5×R$7 = R$49</td>
+            <td style="color:var(--green); font-weight:500;">+R$196</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">Confortável</span></td>
+            <td>8× Pétach + 2× Koách</td>
+            <td>R$650</td>
+            <td>R$14 + 10×R$7 = R$84</td>
+            <td style="color:var(--green); font-weight:500;">+R$566</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-violet">Fase 3</span></td>
+            <td>20× Pétach + 10× Koách + 3× Chalém</td>
+            <td>R$3.167</td>
+            <td>R$14 + 33×R$7 = R$245</td>
+            <td style="color:var(--green); font-weight:500;">+R$2.922</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Meta R$5k</span></td>
+            <td>30× Pétach + 15× Koách + 5× Chalém</td>
+            <td>R$4.905</td>
+            <td>R$14 + 50×R$7 = R$364</td>
+            <td style="color:var(--green); font-weight:500;">+R$4.541</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Margem bruta estimada: 85–93%</div>
+      <p>
+        O modelo SaaS do Tovia tem custo marginal muito baixo por cliente. A maior alavanca de custo será
+        marketing e aquisição (tempo do fundador, vídeos, eventualmente tráfego pago), não infraestrutura.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 06 OKRs -->
+  <section id="okrs">
+    <div class="section-label">06 · OKRs</div>
+    <h2>Objetivos — Fase 2 (Q4 2026)</h2>
+    <p>OKRs para os próximos 3 meses. Foco em validar o product-market fit com os primeiros clientes reais.</p>
+
+    <div class="okr-block">
+      <div class="okr-obj">
+        <span class="badge badge-green">O1</span>
+        Validar que organizadores conseguem gerenciar eventos no Tovia
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR1: 5 organizadores ativados (evento + inscrição real)</span>
+        <span class="okr-kr-target badge badge-blue">Meta: 5</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR2: Tempo médio até ativação &lt; 7 dias</span>
+        <span class="okr-kr-target badge badge-blue">Meta: &lt;7d</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR3: NPS dos primeiros 5 organizadores ≥ 8</span>
+        <span class="okr-kr-target badge badge-blue">Meta: ≥8</span>
+      </div>
+    </div>
+
+    <div class="okr-block">
+      <div class="okr-obj">
+        <span class="badge badge-amber">O2</span>
+        Construir o motor de aquisição orgânica
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR1: Landing page publicada com SEO básico</span>
+        <span class="okr-kr-target badge badge-blue">Sim/Não</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR2: 3 vídeos tutoriais publicados na base de conhecimento</span>
+        <span class="okr-kr-target badge badge-blue">Meta: 3</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR3: 15 cadastros orgânicos no plano Chinám</span>
+        <span class="okr-kr-target badge badge-blue">Meta: 15</span>
+      </div>
+    </div>
+
+    <div class="okr-block">
+      <div class="okr-obj">
+        <span class="badge badge-red">O3</span>
+        Converter valor em receita
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR1: 5 clientes pagantes (qualquer plano)</span>
+        <span class="okr-kr-target badge badge-blue">Meta: 5</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR2: MRR ≥ R$245 (break-even mínimo)</span>
+        <span class="okr-kr-target badge badge-blue">Meta: R$245</span>
+      </div>
+      <div class="okr-kr">
+        <span class="okr-kr-label">KR3: Formalização CNPJ concluída</span>
+        <span class="okr-kr-target badge badge-blue">Sim/Não</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 07 FASES -->
+  <section id="fases">
+    <div class="section-label">07 · Metas por Fase</div>
+    <h2>Evolução dos KPIs</h2>
+    <p>Cada fase tem indicadores-chave que definem a passagem para a próxima.</p>
+
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-tag">Fase 1 — MVP ✓</div>
+        <h4>Produto funcional</h4>
+        <ul>
+          <li>97 testes passando</li>
+          <li>62 códigos de erro</li>
+          <li>CI com lint + audit + test</li>
+          <li>Gateway Asaas integrado</li>
+          <li>BYOG implementado</li>
+        </ul>
+      </div>
+
+      <div class="phase-card active">
+        <div class="phase-tag current">Fase 2 — Captação (atual)</div>
+        <h4>Primeiros clientes</h4>
+        <ul>
+          <li>5 eventos ativos/mês</li>
+          <li>15 cadastros Chinám</li>
+          <li>5 clientes pagantes</li>
+          <li>MRR R$245+</li>
+          <li>CNPJ formalizado</li>
+        </ul>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-tag">Fase 3 — Escala</div>
+        <h4>R$5k MRR</h4>
+        <ul>
+          <li>50 eventos ativos/mês</li>
+          <li>50+ clientes pagantes</li>
+          <li>MRR R$5.000</li>
+          <li>Churn &lt; 5%</li>
+          <li>App mobile lançado</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Indicador</th>
+            <th>Fase 1 ✓</th>
+            <th>Fase 2 (atual)</th>
+            <th>Fase 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>North Star (eventos ativos/mês)</td><td>0</td><td>5</td><td>50</td></tr>
+          <tr><td>Organizadores cadastrados</td><td>0</td><td>20</td><td>100+</td></tr>
+          <tr><td>Clientes pagantes</td><td>0</td><td>5</td><td>50+</td></tr>
+          <tr><td>MRR</td><td>R$0</td><td>R$245</td><td>R$5.000</td></tr>
+          <tr><td>Churn mensal</td><td>—</td><td>&lt;10%</td><td>&lt;5%</td></tr>
+          <tr><td>Conversão free→pago</td><td>—</td><td>15%</td><td>25%</td></tr>
+          <tr><td>NPS</td><td>—</td><td>≥8</td><td>≥9</td></tr>
+          <tr><td>Testes automatizados</td><td>97</td><td>120+</td><td>200+</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 08 CADÊNCIA -->
+  <section id="cadencia">
+    <div class="section-label">08 · Cadência de Revisão</div>
+    <h2>Quando revisar cada métrica</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Frequência</th>
+            <th>O que revisar</th>
+            <th>Duração</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-green">Semanal</span></td>
+            <td>North Star, cadastros novos, eventos criados, bugs reportados</td>
+            <td>15 min</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">Mensal</span></td>
+            <td>Scorecard completo L1, MRR, churn, funil de conversão, custos</td>
+            <td>30 min</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-violet">Trimestral</span></td>
+            <td>OKRs (scoring), redefinição de metas, revisão de fase, SWOT</td>
+            <td>60 min</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Regra de ouro para founder solo</div>
+      <p>
+        Com 0 clientes, a revisão semanal é mais sobre disciplina do que dados.
+        O valor está em criar o hábito antes de ter volume. Quando os primeiros clientes chegarem,
+        o músculo de acompanhamento já estará treinado.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top: 0.5px solid var(--border); padding-top: 32px; margin-top: 48px;">
+    <p style="font-size: 11px; color: var(--text-muted); line-height: 1.7;">
+      <strong>Tovia</strong> — KPIs e Métricas · Documento interno<br>
+      Atualizado em setembro de 2026. Revisão recomendada: trimestral ou ao mudar de fase.<br>
+      Referências: Documento de Produto, Backlog Tovia, Gestão e Custos.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

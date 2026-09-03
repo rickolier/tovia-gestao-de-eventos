@@ -55,6 +55,14 @@ const DOCS: Doc[] = [
     updatedAt: '2026-07-24',
   },
   {
+    id: 'kpis',
+    title: 'KPIs e Métricas',
+    description: 'North Star, funil de conversão, modelo financeiro, OKRs e metas por fase. Scorecard completo.',
+    file: '/docs/kpis-tovia.html',
+    hasPreview: true,
+    updatedAt: '2026-09-03',
+  },
+  {
     id: 'backlog',
     title: 'Backlog Tovia',
     description: 'Pendências ativas: bugs, infra, produto, segurança, crescimento e escala. 29 itens pendentes.',
