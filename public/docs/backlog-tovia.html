@@ -132,7 +132,6 @@
   .dot-blue { background: var(--blue); }
   .dot-purple { background: var(--purple); }
   .dot-gray { background: var(--gray); }
-  .done { text-decoration: line-through; color: var(--muted); }
   .note {
     background: var(--primary-light);
     border: 1px solid var(--border);
@@ -158,28 +157,20 @@
 <body>
 <div class="doc">
   <h1>Backlog Tovia</h1>
-  <p class="subtitle">Atualizado em 1 de setembro de 2026 &mdash; 57 itens, 5 fases &mdash; Verificado no codebase: 34 pendentes, 7 parciais, 16+ implementados</p>
+  <p class="subtitle">Atualizado em 3 de setembro de 2026 &mdash; 37 itens pendentes &mdash; 97 testes passando (Vitest) &mdash; CI: lint + audit + test</p>
 
   <!-- BUGS -->
   <div class="section">
-    <div class="section-title"><span class="badge badge-red">Bugs</span> Correções urgentes</div>
+    <div class="section-title"><span class="badge badge-red">Bugs</span> Correções pendentes</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
       <tr>
         <td>1</td>
         <td>
-          <div class="item-title">Webhook gateway &mdash; status da inscrição</div>
-          <div class="item-desc">Código em <code>eventPaymentWebhook.ts</code> já atualiza <code>inscricoes/{id}.status</code> para "pago". Precisa validar em produção com pagamento real. URL do webhook deve estar correta no painel do gateway do organizador.</div>
+          <div class="item-title">Webhook gateway: validar em produção</div>
+          <div class="item-desc">Código em <code>eventPaymentWebhook.ts</code> funciona e tem testes (97 passando). Falta validar end-to-end com pagamento real de um organizador externo. URL do webhook precisa estar correta no painel do gateway do organizador.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>A verificar</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>
-          <div class="item-title done">TermosDeUso &mdash; "plano Start" → "Chinám"</div>
-          <div class="item-desc done">Seção 4 mencionava nome antigo do plano gratuito.</div>
-        </td>
-        <td><span class="status-dot dot-green"></span>Corrigido</td>
       </tr>
     </table>
   </div>
@@ -190,34 +181,26 @@
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
       <tr>
+        <td>2</td>
+        <td>
+          <div class="item-title">Migrar Cloud Functions para Vercel</div>
+          <div class="item-desc">Código duplicado em <code>api/</code> (Vercel) e <code>functions/</code> (Firebase). Falta remover duplicatas do Firebase e confirmar que as versões Vercel são as ativas em produção.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>Parcial</td>
+      </tr>
+      <tr>
         <td>3</td>
         <td>
-          <div class="item-title">Migrar 6 Cloud Functions para Vercel</div>
-          <div class="item-desc">createEventCharge, suspendUser, validateBillingKey, saveGatewayConfig, uploadProfilePhoto, uploadEventCover. <strong>Verificação ago/2026:</strong> código já existe duplicado em <code>api/</code> (Vercel) e <code>functions/</code> (Firebase). Migração em andamento — falta remover duplicatas do Firebase e confirmar que as versões Vercel são as ativas.</div>
+          <div class="item-title">Firestore Rules para gateway</div>
+          <div class="item-desc">Regras básicas existem para <code>organizer_public/{userId}</code>. Faltam proteções específicas para campos sensíveis (<code>encrypted_api_key</code>, <code>encrypted_webhook_token</code>). Segurança delegada ao Admin SDK por ora.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Parcial</td>
       </tr>
       <tr>
         <td>4</td>
         <td>
-          <div class="item-title done">Setar GATEWAY_ENCRYPTION_KEY</div>
-          <div class="item-desc done">Firebase Secrets, 32 bytes hex. <strong>Verificação ago/2026:</strong> ativa como secret do Firebase Cloud Functions. Referenciada em <code>functions/src/index.ts</code> e <code>api/_gateway-utils.ts</code>.</div>
-        </td>
-        <td><span class="status-dot dot-green"></span>Feito</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>
-          <div class="item-title">Firestore Rules para gateway</div>
-          <div class="item-desc">Regras básicas existem em <code>firestore.rules</code> para <code>organizer_public/{userId}</code> com <code>gateway_connected</code>. <strong>Verificação ago/2026:</strong> faltam proteções específicas para campos sensíveis (<code>encrypted_api_key</code>, <code>encrypted_webhook_token</code>). Segurança delegada ao Admin SDK por ora.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Parcial</td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>
           <div class="item-title">Resend API keys instáveis</div>
-          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes, sem solução definitiva. Resend integrado em <code>api/sendEmail.ts</code>, <code>api/auth.ts</code>, <code>api/asaasWebhook.ts</code>, <code>api/eventPaymentWebhook.ts</code>, <code>api/cron.ts</code>.</div>
+          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes, sem solução definitiva. Resend integrado em 5 endpoints da API.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Recorrente</td>
       </tr>
@@ -226,34 +209,16 @@
 
   <!-- FASE 2 -->
   <div class="section">
-    <div class="section-title"><span class="badge badge-green">Fase 2</span> Captação</div>
+    <div class="section-title"><span class="badge badge-green">Fase 2</span> Captação (fase atual)</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>7</td><td><div class="item-title">Landing page com SEO</div><div class="item-desc"><strong>Verificação ago/2026:</strong> tem <code>&lt;title&gt;</code> e <code>&lt;meta description&gt;</code> básicos. Faltam: Open Graph tags (og:title, og:description, og:image), <code>sitemap.xml</code>, <code>robots.txt</code>, Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>8</td><td><div class="item-title">Beta fechado com 10 organizadores</div><div class="item-desc">Primeiros usuários reais testando a plataforma. <strong>Verificação ago/2026:</strong> zero usuários ativos.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>9</td><td><div class="item-title">Presença no Instagram</div><div class="item-desc">Campo <code>redes_social.instagram</code> existe no perfil do organizador, mas o Tovia não tem perfil próprio ou estratégia de conteúdo.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>10</td><td><div class="item-title">PWA</div><div class="item-desc"><strong>Verificação ago/2026:</strong> sem <code>manifest.json</code>, sem service worker. App não é instalável.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>11</td><td><div class="item-title">Publicar Tovia Mobile</div><div class="item-desc"><strong>Verificação ago/2026:</strong> projeto Expo existe em <code>mobile/app/</code> com componentes, hooks e contexts funcionais. Não publicado na App Store/Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>12</td><td><div class="item-title">Fluxo de pagamento em produção</div><div class="item-desc"><strong>Verificação ago/2026:</strong> abstração PaymentProvider implementada (multi-gateway). Nunca validado end-to-end com dinheiro real.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>13</td><td><div class="item-title">Plano de conversão beta → pagante</div><div class="item-desc">Estratégia definida no doc de produto, não implementada no sistema.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-    </table>
-  </div>
-
-  <!-- SPLIT ASAAS -->
-  <div class="section">
-    <div class="section-title"><span class="badge badge-purple">Split</span> Migração BYOG → Subcontas (futuro)</div>
-    <table>
-      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>41</td><td><div class="item-title">Contatar comercial do gateway</div><div class="item-desc">Ativar split de pagamentos e criação de subcontas via API na conta de produção. Pré-requisito para todos os itens desta seção.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>42</td><td><div class="item-title">Endpoint createSubAccount.ts</div><div class="item-desc"><code>POST /v3/accounts</code>, rate limit 3/h, salvar <code>apiKey</code> + <code>walletId</code>. Onboarding com upload de documentos via <code>onboardingUrl</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>43</td><td><div class="item-title">Adaptar createEventCharge com split</div><div class="item-desc">Usar chave Tovia (conta principal) + campo <code>splits</code> com <code>walletId</code> do organizador. Split calculado sobre <code>netValue</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>44</td><td><div class="item-title">Centralizar webhook + handler divergência</div><div class="item-desc">Token fixo Tovia, identificar por <code>externalReference</code>. Handler para <code>PAYMENT_SPLIT_DIVERGENCE_BLOCK</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>45</td><td><div class="item-title">ContaRecebimentoTab.tsx</div><div class="item-desc">Substituir GatewayTab. Formulário: CNPJ, dados bancários, tipo empresa, CEP auto. Estados: não configurado, pendente, ativo, rejeitado.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>46</td><td><div class="item-title">FinanceiroOrganizadorTab</div><div class="item-desc">Saldo disponível, a receber, total recebido. Lista de transferências e extrato de cobranças.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>47</td><td><div class="item-title">autoPayments para todos os planos</div><div class="item-desc"><strong>Verificação ago/2026:</strong> hoje apenas Chalém tem <code>autoPayments: true</code> em <code>plan-limits.ts</code>. Precisa habilitar para chinam/petach/koach.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>48</td><td><div class="item-title">AdminPagamentosTab (renomear AdminGateway)</div><div class="item-desc">Volume total, receita Tovia, taxa por transação. Coluna "Taxa Tovia" por transação.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>49</td><td><div class="item-title">Modelo de taxas por plano</div><div class="item-desc"><code>config/platform_fees</code> no Firestore: Chinám 10%, Pétach 7%, Koách 5%, Chalém 3%. Lido pela Cloud Function, nunca exposto ao client.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>50</td><td><div class="item-title">Limpeza pós-migração</div><div class="item-desc">Deletar <code>GatewayTab.tsx</code>, <code>gateway-utils.ts</code>, <code>saveGatewayConfig</code>. Remover <code>GatewayConfig</code> do types.ts. Limpar campos Firestore (<code>gateway</code>, <code>gateway_connected</code>). Detalhado em <code>plano-split-asaas.html</code>.</div></td><td><span class="status-dot dot-gray"></span>Pós-migração</td></tr>
+      <tr><td>5</td><td><div class="item-title">Landing page: SEO completo</div><div class="item-desc">Tem <code>&lt;title&gt;</code> e <code>&lt;meta description&gt;</code>. Faltam: Open Graph tags, <code>sitemap.xml</code>, <code>robots.txt</code>, Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>6</td><td><div class="item-title">Beta fechado com 10 organizadores</div><div class="item-desc">Primeiros usuários reais testando a plataforma. Zero usuários ativos até o momento.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>7</td><td><div class="item-title">Presença no Instagram</div><div class="item-desc">O Tovia não tem perfil próprio nem estratégia de conteúdo para redes sociais.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>8</td><td><div class="item-title">PWA (Progressive Web App)</div><div class="item-desc">Sem <code>manifest.json</code> e sem service worker. App não é instalável no celular via navegador.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>9</td><td><div class="item-title">Publicar Tovia Mobile nas lojas</div><div class="item-desc">Projeto Expo funcional em <code>mobile/app/</code> com componentes, hooks e contexts. Spec completa em <code>tovia-mobile-spec.html</code>. Não publicado na App Store / Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>10</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Abstração PaymentProvider implementada. URL de produção do Asaas corrigida (set/2026). Falta validação end-to-end com organizador externo usando dinheiro real.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>11</td><td><div class="item-title">Plano de conversão beta para pagante</div><div class="item-desc">Estratégia definida no <code>documento-produto.html</code>, não implementada no sistema.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
     </table>
   </div>
 
@@ -262,13 +227,12 @@
     <div class="section-title"><span class="badge badge-blue">Fase 3</span> Crescimento</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>14</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. <strong>Verificação ago/2026:</strong> nenhum código encontrado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>15</td><td><div class="item-title done">Exportação CSV/Excel</div><div class="item-desc done"><strong>Verificação ago/2026:</strong> implementado. <code>papaparse</code> (CSV), <code>xlsx</code> (Excel), React PDF. Funções <code>exportRowsToCSV()</code>, <code>exportRowsToXLSX()</code>, <code>exportRowsToPDF()</code> em <code>useRegistrations.ts</code>.</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>16</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente. <strong>Verificação ago/2026:</strong> nenhuma referência a googleapis ou google-calendar.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>17</td><td><div class="item-title">Webhooks customizáveis para organizadores</div><div class="item-desc"><strong>Verificação ago/2026:</strong> webhook de pagamento existe em <code>eventPaymentWebhook.ts</code> com validação por <code>webhook_token_hash</code>, mas é interno — não customizável pelo organizador.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>18</td><td><div class="item-title">Analytics (GA ou Mixpanel)</div><div class="item-desc"><strong>Verificação ago/2026:</strong> Sentry (<code>@sentry/react</code>) para error tracking funciona. Sem analytics de comportamento de usuário.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>19</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Pagar.me e Mercado Pago. <strong>Verificação ago/2026:</strong> nenhum código ou referência encontrada no codebase.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>20</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>12</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. Nenhum código encontrado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>13</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente. Nenhuma referência a googleapis no codebase.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>14</td><td><div class="item-title">Webhooks customizáveis para organizadores</div><div class="item-desc">Webhook de pagamento existe mas é interno. Organizador não pode configurar webhooks próprios.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>15</td><td><div class="item-title">Analytics de comportamento</div><div class="item-desc">Sentry funciona para error tracking. Sem analytics de uso (GA, Mixpanel, PostHog).</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>16</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Stripe, Pagar.me e Mercado Pago. Abstração PaymentProvider já suporta multi-gateway, mas apenas Asaas implementado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>17</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -277,10 +241,28 @@
     <div class="section-title"><span class="badge badge-purple">Fase 4</span> Escala</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>21</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros. <strong>Verificação ago/2026:</strong> sem documentação OpenAPI/Swagger, sem endpoints públicos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>22</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas. <strong>Verificação ago/2026:</strong> sem diferenciação no produto.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>23</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos. <strong>Verificação ago/2026:</strong> nenhuma referência no código.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>24</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Suporte a outros idiomas. <strong>Verificação ago/2026:</strong> sem framework i18n. Strings hardcoded em português.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>18</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros. Sem documentação OpenAPI/Swagger.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>19</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas. Sem diferenciação no produto.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>20</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>21</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Strings hardcoded em português. Sem framework i18n.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- SPLIT ASAAS -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-purple">Split</span> Migração BYOG para Subcontas (futuro)</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr><td>22</td><td><div class="item-title">Contatar comercial do gateway</div><div class="item-desc">Ativar split de pagamentos e criação de subcontas via API. Pré-requisito bloqueante para toda esta seção. Detalhado em <code>plano-split-asaas.html</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>23</td><td><div class="item-title">Endpoint createSubAccount.ts</div><div class="item-desc"><code>POST /v3/accounts</code>, rate limit 3/h, salvar <code>apiKey</code> + <code>walletId</code>. Onboarding com upload de documentos via <code>onboardingUrl</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>24</td><td><div class="item-title">Adaptar createEventCharge com split</div><div class="item-desc">Chave Tovia (conta principal) + campo <code>splits</code> com <code>walletId</code> do organizador. Split calculado sobre <code>netValue</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>25</td><td><div class="item-title">Centralizar webhook + handler divergência</div><div class="item-desc">Token fixo Tovia, identificar por <code>externalReference</code>. Handler para <code>PAYMENT_SPLIT_DIVERGENCE_BLOCK</code>.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>26</td><td><div class="item-title">ContaRecebimentoTab.tsx</div><div class="item-desc">Substituir GatewayTab. Formulário: CNPJ, dados bancários, tipo empresa, CEP auto. Estados: não configurado, pendente, ativo, rejeitado.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>27</td><td><div class="item-title">FinanceiroOrganizadorTab</div><div class="item-desc">Saldo disponível, a receber, total recebido. Lista de transferências e extrato de cobranças.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>28</td><td><div class="item-title">autoPayments para todos os planos</div><div class="item-desc">Hoje apenas Chalém tem <code>autoPayments: true</code> em <code>plan-limits.ts</code>. Depende da migração Split para habilitar nos demais planos.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>29</td><td><div class="item-title">AdminPagamentosTab</div><div class="item-desc">Volume total, receita Tovia, taxa por transação. Renomear AdminGateway.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>30</td><td><div class="item-title">Modelo de taxas por plano</div><div class="item-desc"><code>config/platform_fees</code> no Firestore: Chinám 10%, Pétach 7%, Koách 5%, Chalém 3%. Lido pela API, nunca exposto ao client.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
+      <tr><td>31</td><td><div class="item-title">Limpeza pós-migração</div><div class="item-desc">Deletar <code>GatewayTab.tsx</code>, <code>gateway-utils.ts</code>, <code>saveGatewayConfig</code>. Remover <code>GatewayConfig</code> do types.ts. Limpar campos Firestore.</div></td><td><span class="status-dot dot-gray"></span>Pós-migração</td></tr>
     </table>
   </div>
 
@@ -289,9 +271,8 @@
     <div class="section-title"><span class="badge badge-gray">Cache</span> Performance</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>25</td><td><div class="item-title">Firestore persistence (offline cache)</div><div class="item-desc"><strong>Verificação ago/2026:</strong> sem <code>enablePersistence()</code> ou <code>enableIndexedDbPersistence()</code>. Dados precisam de rede.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>26</td><td><div class="item-title">Cache HTTP para docs estáticos</div><div class="item-desc">Headers explícitos para public/docs/.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>27</td><td><div class="item-title">React Query ou SWR</div><div class="item-desc"><strong>Verificação ago/2026:</strong> ausentes do <code>package.json</code>. Sem caching client-side.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>32</td><td><div class="item-title">Firestore persistence (offline cache)</div><div class="item-desc">Sem <code>enablePersistence()</code>. Dados precisam de rede para carregar.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>33</td><td><div class="item-title">React Query ou SWR</div><div class="item-desc">Sem caching client-side. Cada navegação refaz as queries do Firestore.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -300,11 +281,8 @@
     <div class="section-title"><span class="badge badge-purple">NF</span> Notas Fiscais (pós-pagamentos)</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>28</td><td><div class="item-title">NF da taxa Tovia (automatizável)</div><div class="item-desc">Emitir NFS-e automaticamente a cada pagamento confirmado. Gateway suporta via API de invoices vinculado à cobrança, e <code>invoiceSettings</code> para assinaturas recorrentes. Requer configuração fiscal da conta Tovia: inscrição municipal, CNAE, série RPS, credenciais da prefeitura (<code>POST /v3/fiscalInfo</code>). Configuração única. <strong>Verificação ago/2026:</strong> nenhum código de NFS-e encontrado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>29</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Cada organizador configura dados fiscais próprios (CNAE, inscrição municipal, RPS, credenciais da prefeitura). Complexo: Simples Nacional vs Lucro Presumido têm regras PIS/COFINS diferentes. Sugestão: oferecer como feature premium (Koách/Chalém) com suporte guiado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>30</td><td><div class="item-title">Webhooks de NF</div><div class="item-desc">8 eventos: INVOICE_CREATED, INVOICE_UPDATED, INVOICE_SYNCHRONIZED, INVOICE_AUTHORIZED, INVOICE_PROCESSING_CANCELLATION, INVOICE_CANCELED, INVOICE_CANCELLATION_DENIED, INVOICE_ERROR. Fluxo normal: CREATED → SYNCHRONIZED → AUTHORIZED. Salvar pdfUrl, xmlUrl, number, validationCode.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>31</td><td><div class="item-title">Páginas de NF</div><div class="item-desc">3 componentes: ConfiguracaoFiscalTab (formulário fiscal), NotasFiscaisTab (lista de NFs), AdminNotasFiscaisTab (visão admin). 4 endpoints: setupFiscalConfig, listMunicipalServices, createInvoice, listInvoices.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>32</td><td><div class="item-title">Retenção PIS/COFINS</div><div class="item-desc">Para não-optantes do Simples Nacional: campos pisCofinsTaxStatus, operationPis, operationCofins. 7 valores possíveis (NONE, STANDARD, DIFFERENTIATED, ZERO_RATE, EXEMPT, NON_TAXABLE, SUSPENSION). Regras variam por status tributário.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>34</td><td><div class="item-title">NF da taxa Tovia</div><div class="item-desc">NFS-e automática via API do gateway. Requer configuração fiscal: inscrição municipal, CNAE, série RPS, credenciais da prefeitura. Configuração única.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>35</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Organizador configura dados fiscais próprios. Complexo: Simples Nacional vs Lucro Presumido. Sugestão: feature premium para Koách/Chalém.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -313,11 +291,11 @@
     <div class="section-title"><span class="badge badge-yellow">SWOT</span> Fraquezas a endereçar</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Depende de</th></tr>
-      <tr><td>33</td><td><div class="item-title">Zero usuários pagantes</div></td><td>#8 Beta</td></tr>
-      <tr><td>34</td><td><div class="item-title">Sem brand awareness</div></td><td>#7 + #9</td></tr>
-      <tr><td>35</td><td><div class="item-title">Dependência de pessoa única</div><div class="item-desc">Mitigar com documentação e automação.</div></td><td>&mdash;</td></tr>
-      <tr><td>36</td><td><div class="item-title">Relatórios financeiros limitados</div></td><td>#14</td></tr>
-      <tr><td>37</td><td><div class="item-title">Sem integração Sympla/Even3</div></td><td>Fase 3/4</td></tr>
+      <tr><td>36</td><td><div class="item-title">Zero usuários pagantes</div></td><td>#6 Beta</td></tr>
+      <tr><td>37</td><td><div class="item-title">Sem brand awareness</div></td><td>#5 + #7</td></tr>
+      <tr><td>38</td><td><div class="item-title">Dependência de pessoa única</div><div class="item-desc">Mitigar com documentação e automação.</div></td><td>&mdash;</td></tr>
+      <tr><td>39</td><td><div class="item-title">Relatórios financeiros limitados</div></td><td>#12</td></tr>
+      <tr><td>40</td><td><div class="item-title">Sem integração Sympla/Even3</div></td><td>Fase 3/4</td></tr>
     </table>
   </div>
 
@@ -327,114 +305,68 @@
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
       <tr>
-        <td>38</td>
+        <td>41</td>
         <td>
-          <div class="item-title done">IDOR tickets de suporte &mdash; list restrito ao próprio usuário</div>
-          <div class="item-desc done">Qualquer logado podia listar tickets de todos. Corrigido em firestore.rules e deployado.</div>
-        </td>
-        <td><span class="status-dot dot-green"></span>Corrigido</td>
-      </tr>
-      <tr>
-        <td>39</td>
-        <td>
-          <div class="item-title">eventos/{id} GET público expõe config_pagamento</div>
+          <div class="item-title">eventos/{id} GET expõe config_pagamento</div>
           <div class="item-desc">Necessário para páginas de venda, mas expõe dados internos (taxas, métodos, parcelas). Ideal: doc público separado com apenas os campos necessários.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Risco baixo</td>
       </tr>
       <tr>
-        <td>40</td>
+        <td>42</td>
         <td>
           <div class="item-title">organizer_public expõe webhook_token_hash</div>
-          <div class="item-desc">SHA-256 one-way, risco baixo. Considerar restringir read no futuro. Será removido com migração Split (#50).</div>
+          <div class="item-desc">SHA-256 one-way, risco baixo. Será removido com migração Split (#31).</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Risco baixo</td>
       </tr>
       <tr>
-        <td>51</td>
-        <td>
-          <div class="item-title">9 cenários de erro sem testes</div>
-          <div class="item-desc"><strong>Verificação ago/2026:</strong> 38 de 47 erros mapeados em <code>codigos-erro.html</code> têm testes. 9 cenários em endpoints de pagamento, verificação e inscrição pública sem cobertura.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Parcial</td>
-      </tr>
-      <tr>
-        <td>52</td>
+        <td>43</td>
         <td>
           <div class="item-title">EquipeTab.tsx não conectada</div>
-          <div class="item-desc"><strong>Verificação ago/2026:</strong> 414 linhas de código implementado em <code>src/features/events/tabs/EquipeTab.tsx</code> mas nunca importado em nenhum componente. Feature órfã — decidir: conectar ao EventDetail ou remover.</div>
+          <div class="item-desc">414 linhas de código em <code>src/features/events/tabs/EquipeTab.tsx</code> nunca importado. Feature órfã: decidir conectar ao EventDetail ou remover.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>Órfão</td>
       </tr>
       <tr>
-        <td>53</td>
-        <td>
-          <div class="item-title done">npm audit no CI</div>
-          <div class="item-desc done"><strong>Set/2026:</strong> adicionado <code>npm audit --audit-level=high --omit=dev</code> ao pipeline CI. Build quebra se encontrar vulnerabilidade alta ou crítica em dependências de produção.</div>
-        </td>
-        <td><span class="status-dot dot-green"></span>Feito</td>
-      </tr>
-      <tr>
-        <td>54</td>
+        <td>44</td>
         <td>
           <div class="item-title">Scan de secrets no CI (gitleaks)</div>
-          <div class="item-desc">Adicionar <code>gitleaks</code> ou <code>trufflehog</code> ao pipeline CI para detectar chaves, tokens e senhas commitados acidentalmente. Hoje o <code>.gitignore</code> bloqueia <code>.env*</code>, mas não há varredura automática no histórico ou em novos commits.</div>
+          <div class="item-desc">Adicionar <code>gitleaks</code> ou <code>trufflehog</code> ao pipeline CI para detectar chaves e tokens commitados acidentalmente. Hoje <code>.gitignore</code> bloqueia <code>.env*</code>, mas sem varredura automática.</div>
         </td>
         <td><span class="status-dot dot-red"></span>Pendente</td>
       </tr>
       <tr>
-        <td>55</td>
+        <td>45</td>
         <td>
           <div class="item-title">Threat model documentado</div>
-          <div class="item-desc">Mapear ativos (dados de inscritos, chaves de gateway, dados financeiros), atacantes (usuário malicioso, MITM, organizador desonesto) e superfícies de ataque (APIs públicas, webhooks, páginas de inscrição). Gerar checklist de requisitos de segurança. Referência: post @2180_log no TikTok.</div>
+          <div class="item-desc">Mapear ativos (dados de inscritos, chaves de gateway, dados financeiros), atacantes e superfícies de ataque (APIs públicas, webhooks, páginas de inscrição). Gerar checklist de requisitos.</div>
         </td>
         <td><span class="status-dot dot-red"></span>Pendente</td>
       </tr>
       <tr>
-        <td>56</td>
+        <td>46</td>
         <td>
           <div class="item-title">Testes de payload malicioso</div>
-          <div class="item-desc">Criar testes automatizados com payloads de XSS refletido e injection nos endpoints públicos (inscrição, página de vendas, webhook). Validação Zod já existe, mas sem testes que confirmem a rejeição de inputs maliciosos.</div>
+          <div class="item-desc">Testes automatizados com payloads de XSS refletido e injection nos endpoints públicos. Validação Zod existe mas sem testes que confirmem rejeição de inputs maliciosos.</div>
         </td>
         <td><span class="status-dot dot-red"></span>Pendente</td>
       </tr>
       <tr>
-        <td>57</td>
+        <td>47</td>
         <td>
           <div class="item-title">SAST (análise estática de segurança)</div>
-          <div class="item-desc">Adicionar ferramenta SAST ao CI (ex: <code>semgrep</code> ou <code>CodeQL</code> via GitHub Actions). Detecta padrões inseguros como eval(), innerHTML, uso direto de req.body sem validação.</div>
+          <div class="item-desc">Adicionar <code>semgrep</code> ou <code>CodeQL</code> ao CI. Detecta padrões inseguros como eval(), innerHTML, uso direto de req.body sem validação.</div>
         </td>
         <td><span class="status-dot dot-gray"></span>Futuro</td>
       </tr>
     </table>
   </div>
 
-  <!-- IMPLEMENTADOS -->
-  <div class="section">
-    <div class="section-title"><span class="badge badge-green">Implementados</span> Verificados no código (ago/2026)</div>
-    <table>
-      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Verificação</th></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Exportação CSV/XLSX/PDF</div><div class="item-desc done"><code>papaparse</code>, <code>xlsx</code>, React PDF em <code>useRegistrations.ts</code></div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Sistema de cupons</div><div class="item-desc done">Validação, aplicação, limites de uso, desconto % e fixo em <code>useSalesPageContent.ts</code></div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Sistema de doações</div><div class="item-desc done"><code>DonationsTab.tsx</code>, <code>useDonations.ts</code>: doação livre, direcionada, patrocínio</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Sistema de quartos/divisões</div><div class="item-desc done"><code>RoomsTab.tsx</code>, <code>useRooms.ts</code>: quartos, mesas, ônibus, células. Export CSV</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Sentry error tracking</div><div class="item-desc done"><code>@sentry/react</code> em <code>main.tsx</code> e <code>AuthContext.tsx</code></div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Emails via Resend</div><div class="item-desc done">5 endpoints: sendEmail, auth, asaasWebhook, eventPaymentWebhook, cron</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Google GenAI</div><div class="item-desc done"><code>@google/genai</code> ^1.29.0 em <code>package.json</code></div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Tovia Mobile (código)</div><div class="item-desc done">Projeto Expo em <code>mobile/app/</code>: App.tsx, contexts, hooks, components, assets</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">GatewayTab (BYOG)</div><div class="item-desc done"><code>GatewayTab.tsx</code>: conectar/desconectar gateway (multi-gateway BYOG), validação de chave, ambiente sandbox</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">GATEWAY_ENCRYPTION_KEY</div><div class="item-desc done">Ativa como Firebase Secret. Usada em criptografia AES-256</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">TypeScript strict mode</div><div class="item-desc done">Ativado em <code>tsconfig.json</code>, 33 erros corrigidos (jul/2026)</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Base de Conhecimento — 41 artigos</div><div class="item-desc done">8 artigos novos, campo <code>categoria</code>, filtros por seção, UI com agrupamento</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Refatoração SalesPageContent + useRegistrations</div><div class="item-desc done">SalesPageContent: ~20 subcomponentes. useRegistrations: 5 sub-hooks + helpers</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">Código morto removido</div><div class="item-desc done">AdminSubscriptionsTab (193 linhas), ProvaSocial (61 linhas), storageConfig (3 linhas)</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-      <tr><td>&mdash;</td><td><div class="item-title done">IDOR tickets de suporte corrigido</div><div class="item-desc done">firestore.rules restringindo list ao próprio usuário</div></td><td><span class="status-dot dot-green"></span>Feito</td></tr>
-    </table>
-  </div>
-
   <div class="note">
-    <strong>Legenda de verificação:</strong> Todos os itens foram cruzados com o codebase em 6 de agosto de 2026 via análise automatizada (grep, leitura de arquivos, dependências). Itens marcados como "Verificação ago/2026" têm nota com o estado real encontrado no código.<br/><br/>
-    <strong>Documentos relacionados:</strong> <code>plano-split-asaas.html</code> (detalhamento completo da migração Split), <code>tovia-mobile-spec.html</code> (spec do app mobile), <code>documento-produto.html</code> (roadmap e estratégia), <code>brandguide-checklist.html</code> (12 capítulos, 0% concluído), <code>codigos-erro.html</code> (47 erros mapeados, 38 testados).
+    <strong>Sobre este documento:</strong> Apenas itens pendentes, parciais ou futuros. Itens concluídos foram removidos (ver histórico git para referência).<br/><br/>
+    <strong>Números do codebase (set/2026):</strong> 97 testes passando (Vitest), 62 códigos de erro mapeados, CI com lint + npm audit + test, criptografia AES-256-GCM para chaves de gateway, validação Zod em todas as APIs, Firebase Auth + Sentry + Resend integrados.<br/><br/>
+    <strong>Documentos relacionados:</strong> <code>plano-split-asaas.html</code> (migração Split), <code>tovia-mobile-spec.html</code> (spec mobile), <code>documento-produto.html</code> (roadmap), <code>brandguide-checklist.html</code> (brand guide), <code>codigos-erro.html</code> (62 erros, 97 testes).
   </div>
 </div>
 </body>

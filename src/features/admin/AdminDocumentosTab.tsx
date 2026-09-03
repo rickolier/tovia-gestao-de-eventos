@@ -23,10 +23,10 @@ const DOCS: Doc[] = [
   {
     id: 'codigos-erro',
     title: 'Códigos de Erro',
-    description: 'Catálogo de erros do Tovia com códigos públicos (TV001…) e internos para resolução rápida.',
+    description: '62 erros mapeados com códigos públicos (TV001…) e internos. 97 testes passando.',
     file: '/docs/codigos-erro.html',
     hasPreview: true,
-    updatedAt: '2026-07-23',
+    updatedAt: '2026-08-21',
   },
   {
     id: 'design-system',
@@ -57,10 +57,10 @@ const DOCS: Doc[] = [
   {
     id: 'backlog',
     title: 'Backlog Tovia',
-    description: 'Lista consolidada de pendências: bugs, infra, captação, crescimento, escala e SWOT.',
+    description: 'Pendências ativas: bugs, infra, captação, segurança, crescimento e SWOT. Apenas itens não concluídos.',
     file: '/docs/backlog-tovia.html',
     hasPreview: true,
-    updatedAt: '2026-07-24',
+    updatedAt: '2026-09-03',
   },
   {
     id: 'plano-split',
