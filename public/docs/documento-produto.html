@@ -216,7 +216,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <h1>Tovia — produto, estratégia<br>e infraestrutura</h1>
     <p class="cover-sub">Uma visão completa do que é o Tovia, como foi construído, onde está hoje e para onde vai. Documento vivo, atualizado conforme o produto evolui.</p>
     <div class="cover-meta">
-      <span><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg> Julho de 2026</span>
+      <span><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg> Setembro de 2026</span>
       <span><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg> Henrique Olier</span>
       <span><svg class="ico" aria-hidden="true"><use href="#i-brazil"/></svg> Mercado brasileiro</span>
       <span><svg class="ico" aria-hidden="true"><use href="#i-building"/></svg> SaaS B2B</span>
@@ -247,7 +247,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <p>O Tovia é uma plataforma SaaS de gestão de eventos voltada para o mercado brasileiro. Ele resolve um problema comum entre organizadores: a fragmentação de ferramentas — inscrições em um lugar, controle financeiro em outro, equipe coordenada pelo WhatsApp, lista de presença em planilha.</p>
     <p>O Tovia unifica tudo isso em um só lugar. O organizador cria o evento, configura ingressos, recebe inscrições, controla o financeiro, gerencia a equipe, faz check-in no dia e se comunica com participantes por email — sem sair da plataforma. Os participantes acessam suas inscrições via código OTP enviado por email, sem precisar criar conta.</p>
     <div class="callout">
-      <p><strong>Modelo BYOG (Bring Your Own Gateway):</strong> cada organizador conecta o próprio gateway de pagamento e recebe diretamente dos participantes. Hoje disponível com Asaas; em breve Stripe, Mercado Pago e Pagar.me. O Tovia cuida da gestão — o dinheiro é inteiramente do organizador, sem intermediação da plataforma.</p>
+      <p><strong>Modelo BYOG (Bring Your Own Gateway):</strong> cada organizador conecta o próprio gateway de pagamento e recebe diretamente dos participantes. Hoje disponível com Asaas. Abstração PaymentProvider já suporta múltiplos gateways (Stripe, Mercado Pago, Pagar.me) — novos adapters podem ser adicionados sem alterar rotas existentes. O Tovia cuida da gestão — o dinheiro é inteiramente do organizador, sem intermediação da plataforma.</p>
     </div>
   </section>
   <div class="divider"></div>
@@ -640,11 +640,11 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Testes automatizados</div><div class="infra-stage-scale">Vitest</div></div>
-        <div class="infra-tools">38 testes automatizados cobrindo os 3 endpoints mais críticos: webhook de pagamento de eventos (12 testes), webhook de assinaturas (14 testes) e checkout (12 testes). Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
+        <div class="infra-tools">97 testes automatizados (Vitest) em 7 arquivos, cobrindo os endpoints mais críticos: webhook de pagamento de eventos, webhook de assinaturas, checkout, criação de cobranças e configuração de gateway. Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">CI/CD</div><div class="infra-stage-scale">GitHub Actions</div></div>
-        <div class="infra-tools">Pipeline automático que roda lint e testes a cada push para main/staging e em pull requests. Bloqueia deploy se algum teste falhar. Integrado com Vercel para deploy contínuo.</div>
+        <div class="infra-tools">Pipeline automático que roda lint, npm audit (vulnerabilidades de dependências) e testes a cada push para main/staging e em pull requests. Bloqueia deploy se algum teste falhar ou se houver vulnerabilidade alta em dependências de produção. Integrado com Vercel para deploy contínuo.</div>
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Validação de entrada</div><div class="infra-stage-scale">Zod</div></div>
@@ -680,7 +680,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <li>Brand awareness inexistente</li>
           <li>Dependência de uma única pessoa para suporte e desenvolvimento</li>
           <li>Relatórios financeiros ainda limitados (sem análise histórica)</li>
-          <li>Fluxo de pagamentos ainda não testado em produção real</li>
+          <li>Fluxo de pagamentos parcialmente validado — falta teste end-to-end com organizador externo</li>
           <li>Sem integrações com Sympla, Even3 ou marketplaces</li>
         </ul>
       </div>
@@ -896,7 +896,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     <h2>Momento atual e roadmap</h2>
     <p>O Tovia concluiu a fase de construção do produto. Todos os módulos principais estão implementados — incluindo o app mobile nativo. O foco agora muda de construção para captação.</p>
     <div class="callout">
-      <p><strong>Ponto de virada — julho de 2026:</strong> o produto saiu da fase de "construir funcionalidades" para a fase de "levar para o mercado". O que falta agora é visibilidade, primeiros usuários e feedback real.</p>
+      <p><strong>Ponto de virada — jul/2026, atualizado set/2026:</strong> o produto saiu da fase de "construir funcionalidades" para a fase de "levar para o mercado". O que falta agora é formalização (CNPJ), visibilidade, primeiros usuários e feedback real.</p>
     </div>
     <div class="roadmap-list">
       <div class="roadmap-item">
@@ -918,7 +918,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
             <li>Onboarding com tour guiado interativo</li>
             <li>Criptografia AES-256-GCM para chaves de gateway</li>
             <li>Monitoramento de erros em produção via Sentry</li>
-            <li>38 testes automatizados (Vitest) + CI/CD via GitHub Actions</li>
+            <li>97 testes automatizados (Vitest) em 7 arquivos + CI/CD via GitHub Actions (lint + npm audit + test)</li>
             <li>Validação de entrada com Zod em todos os endpoints + TypeScript strict (zero @ts-nocheck)</li>
             <li>Domínios registrados (GoDaddy), email corporativo (Zoho Mail), email transacional (Resend)</li>
           </ul>
@@ -930,11 +930,12 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
           <div class="roadmap-phase next">Fase 2 — Próxima prioridade</div>
           <div class="roadmap-title">Presença de mercado e primeiros usuários</div>
           <ul class="roadmap-items">
-            <li>Landing page com proposta de valor clara e SEO técnico</li>
-            <li>Domínio e identidade visual consolidados (toviaapp.com.br)</li>
-            <li>Beta fechado — primeiros 10 organizadores reais com feedback estruturado</li>
-            <li>Presença no Instagram com conteúdo focado em dores do organizador</li>
+            <li>Landing page com SEO completo (Open Graph, sitemap, robots.txt, Schema.org)</li>
+            <li>PWA — manifest.json e service worker para instalação via navegador</li>
             <li>Publicação do app mobile nas stores (iOS e Android)</li>
+            <li>Validação end-to-end do fluxo de pagamento com organizador externo</li>
+            <li>Base de conhecimento com vídeos tutoriais para organizadores</li>
+            <li>Formalização empresarial (CNPJ) e estrutura de custos</li>
           </ul>
         </div>
       </div>
@@ -967,6 +968,9 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
     </div>
     <div class="callout" style="margin-top:32px">
       <p><strong>Custo operacional estimado por cliente ativo:</strong> R$4–10/mês (Firebase + Vercel + Resend). Ponto de equilíbrio com aproximadamente 5–8 clientes pagantes no Pétach. O modelo é lucrativo desde os primeiros usuários pagantes.</p>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <p><strong>Investimentos realizados e previstos:</strong> domínio toviaapp.com.br (1 ano), licença Claude Code (desenvolvimento), Sentry, Zoho Mail. Próximos: abertura de CNPJ (MEI ou ME), produção de vídeos para base de conhecimento e marketing, tempo dedicado a captação.</p>
     </div>
   </section>
 </div>

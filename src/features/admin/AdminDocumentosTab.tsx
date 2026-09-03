@@ -18,7 +18,7 @@ const DOCS: Doc[] = [
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
     file: '/docs/documento-produto.html',
     hasPreview: true,
-    updatedAt: '2026-07-23',
+    updatedAt: '2026-09-03',
   },
   {
     id: 'codigos-erro',
@@ -61,14 +61,6 @@ const DOCS: Doc[] = [
     file: '/docs/backlog-tovia.html',
     hasPreview: true,
     updatedAt: '2026-09-03',
-  },
-  {
-    id: 'plano-split',
-    title: 'Plano de Pagamentos — Gateway Split',
-    description: 'Plano de implementação de pagamentos: subcontas, split, segurança, comparativo BYOG vs Subcontas.',
-    file: '/docs/plano-split-asaas.html',
-    hasPreview: true,
-    updatedAt: '2026-07-30',
   },
   {
     id: 'brandguide',
