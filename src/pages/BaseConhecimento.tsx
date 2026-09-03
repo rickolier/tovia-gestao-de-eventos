@@ -5,9 +5,8 @@ import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2
 import { useAuth } from '~/context/AuthContext';
 import { listDocuments, updateDocument, removeDocument } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
-import { orderBy, addDoc, collection, where } from 'firebase/firestore';
-import { db } from '~/services/firebase';
-import { createDocument } from '~/services/firestore';
+import { orderBy, where } from 'firebase/firestore';
+import { createDocument, addDocument } from '~/services/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -191,7 +190,7 @@ export default function BaseConhecimento() {
     if (!user || !ticketTitulo.trim() || !ticketDesc.trim()) return;
     setTicketSending(true);
     try {
-      await addDoc(collection(db, 'tickets'), {
+      await addDocument('tickets', {
         titulo:       ticketTitulo.trim(),
         descricao:    ticketDesc.trim(),
         categoria:    ticketCategoria,

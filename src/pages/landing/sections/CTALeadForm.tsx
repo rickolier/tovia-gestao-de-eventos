@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '~/services/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { addDocument } from '~/services/firestore';
 import { CheckCircle, Loader2, Sparkles, Users, Calendar, Shield } from 'lucide-react';
 
 const TIPOS_EVENTO = [
@@ -77,7 +76,7 @@ export function CTALeadForm() {
     setErro('');
     setLoading(true);
     try {
-      await addDoc(collection(db, 'leads'), {
+      await addDocument('leads', {
         ...form,
         lgpd_consent: true,
         lgpd_consent_em: new Date().toISOString(),

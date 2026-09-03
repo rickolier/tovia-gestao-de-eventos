@@ -82,6 +82,16 @@ export const createDocument = async <T extends DocumentData>(path: string, id: s
   }
 };
 
+export const addDocument = async <T extends DocumentData>(path: string, data: WithFieldValue<T>): Promise<string> => {
+  try {
+    const ref = await addDoc(collection(db, path), data);
+    return ref.id;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, path);
+    return '';
+  }
+};
+
 export const updateDocument = async <T extends DocumentData>(path: string, id: string, data: UpdateData<T>): Promise<void> => {
   try {
     const docRef = doc(db, path, id);

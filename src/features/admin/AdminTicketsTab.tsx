@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '~/services/firebase';
-import { listDocuments, updateDocument, createDocument } from '~/services/firestore';
+import { listDocuments, updateDocument, createDocument, addDocument } from '~/services/firestore';
 import { Email } from '~/services/email';
 import { LifeBuoy, Plus, RefreshCw, Clock, CheckCircle2, Circle, X, ChevronDown, Send, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -112,11 +110,11 @@ export default function AdminTicketsTab() {
     setSaving(true);
     try {
       const ticket = { ...form, criado_em: new Date().toISOString() };
-      const ref = await addDoc(collection(db, 'tickets'), ticket);
-      const newTicket = { ...ticket, id: ref.id };
+      const id = await addDocument('tickets', ticket);
+      const newTicket = { ...ticket, id };
       setTickets(prev => [newTicket, ...prev]);
       if (form.cliente_email) {
-        Email.ticketCriado(form.cliente_email, form.nome || 'organizador', form.titulo, form.descricao, ref.id);
+        Email.ticketCriado(form.cliente_email, form.nome || 'organizador', form.titulo, form.descricao, id);
       }
       setForm({ ...EMPTY });
       setShowForm(false);
