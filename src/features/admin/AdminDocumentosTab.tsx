@@ -57,7 +57,7 @@ const DOCS: Doc[] = [
   {
     id: 'backlog',
     title: 'Backlog Tovia',
-    description: 'Pendências ativas: bugs, infra, captação, segurança, crescimento e SWOT. Apenas itens não concluídos.',
+    description: 'Pendências ativas: bugs, infra, produto, segurança, crescimento e escala. 29 itens pendentes.',
     file: '/docs/backlog-tovia.html',
     hasPreview: true,
     updatedAt: '2026-09-03',
