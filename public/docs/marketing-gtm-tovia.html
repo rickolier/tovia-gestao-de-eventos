@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tovia — Marketing, Vendas e Go-To-Market</title>
+<style>
+:root {
+  --g: #FF6B1A; --g-dark: #E55A08; --g-tint: #FFF4EE; --g-mid: #FFC9A8;
+  --surface-0: #f5f5f3; --surface-1: #fff;
+  --text-primary: #1a1a18; --text-secondary: #5a5a56; --text-muted: #999993;
+  --border: #e2e0da;
+  --green: #16a34a; --green-bg: #f0fdf4;
+  --red: #ef4444; --red-bg: #fef2f2;
+  --amber: #f59e0b; --amber-bg: #fffbeb;
+  --blue: #3b82f6; --blue-bg: #eff6ff;
+  --violet: #9B5FFF; --violet-bg: #f5f0ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface-0: #111110; --surface-1: #1c1c1a;
+    --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+    --border: #2e2e2a; --g-tint: #3D1506;
+    --green-bg: #052e16; --red-bg: #2a0a0a; --amber-bg: #1c1a08; --blue-bg: #0c1a2e; --violet-bg: #1a0e30;
+  }
+}
+:root[data-theme="dark"] {
+  --surface-0: #111110; --surface-1: #1c1c1a;
+  --text-primary: #f0efeb; --text-secondary: #a8a8a2; --text-muted: #666660;
+  --border: #2e2e2a; --g-tint: #3D1506;
+  --green-bg: #052e16; --red-bg: #2a0a0a; --amber-bg: #1c1a08; --blue-bg: #0c1a2e; --violet-bg: #1a0e30;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface-0); color: var(--text-primary); font-size: 15px; line-height: 1.7; }
+a { color: var(--g); text-decoration: none; }
+.doc { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.cover { border-bottom: 0.5px solid var(--border); padding-bottom: 40px; margin-bottom: 56px; }
+.cover-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--g-tint); color: var(--g); font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+.cover h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; letter-spacing: -1px; line-height: 1.1; color: var(--text-primary); margin-bottom: 16px; }
+.cover-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.75; max-width: 580px; margin-bottom: 28px; }
+.cover-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.cover-meta span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+
+.toc { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 56px; }
+.toc-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-item { font-size: 13px; color: var(--g); display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.toc-num { color: var(--text-muted); font-size: 11px; min-width: 18px; }
+
+section { margin-bottom: 64px; scroll-margin-top: 24px; }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--g); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+section h2 { font-size: 24px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 12px; line-height: 1.25; }
+section h3 { font-size: 16px; font-weight: 500; color: var(--text-primary); margin: 28px 0 12px; }
+section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+.divider { height: 0.5px; background: var(--border); margin: 48px 0; }
+
+.callout { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 20px 0; border-left: 3px solid var(--g); }
+.callout-title { font-size: 12px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+.callout p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.callout-red { border-left-color: var(--red); }
+.callout-green { border-left-color: var(--green); }
+.callout-blue { border-left-color: var(--blue); }
+.callout-violet { border-left-color: var(--violet); }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 20px; }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-violet { background: var(--violet-bg); color: var(--violet); }
+
+.table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 0.5px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+thead { background: var(--surface-1); }
+th { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); padding: 10px 14px; text-align: left; border-bottom: 0.5px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 0.5px solid var(--border); color: var(--text-secondary); }
+tr:last-child td { border-bottom: none; }
+
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+.feature-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; }
+.feature-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--g-tint); color: var(--g); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 18px; }
+.feature-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.feature-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+.phase-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.phase-card.active { border-color: var(--g); border-width: 1.5px; }
+.phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.phase-num { width: 32px; height: 32px; border-radius: 8px; background: var(--g-tint); color: var(--g); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+.phase-title { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+.phase-sub { font-size: 12px; color: var(--text-muted); }
+.phase-body { padding-left: 42px; }
+.phase-body ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.phase-body li { font-size: 13px; color: var(--text-secondary); padding-left: 16px; position: relative; line-height: 1.6; }
+.phase-body li::before { content: "→"; position: absolute; left: 0; color: var(--g); font-size: 12px; }
+
+.wheel { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 20px 0; }
+.wheel-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+.wheel-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.wheel-list { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+.trigger-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 20px 0; }
+.trigger-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.trigger-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.trigger-how { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+
+.script-block { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.script-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.script-line { font-size: 13px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 8px; padding-left: 12px; border-left: 2px solid var(--border); }
+.script-line strong { color: var(--text-primary); font-weight: 500; }
+.script-line em { color: var(--g); font-style: normal; font-weight: 500; }
+
+.pyramid { display: flex; flex-direction: column; gap: 2px; margin: 20px 0; }
+.pyramid-step { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: center; padding: 12px 16px; background: var(--surface-1); border: 0.5px solid var(--border); }
+.pyramid-step:first-child { border-radius: 12px 12px 0 0; }
+.pyramid-step:last-child { border-radius: 0 0 12px 12px; }
+.pyramid-level { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.pyramid-desc { font-size: 12px; color: var(--text-secondary); }
+
+@media (max-width: 600px) {
+  .toc-grid { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .wheel { grid-template-columns: 1fr 1fr; }
+  .trigger-grid { grid-template-columns: 1fr; }
+  .pyramid-step { grid-template-columns: 100px 1fr; }
+}
+
+@media print {
+  body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc { padding: 24px !important; max-width: 100% !important; }
+  * { color-scheme: light !important; }
+}
+@page { margin: 1.5cm; size: A4; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <!-- COVER -->
+  <header class="cover">
+    <div class="cover-eyebrow">📣 Go-To-Market</div>
+    <h1>Marketing, Vendas e Go-To-Market</h1>
+    <p class="cover-sub">
+      Plano estratégico para sair do zero e conquistar os primeiros 20 clientes pagantes.
+      Táticas de prospecção direta, conteúdo orgânico, gatilhos de conversão e pirâmide de distribuição.
+    </p>
+    <div class="cover-meta">
+      <span>Setembro 2026</span>
+      <span>Fase 2 — Captação</span>
+      <span>Meta: 5 clientes pagantes</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-title">Conteúdo</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#posicionamento"><span class="toc-num">01</span> Posicionamento</a>
+      <a class="toc-item" href="#publico"><span class="toc-num">02</span> Público e avatar</a>
+      <a class="toc-item" href="#proposta"><span class="toc-num">03</span> Proposta de valor</a>
+      <a class="toc-item" href="#prospeccao"><span class="toc-num">04</span> Prospecção direta</a>
+      <a class="toc-item" href="#gatilhos"><span class="toc-num">05</span> Gatilhos mentais</a>
+      <a class="toc-item" href="#conteudo"><span class="toc-num">06</span> Estratégia de conteúdo</a>
+      <a class="toc-item" href="#piramide"><span class="toc-num">07</span> Pirâmide de distribuição</a>
+      <a class="toc-item" href="#iscas"><span class="toc-num">08</span> Iscas digitais</a>
+      <a class="toc-item" href="#onboarding"><span class="toc-num">09</span> Onboarding e ativação</a>
+      <a class="toc-item" href="#fases"><span class="toc-num">10</span> Fases do GTM</a>
+      <a class="toc-item" href="#metricas"><span class="toc-num">11</span> Métricas de marketing</a>
+      <a class="toc-item" href="#nao-fazer"><span class="toc-num">12</span> O que não fazer</a>
+    </div>
+  </nav>
+
+  <!-- 01 POSICIONAMENTO -->
+  <section id="posicionamento">
+    <div class="section-label">01 · Posicionamento</div>
+    <h2>A marca na mente do organizador</h2>
+    <p>
+      O Tovia precisa ocupar um espaço claro: <strong>a ferramenta que simplifica a gestão de eventos para comunidades e igrejas</strong>.
+      Não competimos com Sympla ou Eventbrite — eles atendem shows e festivais. O Tovia atende retiros, conferências, workshops e encontros comunitários.
+    </p>
+
+    <div class="callout">
+      <div class="callout-title">Frase de posicionamento</div>
+      <p>
+        "O Tovia é a plataforma de gestão de eventos feita para organizadores de comunidades. Você cria o evento, vende inscrições, recebe pagamentos na sua conta e faz check-in — tudo num só lugar, sem planilhas."
+      </p>
+    </div>
+
+    <h3>Estratégia de marca (Seth Godin)</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-name">Para quem?</div>
+        <div class="feature-desc">Organizadores de eventos religiosos e comunitários no Brasil. Menor mercado viável: líderes que organizam 2+ eventos por ano e usam planilhas ou WhatsApp.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-name">Qual a mudança?</div>
+        <div class="feature-desc">De caótico e manual para organizado e digital. A promessa: "Nunca mais confira extrato bancário pra saber quem pagou."</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-name">Qual a história?</div>
+        <div class="feature-desc">"Organizadores como nós usam o Tovia." A tribo se reconhece. O efeito de rede: se a Convenção X usa, as igrejas menores seguem.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-title">Narrativa interna da tribo</div>
+      <p>
+        "Somos organizadores que levam eventos a sério. Usamos ferramentas profissionais porque nossos eventos merecem." O Tovia dá status ao organizador que antes improvisava — ele agora tem um sistema.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 02 PÚBLICO -->
+  <section id="publico">
+    <div class="section-label">02 · Público e Avatar</div>
+    <h2>Quem é o organizador do Tovia</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-name">Avatar primário</div>
+        <div class="feature-desc">
+          Líder de ministério ou coordenador de eventos em igrejas evangélicas/católicas. 30-55 anos. Organiza 3-8 eventos/ano (retiros, conferências, congressos). Usa WhatsApp + planilha. Não é técnico.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🐋</div>
+        <div class="feature-name">Baleia (alta prioridade)</div>
+        <div class="feature-desc">
+          Líder de convenção, diocese, associação ou rede de igrejas. Organiza eventos maiores (200+ pessoas). Fechar com uma baleia gera efeito manada: as igrejas da rede seguem por confiança.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌱</div>
+        <div class="feature-name">Avatar secundário</div>
+        <div class="feature-desc">
+          Organizador de workshops, retiros terapêuticos, encontros comunitários não-religiosos. Mesmo perfil de dor (planilha, pagamento manual), mas sem o efeito de rede das igrejas.
+        </div>
+      </div>
+    </div>
+
+    <h3>Dores do organizador</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Dor</th><th>Intensidade</th><th>Como o Tovia resolve</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Conferir extrato bancário pra saber quem pagou</td><td><span class="badge badge-red">Crítica</span></td><td>Confirmação automática via gateway (Pix em 2s)</td></tr>
+          <tr><td>Controlar inscrições por WhatsApp/planilha</td><td><span class="badge badge-red">Crítica</span></td><td>Página de vendas + inscrição + pagamento integrados</td></tr>
+          <tr><td>Check-in manual no dia do evento</td><td><span class="badge badge-amber">Alta</span></td><td>Check-in digital com QR Code</td></tr>
+          <tr><td>Não saber o financeiro em tempo real</td><td><span class="badge badge-amber">Alta</span></td><td>Dashboard financeiro com arrecadação por ingresso</td></tr>
+          <tr><td>Medo de golpe ao receber pagamentos online</td><td><span class="badge badge-amber">Alta</span></td><td>BYOG: dinheiro vai direto pra conta do organizador</td></tr>
+          <tr><td>Comunicar mudanças para todos os inscritos</td><td><span class="badge badge-blue">Média</span></td><td>Comunicados em massa por email</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 03 PROPOSTA -->
+  <section id="proposta">
+    <div class="section-label">03 · Proposta de Valor</div>
+    <h2>O que diferencia o Tovia</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-name">BYOG — Dinheiro na sua conta</div>
+        <div class="feature-desc">O Tovia não toca no dinheiro. O organizador conecta seu próprio gateway (Asaas) e recebe direto. Zero risco de intermediário.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-name">Tudo num só lugar</div>
+        <div class="feature-desc">Evento, inscrição, pagamento, check-in, comunicados, financeiro. Substitui 5 ferramentas separadas.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-name">Preço justo para o nicho</div>
+        <div class="feature-desc">A partir de R$49/mês (Pétach). Para quem faz 3 eventos/ano, custa menos que uma planilha de contabilidade.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🇧🇷</div>
+        <div class="feature-name">Feito para o Brasil</div>
+        <div class="feature-desc">Pix nativo, CPF/CNPJ, linguagem simples. Sem jargão técnico, sem interface em inglês.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-title">Argumento de vendas em uma frase</div>
+      <p>
+        "Você cria o evento, publica o link, os inscritos pagam pelo Pix e o dinheiro cai direto na sua conta.
+        No dia do evento, faz check-in pelo celular. Sem planilha, sem conferir extrato."
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 04 PROSPECÇÃO -->
+  <section id="prospeccao">
+    <div class="section-label">04 · Prospecção Direta</div>
+    <h2>Regra do PPT — Pega o Telefone</h2>
+    <p>
+      Os primeiros 20 clientes não vêm de landing page ou anúncio. Vêm de contato direto, um a um.
+      Ligar, mandar mensagem, visitar. O telefone é a ferramenta mais importante do Tovia agora.
+    </p>
+
+    <h3>Onde encontrar organizadores</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-name">Google Maps</div>
+        <div class="feature-desc">Buscar "igreja evangélica [cidade]", "retiro espiritual", "centro comunitário". Ligar para os maiores.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-name">Instagram</div>
+        <div class="feature-desc">Buscar hashtags: #retiroigreja, #congressojovens, #eventogospel. Contatar organizadores que postam sobre eventos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-name">Rede pessoal</div>
+        <div class="feature-desc">Comunidade local, contatos de igrejas, indicações de quem já conhece. A primeira venda quase sempre vem da rede próxima.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-name">Convenções e associações</div>
+        <div class="feature-desc">Fechar com a "baleia" (convenção) e as igrejas menores seguem por efeito manada. Prioridade máxima.</div>
+      </div>
+    </div>
+
+    <h3>Script de abordagem (WhatsApp/Telefone)</h3>
+
+    <div class="script-block">
+      <div class="script-label">Abertura</div>
+      <div class="script-line"><strong>Oi [nome], tudo bem?</strong> Vi que vocês organizam [retiros/conferências/eventos] na [igreja/comunidade]. Estou construindo uma ferramenta que substitui a planilha e o "manda o comprovante no WhatsApp" na gestão de eventos. Posso te mostrar em 5 minutos?</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Segurança (superando medo de golpe)</div>
+      <div class="script-line"><em>O Tovia não tem acesso à sua conta bancária.</em> O dinheiro vai direto pra conta de vocês pelo gateway de pagamento (Pix, cartão, boleto). Somos uma camada de organização, não um intermediário financeiro. Você continua recebendo na mesma conta de sempre.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Oferta condicional</div>
+      <div class="script-line"><strong>Proposta:</strong> Use grátis no próximo evento de vocês. Se eliminar as planilhas e o evento for um sucesso, aí a gente conversa sobre o plano. <em>Zero risco pra vocês.</em></div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Pós-evento (no pico da euforia)</div>
+      <div class="script-line"><strong>Funcionou?</strong> Ótimo! Me faz um favor: me manda um depoimento curto de como foi e me indica 3 outros líderes que organizam eventos. <em>Na comunidade religiosa, a indicação é a moeda mais forte.</em></div>
+    </div>
+
+    <div class="callout callout-red">
+      <div class="callout-title">Regra 70/30 para o fundador solo</div>
+      <p>
+        70% do tempo em captação (ligar, mensagem, visitar, gravar vídeos). 30% em produto (bugs, melhorias essenciais).
+        Se você não está falando com clientes, está evitando o desconforto de vender. O código mais bonito do mundo não gera MRR.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 05 GATILHOS -->
+  <section id="gatilhos">
+    <div class="section-label">05 · Gatilhos Mentais</div>
+    <h2>Gatilhos aplicados ao Tovia</h2>
+    <p>Cada gatilho tem uma aplicação prática no contexto de venda para organizadores de eventos.</p>
+
+    <div class="trigger-grid">
+      <div class="trigger-card">
+        <div class="trigger-name">Autoridade</div>
+        <div class="trigger-how">"A Convenção X já usa o Tovia." Fechar com uma baleia gera autoridade automática para as igrejas menores.</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Prova social</div>
+        <div class="trigger-how">Depoimentos reais dos primeiros 5 organizadores. Vídeo curto de 30s dizendo "não preciso mais conferir extrato".</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Reciprocidade</div>
+        <div class="trigger-how">Oferecer o primeiro evento grátis (Chinám). Iscas digitais gratuitas (checklist de retiro, modelo de orçamento).</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Garantia</div>
+        <div class="trigger-how">"Use grátis no próximo evento. Se não funcionar, não paga nada." O Chinám é a garantia viva.</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">História</div>
+        <div class="trigger-how">"Criei o Tovia porque vi líderes de retiro sofrendo com planilhas." A história do fundador conecta com o público.</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Coerência</div>
+        <div class="trigger-how">Manter mensagem consistente: simplicidade, acolhimento, organização. Nunca parecer um "vendedor de software".</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Escassez</div>
+        <div class="trigger-how">Usar com cuidado. Possível: "Estamos aceitando os primeiros 20 organizadores da versão inicial com acompanhamento pessoal."</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-name">Antecipação</div>
+        <div class="trigger-how">Vídeos mostrando features antes de lançar (app mobile, novos relatórios). Criar expectativa para o que vem a seguir.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 06 CONTEÚDO -->
+  <section id="conteudo">
+    <div class="section-label">06 · Estratégia de Conteúdo</div>
+    <h2>Tipos de conteúdo para o Tovia</h2>
+    <p>Adaptação da roda de conteúdo para o nicho de eventos comunitários. Cada tipo tem um objetivo diferente.</p>
+
+    <div class="wheel">
+      <div class="wheel-item">
+        <div class="wheel-label" style="color: var(--blue);">Educar</div>
+        <div class="wheel-list">
+          Tutoriais do Tovia<br>
+          Dicas de organização<br>
+          "Como cobrar inscrição pelo Pix"<br>
+          Guia de check-in digital
+        </div>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-label" style="color: var(--green);">Convencer</div>
+        <div class="wheel-list">
+          Depoimentos de clientes<br>
+          Antes/depois (planilha → Tovia)<br>
+          Comparativo com concorrentes<br>
+          Cases de eventos bem-sucedidos
+        </div>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-label" style="color: var(--violet);">Inspirar</div>
+        <div class="wheel-list">
+          História do fundador<br>
+          "Por que criei o Tovia"<br>
+          Bastidores do desenvolvimento<br>
+          Organizadores que transformaram seus eventos
+        </div>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-label" style="color: var(--amber);">Conectar</div>
+        <div class="wheel-list">
+          Bastidores do dia-a-dia<br>
+          Erros e aprendizados<br>
+          Perguntas da comunidade<br>
+          Curiosidades sobre o nome (hebraico)
+        </div>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-label" style="color: var(--red);">Entreter</div>
+        <div class="wheel-list">
+          Memes de organização de eventos<br>
+          "Coisas que todo organizador faz"<br>
+          Trends adaptadas ao nicho<br>
+          Situações engraçadas de retiros
+        </div>
+      </div>
+    </div>
+
+    <h3>Hooks para vídeos curtos (Reels/Shorts/TikTok)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tipo</th><th>Hook</th><th>Objetivo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="badge badge-blue">Educar</span></td><td>"3 erros que fazem o financeiro do seu retiro virar um caos"</td><td>Mostrar dor → solução</td></tr>
+          <tr><td><span class="badge badge-green">Convencer</span></td><td>"Esse organizador parou de conferir extrato bancário"</td><td>Prova social</td></tr>
+          <tr><td><span class="badge badge-violet">Inspirar</span></td><td>"Criei um sistema inteiro porque vi minha igreja sofrer com planilhas"</td><td>Conexão emocional</td></tr>
+          <tr><td><span class="badge badge-amber">Conectar</span></td><td>"O nome Tovia vem do hebraico e significa..."</td><td>Identidade de marca</td></tr>
+          <tr><td><span class="badge badge-red">Entreter</span></td><td>"POV: você é o organizador tentando saber quem pagou"</td><td>Viralização</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 07 PIRÂMIDE -->
+  <section id="piramide">
+    <div class="section-label">07 · Pirâmide de Distribuição</div>
+    <h2>Um conteúdo, dezenas de peças</h2>
+    <p>
+      A ideia central: criar um conteúdo profundo (artigo ou vídeo longo) e desdobrar em múltiplos formatos.
+      Cria uma vez, distribui em todos os canais.
+    </p>
+
+    <div class="pyramid">
+      <div class="pyramid-step">
+        <div class="pyramid-level" style="color:var(--g); font-weight:600;">Topo — Artigo/Vídeo</div>
+        <div class="pyramid-desc">Conteúdo completo e aprofundado. Ex: "Guia completo: como organizar um retiro de jovens sem planilha". Base de tudo.</div>
+      </div>
+      <div class="pyramid-step">
+        <div class="pyramid-level">YouTube longo</div>
+        <div class="pyramid-desc">Versão em vídeo do artigo. Tutorial completo mostrando o Tovia na prática. 10-20 min.</div>
+      </div>
+      <div class="pyramid-step">
+        <div class="pyramid-level">Instagram / Reels</div>
+        <div class="pyramid-desc">3-5 cortes curtos do vídeo longo. Carrossel com os pontos principais. Stories com bastidores da gravação.</div>
+      </div>
+      <div class="pyramid-step">
+        <div class="pyramid-level">Shorts / TikTok</div>
+        <div class="pyramid-desc">Versão dinâmica de 30-60s com hook forte. Mesmo conteúdo, formato vertical nativo.</div>
+      </div>
+      <div class="pyramid-step">
+        <div class="pyramid-level">LinkedIn</div>
+        <div class="pyramid-desc">Post texto com os insights do artigo. Newsletter para a base. Artigo longo para SEO.</div>
+      </div>
+      <div class="pyramid-step">
+        <div class="pyramid-level">Email</div>
+        <div class="pyramid-desc">Sequência para leads: (1) isca digital, (2) conteúdo de valor, (3) case de sucesso, (4) oferta do Tovia.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Produtividade para founder solo</div>
+      <p>
+        Não tente estar em todas as plataformas. Escolha 2 canais principais (Instagram + YouTube ou Instagram + LinkedIn) e faça bem feito.
+        Um vídeo longo por semana → 3 cortes curtos → 1 carrossel → 1 email = 6 peças de conteúdo por semana com uma única sessão de gravação.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 08 ISCAS -->
+  <section id="iscas">
+    <div class="section-label">08 · Iscas Digitais</div>
+    <h2>Ativos que capturam leads 24/7</h2>
+    <p>
+      Ferramentas gratuitas que resolvem dores adjacentes do organizador. Ao baixar, ele entrega o contato.
+      A isca educa, o follow-up converte.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <div class="feature-name">Checklist: Retiro de Jovens</div>
+        <div class="feature-desc">PDF com 50 itens organizados por fase (60 dias antes → dia do evento → pós). Inclui logística, alimentação, transporte, programação.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💵</div>
+        <div class="feature-name">Planilha de Orçamento</div>
+        <div class="feature-desc">Modelo pronto de orçamento para eventos comunitários. O organizador preenche e vê o custo por participante automaticamente.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Template: Relatório pós-evento</div>
+        <div class="feature-desc">Modelo para apresentar resultados à liderança. Financeiro, participantes, satisfação. "O Tovia gera isso automaticamente."</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-name">Guia: Primeiro evento digital</div>
+        <div class="feature-desc">E-book curto (10 páginas) sobre como sair da inscrição por WhatsApp para um sistema digital. CTA natural para o Tovia.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-title">A regra da isca</div>
+      <p>
+        A isca resolve uma dor real sem o Tovia. Mas ao usar, o organizador percebe que o Tovia automatiza tudo aquilo.
+        A isca é o trailer; o Tovia é o filme. "O dinheiro está na lista" — cada download é um lead qualificado.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 09 ONBOARDING -->
+  <section id="onboarding">
+    <div class="section-label">09 · Onboarding e Ativação</div>
+    <h2>O caminho até o "Aha Moment"</h2>
+    <p>
+      O organizador só está ativado quando sente o poder da ferramenta. Três marcos definem a ativação.
+      O onboarding deve guiar até o terceiro marco no menor tempo possível.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card" style="border-left: 3px solid var(--border);">
+        <div class="feature-name">Marco 1 — Evento criado</div>
+        <div class="feature-desc">Nome, data, local, imagem. O organizador vê o evento existindo no sistema. Validação: "Isso é real."</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--amber);">
+        <div class="feature-name">Marco 2 — Página publicada</div>
+        <div class="feature-desc">Link de inscrição ativo, compartilhável. O organizador manda no grupo do WhatsApp. Validação: "As pessoas estão vendo."</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--green);">
+        <div class="feature-name">Marco 3 — Primeira inscrição paga ✦</div>
+        <div class="feature-desc">Alguém pagou, o dinheiro caiu, a inscrição foi confirmada automaticamente. Validação: "Funciona. Nunca mais volto pra planilha."</div>
+      </div>
+    </div>
+
+    <h3>Táticas de onboarding para founder solo</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tática</th><th>Esforço</th><th>Escala</th><th>Quando usar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chamada 1:1 (WhatsApp/Zoom)</td><td><span class="badge badge-red">Alto</span></td><td>Não escala</td><td>Primeiros 5-10 clientes</td></tr>
+          <tr><td>Onboarding em grupo semanal (Zoom)</td><td><span class="badge badge-amber">Médio</span></td><td>Escala moderada</td><td>Clientes 10-50</td></tr>
+          <tr><td>Vídeos tutoriais (base de conhecimento)</td><td><span class="badge badge-green">Baixo</span></td><td>Escala total</td><td>Sempre (complementa os outros)</td></tr>
+          <tr><td>Onboarding tour no produto</td><td><span class="badge badge-green">Baixo</span></td><td>Escala total</td><td>Já implementado no Tovia</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-violet">
+      <div class="callout-title">Software "orientado ao não-suporte"</div>
+      <p>
+        Com ticket baixo (R$49-299), suporte humano constante mata a margem.
+        O produto deve se explicar sozinho. Se uma função exige manual, ela está errada.
+        Invista em UI clara, mensagens de erro úteis e vídeos curtos — não em chat de suporte 24/7.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 10 FASES -->
+  <section id="fases">
+    <div class="section-label">10 · Fases do GTM</div>
+    <h2>Plano por etapa</h2>
+
+    <div class="phase-card active">
+      <div class="phase-header">
+        <div class="phase-num">1</div>
+        <div>
+          <div class="phase-title">Primeiros 5 clientes — Prospecção pura</div>
+          <div class="phase-sub">Meta: 5 pagantes · Prazo: 60-90 dias · Canal: contato direto</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Listar 50 organizadores (Google Maps, Instagram, rede pessoal)</li>
+          <li>Contatar 5 por dia (WhatsApp, telefone, DM)</li>
+          <li>Oferecer Chinám gratuito para o próximo evento</li>
+          <li>Acompanhar pessoalmente a configuração (1:1)</li>
+          <li>Pedir depoimento + 3 indicações após o evento</li>
+          <li>Converter para Pétach após validação</li>
+          <li>Instalar pixel de remarketing no site</li>
+          <li>Formalizar CNPJ (MEI/ME)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">2</div>
+        <div>
+          <div class="phase-title">Clientes 5-20 — Conteúdo + Indicação</div>
+          <div class="phase-sub">Meta: 20 pagantes · Prazo: 3-6 meses · Canal: orgânico + indicação</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Publicar landing page de conversão com SEO</li>
+          <li>Criar 2 iscas digitais (checklist + planilha de orçamento)</li>
+          <li>Gravar 5 vídeos tutoriais para base de conhecimento</li>
+          <li>1 vídeo longo/semana → 3 cortes curtos (pirâmide de conteúdo)</li>
+          <li>Programa de indicação: "Indique e ganhe 1 mês grátis"</li>
+          <li>Onboarding em grupo semanal via Zoom</li>
+          <li>Buscar 2-3 "baleias" (convenções/associações)</li>
+          <li>Coletar e publicar depoimentos (vídeo + texto)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">3</div>
+        <div>
+          <div class="phase-title">Clientes 20-50 — Escala orgânica</div>
+          <div class="phase-sub">Meta: 50 pagantes / R$5k MRR · Prazo: 6-12 meses · Canal: orgânico + pago leve</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <ul>
+          <li>Tráfego pago com remarketing (orçamento simbólico R$300-500/mês)</li>
+          <li>Sequência de email automatizada (Resend): isca → valor → case → oferta</li>
+          <li>Plano anual com desconto como opção (pague 10, ganhe 12)</li>
+          <li>App mobile lançado (diferencial competitivo)</li>
+          <li>Parcerias com fornecedores de eventos (buffets, sítios, equipamentos)</li>
+          <li>Página de cases no site (organizadores reais, números reais)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 11 MÉTRICAS -->
+  <section id="metricas">
+    <div class="section-label">11 · Métricas de Marketing</div>
+    <h2>O que medir em cada fase</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Métrica</th><th>Fase 1</th><th>Fase 2</th><th>Fase 3</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Contatos/dia (prospecção)</td><td><strong>5/dia</strong></td><td>3/dia</td><td>Automático</td></tr>
+          <tr><td>Taxa de resposta</td><td>Medir</td><td>20%+</td><td>—</td></tr>
+          <tr><td>Conversão contato → Chinám</td><td>Medir</td><td>30%+</td><td>—</td></tr>
+          <tr><td>Conversão Chinám → pago</td><td>Medir</td><td>15-20%</td><td>25%</td></tr>
+          <tr><td>Indicações por cliente</td><td>Medir</td><td>2+</td><td>3+</td></tr>
+          <tr><td>Visitantes/mês (site)</td><td>—</td><td>500+</td><td>2.000+</td></tr>
+          <tr><td>Leads capturados/mês</td><td>—</td><td>30+</td><td>100+</td></tr>
+          <tr><td>CAC</td><td>~R$0 (orgânico)</td><td>&lt;R$30</td><td>&lt;R$50</td></tr>
+          <tr><td>LTV/CAC</td><td>—</td><td>&gt;3x</td><td>&gt;5x</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 12 NÃO FAZER -->
+  <section id="nao-fazer">
+    <div class="section-label">12 · O que Não Fazer</div>
+    <h2>Armadilhas comuns de founder solo</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Preguiça ativa</div>
+        <div class="feature-desc">Refatorar código e criar features periféricas para evitar o desconforto de prospectar. Se não está falando com clientes, está se escondendo.</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Tráfego pago sem base</div>
+        <div class="feature-desc">Gastar com anúncios antes de ter landing page, depoimentos e proposta de valor validada. Queima dinheiro sem conversão.</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Customizações para clientes</div>
+        <div class="feature-desc">Aceitar pedidos de features específicas de um cliente. O Tovia atende a massa. Se uma função exige manual, ela está errada.</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Todas as plataformas ao mesmo tempo</div>
+        <div class="feature-desc">Tentar estar no Instagram, TikTok, YouTube, LinkedIn, Twitter e Facebook. Escolha 2, faça bem feito, expanda depois.</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Preço baixo demais</div>
+        <div class="feature-desc">Cobrar R$19/mês "pra facilitar" atrai cliente ruim e gera churn. R$49 (Pétach) seleciona quem leva o evento a sério.</div>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid var(--red);">
+        <div class="feature-name">❌ Ancorar por baixo</div>
+        <div class="feature-desc">Mostrar o Pétach primeiro e subir. Sempre comece mostrando o Koách ou Chalém (ancoragem alta) e faça downgrade se necessário.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-title">A única métrica que importa agora</div>
+      <p>
+        Quantos organizadores você contatou hoje? Se a resposta é zero, nenhuma outra métrica importa.
+        O Go-To-Market não é um evento de lançamento — é um processo diário de ir ao campo e falar com gente.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top: 0.5px solid var(--border); padding-top: 32px; margin-top: 48px;">
+    <p style="font-size: 11px; color: var(--text-muted); line-height: 1.7;">
+      <strong>Tovia</strong> — Marketing, Vendas e Go-To-Market · Documento interno<br>
+      Atualizado em setembro de 2026. Revisão: mensal ou ao mudar de fase.<br>
+      Referências: KPIs e Métricas, Documento de Produto, Backlog.<br>
+      Fontes: Plano GTM (Gemini Notebook, 99 fontes), Pirâmide de Conteúdo (Copywriter Ninja),
+      Isso É Marketing (Seth Godin), Estratégia de Marca (Jonas Castro), Gatilhos Mentais (Rapha Falcão).
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

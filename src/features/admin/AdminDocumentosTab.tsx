@@ -55,6 +55,14 @@ const DOCS: Doc[] = [
     updatedAt: '2026-07-24',
   },
   {
+    id: 'marketing-gtm',
+    title: 'Marketing e Go-To-Market',
+    description: 'Posicionamento, prospecção direta, gatilhos, conteúdo, pirâmide de distribuição e fases do GTM.',
+    file: '/docs/marketing-gtm-tovia.html',
+    hasPreview: true,
+    updatedAt: '2026-09-03',
+  },
+  {
     id: 'kpis',
     title: 'KPIs e Métricas',
     description: 'North Star, funil de conversão, modelo financeiro, OKRs e metas por fase. Scorecard completo.',
