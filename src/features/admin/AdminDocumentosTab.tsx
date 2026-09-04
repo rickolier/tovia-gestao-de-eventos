@@ -23,7 +23,7 @@ const DOCS: Doc[] = [
   {
     id: 'codigos-erro',
     title: 'Códigos de Erro',
-    description: '62 erros mapeados com códigos públicos (TV001…) e internos. 97 testes passando.',
+    description: '62 erros mapeados com códigos públicos (TV001…) e internos. 164 testes passando.',
     file: '/docs/codigos-erro.html',
     hasPreview: true,
     updatedAt: '2026-08-21',

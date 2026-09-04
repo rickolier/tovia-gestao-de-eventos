@@ -640,7 +640,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">Testes automatizados</div><div class="infra-stage-scale">Vitest</div></div>
-        <div class="infra-tools">97 testes automatizados (Vitest) em 7 arquivos, cobrindo os endpoints mais críticos: webhook de pagamento de eventos, webhook de assinaturas, checkout, criação de cobranças e configuração de gateway. Validam segurança, fluxos de pagamento, emails transacionais e edge cases.</div>
+        <div class="infra-tools">164 testes automatizados (Vitest) em 11 arquivos, cobrindo API (webhooks, checkout, cobranças, gateway) e frontend (validators, masks CPF/CNPJ/telefone, planos, admin-config, geração de códigos).</div>
       </div>
       <div class="infra-stage">
         <div><div class="infra-stage-label">CI/CD</div><div class="infra-stage-scale">GitHub Actions</div></div>
@@ -918,7 +918,7 @@ section > p, .body-text { font-size: 15px; color: var(--text-secondary); line-he
             <li>Onboarding com tour guiado interativo</li>
             <li>Criptografia AES-256-GCM para chaves de gateway</li>
             <li>Monitoramento de erros em produção via Sentry</li>
-            <li>97 testes automatizados (Vitest) em 7 arquivos + CI/CD via GitHub Actions (lint + npm audit + test)</li>
+            <li>164 testes automatizados (Vitest) em 11 arquivos + CI/CD via GitHub Actions (lint + audit + test)</li>
             <li>Validação de entrada com Zod em todos os endpoints + TypeScript strict (zero @ts-nocheck)</li>
             <li>Domínios registrados (GoDaddy), email corporativo (Zoho Mail), email transacional (Resend)</li>
           </ul>
