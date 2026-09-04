@@ -44,6 +44,7 @@ export interface UserProfile {
   pagina_publica?: boolean;
   onboardingComplete?: boolean;
   desativado?: boolean;
+  email_verificado?: boolean;
   gateway_connected?: boolean;
   gateway?: GatewayConfig;
 }

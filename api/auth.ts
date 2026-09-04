@@ -193,6 +193,7 @@ async function handleConfirmarCodigoVerificacao(req: VercelRequest, res: VercelR
 
     const userRecord = await getAuth(getApp()).getUser(data.userId);
     await getAuth(getApp()).updateUser(data.userId, { emailVerified: true });
+    await db.collection('users').doc(data.userId).update({ email_verificado: true });
     await docRef.delete();
 
     void sendWelcomeEmail(userRecord.email!, userRecord.displayName || 'organizador');
