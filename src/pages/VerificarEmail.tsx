@@ -33,6 +33,7 @@ export default function VerificarEmail() {
       await user.reload();
       if (user.emailVerified) {
         clearInterval(interval);
+        await user.getIdToken(true);
         doRedirect();
       }
     }, 5000);

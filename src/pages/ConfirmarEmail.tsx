@@ -24,6 +24,7 @@ export default function ConfirmarEmail() {
           setStatus('success');
           if (user) {
             await user.reload();
+            await user.getIdToken(true);
             await refreshProfile?.();
           }
           setTimeout(() => navigate('/onboarding', { replace: true }), 2000);
