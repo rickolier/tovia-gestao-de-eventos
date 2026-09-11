@@ -11,6 +11,7 @@ import {
   CreditCard, QrCode, Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
 const MODULE_LABELS = ['Inscrições', 'Financeiro', 'Gestão do Evento'];
@@ -29,11 +30,19 @@ export default function Onboarding() {
   const [selected, setSelected] = useState<PlanLevel>('koach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
+  const [saving, setSaving] = useState(false);
   const handleConfirm = async () => {
-    if (!user) return;
+    if (!user || saving) return;
+    setSaving(true);
     if (selected === 'chinam') {
-      await updateDocument('users', user.uid, { plano: 'chinam', onboardingComplete: true });
-      window.location.href = '/dashboard';
+      try {
+        await updateDocument('users', user.uid, { plano: 'chinam', onboardingComplete: true });
+        window.location.href = '/dashboard';
+      } catch (err) {
+        console.error('Onboarding save error:', err);
+        toast.error('Erro ao salvar. Tente novamente.');
+        setSaving(false);
+      }
       return;
     }
     navigate('/checkout-plano', {
