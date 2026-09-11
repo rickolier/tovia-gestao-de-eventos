@@ -7,7 +7,7 @@ import { Mail, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function VerificarEmail() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshUser } = useAuth();
   const navigate = useNavigate();
 
   const [resending, setResending] = useState(false);
@@ -33,7 +33,7 @@ export default function VerificarEmail() {
       await user.reload();
       if (user.emailVerified) {
         clearInterval(interval);
-        await user.getIdToken(true);
+        await refreshUser();
         doRedirect();
       }
     }, 5000);

@@ -18,6 +18,7 @@ interface AuthContextType {
   loginAsDemo: () => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   processEquipeJoin: (eventoId: string) => Promise<string | null>;
 }
 
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType>({
   loginAsDemo: async () => {},
   logout: () => {},
   refreshProfile: async () => {},
+  refreshUser: async () => {},
   processEquipeJoin: async () => null,
 });
 
@@ -74,6 +76,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshUser = async () => {
+    const current = auth.currentUser;
+    if (!current) return;
+    await current.reload();
+    await current.getIdToken(true);
+    setUser(Object.assign(Object.create(Object.getPrototypeOf(current)), current));
   };
 
   const refreshProfile = async () => {
@@ -247,7 +257,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isAuthReady, loginAsDemo, logout, refreshProfile, processEquipeJoin }}>
+    <AuthContext.Provider value={{ user, profile, loading, isAuthReady, loginAsDemo, logout, refreshProfile, refreshUser, processEquipeJoin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,7 +9,7 @@ export default function ConfirmarEmail() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const navigate = useNavigate();
-  const { user, refreshProfile } = useAuth();
+  const { user, refreshProfile, refreshUser } = useAuth();
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMsg, setErrorMsg] = useState('');
@@ -23,8 +23,7 @@ export default function ConfirmarEmail() {
         if (res.ok) {
           setStatus('success');
           if (user) {
-            await user.reload();
-            await user.getIdToken(true);
+            await refreshUser();
             await refreshProfile?.();
           }
           setTimeout(() => navigate('/onboarding', { replace: true }), 2000);
