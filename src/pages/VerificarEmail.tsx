@@ -41,11 +41,8 @@ export default function VerificarEmail() {
   }, [user]);
 
   function doRedirect() {
-    if (profileRef.current?.planoPendente) {
-      navigate('/planos/aguardando', { replace: true });
-    } else {
-      navigate('/onboarding', { replace: true });
-    }
+    const dest = profileRef.current?.planoPendente ? '/planos/aguardando' : '/onboarding';
+    window.location.href = dest;
   }
 
   const sendLink = async () => {
