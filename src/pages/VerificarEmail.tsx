@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
+import { auth } from '~/services/firebase';
 import Logo from '~/components/Logo';
-import { Button } from '@/components/ui/button';
 import { Mail, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function VerificarEmail() {
-  const { user, profile, refreshUser } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
   const [resending, setResending] = useState(false);
@@ -26,14 +26,14 @@ export default function VerificarEmail() {
     if (user.emailVerified) { doRedirect(); }
   }, [user]);
 
-  // Poll for verification every 5s
   useEffect(() => {
     if (!user || user.emailVerified) return;
     const interval = setInterval(async () => {
-      await user.reload();
-      if (user.emailVerified) {
+      const current = auth.currentUser;
+      if (!current) return;
+      await current.reload();
+      if (current.emailVerified) {
         clearInterval(interval);
-        await refreshUser();
         doRedirect();
       }
     }, 5000);
@@ -49,11 +49,13 @@ export default function VerificarEmail() {
     if (!user || resendCooldown > 0 || resending) return;
     setResending(true);
     try {
-      const idToken = await user.getIdToken();
+      const current = auth.currentUser;
+      if (!current) return;
+      const idToken = await current.getIdToken();
       const res = await fetch('/api/auth?action=enviarCodigoVerificacao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({ userId: user.uid }),
+        body: JSON.stringify({ userId: current.uid }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -62,7 +64,6 @@ export default function VerificarEmail() {
       }
       if (data.alreadyVerified) {
         toast.success('E-mail já verificado!');
-        await user.reload();
         doRedirect();
         return;
       }

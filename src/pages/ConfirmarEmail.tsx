@@ -17,7 +17,7 @@ export default function ConfirmarEmail() {
   useEffect(() => {
     if (!token) { setStatus('error'); setErrorMsg('Link inválido.'); return; }
 
-    fetch(`/api/confirmarCodigoVerificacao?token=${token}`)
+    fetch(`/api/auth?action=confirmarCodigoVerificacao&token=${encodeURIComponent(token)}`)
       .then(async (res) => {
         const data = await res.json().catch(() => ({}));
         if (res.ok) {
