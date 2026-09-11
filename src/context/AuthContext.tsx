@@ -199,7 +199,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               nome: firebaseUser.displayName || (isAdmin ? 'Admin' : ''),
               email: firebaseUser.email || '',
-              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? 'chinam',
+              plano: isAdmin ? null : (testPlan as PlanLevel | null) ?? null,
               codigo: isAdmin ? undefined : gerarCodigoProdutor(),
               onboardingComplete: false,
             };
