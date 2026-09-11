@@ -26,7 +26,7 @@ export default function ConfirmarEmail() {
             await refreshUser();
             await refreshProfile?.();
           }
-          setTimeout(() => navigate('/onboarding', { replace: true }), 2000);
+          setTimeout(() => navigate('/verificar-email', { replace: true }), 2000);
         } else {
           setStatus('error');
           setErrorMsg(data.error || 'Erro ao confirmar e-mail.');
