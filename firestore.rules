@@ -95,7 +95,7 @@ service cloud.firestore {
           'redes_social', 'link_importante_1', 'link_importante_2',
           'contato_email', 'site', 'telefone', 'imagem_url', 'updatedAt',
           'cnpj', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'pagina_publica',
-          'onboardingComplete'
+          'onboardingComplete', 'plano'
         ])
       );
       // Toggle pagina_publica isolado — sem exigir isValidUser (não toca nome/email)
