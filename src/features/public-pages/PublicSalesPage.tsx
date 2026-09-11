@@ -4,7 +4,6 @@ import { getDocument, listDocuments } from '~/services/firestore';
 import { Evento, Ticket, PaginaVenda } from '~/types';
 import { GlobeLock, Loader2 } from 'lucide-react';
 import SalesPageContent from '~/features/public-pages/SalesPageContent';
-import { where } from 'firebase/firestore';
 
 export function PublicSalesPageByCodigo() {
   const { orgCodigo, eventoCodigo, paginaCodigo } = useParams<{ orgCodigo: string; eventoCodigo: string; paginaCodigo: string }>();
@@ -13,10 +12,11 @@ export function PublicSalesPageByCodigo() {
 
   useEffect(() => {
     if (!eventoCodigo || !paginaCodigo) { setNotFound(true); return; }
-    listDocuments<Evento>('eventos', [where('codigo', '==', eventoCodigo)])
-      .then(results => {
-        if (results.length === 0) { setNotFound(true); return; }
-        setEventoId(results[0].id);
+    fetch(`/api/resolveEventCode?codigo=${encodeURIComponent(eventoCodigo)}`)
+      .then(async (res) => {
+        if (!res.ok) { setNotFound(true); return; }
+        const data = await res.json();
+        setEventoId(data.eventoId);
       })
       .catch(() => setNotFound(true));
   }, [eventoCodigo, paginaCodigo]);
