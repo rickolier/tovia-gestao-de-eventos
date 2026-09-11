@@ -32,9 +32,8 @@ export default function Onboarding() {
   const handleConfirm = async () => {
     if (!user) return;
     if (selected === 'chinam') {
-      await updateDocument('users', user.uid, { onboardingComplete: true });
-      await refreshProfile();
-      navigate('/dashboard');
+      await updateDocument('users', user.uid, { plano: 'chinam', onboardingComplete: true });
+      window.location.href = '/dashboard';
       return;
     }
     navigate('/checkout-plano', {
