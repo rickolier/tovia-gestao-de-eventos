@@ -1,8 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getApp } from './_firebase';
-import { getFirestore } from 'firebase-admin/firestore';
-
-const db = getFirestore(getApp());
+import { db } from './_firebase';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método não permitido.' });
