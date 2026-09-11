@@ -12,7 +12,7 @@ export function PublicSalesPageByCodigo() {
 
   useEffect(() => {
     if (!eventoCodigo || !paginaCodigo) { setNotFound(true); return; }
-    fetch(`/api/resolveEventCode?codigo=${encodeURIComponent(eventoCodigo)}`)
+    fetch(`/api/auth?action=resolveEventCode&codigo=${encodeURIComponent(eventoCodigo)}`)
       .then(async (res) => {
         if (!res.ok) { setNotFound(true); return; }
         const data = await res.json();
