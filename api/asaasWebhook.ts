@@ -1,3 +1,5 @@
+// Webhook de BILLING da plataforma — Asaas notifica sobre assinaturas de planos (Pétach/Koách/Chalém).
+// NÃO confundir com eventPaymentWebhook.ts, que trata pagamentos de eventos (BYOG do organizador).
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';

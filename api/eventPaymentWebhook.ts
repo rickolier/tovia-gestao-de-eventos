@@ -1,3 +1,5 @@
+// Webhook de PAGAMENTOS DE EVENTOS (BYOG) — gateway do organizador notifica sobre inscrições/doações.
+// NÃO confundir com asaasWebhook.ts, que trata billing da plataforma (assinaturas de planos).
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createHash, timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
