@@ -1,0 +1,15 @@
+{
+  "name": "Tovia — Gestão de Eventos",
+  "short_name": "Tovia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F0E8",
+  "theme_color": "#FF6B1A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
