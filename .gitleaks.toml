@@ -1,0 +1,7 @@
+title = "Tovia gitleaks config"
+
+[allowlist]
+  paths = [
+    '''package-lock\.json''',
+    '''\.gitleaks\.toml''',
+  ]
