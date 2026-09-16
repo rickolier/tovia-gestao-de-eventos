@@ -66,6 +66,17 @@ export interface CampoFormulario {
   opcoes?: string[];
 }
 
+export interface EventoSnapshot {
+  nome: string;
+  data_inicio: string;
+  data_fim: string;
+  local: string;
+  descricao?: string;
+  imagem_url?: string;
+  criado_por: string;
+  cor_tema?: string;
+}
+
 export interface PaginaVenda {
   id: string;
   eventoId: string;
@@ -78,6 +89,7 @@ export interface PaginaVenda {
   campos_formulario: CampoFormulario[];
   link_pagamento?: string;
   criado_em: string;
+  evento_snapshot?: EventoSnapshot;
 }
 
 export interface Cupom {

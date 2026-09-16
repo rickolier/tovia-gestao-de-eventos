@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { listDocuments, createDocument, updateDocument, removeDocument, getDocument } from '~/services/firestore';
 import { PaginaVenda, CampoFormulario, Ticket, Evento, UserProfile } from '~/types';
+import { buildEventoSnapshot } from '~/utils/eventoSnapshot.js';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import { gerarCodigoPagina } from '~/utils/codigos';
@@ -106,15 +107,16 @@ export function useSalesPagesTab(eventoId: string) {
     if (conflict) { toast.error('Já existe uma página com este slug. Escolha outro nome.'); return; }
 
     try {
+      const snapshot = evento ? buildEventoSnapshot(evento) : undefined;
       if (editingId) {
         const original = paginas.find(p => p.id === editingId)!;
-        const updated: PaginaVenda = { ...original, ...form, slug };
+        const updated: PaginaVenda = { ...original, ...form, slug, ...(snapshot ? { evento_snapshot: snapshot } : {}) };
         await createDocument(`eventos/${eventoId}/paginas_venda`, editingId, updated as any);
         setPaginas(prev => prev.map(p => p.id === editingId ? updated : p));
         toast.success('Página atualizada!');
       } else {
         const id = uuidv4();
-        const nova: PaginaVenda = { id, eventoId, ...form, slug, codigo: gerarCodigoPagina(), criado_em: new Date().toISOString() };
+        const nova: PaginaVenda = { id, eventoId, ...form, slug, codigo: gerarCodigoPagina(), criado_em: new Date().toISOString(), ...(snapshot ? { evento_snapshot: snapshot } : {}) };
         await createDocument(`eventos/${eventoId}/paginas_venda`, id, nova as any);
         setPaginas(prev => [...prev, nova]);
         toast.success('Página de vendas criada!');

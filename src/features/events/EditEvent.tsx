@@ -12,6 +12,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEventImageUpload } from './hooks/useEventImageUpload';
 import { toast } from 'sonner';
 import { Evento } from '~/types';
+import { buildEventoSnapshot, syncEventoSnapshot } from '~/utils/eventoSnapshot.js';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getPlanConfig } from '~/utils/plan-limits';
 import { Badge } from '@/components/ui/badge';
@@ -155,6 +156,11 @@ export default function EditEvent() {
       };
 
       await updateDocument('eventos', id, eventData);
+
+      const updatedEvento = { ...eventoOriginal!, ...eventData } as Evento;
+      const snapshot = buildEventoSnapshot(updatedEvento);
+      syncEventoSnapshot(id, snapshot).catch(() => {});
+
       toast.success('Evento atualizado com sucesso!');
       navigate(`/eventos/${id}`);
     } catch (error: any) {

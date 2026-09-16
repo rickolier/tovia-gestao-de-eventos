@@ -42,6 +42,28 @@ export function PublicSalesPageByCodigo() {
   return <PublicSalesPageByEventoId eventoId={eventoId} paginaCodigo={paginaCodigo!} />;
 }
 
+function eventoFromSnapshot(eventoId: string, pagina: PaginaVenda): Evento {
+  const s = pagina.evento_snapshot!;
+  return {
+    id: eventoId,
+    nome: s.nome,
+    data_inicio: s.data_inicio,
+    data_fim: s.data_fim,
+    local: s.local,
+    descricao: s.descricao,
+    imagem_url: s.imagem_url,
+    criado_por: s.criado_por,
+    cor_tema: s.cor_tema,
+    instituicao: '',
+    vagas_totais: 0,
+    habilita_doacoes: false,
+    ativo: true,
+    config_pagamento: {} as any,
+    config_comunicacao: {} as any,
+    campos_customizados: [],
+  };
+}
+
 function PublicSalesPageByEventoId({ eventoId, paginaCodigo }: { eventoId: string; paginaCodigo: string }) {
   const [loading, setLoading] = useState(true);
   const [evento, setEvento] = useState<Evento | null>(null);
@@ -51,15 +73,16 @@ function PublicSalesPageByEventoId({ eventoId, paginaCodigo }: { eventoId: strin
   useEffect(() => {
     (async () => {
       try {
-        const [eventoData, paginasData] = await Promise.all([
-          getDocument<Evento>('eventos', eventoId),
-          listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`),
-        ]);
-        if (!eventoData) { setLoading(false); return; }
-        setEvento({ ...eventoData, id: eventoId });
+        const paginasData = await listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`);
         const pag = paginasData.find(p => p.codigo === paginaCodigo);
         if (!pag || !pag.ativa) { setLoading(false); return; }
         setPagina(pag);
+        if (pag.evento_snapshot) {
+          setEvento(eventoFromSnapshot(eventoId, pag));
+        } else {
+          const eventoData = await getDocument<Evento>('eventos', eventoId);
+          if (eventoData) setEvento({ ...eventoData, id: eventoId });
+        }
         const allTickets = await listDocuments<Ticket>(`eventos/${eventoId}/tickets`);
         setTickets(allTickets.filter(t => pag.ticketIds.includes(t.id)));
       } catch { /* ignore */ }
@@ -103,15 +126,16 @@ export default function PublicSalesPage() {
     if (!eventoId || !slug) { setLoading(false); return; }
     (async () => {
       try {
-        const [eventoData, paginasData] = await Promise.all([
-          getDocument<Evento>('eventos', eventoId),
-          listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`),
-        ]);
-        if (!eventoData) { setLoading(false); return; }
-        setEvento({ ...eventoData, id: eventoId });
+        const paginasData = await listDocuments<PaginaVenda>(`eventos/${eventoId}/paginas_venda`);
         const pag = paginasData.find(p => p.slug === slug);
         if (!pag || !pag.ativa) { setLoading(false); return; }
         setPagina(pag);
+        if (pag.evento_snapshot) {
+          setEvento(eventoFromSnapshot(eventoId, pag));
+        } else {
+          const eventoData = await getDocument<Evento>('eventos', eventoId);
+          if (eventoData) setEvento({ ...eventoData, id: eventoId });
+        }
         const allTickets = await listDocuments<Ticket>(`eventos/${eventoId}/tickets`);
         setTickets(allTickets.filter(t => pag.ticketIds.includes(t.id)));
       } catch { /* ignore */ }
