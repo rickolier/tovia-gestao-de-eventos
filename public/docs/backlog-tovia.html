@@ -157,7 +157,7 @@
 <body>
 <div class="doc">
   <h1>Backlog Tovia</h1>
-  <p class="subtitle">Atualizado em 3 de setembro de 2026 &mdash; 29 itens pendentes &mdash; 164 testes passando (Vitest) &mdash; CI: lint + audit + test</p>
+  <p class="subtitle">Atualizado em 16 de setembro de 2026 &mdash; 18 itens pendentes (11 resolvidos) &mdash; 164 testes passando (Vitest) &mdash; CI: lint + audit + test + gitleaks</p>
 
   <!-- BUGS -->
   <div class="section">
@@ -168,7 +168,7 @@
         <td>1</td>
         <td>
           <div class="item-title">Webhook gateway: validar em produção</div>
-          <div class="item-desc">Código em <code>eventPaymentWebhook.ts</code> funciona e tem testes (97 passando). Falta validar end-to-end com pagamento real de um organizador externo. URL do webhook precisa estar correta no painel do gateway do organizador.</div>
+          <div class="item-desc">Dois webhooks ativos e documentados: <code>asaasWebhook.ts</code> (billing plataforma) e <code>eventPaymentWebhook.ts</code> (BYOG eventos). Token migrado para <code>organizer_secrets</code> com validação SHA-256. Falta validação end-to-end com pagamento real de organizador externo.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>A verificar</td>
       </tr>
@@ -183,26 +183,10 @@
       <tr>
         <td>2</td>
         <td>
-          <div class="item-title">Migrar Cloud Functions para Vercel</div>
-          <div class="item-desc">Código duplicado em <code>api/</code> (Vercel) e <code>functions/</code> (Firebase). Falta remover duplicatas do Firebase e confirmar que as versões Vercel são as ativas em produção.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Parcial</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>
-          <div class="item-title">Firestore Rules para gateway</div>
-          <div class="item-desc">Regras básicas existem para <code>organizer_public/{userId}</code>. Faltam proteções específicas para campos sensíveis (<code>encrypted_api_key</code>, <code>encrypted_webhook_token</code>). Segurança delegada ao Admin SDK por ora.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Parcial</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>
           <div class="item-title">Resend API keys instáveis</div>
-          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes, sem solução definitiva. Resend integrado em 5 endpoints da API.</div>
+          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes. Mitigado: abstração <code>EmailProvider</code> com failover em <code>api/_email/</code>. Se Resend cair, basta adicionar segundo provider.</div>
         </td>
-        <td><span class="status-dot dot-yellow"></span>Recorrente</td>
+        <td><span class="status-dot dot-yellow"></span>Mitigado</td>
       </tr>
     </table>
   </div>
@@ -212,11 +196,11 @@
     <div class="section-title"><span class="badge badge-green">Produto</span> Features pendentes</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>5</td><td><div class="item-title">SEO completo</div><div class="item-desc">Tem <code>&lt;title&gt;</code> e <code>&lt;meta description&gt;</code>. Faltam: Open Graph tags, <code>sitemap.xml</code>, <code>robots.txt</code>, Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>6</td><td><div class="item-title">PWA (Progressive Web App)</div><div class="item-desc">Sem <code>manifest.json</code> e sem service worker. App não é instalável no celular via navegador.</div></td><td><span class="status-dot dot-red"></span>Pendente</td></tr>
-      <tr><td>7</td><td><div class="item-title">Publicar Tovia Mobile nas lojas</div><div class="item-desc">Projeto Expo funcional em <code>mobile/app/</code>. Spec completa em <code>tovia-mobile-spec.html</code>. Não publicado na App Store / Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>8</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Abstração PaymentProvider implementada. URL de produção corrigida (set/2026). Falta validação end-to-end com organizador externo.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>9</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. Relatórios financeiros limitados ao evento individual.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>3</td><td><div class="item-title">SEO completo</div><div class="item-desc">Open Graph, Twitter Card, <code>sitemap.xml</code>, <code>robots.txt</code> adicionados (set/2026). Falta: Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>4</td><td><div class="item-title">PWA (Progressive Web App)</div><div class="item-desc"><code>manifest.json</code> criado (set/2026). Falta service worker para funcionar offline e ser instalável.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>5</td><td><div class="item-title">Publicar Tovia Mobile nas lojas</div><div class="item-desc">Projeto Expo funcional em <code>mobile/app/</code>. Spec completa em <code>tovia-mobile-spec.html</code>. Não publicado na App Store / Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>6</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Abstração PaymentProvider implementada. Segredos em <code>organizer_secrets</code>. Falta validação end-to-end com organizador externo.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>7</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. Relatórios financeiros limitados ao evento individual.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -225,11 +209,11 @@
     <div class="section-title"><span class="badge badge-blue">Fase 3</span> Crescimento</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>10</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente. Nenhuma referência a googleapis no codebase.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>11</td><td><div class="item-title">Webhooks customizáveis para organizadores</div><div class="item-desc">Webhook de pagamento existe mas é interno. Organizador não pode configurar webhooks próprios.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>12</td><td><div class="item-title">Analytics de comportamento</div><div class="item-desc">Sentry funciona para error tracking. Sem analytics de uso (GA, Mixpanel, PostHog).</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>13</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Stripe, Pagar.me e Mercado Pago. Abstração PaymentProvider já suporta multi-gateway, mas apenas Asaas implementado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>14</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>8</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente. Nenhuma referência a googleapis no codebase.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>9</td><td><div class="item-title">Webhooks customizáveis para organizadores</div><div class="item-desc">Webhook de pagamento existe mas é interno. Organizador não pode configurar webhooks próprios.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>10</td><td><div class="item-title">Analytics de comportamento</div><div class="item-desc">Sentry funciona para error tracking. Sem analytics de uso (GA, Mixpanel, PostHog).</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>11</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Stripe, Pagar.me e Mercado Pago. Abstração PaymentProvider já suporta multi-gateway, mas apenas Asaas implementado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>12</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -238,30 +222,22 @@
     <div class="section-title"><span class="badge badge-purple">Fase 4</span> Escala</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>15</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros. Sem documentação OpenAPI/Swagger.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>16</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas. Sem diferenciação no produto.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>17</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>18</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Strings hardcoded em português. Sem framework i18n.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>13</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros. Sem documentação OpenAPI/Swagger.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>14</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas. Sem diferenciação no produto.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>15</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>16</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Strings hardcoded em português. Sem framework i18n.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
-  <!-- CACHE -->
-  <div class="section">
-    <div class="section-title"><span class="badge badge-gray">Cache</span> Performance</div>
-    <table>
-      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>19</td><td><div class="item-title">Firestore persistence (offline cache)</div><div class="item-desc">Sem <code>enablePersistence()</code>. Dados precisam de rede para carregar.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>20</td><td><div class="item-title">React Query ou SWR</div><div class="item-desc">Sem caching client-side. Cada navegação refaz as queries do Firestore.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-    </table>
-  </div>
+  <!-- CACHE — Firestore persistence e React Query implementados em set/2026 -->
 
   <!-- NOTAS FISCAIS -->
   <div class="section">
     <div class="section-title"><span class="badge badge-purple">NF</span> Notas Fiscais (pós-pagamentos)</div>
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
-      <tr><td>21</td><td><div class="item-title">NF da taxa Tovia</div><div class="item-desc">NFS-e automática via API do gateway. Requer configuração fiscal: inscrição municipal, CNAE, série RPS, credenciais da prefeitura. Configuração única.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
-      <tr><td>22</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Organizador configura dados fiscais próprios. Complexo: Simples Nacional vs Lucro Presumido. Sugestão: feature premium para Koách/Chalém.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>17</td><td><div class="item-title">NF da taxa Tovia</div><div class="item-desc">NFS-e automática via API do gateway. Requer configuração fiscal: inscrição municipal, CNAE, série RPS, credenciais da prefeitura. Configuração única.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>18</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Organizador configura dados fiscais próprios. Complexo: Simples Nacional vs Lucro Presumido. Sugestão: feature premium para Koách/Chalém.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
   </div>
 
@@ -271,47 +247,7 @@
     <table>
       <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
       <tr>
-        <td>23</td>
-        <td>
-          <div class="item-title">eventos/{id} GET expõe config_pagamento</div>
-          <div class="item-desc">Necessário para páginas de venda, mas expõe dados internos (taxas, métodos, parcelas). Ideal: doc público separado com apenas os campos necessários.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Risco baixo</td>
-      </tr>
-      <tr>
-        <td>24</td>
-        <td>
-          <div class="item-title">organizer_public expõe webhook_token_hash</div>
-          <div class="item-desc">SHA-256 one-way, risco baixo mas desnecessário no doc público.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Risco baixo</td>
-      </tr>
-      <tr>
-        <td>25</td>
-        <td>
-          <div class="item-title">EquipeTab.tsx não conectada</div>
-          <div class="item-desc">414 linhas de código em <code>src/features/events/tabs/EquipeTab.tsx</code> nunca importado. Feature órfã: decidir conectar ao EventDetail ou remover.</div>
-        </td>
-        <td><span class="status-dot dot-yellow"></span>Órfão</td>
-      </tr>
-      <tr>
-        <td>26</td>
-        <td>
-          <div class="item-title">Scan de secrets no CI (gitleaks)</div>
-          <div class="item-desc">Adicionar <code>gitleaks</code> ou <code>trufflehog</code> ao pipeline CI para detectar chaves e tokens commitados acidentalmente. Hoje <code>.gitignore</code> bloqueia <code>.env*</code>, mas sem varredura automática.</div>
-        </td>
-        <td><span class="status-dot dot-red"></span>Pendente</td>
-      </tr>
-      <tr>
-        <td>27</td>
-        <td>
-          <div class="item-title">Threat model documentado</div>
-          <div class="item-desc">Mapear ativos (dados de inscritos, chaves de gateway, dados financeiros), atacantes e superfícies de ataque (APIs públicas, webhooks, páginas de inscrição). Gerar checklist de requisitos.</div>
-        </td>
-        <td><span class="status-dot dot-red"></span>Pendente</td>
-      </tr>
-      <tr>
-        <td>28</td>
+        <td>19</td>
         <td>
           <div class="item-title">Testes de payload malicioso</div>
           <div class="item-desc">Testes automatizados com payloads de XSS refletido e injection nos endpoints públicos. Validação Zod existe mas sem testes que confirmem rejeição de inputs maliciosos.</div>
@@ -319,20 +255,29 @@
         <td><span class="status-dot dot-red"></span>Pendente</td>
       </tr>
       <tr>
-        <td>29</td>
+        <td>20</td>
         <td>
           <div class="item-title">SAST (análise estática de segurança)</div>
           <div class="item-desc">Adicionar <code>semgrep</code> ou <code>CodeQL</code> ao CI. Detecta padrões inseguros como eval(), innerHTML, uso direto de req.body sem validação.</div>
         </td>
         <td><span class="status-dot dot-gray"></span>Futuro</td>
       </tr>
+      <tr>
+        <td>21</td>
+        <td>
+          <div class="item-title">Testes de Firestore rules</div>
+          <div class="item-desc">Harness com <code>@firebase/rules-unit-testing</code> para validar regras automaticamente. Bloqueado: requer Java instalado para o emulador Firebase.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>Bloqueado</td>
+      </tr>
     </table>
   </div>
 
   <div class="note">
     <strong>Sobre este documento:</strong> Apenas itens pendentes, parciais ou futuros. Itens concluídos foram removidos (ver histórico git para referência).<br/><br/>
-    <strong>Números do codebase (set/2026):</strong> 164 testes passando (Vitest), 62 códigos de erro mapeados, CI com lint + npm audit + test, criptografia AES-256-GCM para chaves de gateway, validação Zod em todas as APIs, Firebase Auth + Sentry + Resend integrados.<br/><br/>
-    <strong>Documentos relacionados:</strong> <code>tovia-mobile-spec.html</code> (spec mobile), <code>documento-produto.html</code> (roadmap), <code>brandguide-checklist.html</code> (brand guide), <code>codigos-erro.html</code> (62 erros, 164 testes).
+    <strong>Itens resolvidos em set/2026 (Tier 0+1+2):</strong> migração de segredos para <code>organizer_secrets</code>, Firestore rules deployadas, <code>evento_snapshot</code> em paginas_venda, gitleaks no CI, threat model documentado, abstração EmailProvider com failover, webhooks documentados, EquipeTab órfã removida, package name corrigido, Open Graph + manifest.json + robots.txt + sitemap.xml, Firestore persistence offline, React Query instalado.<br/><br/>
+    <strong>Números do codebase (set/2026):</strong> 164 testes passando (Vitest), 62 códigos de erro mapeados, CI com lint + npm audit + test + gitleaks, criptografia AES-256-GCM para chaves de gateway, validação Zod em todas as APIs, Firebase Auth + Sentry + Resend integrados, React Query + Firestore persistence habilitados.<br/><br/>
+    <strong>Documentos relacionados:</strong> <code>tovia-mobile-spec.html</code> (spec mobile), <code>documento-produto.html</code> (roadmap), <code>brandguide-checklist.html</code> (brand guide), <code>codigos-erro.html</code> (62 erros, 164 testes), <code>threat-model-rascunho.md</code> (threat model).
   </div>
 </div>
 </body>
