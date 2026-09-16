@@ -1,6 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '~/context/AuthContext';
 import { ThemeProvider } from '~/context/ThemeProvider';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 1000 * 60 * 5, retry: 1 },
+  },
+});
 import Login from './pages/Login';
 import Dashboard from '~/features/dashboard/Dashboard';
 import CreateEvent from '~/features/events/CreateEvent';
@@ -98,6 +105,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light" storageKey="tovia-theme">
       <AuthProvider>
         <Router>
@@ -176,5 +184,6 @@ export default function App() {
         </Router>
       </AuthProvider>
     </ThemeProvider>
+    </QueryClientProvider>
   );
 }
