@@ -35,7 +35,7 @@ function webhookReq(eventType: string, paymentOverrides: Record<string, any> = {
 
 function seedEventWithToken(eventoId = 'evt1', organizerId = 'org1') {
   seedDoc('eventos', eventoId, { criado_por: organizerId, nome: 'Evento Teste' });
-  seedDoc('organizer_public', organizerId, { webhook_token_hash: TOKEN_HASH });
+  seedDoc('organizer_secrets', organizerId, { webhook_token_hash: TOKEN_HASH, type: 'asaas', sandbox: false });
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────

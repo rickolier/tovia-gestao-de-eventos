@@ -53,7 +53,7 @@ export function useSalesPageContent({ evento, pagina, tickets, eventoId, onSucce
       getDocument<UserProfile>('users', evento.criado_por)
         .then(u => {
           if (u) setOrganizador(u);
-          setGatewayConnected(u?.gateway_connected === true && !!u?.gateway?.encrypted_api_key);
+          setGatewayConnected(u?.gateway_connected === true);
         })
         .catch(() => {});
     }

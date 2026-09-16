@@ -153,21 +153,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.warn('Webhook registration failed (non-fatal):', e);
     }
 
+    const connectedAt = new Date().toISOString();
+    const webhookTokenHash = createHash('sha256').update(webhookToken).digest('hex');
+
+    await db.collection('organizer_secrets').doc(userId).set({
+      type: gatewayType,
+      encrypted_api_key: encryptedKey,
+      encrypted_webhook_token: encryptedWebhookToken,
+      sandbox: !!sandbox,
+      connected_at: connectedAt,
+      webhook_token_hash: webhookTokenHash,
+    }, { merge: true });
+
     await db.collection('users').doc(userId).set({
       gateway_connected: true,
       gateway: {
         type: gatewayType,
-        encrypted_api_key: encryptedKey,
         sandbox: !!sandbox,
-        connected_at: new Date().toISOString(),
-        encrypted_webhook_token: encryptedWebhookToken,
+        connected_at: connectedAt,
       },
     }, { merge: true });
 
-    const webhookTokenHash = createHash('sha256').update(webhookToken).digest('hex');
     await db.collection('organizer_public').doc(userId).set({
       gateway_connected: true,
-      webhook_token_hash: webhookTokenHash,
     }, { merge: true });
 
     return res.json({ success: true });

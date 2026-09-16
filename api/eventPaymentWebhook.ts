@@ -74,8 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const eventoDoc = await db.collection('eventos').doc(eventoId).get();
   if (!eventoDoc.exists) return res.status(200).send('ok');
   const organizerId: string = eventoDoc.data()!.criado_por;
-  const orgPublicDoc = await db.collection('organizer_public').doc(organizerId).get();
-  const storedHash: string = orgPublicDoc.exists ? (orgPublicDoc.data()!.webhook_token_hash ?? '') : '';
+  const secretsDoc = await db.collection('organizer_secrets').doc(organizerId).get();
+  const storedHash: string = secretsDoc.exists ? (secretsDoc.data()!.webhook_token_hash ?? '') : '';
   if (!storedHash) {
     console.warn(`[eventPaymentWebhook] evento ${eventoId} sem webhook_token_hash — rejeitado`);
     return res.status(401).send('Unauthorized');
@@ -90,8 +90,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Determina o gateway do organizador e parseia o evento
-  const orgDoc = await db.collection('users').doc(organizerId).get();
-  const gatewayType: GatewayType = orgDoc.exists ? (orgDoc.data()!.gateway?.type ?? 'asaas') : 'asaas';
+  const secrets = secretsDoc.exists ? secretsDoc.data()! : {};
+  const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
   const provider = createPaymentProvider(gatewayType, '', false);
 
   const headers: Record<string, string> = {};

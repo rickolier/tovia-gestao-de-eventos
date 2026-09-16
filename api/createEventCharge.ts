@@ -86,20 +86,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(409).json({ error: 'Esta cobrança já foi processada.' });
     }
 
-    // Busca o gateway do organizador
-    const orgDoc = await db.collection('users').doc(organizerId).get();
-    if (!orgDoc.exists) {
-      return res.status(404).json({ error: 'Organizador não encontrado.' });
+    // Busca os segredos do gateway do organizador
+    const secretsDoc = await db.collection('organizer_secrets').doc(organizerId).get();
+    if (!secretsDoc.exists) {
+      return res.status(422).json({ error: 'Organizador não tem gateway configurado.' });
     }
-    const orgData = orgDoc.data()!;
+    const secrets = secretsDoc.data()!;
 
-    if (!orgData.gateway?.encrypted_api_key) {
+    if (!secrets.encrypted_api_key) {
       return res.status(422).json({ error: 'Organizador não tem gateway configurado.' });
     }
 
-    const apiKey = decrypt(orgData.gateway.encrypted_api_key, encKey);
-    const sandbox: boolean = orgData.gateway.sandbox ?? false;
-    const gatewayType: GatewayType = orgData.gateway.type ?? 'asaas';
+    const apiKey = decrypt(secrets.encrypted_api_key, encKey);
+    const sandbox: boolean = secrets.sandbox ?? false;
+    const gatewayType: GatewayType = secrets.type ?? 'asaas';
 
     const provider = createPaymentProvider(gatewayType, apiKey, sandbox);
 

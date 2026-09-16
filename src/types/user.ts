@@ -1,11 +1,12 @@
 export type PlanLevel = 'chinam' | 'petach' | 'koach' | 'chalem';
 
-export interface GatewayConfig {
+export interface OrganizerSecrets {
   type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';
   encrypted_api_key: string;
   sandbox: boolean;
   connected_at: string;
   encrypted_webhook_token?: string;
+  webhook_token_hash?: string;
 }
 
 export interface UserProfile {
@@ -46,7 +47,11 @@ export interface UserProfile {
   desativado?: boolean;
   email_verificado?: boolean;
   gateway_connected?: boolean;
-  gateway?: GatewayConfig;
+  gateway?: {
+    type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';
+    sandbox: boolean;
+    connected_at: string;
+  };
 }
 
 export interface AppNotification {
