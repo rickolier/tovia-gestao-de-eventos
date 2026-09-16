@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { listDocuments, updateDocument, createDocument, addDocument } from '~/services/firestore';
+import { listDocuments, updateDocument, createDocument, addDocument, removeDocument } from '~/services/firestore';
 import { Email } from '~/services/email';
-import { LifeBuoy, Plus, RefreshCw, Clock, CheckCircle2, Circle, X, ChevronDown, Send, MessageSquare } from 'lucide-react';
+import { LifeBuoy, Plus, RefreshCw, Clock, CheckCircle2, Circle, X, ChevronDown, Send, MessageSquare, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -195,6 +195,18 @@ export default function AdminTicketsTab() {
     }
   };
 
+  const handleDelete = async (ticket: TicketItem) => {
+    if (!ticket.id || !confirm(`Excluir ticket "${ticket.titulo}"?`)) return;
+    try {
+      await removeDocument('tickets', ticket.id);
+      setTickets(prev => prev.filter(t => t.id !== ticket.id));
+      setExpanded(null);
+      toast.success('Ticket excluído.');
+    } catch {
+      toast.error('Erro ao excluir ticket.');
+    }
+  };
+
   const filtered = tickets.filter(t => filterStatus === 'all' || t.status === filterStatus);
   const counts = {
     aberto:       tickets.filter(t => t.status === 'aberto').length,
@@ -372,20 +384,29 @@ export default function AdminTicketsTab() {
                         </div>
                       </div>
 
-                      {/* Mudar status */}
-                      <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-border">
-                        <span className="text-xs text-muted-foreground">Mover para:</span>
-                        {(Object.entries(STATUS_CONFIG) as [TicketItem['status'], typeof STATUS_CONFIG[keyof typeof STATUS_CONFIG]][]).map(([key, c]) =>
-                          key !== ticket.status ? (
-                            <button
-                              key={key}
-                              onClick={() => handleUpdateStatus(ticket, key)}
-                              className={cn('text-xs font-semibold px-3 py-1 rounded-full transition-all', c.color, 'hover:opacity-80')}
-                            >
-                              {c.label}
-                            </button>
-                          ) : null
-                        )}
+                      {/* Mudar status + excluir */}
+                      <div className="flex items-center justify-between gap-2 flex-wrap pt-1 border-t border-border">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs text-muted-foreground">Mover para:</span>
+                          {(Object.entries(STATUS_CONFIG) as [TicketItem['status'], typeof STATUS_CONFIG[keyof typeof STATUS_CONFIG]][]).map(([key, c]) =>
+                            key !== ticket.status ? (
+                              <button
+                                key={key}
+                                onClick={() => handleUpdateStatus(ticket, key)}
+                                className={cn('text-xs font-semibold px-3 py-1 rounded-full transition-all', c.color, 'hover:opacity-80')}
+                              >
+                                {c.label}
+                              </button>
+                            ) : null
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDelete(ticket)}
+                          className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded-full transition-all"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Excluir
+                        </button>
                       </div>
                     </div>
                   )}
