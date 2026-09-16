@@ -144,8 +144,9 @@ describe('eventPaymentWebhook', () => {
 
     expect(mockFetch).toHaveBeenCalled();
     const fetchCall = mockFetch.mock.calls[0];
-    expect(fetchCall[0]).toBe('https://api.resend.com/emails');
-    const body = JSON.parse(fetchCall[1].body);
+    const emailCall = mockFetch.mock.calls.find((c: any[]) => c[0] === 'https://api.resend.com/emails');
+    expect(emailCall).toBeDefined();
+    const body = JSON.parse(emailCall![1].body);
     expect(body.to).toContain('joao@test.com');
     expect(body.subject).toContain('Inscrição confirmada');
   });

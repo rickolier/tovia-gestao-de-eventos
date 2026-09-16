@@ -12,9 +12,7 @@ import {
   confirmarCodigoInscricaoSchema,
 } from './_schemas.js';
 import { validateBody } from './_validate.js';
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
+import { sendEmail } from './_email/send.js';
 const BASE_URL = process.env.BASE_URL || 'https://toviaapp.com.br';
 const APP_URL = 'https://tovia-gestao-de-eventos.vercel.app';
 
@@ -120,21 +118,7 @@ async function handleEnviarCodigoVerificacao(req: VercelRequest, res: VercelResp
       </p>
     `);
 
-    if (!RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY não configurada — link não enviado.');
-      return res.status(500).json({ error: 'Serviço de e-mail não configurado.' });
-    }
-
-    const emailRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [userRecord.email!], subject: 'Confirme seu e-mail — Tovia', html }),
-    });
-    if (!emailRes.ok) {
-      const errBody = await emailRes.json().catch(() => ({}));
-      console.error('Resend error ao enviar link:', JSON.stringify(errBody));
-      return res.status(500).json({ error: 'Não foi possível enviar o e-mail. Tente novamente.' });
-    }
+    await sendEmail({ to: userRecord.email!, subject: 'Confirme seu e-mail — Tovia', html });
 
     return res.json({ ok: true });
   } catch (err: unknown) {
@@ -145,7 +129,6 @@ async function handleEnviarCodigoVerificacao(req: VercelRequest, res: VercelResp
 
 // ── confirmarCodigoVerificacao ──
 async function sendWelcomeEmail(email: string, nome: string) {
-  if (!RESEND_API_KEY) return;
   const html = emailWrap(`
     <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Bem-vindo ao Tovia! 🌱</h1>
     <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 24px;">
@@ -164,11 +147,7 @@ async function sendWelcomeEmail(email: string, nome: string) {
     </p>
   `);
   try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [email], subject: 'Bem-vindo ao Tovia! 🌱', html }),
-    });
+    await sendEmail({ to: email, subject: 'Bem-vindo ao Tovia! 🌱', html });
   } catch (e) {
     console.warn('Welcome email failed:', e);
   }
@@ -243,17 +222,7 @@ async function handleEnviarRedefinicaoSenha(req: VercelRequest, res: VercelRespo
       </p>
     `);
 
-    if (!RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY não configurada');
-      return res.json({ ok: true });
-    }
-
-    const emailRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [emailNorm], subject: 'Redefinição de senha — Tovia 🔑', html }),
-    });
-    if (!emailRes.ok) console.error('Resend error:', await emailRes.text().catch(() => ''));
+    await sendEmail({ to: emailNorm, subject: 'Redefinição de senha — Tovia 🔑', html });
 
     return res.json({ ok: true });
   } catch (err: unknown) {
@@ -323,23 +292,13 @@ async function handleEnviarCodigoInscricao(req: VercelRequest, res: VercelRespon
     email: emailNorm, code, expiresAt, attempts: 0,
   });
 
-  if (!RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY não configurada');
-    return res.status(500).json({ error: 'Serviço de e-mail não configurado.' });
-  }
-
-  const emailRes = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: FROM, to: [emailNorm],
+  try {
+    await sendEmail({
+      to: emailNorm,
       subject: `${code} é seu código para consultar inscrição — Tovia`,
       html: buildInscricaoEmailHtml(code),
-    }),
-  });
-
-  if (!emailRes.ok) {
-    console.error('Resend error:', await emailRes.text().catch(() => ''));
+    });
+  } catch {
     return res.status(500).json({ error: 'Não foi possível enviar o código. Tente novamente.' });
   }
 

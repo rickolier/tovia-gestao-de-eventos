@@ -4,8 +4,7 @@ import { db } from './_firebase.js';
 import { createPaymentProvider } from './_payments/factory.js';
 import type { GatewayType } from './_payments/types.js';
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
+import { sendEmail } from './_email/send.js';
 
 function interpolate(template: string, vars: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? `{${key}}`);
@@ -38,14 +37,9 @@ function wrapCustomEmail(corpo: string): string {
 </body></html>`;
 }
 
-async function sendEmail(to: string, subject: string, html: string) {
-  if (!RESEND_API_KEY) return;
+async function sendNotificationEmail(to: string, subject: string, html: string) {
   try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [to], subject, html }),
-    });
+    await sendEmail({ to, subject, html });
   } catch (e) {
     console.warn('Email send failed:', e);
   }
@@ -190,7 +184,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             : `<p>Olá, <strong>${recipientName}</strong>! Sua inscrição em <strong>${eventoNome}</strong> está garantida.</p><p>Pedido: <strong>${inscricaoId.slice(0, 8).toUpperCase()}</strong></p>${payBtn}`;
         }
 
-        await sendEmail(inscricao.email, subject, body);
+        await sendNotificationEmail(inscricao.email, subject, body);
       }
     }
 

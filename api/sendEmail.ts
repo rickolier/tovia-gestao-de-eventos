@@ -3,9 +3,8 @@ import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './_types.js';
 import { sendEmailSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
+import { sendEmail } from './_email/send.js';
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
 const ADMIN_EMAILS = ['admin@toviaapp.com.br', 'suporte@toviaapp.com.br'];
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -51,7 +50,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const isAdmin = ADMIN_EMAILS.includes(decoded.email ?? '');
   const toList: string[] = Array.isArray(to) ? to : [to];
 
-  // Não-admins só podem enviar para o próprio email autenticado
   if (!isAdmin) {
     const selfEmail = decoded.email?.toLowerCase();
     const allToSelf = toList.every(addr => addr.toLowerCase() === selfEmail);
@@ -60,31 +58,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  if (!RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY não configurada — e-mail não enviado.');
-    return res.json({ ok: true, skipped: true });
-  }
-
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ from: FROM, to: toList, subject, html }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json();
-      console.error('Resend error:', err);
-      return res.status(500).json({ error: 'Falha ao enviar e-mail.', detail: err });
-    }
-
-    const data = await response.json() as { id?: string };
-    return res.json({ ok: true, id: data.id });
+    const result = await sendEmail({ to: toList, subject, html });
+    return res.json({ ok: true, id: result.id });
   } catch (err: unknown) {
     console.error('sendEmail error:', (err as Error).message);
-    return res.status(500).json({ error: 'Erro interno ao enviar e-mail.' });
+    return res.status(500).json({ error: 'Falha ao enviar e-mail.' });
   }
 }

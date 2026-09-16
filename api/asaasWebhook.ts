@@ -1,9 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
+import { sendEmail } from './_email/send.js';
 
 const PLAN_NAMES: Record<string, string> = {
   petach: 'Pétach',
@@ -16,14 +14,9 @@ const PLAN_VALUES: Record<string, string> = {
   chalem: 'R$ 5/mês',
 };
 
-async function sendEmail(to: string, subject: string, html: string) {
-  if (!RESEND_API_KEY) return;
+async function sendNotificationEmail(to: string, subject: string, html: string) {
   try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [to], subject, html }),
-    });
+    await sendEmail({ to, subject, html });
   } catch (e) {
     console.warn('Email send failed:', e);
   }
@@ -213,7 +206,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           subject = 'Bem-vindo ao Tovia Chalém! 🌟';
           html = buildEmailBoasVindasChalem(userName, planValor, proxVencimento);
         }
-        await sendEmail(userEmail, subject, html);
+        await sendNotificationEmail(userEmail, subject, html);
       }
     }
 
@@ -226,7 +219,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // E-mail: pagamento não realizado
       if (userEmail && planLevel) {
-        await sendEmail(
+        await sendNotificationEmail(
           userEmail,
           'Atenção: pagamento pendente na sua conta Tovia ⚠️',
           buildEmailPagamentoNaoRealizado(userName, PLAN_NAMES[planLevel] || planLevel, fmtDate(payment.dueDate)),

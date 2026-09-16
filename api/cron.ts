@@ -1,16 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 import { db } from './_firebase.js';
+import { sendEmail } from './_email/send.js';
 
 async function sendEmailResend(to: string, subject: string, html: string): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) { console.warn('[email] RESEND_API_KEY não configurada — e-mail ignorado.'); return; }
-  const from = process.env.EMAIL_FROM || 'Tovia <noreply@toviaapp.com.br>';
-  await axios.post(
-    'https://api.resend.com/emails',
-    { from, to, subject, html },
-    { headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' } },
-  );
+  await sendEmail({ to, subject, html });
 }
 
 // ── processarInscricoesPendentes ──
