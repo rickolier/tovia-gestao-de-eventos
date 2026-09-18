@@ -42,6 +42,9 @@ export interface MembroEquipeGlobal {
   status: 'ativo' | 'pendente';
 }
 
+export type EventoEstagio = 'ativo' | 'inativo' | 'finalizado';
+export type InativoMotivo = 'arquivado_manual' | 'acompanhamento_financeiro';
+
 export interface Evento {
   id: string;
   codigo?: string;
@@ -58,6 +61,8 @@ export interface Evento {
   equipeIds?: string[];
   habilita_doacoes: boolean;
   ativo: boolean;
+  estagio?: EventoEstagio;
+  inativo_motivo?: InativoMotivo;
   cor_tema?: string;
 
   config_pagamento: {
