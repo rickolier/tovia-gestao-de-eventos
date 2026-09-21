@@ -28,9 +28,11 @@ export const checkoutSchema = z.object({
 // ── sendEmail ────────────────────────────────────────────────────────────────
 
 export const sendEmailSchema = z.object({
-  to: z.union([email, z.array(email)]),
+  type: z.enum(['direct', 'comunicado']).default('direct'),
+  to: z.union([email, z.array(email)]).optional(),
   subject: z.string().min(1, 'Assunto obrigatório.'),
   html: z.string().min(1, 'Corpo do e-mail obrigatório.'),
+  eventoId: z.string().optional(),
 });
 
 // ── getBillingInfo ───────────────────────────────────────────────────────────

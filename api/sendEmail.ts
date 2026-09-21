@@ -4,6 +4,8 @@ import type { AuthError } from './_types.js';
 import { sendEmailSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
 import { sendEmail } from './_email/send.js';
+import { getPlanConfig } from '../src/utils/plan-limits.js';
+import type { PlanLevel } from '../src/types/user.js';
 
 const ADMIN_EMAILS = ['admin@toviaapp.com.br', 'suporte@toviaapp.com.br'];
 
@@ -45,8 +47,63 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const data = validateBody(req.body, res, sendEmailSchema);
   if (!data) return;
-  const { to, subject, html } = data;
+  const { type = 'direct', to, subject, html, eventoId } = data;
 
+  // Fluxo de comunicado: organizador → inscritos do evento
+  if (type === 'comunicado') {
+    if (!eventoId) return res.status(400).json({ error: 'eventoId obrigatório para comunicado.' });
+
+    const eventoSnap = await db.collection('eventos').doc(eventoId).get();
+    if (!eventoSnap.exists) return res.status(404).json({ error: 'Evento não encontrado.' });
+    const evento = eventoSnap.data()!;
+
+    if (evento.criado_por !== decoded.uid && !(evento.equipeIds || []).includes(decoded.uid)) {
+      return res.status(403).json({ error: 'Sem permissão para este evento.' });
+    }
+
+    const userDoc = await db.collection('users').doc(decoded.uid).get();
+    const userPlano = (userDoc.data()?.plano || 'chinam') as PlanLevel;
+    const planConfig = getPlanConfig(userPlano);
+
+    const comunicadosSnap = await db.collection('eventos').doc(eventoId).collection('comunicados').get();
+    if (comunicadosSnap.size >= planConfig.maxComunicadosPerEvent) {
+      return res.status(403).json({
+        error: `Limite de ${planConfig.maxComunicadosPerEvent} comunicado(s) por evento atingido.`,
+        limiteAtual: comunicadosSnap.size,
+        limiteMax: planConfig.maxComunicadosPerEvent,
+      });
+    }
+
+    const inscricoesSnap = await db.collection('eventos').doc(eventoId).collection('inscricoes').get();
+    const emails = inscricoesSnap.docs
+      .map(d => d.data()?.email as string | undefined)
+      .filter((e): e is string => !!e);
+
+    if (emails.length === 0) {
+      return res.status(400).json({ error: 'Nenhum inscrito com e-mail neste evento.' });
+    }
+
+    try {
+      const result = await sendEmail({ to: emails, subject, html });
+
+      await db.collection('eventos').doc(eventoId).collection('comunicados').add({
+        assunto: subject,
+        corpo: html,
+        enviadoPor: decoded.uid,
+        destinatarios: emails.length,
+        enviadoEm: new Date().toISOString(),
+        emailResultId: result.id,
+      });
+
+      return res.json({ ok: true, destinatarios: emails.length, id: result.id });
+    } catch (err: unknown) {
+      console.error('Comunicado sendEmail error:', (err as Error).message);
+      return res.status(500).json({ error: 'Falha ao enviar comunicado.' });
+    }
+  }
+
+  // Fluxo direto (original)
+  if (!to) return res.status(400).json({ error: 'Campo "to" obrigatório para envio direto.' });
   const isAdmin = ADMIN_EMAILS.includes(decoded.email ?? '');
   const toList: string[] = Array.isArray(to) ? to : [to];
 
