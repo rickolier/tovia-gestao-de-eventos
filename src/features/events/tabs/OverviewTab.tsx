@@ -6,6 +6,7 @@ import { listDocuments } from '~/services/firestore';
 import { Button } from '@/components/ui/button';
 import { limit } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import CreditoBanner from '../components/CreditoBanner';
 
 function getCountdown(dataInicio: string) {
   const now = new Date();
@@ -100,6 +101,15 @@ export default function OverviewTab({ evento, onRefresh }: { evento: Evento; onR
           </div>
         </CardContent>
       </Card>
+
+      {/* ── Banner de crédito avulso ── */}
+      <CreditoBanner
+        eventoId={evento.id}
+        eventoNome={evento.nome}
+        inscricoesAtuais={occupiedSlots}
+        vagasTotais={evento.vagas_totais}
+        limiteOverride={evento.limite_inscricoes_override}
+      />
 
       {/* ── Cards de stats ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
