@@ -8,7 +8,8 @@ const cpf = z.string().regex(/^\d{11}$/, 'CPF deve ter 11 dígitos.');
 // ── createCheckout ───────────────────────────────────────────────────────────
 
 export const checkoutSchema = z.object({
-  planLevel: z.enum(['petach', 'koach', 'chalem'], { message: 'Plano inválido.' }),
+  type: z.enum(['plan', 'credit']).default('plan'),
+  planLevel: z.enum(['petach', 'koach', 'chalem'], { message: 'Plano inválido.' }).optional(),
   period: z.enum(['monthly', 'annual']).default('monthly'),
   paymentMethod: z.string().default('credit_card'),
   userId: z.string().min(1, 'userId obrigatório.'),
@@ -21,6 +22,7 @@ export const checkoutSchema = z.object({
   userNumero: z.string().optional(),
   userComplemento: z.string().optional(),
   userBairro: z.string().optional(),
+  eventoId: z.string().optional(),
 });
 
 // ── sendEmail ────────────────────────────────────────────────────────────────

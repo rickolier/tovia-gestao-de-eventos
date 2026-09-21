@@ -63,6 +63,7 @@ export interface Evento {
   ativo: boolean;
   estagio?: EventoEstagio;
   inativo_motivo?: InativoMotivo;
+  limite_inscricoes_override?: number;
   cor_tema?: string;
 
   config_pagamento: {

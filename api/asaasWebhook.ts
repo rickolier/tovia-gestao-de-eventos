@@ -11,9 +11,9 @@ const PLAN_NAMES: Record<string, string> = {
   chalem: 'Chalém',
 };
 const PLAN_VALUES: Record<string, string> = {
-  petach: 'R$ 5/mês',
-  koach:  'R$ 5/mês',
-  chalem: 'R$ 5/mês',
+  petach: 'R$ 119/mês',
+  koach:  'R$ 119/mês',
+  chalem: 'R$ 299/mês',
 };
 
 async function sendNotificationEmail(to: string, subject: string, html: string) {
@@ -168,6 +168,44 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const userName = userData?.nome || 'organizador';
 
     if (paidEvents.includes(eventType)) {
+      // Crédito avulso: externalReference = userId:credit:eventoId
+      if (planLevel === 'credit') {
+        const eventoId = parts[2];
+        if (!eventoId) {
+          console.warn('Webhook crédito sem eventoId:', externalRef);
+          return res.status(200).send('ok');
+        }
+        const eventoRef = db.collection('eventos').doc(eventoId);
+        const eventoSnap = await eventoRef.get();
+        if (!eventoSnap.exists) {
+          console.warn('Evento não encontrado para crédito:', eventoId);
+          return res.status(200).send('ok');
+        }
+        const eventoData = eventoSnap.data()!;
+        const limiteAtual = eventoData.vagas_totais ?? 0;
+        const novoLimite = Math.max(limiteAtual * 2, limiteAtual + 300);
+        await eventoRef.update({ limite_inscricoes_override: novoLimite });
+        await db.collection('creditos_avulsos').doc(payment.id || parts.join(':')).update({
+          status: 'confirmado',
+          confirmadoEm: new Date().toISOString(),
+          limiteAplicado: novoLimite,
+        });
+        console.log(`Crédito avulso confirmado: evento ${eventoId}, novo limite ${novoLimite}`);
+
+        if (userEmail) {
+          await sendNotificationEmail(
+            userEmail,
+            'Crédito avulso confirmado! 🎉',
+            emailWrap(`
+              <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Crédito avulso confirmado!</h1>
+              <p style="font-size:15px;color:${MUTED};line-height:1.7;">O crédito avulso para o evento <strong>${eventoData.nome || eventoId}</strong> foi confirmado. O limite de inscrições foi ampliado para <strong>${novoLimite}</strong>.</p>
+              <a href="https://tovia-gestao-de-eventos.vercel.app/eventos/${eventoId}" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;margin-top:16px;">Ver evento</a>
+            `),
+          );
+        }
+        return res.status(200).send('ok');
+      }
+
       if (!planLevel) {
         console.warn('Webhook pago sem planLevel:', externalRef);
         return res.status(200).send('ok');

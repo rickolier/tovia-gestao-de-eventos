@@ -4,6 +4,8 @@ import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './_types.js';
 import { checkoutSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
+import { PLAN_CONFIGS } from '../src/utils/plan-limits.js';
+import type { PlanLevel } from '../src/types/user.js';
 
 const CHECKOUT_RATE_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_RATE_LIMIT = 3;
@@ -28,23 +30,22 @@ async function checkCheckoutRateLimit(uid: string): Promise<boolean> {
 const ASAAS_SANDBOX_URL    = 'https://sandbox.asaas.com/api/v3';
 const ASAAS_PRODUCTION_URL = 'https://api.asaas.com/v3';
 
-const MONTHLY_PRICES: Record<string, number> = {
-  petach: 5,
-  koach: 5,
-  chalem: 5,
-};
+function getMonthlyPrice(plan: string): number {
+  const config = PLAN_CONFIGS[plan as PlanLevel];
+  return config?.price.monthly ?? 0;
+}
 
-const ANNUAL_PRICES: Record<string, number> = {
-  petach: 50,
-  koach: 50,
-  chalem: 50,
-};
+function getAnnualPrice(plan: string): number {
+  const config = PLAN_CONFIGS[plan as PlanLevel];
+  return config?.price.annual ?? 0;
+}
 
-const PLAN_LABEL: Record<string, string> = {
-  petach: 'Plano 2 - Pétach',
-  koach:  'Plano 3 - Koách',
-  chalem: 'Plano 4 - Chalém',
-};
+function getPlanLabel(plan: string): string {
+  const config = PLAN_CONFIGS[plan as PlanLevel];
+  return config?.name ?? plan;
+}
+
+const EXTRA_CREDIT_PRICE = 199;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -53,6 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!data) return;
 
   const {
+    type = 'plan',
     planLevel,
     period,
     paymentMethod,
@@ -66,6 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     userNumero,
     userComplemento,
     userBairro,
+    eventoId,
   } = data;
 
   try {
@@ -80,7 +83,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Muitas tentativas de pagamento. Aguarde alguns minutos.' });
   }
 
-  const price = period === 'annual' ? ANNUAL_PRICES[planLevel] : MONTHLY_PRICES[planLevel];
+  // Validação de campos por tipo de checkout
+  if (type === 'credit') {
+    if (!eventoId) return res.status(400).json({ error: 'eventoId obrigatório para crédito avulso.' });
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userPlano = userDoc.data()?.plano as string | undefined;
+    const planConfig = PLAN_CONFIGS[userPlano as PlanLevel];
+    if (!planConfig || !planConfig.allowExtraCredits) {
+      return res.status(403).json({ error: 'Créditos avulsos disponíveis apenas nos planos pagos.' });
+    }
+  } else {
+    if (!planLevel) return res.status(400).json({ error: 'planLevel obrigatório para checkout de plano.' });
+  }
+
+  const price = type === 'credit'
+    ? EXTRA_CREDIT_PRICE
+    : (period === 'annual' ? getAnnualPrice(planLevel!) : getMonthlyPrice(planLevel!));
   if (!price) return res.status(400).json({ error: 'Preço não encontrado.' });
 
   // Lê chave e ambiente do Firestore (config/billing), com fallback para env var
@@ -180,7 +198,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: err.message || 'Erro ao criar cliente no Asaas.' });
     }
 
-    const description = `Tovia · ${PLAN_LABEL[planLevel]} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
+    // Fluxo de crédito avulso (R$199 por evento)
+    if (type === 'credit') {
+      const creditDescription = `Tovia · Crédito avulso · Evento ${eventoId}`;
+      let creditPaymentId: string;
+      let creditPaymentUrl: string | null = null;
+      try {
+        const creditRes = await axios.post(`${ASAAS_BASE_URL}/payments`, {
+          customer: customerId,
+          billingType: 'PIX',
+          value: EXTRA_CREDIT_PRICE,
+          dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          description: creditDescription,
+          externalReference: `${userId}:credit:${eventoId}`,
+        }, { headers });
+        creditPaymentId = creditRes.data.id;
+        creditPaymentUrl = creditRes.data.invoiceUrl || null;
+      } catch (creditErr: unknown) {
+        const e = creditErr as { response?: { status?: number } };
+        console.error('Erro ao criar pagamento de crédito avulso.', e?.response?.status);
+        return res.status(500).json({ error: 'Erro ao criar pagamento de crédito avulso.' });
+      }
+
+      await db.collection('creditos_avulsos').doc(creditPaymentId).set({
+        userId,
+        eventoId,
+        paymentId: creditPaymentId,
+        valor: EXTRA_CREDIT_PRICE,
+        status: 'pendente',
+        criadoEm: new Date().toISOString(),
+      });
+
+      if (!creditPaymentUrl) {
+        return res.status(500).json({ error: 'Pagamento criado, mas link indisponível.' });
+      }
+
+      return res.json({ paymentUrl: creditPaymentUrl, paymentId: creditPaymentId, type: 'credit' });
+    }
+
+    // Fluxo de checkout de plano
+    const description = `Tovia · ${getPlanLabel(planLevel!)} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
 
     if (period === 'monthly') {
       // Assinatura recorrente mensal com cartão de crédito
