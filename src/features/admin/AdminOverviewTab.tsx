@@ -6,7 +6,7 @@ import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 49, koach: 129, chalem: 299, start: 0, essencial: 49, pro: 129, personalizado: 299 };
+const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 119, koach: 119, chalem: 299, start: 0, essencial: 119, pro: 119, personalizado: 299 };
 const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
 const PLAN_COLORS: Record<string, string> = {
   chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
@@ -149,7 +149,7 @@ export default function AdminOverviewTab() {
           <CardContent className="p-6 pt-2 space-y-4">
             {[
               { label: 'Ativos (pagos)', value: paying, color: 'text-green-600', dot: 'bg-green-500' },
-              { label: 'Plano Start', value: byPlan.start, color: 'text-gray-500', dot: 'bg-gray-400' },
+              { label: 'Koách (legacy)', value: byPlan.koach, color: 'text-violet-500', dot: 'bg-violet-400' },
               { label: 'Pendente pagamento', value: pending, color: 'text-yellow-600', dot: 'bg-yellow-400' },
               { label: 'Sem plano', value: byPlan.none, color: 'text-red-500', dot: 'bg-red-400' },
             ].map(item => (
