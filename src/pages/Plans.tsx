@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { PlanLevel } from '~/types';
-import { PLAN_CONFIGS, PLAN_ORDER, PLAN_RANK } from '~/utils/plan-limits';
+import { PLAN_CONFIGS, VISIBLE_PLAN_ORDER, PLAN_RANK } from '~/utils/plan-limits';
 import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -122,8 +122,8 @@ export default function Plans() {
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {PLAN_ORDER.map((level) => {
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {VISIBLE_PLAN_ORDER.map((level) => {
             const config = PLAN_CONFIGS[level];
             const moduleCount = PLAN_CONFIGS[level].modulesCount;
             const isCurrent = level === currentPlan;

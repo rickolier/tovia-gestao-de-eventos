@@ -1,66 +1,57 @@
-import { Check, Crown } from 'lucide-react';
+import { Check, Crown, Zap } from 'lucide-react';
 
 const plans = [
   {
     name: 'Chinám',
-    sub: 'Plano 1 · חינם',
-    desc: 'Gratuito e permanente. Comece a organizar sem custo.',
+    sub: 'חינם · Gratuito',
+    price: 'R$0',
+    period: 'para sempre',
+    desc: 'Comece a organizar sem custo.',
     highlight: false,
     features: [
-      '1 evento ativo',
+      '2 eventos ativos',
       'Até 100 vagas por evento',
-      '1 Ingresso cadastrado',
+      'Todas as funcionalidades',
       'Página de inscrição pública',
-      'Relatórios básicos',
-      'App Tovia Mobile para check-in',
+      'Relatórios e check-in',
+      '2.000 e-mails/mês',
+      '1 comunicado por evento',
     ],
   },
   {
     name: 'Pétach',
-    sub: 'Plano 2 · פֶּתַח',
-    desc: 'A porta de entrada para eventos com cobrança.',
-    highlight: false,
+    sub: 'פֶּתַח · R$119/mês',
+    price: 'R$119',
+    period: '/mês ou R$1.190/ano',
+    desc: 'Para quem precisa receber pagamentos automaticamente.',
+    highlight: true,
     features: [
-      '3 eventos ativos',
-      'Até 200 vagas por evento',
-      '3 Ingressos cadastrados',
-      'Páginas públicas de inscrição',
-      'Relatórios básicos',
-      'Financeiro manual',
-      'Painel de Doações',
-      'App Tovia Mobile para check-in',
-    ],
-  },
-  {
-    name: 'Koách',
-    sub: 'Plano 3 · כֹּחַ',
-    desc: 'Gestão completa: recursos, grupos, tarefas e equipe.',
-    highlight: false,
-    features: [
-      'Tudo do plano Pétach incluso',
       '5 eventos ativos',
-      'Até 500 vagas por evento',
-      '5 Ingressos cadastrados',
-      '5 membros de equipe',
-      'Grupos, quartos e mesas',
-      'Tarefas e equipe integrada',
-      'App Tovia Mobile para check-in e tarefas',
+      'Até 300 vagas por evento',
+      'Pagamentos automáticos (BYOG)',
+      'PIX, boleto, cartão e recorrente',
+      '10 membros de equipe',
+      '5.000 e-mails/mês',
+      '5 comunicados por evento',
+      'Crédito avulso R$199/evento',
     ],
   },
   {
     name: 'Chalém',
-    sub: 'Plano 4 · שָׁלֵם',
-    desc: 'O plano completo: inscritos ilimitados e pagamentos automáticos via BYOG.',
-    highlight: true,
+    sub: 'שָׁלֵם · R$299/mês',
+    price: 'R$299',
+    period: '/mês ou R$2.990/ano',
+    desc: 'Para organizações com múltiplos eventos simultâneos.',
+    highlight: false,
     features: [
-      'Tudo do plano Koách incluso',
-      '10 eventos ativos',
-      'Inscritos ilimitados',
-      '10 Ingressos cadastrados',
-      '10 membros de equipe',
+      '15 eventos ativos',
+      'Até 600 vagas por evento',
       'Pagamentos automáticos (BYOG)',
       'PIX, boleto, cartão e recorrente',
-      'App Tovia Mobile para check-in e tarefas',
+      '30 membros de equipe',
+      '10.000 e-mails/mês',
+      '15 comunicados por evento',
+      'Crédito avulso R$199/evento',
     ],
   },
 ];
@@ -68,18 +59,18 @@ const plans = [
 export function Planos() {
   return (
     <section id="planos" className="py-20 px-4 bg-muted/30">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Planos</span>
           <h2 className="text-4xl font-black text-foreground tracking-tight mt-3">
             Do gratuito ao completo
           </h2>
           <p className="text-muted-foreground mt-3 text-sm max-w-lg mx-auto">
-            Quatro planos para acompanhar o crescimento do seu evento. Comece grátis e evolua quando precisar.
+            Três planos para acompanhar o crescimento do seu evento. Todas as funcionalidades liberadas — o que muda é o volume.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
           {plans.map(plan => (
             <div
               key={plan.name}
@@ -106,6 +97,10 @@ export function Planos() {
                 <p className={`text-[10px] font-semibold uppercase tracking-widest mt-1 ${plan.highlight ? 'text-white/60' : 'text-muted-foreground'}`}>
                   {plan.sub}
                 </p>
+                <div className="mt-3 flex items-baseline gap-1">
+                  <span className={`text-3xl font-black ${plan.highlight ? 'text-white' : 'text-foreground'}`}>{plan.price}</span>
+                  <span className={`text-xs ${plan.highlight ? 'text-white/60' : 'text-muted-foreground'}`}>{plan.period}</span>
+                </div>
                 <p className={`text-sm mt-2 ${plan.highlight ? 'text-white/70' : 'text-muted-foreground'}`}>
                   {plan.desc}
                 </p>
@@ -116,7 +111,11 @@ export function Planos() {
                 {plan.features.map((label, i) => (
                   <li key={i} className="flex items-center gap-2.5">
                     <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-white/20' : 'bg-violet-50'}`}>
-                      <Check className={`w-3 h-3 ${plan.highlight ? 'text-white' : 'text-primary'}`} />
+                      {label.includes('Crédito avulso') ? (
+                        <Zap className={`w-3 h-3 ${plan.highlight ? 'text-white' : 'text-primary'}`} />
+                      ) : (
+                        <Check className={`w-3 h-3 ${plan.highlight ? 'text-white' : 'text-primary'}`} />
+                      )}
                     </span>
                     <span className={plan.highlight ? 'text-white' : 'text-foreground'}>{label}</span>
                   </li>
