@@ -1,7 +1,7 @@
 {
   "project": "Tovia — Gestão de Eventos",
-  "version": "1.0.0",
-  "updated": "2026-07-24",
+  "version": "1.1.0",
+  "updated": "2026-09-21",
   "stack": {
     "frontend": {
       "framework": "React 19",
@@ -120,10 +120,10 @@
   "api_routes": [
     { "path": "/api/asaasWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de planos (ativa/cancela plano do organizador)", "auth": "ASAAS_WEBHOOK_TOKEN (timing-safe)" },
     { "path": "/api/eventPaymentWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de eventos (atualiza inscrição para pago)", "auth": "SHA-256 hash do token por organizador" },
-    { "path": "/api/createCheckout", "method": "POST", "description": "Cria cobrança no Asaas para inscrição em evento", "auth": "Firebase ID Token" },
+    { "path": "/api/createCheckout", "method": "POST", "description": "Cria cobrança no Asaas — type='plan' para planos e type='credit' para créditos avulsos", "auth": "Firebase ID Token" },
     { "path": "/api/getBillingInfo", "method": "POST", "description": "Consulta info de cobrança do organizador no Asaas", "auth": "Firebase ID Token" },
     { "path": "/api/equipeJoin", "method": "POST", "description": "Adiciona membro à equipe do evento (admin SDK)", "auth": "Firebase ID Token" },
-    { "path": "/api/sendEmail", "method": "POST", "description": "Envia email transacional via Resend", "auth": "Interno (chamado pelo frontend)" },
+    { "path": "/api/sendEmail", "method": "POST", "description": "Envia email transacional via Resend — type='direct' para envio direto e type='comunicado' para comunicados do organizador", "auth": "Interno (chamado pelo frontend)" },
     { "path": "/api/enviarCodigoInscricao", "method": "POST", "description": "Envia código de consulta de inscrição por email", "auth": "Rate limited" },
     { "path": "/api/confirmarCodigoInscricao", "method": "POST", "description": "Valida código de consulta de inscrição", "auth": "Rate limited" },
     { "path": "/api/enviarCodigoVerificacao", "method": "POST", "description": "Envia código de verificação de email", "auth": "Rate limited" },
@@ -147,7 +147,8 @@
       { "name": "config", "description": "Configurações globais da plataforma", "key_fields": [] },
       { "name": "verification_tokens", "description": "Tokens temporários de verificação", "key_fields": [] },
       { "name": "inscricao_codes", "description": "Códigos temporários de consulta de inscrição", "key_fields": [] },
-      { "name": "_rate_limits", "description": "Rate limiting das APIs", "key_fields": [] }
+      { "name": "_rate_limits", "description": "Rate limiting das APIs", "key_fields": [] },
+      { "name": "creditos_avulsos", "description": "Compras de créditos avulsos por evento", "key_fields": ["userId", "eventoId", "status", "valor", "paymentId", "criadoEm"] }
     ],
     "subcollections_of_eventos": [
       { "name": "inscricoes", "description": "Inscrições de participantes", "key_fields": ["nome", "email", "status", "ticketId", "valor_total"] },
@@ -161,14 +162,16 @@
       { "name": "cupons", "description": "Cupons de desconto", "key_fields": ["codigo", "tipo", "valor", "ativo"] },
       { "name": "pessoas", "description": "Pessoas (cadastro legado)", "key_fields": ["nome", "cpf", "email"] },
       { "name": "divisoes", "description": "Divisões de quartos", "key_fields": [] },
-      { "name": "alocacoes_doacoes", "description": "Alocação de doações a inscritos", "key_fields": [] }
+      { "name": "alocacoes_doacoes", "description": "Alocação de doações a inscritos", "key_fields": [] },
+      { "name": "comunicados", "description": "Comunicados do organizador para participantes", "key_fields": ["assunto", "corpo", "enviadoPor", "destinatarios", "enviadoEm", "emailResultId"] }
     ]
   },
   "plans": {
     "chinam": { "name": "Chinám", "price": 0, "events": 1, "participants": 100, "tickets": 1, "team": 0, "features": ["Inscrições básicas", "Check-in QR"] },
-    "petach": { "name": "Pétach", "price": 49, "events": 3, "participants": 200, "tickets": 3, "team": 0, "features": ["Financeiro manual", "Relatórios", "Formulários personalizados"] },
-    "koach": { "name": "Koách", "price": 129, "events": 5, "participants": 500, "tickets": 5, "team": 5, "features": ["Equipe", "Tarefas", "Gestão completa"] },
-    "chalem": { "name": "Chalém", "price": 299, "events": 10, "participants": -1, "tickets": 10, "team": 10, "features": ["Pagamentos automáticos", "Gateway BYOG", "Sem limites de participantes"] }
+    "petach": { "name": "Pétach", "price": 119, "events": 3, "participants": 200, "tickets": 3, "team": 0, "features": ["Financeiro manual", "Relatórios", "Formulários personalizados"] },
+    "koach": { "name": "Koách", "price": 119, "legacy": true, "hidden": true, "mapped_to": "petach", "note": "Plano legado — mapeado para configuração do Pétach, oculto na UI", "events": 3, "participants": 200, "tickets": 3, "team": 0, "features": [] },
+    "chalem": { "name": "Chalém", "price": 299, "events": 10, "participants": -1, "tickets": 10, "team": 10, "features": ["Pagamentos automáticos", "Gateway BYOG", "Sem limites de participantes"] },
+    "visible_plan_order": ["chinam", "petach", "chalem"]
   },
   "directory_structure": {
     "src/": {
@@ -177,13 +180,13 @@
       "types.ts": "TypeScript interfaces globais",
       "context/": ["AuthContext.tsx", "ThemeProvider.tsx"],
       "services/": ["firebase.ts", "firestore.ts", "email.ts", "email-templates.ts", "storageConfig.ts"],
-      "utils/": ["admin-config.ts", "codigos.ts", "notifications.ts", "plan-limits.ts", "validators.ts"],
+      "utils/": ["admin-config.ts", "codigos.ts", "evento-lifecycle.ts", "notifications.ts", "plan-gating.ts", "plan-limits.ts", "validators.ts"],
       "components/": ["ToviaLogo.tsx", "Logo.tsx", "ImageCropper.tsx"],
       "data/": ["knowledgeBaseSeeds.ts"],
       "pages/": "Páginas de rota direta (Login, Plans, Landing, etc.)",
       "pages/landing/": "Seções da landing page + mockups + animações",
       "features/dashboard/": "Dashboard do organizador (tabs)",
-      "features/events/": "CRUD de eventos + tabs de detalhe",
+      "features/events/": "CRUD de eventos + tabs de detalhe + CreditoBanner (banner escalonado + modal de crédito avulso)",
       "features/admin/": "Central administrativa (super admin)",
       "features/public-pages/": "Páginas públicas (sales page, perfil organizador)",
       "features/pdf/": "Geração de PDFs (relatório, ficha de inscrição)"
@@ -206,5 +209,28 @@
     { "service": "Resend", "purpose": "Envio de emails transacionais", "data_flow": "API → Resend → Destinatário" },
     { "service": "Sentry", "purpose": "Monitoramento de erros", "data_flow": "Frontend → Sentry Cloud" },
     { "service": "Google GenAI", "purpose": "Funcionalidades de IA (SDK integrado)", "data_flow": "Frontend → Google AI" }
-  ]
+  ],
+  "event_types": {
+    "EventoEstagio": ["ativo", "inativo", "finalizado"],
+    "InativoMotivo": ["arquivado_manual", "acompanhamento_financeiro"],
+    "campos_adicionais_evento": ["estagio", "inativo_motivo", "limite_inscricoes_override"]
+  },
+  "utility_modules": {
+    "evento-lifecycle.ts": {
+      "path": "src/utils/evento-lifecycle.ts",
+      "description": "Gerenciamento do ciclo de vida do evento",
+      "exports": ["getEstagio", "isSlotOcupado", "contarEventosAtivos", "arquivarEvento", "desarquivarEvento"]
+    },
+    "plan-gating.ts": {
+      "path": "src/utils/plan-gating.ts",
+      "description": "Verificação de limites por plano e degradação graciosa",
+      "exports": ["verificarCriacaoEvento", "verificarInscricao", "calcularAlertaInscricoes", "verificarEquipe", "verificarComunicado", "verificarEmailDiscricionario"]
+    }
+  },
+  "key_components": {
+    "CreditoBanner": {
+      "path": "src/features/events/components/CreditoBanner.tsx",
+      "description": "Banner de alerta escalonado com modal inline para compra de créditos avulsos"
+    }
+  }
 }

@@ -115,11 +115,11 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       Catálogo completo de erros da API do Tovia. Cada erro tem um código público (TV-xxx), o HTTP status correspondente, a mensagem exibida ao usuário e a causa raiz para resolução rápida.
     </div>
     <div class="cover-meta">
-      <span>13 endpoints</span>
+      <span>16 endpoints</span>
       <span>·</span>
-      <span>62 respostas de erro mapeadas</span>
+      <span>80 respostas de erro mapeadas</span>
       <span>·</span>
-      <span>Atualizado em 21 ago 2026</span>
+      <span>Atualizado em 21 set 2026</span>
     </div>
   </div>
 
@@ -136,7 +136,10 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       <a class="toc-item" href="#inscricao"><span class="toc-num">8</span> Inscrição pública</a>
       <a class="toc-item" href="#eventcharge"><span class="toc-num">9</span> createEventCharge</a>
       <a class="toc-item" href="#gatewayconfig"><span class="toc-num">10</span> saveGatewayConfig</a>
-      <a class="toc-item" href="#testes"><span class="toc-num">11</span> Cobertura de testes</a>
+      <a class="toc-item" href="#checkout-credit"><span class="toc-num">11</span> Checkout crédito avulso</a>
+      <a class="toc-item" href="#comunicado"><span class="toc-num">12</span> Comunicados</a>
+      <a class="toc-item" href="#gating"><span class="toc-num">13</span> Plan gating</a>
+      <a class="toc-item" href="#testes"><span class="toc-num">14</span> Cobertura de testes</a>
     </div>
   </nav>
 
@@ -150,7 +153,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">62</div>
+        <div class="stat-value">80</div>
         <div class="stat-label">Erros mapeados</div>
       </div>
       <div class="stat-card">
@@ -158,11 +161,11 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
         <div class="stat-label">HTTP Status</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">13</div>
+        <div class="stat-value">16</div>
         <div class="stat-label">Endpoints</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">97</div>
+        <div class="stat-value">212</div>
         <div class="stat-label">Testes cobrindo</div>
       </div>
     </div>
@@ -782,10 +785,121 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
   </section>
 
-  <!-- ═══════════ 11. Cobertura de testes ═══════════ -->
+  <!-- ═══════════ 11. createCheckout type='credit' ═══════════ -->
+  <section class="section" id="checkout-credit">
+    <h2>11. createCheckout — Crédito avulso <span class="badge">POST /api/createCheckout (type=credit)</span></h2>
+    <p>Cria checkout para compra de crédito avulso (R$199 por evento). Exige plano pago e eventoId.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-350</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Plano gratuito não permite créditos avulsos.</span></td>
+            <td>Organizador no plano Chinám tentou comprar crédito avulso — precisa de plano pago</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-351</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">eventoId obrigatório para crédito.</span></td>
+            <td>Checkout type=credit enviado sem eventoId no body</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-352</span></td>
+            <td><span class="http-badge http-404">404</span></td>
+            <td><span class="error-msg">Evento não encontrado.</span></td>
+            <td>eventoId informado não existe no Firestore</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-353</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Já existe crédito pendente para este evento.</span></td>
+            <td>Já há um checkout de crédito em andamento (status pendente) para o mesmo evento — evita duplicata</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 12. sendEmail type='comunicado' ═══════════ -->
+  <section class="section" id="comunicado">
+    <h2>12. sendEmail — Comunicados <span class="badge">POST /api/sendEmail (type=comunicado)</span></h2>
+    <p>Envia comunicado do organizador para todos os inscritos de um evento por e-mail.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-540</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">eventoId obrigatório para comunicado.</span></td>
+            <td>Envio de comunicado sem eventoId no body</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-541</span></td>
+            <td><span class="http-badge http-404">404</span></td>
+            <td><span class="error-msg">Evento não encontrado.</span></td>
+            <td>eventoId informado não existe no Firestore</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-542</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Sem permissão para este evento.</span></td>
+            <td>Usuário autenticado não é dono nem membro da equipe do evento</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-543</span></td>
+            <td><span class="http-badge http-429">429</span></td>
+            <td><span class="error-msg">Limite de comunicados por evento atingido.</span></td>
+            <td>Evento atingiu o limite de comunicados do plano (retorna limiteAtual e limiteMax no body)</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-544</span></td>
+            <td><span class="http-badge http-400">400</span></td>
+            <td><span class="error-msg">Nenhum inscrito com e-mail neste evento.</span></td>
+            <td>Evento não tem inscrições com e-mail válido — comunicado não pode ser enviado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 13. Plan gating ═══════════ -->
+  <section class="section" id="gating">
+    <h2>13. Plan gating <span class="badge">Validações transversais</span></h2>
+    <p>Erros de limite de plano que podem ocorrer em múltiplos endpoints ao atingir os limites do plano contratado.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="error-code">TV-800</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Limite de eventos ativos atingido.</span></td>
+            <td>Organizador atingiu o máximo de eventos ativos permitidos pelo plano — upgrade ou finalizar evento existente</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-801</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Limite de inscrições atingido.</span></td>
+            <td>Evento atingiu o softcap de inscrições do plano — upgrade para liberar mais vagas</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-802</span></td>
+            <td><span class="http-badge http-403">403</span></td>
+            <td><span class="error-msg">Limite de equipe atingido.</span></td>
+            <td>Evento atingiu o número máximo de membros de equipe permitidos pelo plano</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 14. Cobertura de testes ═══════════ -->
   <section class="section" id="testes">
-    <h2>11. Cobertura de testes automatizados</h2>
-    <p>Suíte Vitest com 164 testes cobrindo schemas, validação, planos, pagamentos, webhooks, masks, admin-config e geração de códigos.</p>
+    <h2>14. Cobertura de testes automatizados</h2>
+    <p>Suíte Vitest com 212 testes cobrindo schemas, validação, planos, pagamentos, webhooks, masks, admin-config, créditos avulsos, comunicados, gating e geração de códigos.</p>
     <div class="table-wrapper">
       <table>
         <thead><tr><th>Arquivo de teste</th><th>Testes</th><th>O que cobre</th></tr></thead>
@@ -793,14 +907,16 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
           <tr><td><code>schemas.test.ts</code></td><td>16</td><td>Validação Zod: checkoutSchema, saveGatewayConfigSchema, createEventChargeSchema, sendEmailSchema</td></tr>
           <tr><td><code>payments.test.ts</code></td><td>15</td><td>Factory de providers, AsaasAdapter (7 métodos de pagamento, createCustomer, createCharge, parseWebhook)</td></tr>
           <tr><td><code>validate.test.ts</code></td><td>4</td><td>Utilitário validateBody — input válido, inválido, undefined, primeira mensagem de erro</td></tr>
-          <tr><td><code>plan-limits.test.ts</code></td><td>25</td><td>4 planos (limites, módulos, preços R$5), getPlanConfig, legacy mapping, PLAN_ORDER, PLAN_RANK</td></tr>
-          <tr><td><code>createCheckout.test.ts</code></td><td>12</td><td>Billing da plataforma — validação, auth, Asaas customer/subscription/payment, rate limit</td></tr>
+          <tr><td><code>plan-limits.test.ts</code></td><td>25</td><td>3+1 planos (Chinám/Pétach R$119/Chalém R$299/Koách legacy), getPlanConfig, PLAN_ORDER, VISIBLE_PLAN_ORDER, PLAN_RANK</td></tr>
+          <tr><td><code>plan-gating.test.ts</code></td><td>23</td><td>Gating por plano: verificarCriacaoEvento, verificarInscricao (softcap 5%), calcularAlertaInscricoes, verificarEquipe, verificarComunicado</td></tr>
+          <tr><td><code>evento-lifecycle.test.ts</code></td><td>15</td><td>Ciclo de vida: getEstagio, isSlotOcupado, contarEventosAtivos, arquivar/desarquivar, legacy compat</td></tr>
+          <tr><td><code>createCheckout.test.ts</code></td><td>12</td><td>Billing da plataforma — validação, auth, Asaas customer/subscription/payment, rate limit, preço anual R$1.190</td></tr>
           <tr><td><code>eventPaymentWebhook.test.ts</code></td><td>13</td><td>Webhook BYOG — auth por token hash, confirmação, doações, cancelamento, billing type mapping</td></tr>
           <tr><td><code>helpers.ts</code></td><td>—</td><td>Mocks compartilhados: mockDb (Firestore in-memory), mockFetch, createMockReq/Res</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:1rem;color:#666;font-size:0.85rem;">Executar: <code>npx vitest run</code> · Última execução: 21 ago 2026 — 97/97 passando</p>
+    <p style="margin-top:1rem;color:#666;font-size:0.85rem;">Executar: <code>npx vitest run</code> · Última execução: 21 set 2026 — 212/212 passando</p>
   </section>
 
 </div>
