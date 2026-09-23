@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, AlertTriangle, ImagePlus, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEventImageUpload } from './hooks/useEventImageUpload';
@@ -221,7 +220,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sidebar/95">
       {cropSrc && (
         <ImageCropper
           imageSrc={cropSrc}
@@ -233,131 +232,166 @@ export default function CreateEvent() {
           onCancel={() => setCropSrc(null)}
         />
       )}
-      {/* Sticky top header */}
-      <header className="sticky top-0 z-30 bg-sidebar h-14 flex items-center px-4 gap-3">
-        <Link to="/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <h1 className="text-sm font-semibold text-white flex-1">Novo Evento</h1>
-        <Badge variant="outline" className="text-xs font-semibold text-white/70 border-white/20 rounded-lg">
-          Plano {plano.name}
-        </Badge>
-      </header>
 
-      <div className="max-w-3xl mx-auto py-8 px-4 space-y-4">
-        {/* Banner informativo de limites do plano */}
-        {quantidadeEventosAtivos !== null && quantidadeEventosAtivos < plano.maxActiveEvents && (
-          <div className="rounded-2xl border-2 border-primary/30 bg-primary/10 dark:bg-violet-950/40 dark:border-violet-700 px-5 py-4">
-            <p className="text-sm font-bold text-foreground dark:text-violet-200 mb-1">Limites do seu plano ({plano.name})</p>
-            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground dark:text-violet-300">
-              <span>Eventos ativos: {quantidadeEventosAtivos} de {plano.maxActiveEvents === Infinity ? '∞' : plano.maxActiveEvents}</span>
-              <span>Inscritos por evento: até {plano.maxAttendeesPerEvent === Infinity ? 'ilimitado' : plano.maxAttendeesPerEvent.toLocaleString('pt-BR')}</span>
+      {/* Backdrop with centered modal */}
+      <div className="fixed inset-0 z-10 overflow-y-auto">
+        {/* Overlay escuro */}
+        <div className="fixed inset-0 bg-black/40" />
+
+        {/* Header fixo */}
+        <div className="relative z-20 sticky top-0 bg-sidebar h-14 flex items-center px-4 gap-3 border-b border-white/10">
+          <Link to="/dashboard" className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-sm font-semibold text-white flex-1">Novo Evento</h1>
+          <Badge variant="outline" className="text-xs font-semibold text-white/70 border-white/20 rounded-lg">
+            Plano {plano.name}
+          </Badge>
+        </div>
+
+        {/* Modal card */}
+        <div className="relative z-20 flex justify-center px-4 py-8">
+          <div className="w-full max-w-[680px] bg-card rounded-[2rem] shadow-2xl border-none overflow-hidden">
+
+            {/* Alertas acima do conteúdo */}
+            {quantidadeEventosAtivos !== null && quantidadeEventosAtivos >= plano.maxActiveEvents && (
+              <div className="bg-amber-50 dark:bg-amber-950/40 px-8 py-4 flex items-center gap-4 border-b border-amber-200 dark:border-amber-800">
+                <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-amber-700 dark:text-amber-300">Limite de eventos atingido</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                    O plano <strong>{plano.name}</strong> permite {plano.maxActiveEvents} evento{plano.maxActiveEvents !== 1 ? 's' : ''} ativo{plano.maxActiveEvents !== 1 ? 's' : ''}. Arquive um evento existente ou faça upgrade.
+                  </p>
+                </div>
+                <Link to="/plans" className="shrink-0 text-xs font-black bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors">
+                  Upgrade →
+                </Link>
+              </div>
+            )}
+
+            {/* Header do modal */}
+            <div className="px-8 pt-8 pb-5 border-b border-border/50">
+              <h2 className="text-xl font-black text-foreground">Novo Evento</h2>
+              <p className="text-muted-foreground text-sm mt-1">Preencha os dados abaixo para criar seu evento.</p>
+
+              {quantidadeEventosAtivos !== null && quantidadeEventosAtivos < plano.maxActiveEvents && (
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-muted-foreground">
+                  <span className="bg-muted/60 px-3 py-1 rounded-full">Eventos ativos: <strong>{quantidadeEventosAtivos}</strong> de {plano.maxActiveEvents === Infinity ? '∞' : plano.maxActiveEvents}</span>
+                  <span className="bg-muted/60 px-3 py-1 rounded-full">Vagas por evento: até <strong>{plano.maxAttendeesPerEvent === Infinity ? 'ilimitado' : plano.maxAttendeesPerEvent.toLocaleString('pt-BR')}</strong></span>
+                </div>
+              )}
             </div>
-          </div>
-        )}
 
-        {/* Aviso de limite de eventos */}
-        {quantidadeEventosAtivos !== null && quantidadeEventosAtivos >= plano.maxActiveEvents && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-4">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm font-bold text-amber-700">Limite de eventos atingido</p>
-              <p className="text-xs text-amber-600 mt-0.5">
-                O plano <strong>{plano.name}</strong> permite {plano.maxActiveEvents} evento{plano.maxActiveEvents !== 1 ? 's' : ''} ativo{plano.maxActiveEvents !== 1 ? 's' : ''}. Arquive um evento existente ou faça upgrade.
-              </p>
-            </div>
-            <Link to="/plans" className="shrink-0 text-xs font-black bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors">
-              Upgrade →
-            </Link>
-          </div>
-        )}
+            {/* Conteúdo do formulário */}
+            <div className="px-8 py-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
 
-        <Card className="border border-border shadow-sm rounded-2xl overflow-hidden card-flat">
-          <div className="h-1.5 bg-primary" />
-          <CardHeader className="border-b border-border bg-muted/30">
-            <CardTitle className="text-base font-bold text-foreground">Informações do Evento</CardTitle>
-            <p className="text-sm text-muted-foreground">Preencha os dados abaixo para criar seu evento.</p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 gap-6">
+                {/* Nome */}
                 <div className="space-y-2">
-                  <Label htmlFor="nome">Nome do Evento</Label>
-                  <Input 
-                    id="nome" 
-                    required 
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Nome do Evento</Label>
+                  <Input
+                    id="nome"
+                    required
                     maxLength={200}
                     value={dadosFormulario.nome}
                     onChange={e => setDadosFormulario({...dadosFormulario, nome: e.target.value})}
                     placeholder="Ex: Conferência Anual 2024"
-                    className="rounded-xl border-border focus:ring-primary focus:border-primary"
+                    className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm"
                   />
                   <p className="text-[10px] text-muted-foreground pl-1">{dadosFormulario.nome.length}/200</p>
                 </div>
 
-                {/* Início */}
-                <div className="space-y-2">
-                  <Label>Data de Início</Label>
-                  <div className="grid grid-cols-2 gap-3">
+                {/* Datas */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Data de Início</Label>
                     <Input
                       type="date"
                       required
                       value={dadosFormulario.data_inicio_data}
                       onChange={e => setDadosFormulario({...dadosFormulario, data_inicio_data: e.target.value})}
-                      className="rounded-xl border-border"
+                      className="rounded-xl border-none bg-muted/50 h-12 shadow-sm"
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Horário</Label>
                     <Input
                       type="time"
                       required
                       value={dadosFormulario.data_inicio_hora}
                       onChange={e => setDadosFormulario({...dadosFormulario, data_inicio_hora: e.target.value})}
-                      className="rounded-xl border-border"
+                      className="rounded-xl border-none bg-muted/50 h-12 shadow-sm"
                     />
                   </div>
                 </div>
 
-                {/* Término */}
-                <div className="space-y-2">
-                  <Label>Data de Término</Label>
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Data de Término</Label>
                     <Input
                       type="date"
                       required
                       value={dadosFormulario.data_fim_data}
                       onChange={e => setDadosFormulario({...dadosFormulario, data_fim_data: e.target.value})}
-                      className="rounded-xl border-border"
+                      className="rounded-xl border-none bg-muted/50 h-12 shadow-sm"
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Horário</Label>
                     <Input
                       type="time"
                       required
                       value={dadosFormulario.data_fim_hora}
                       onChange={e => setDadosFormulario({...dadosFormulario, data_fim_hora: e.target.value})}
-                      className="rounded-xl border-border"
+                      className="rounded-xl border-none bg-muted/50 h-12 shadow-sm"
                     />
                   </div>
                 </div>
 
+                {/* Local */}
                 <div className="space-y-2">
-                  <Label htmlFor="local">Local</Label>
-                  <Input 
-                    id="local" 
-                    required 
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Local</Label>
+                  <Input
+                    id="local"
+                    required
                     value={dadosFormulario.local}
                     onChange={e => setDadosFormulario({...dadosFormulario, local: e.target.value})}
                     placeholder="Ex: Auditório Central ou Online"
-                    className="rounded-xl border-border"
+                    className="rounded-xl border-none bg-muted/50 h-12 shadow-sm"
                   />
                 </div>
 
-                {/* Imagem do evento */}
+                {/* Vagas */}
                 <div className="space-y-2">
-                  <Label>Imagem de Capa do Evento</Label>
-                  <p className="text-xs text-muted-foreground -mt-1">PNG ou JPEG · mínimo 1920×1080px</p>
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    Vagas Totais (máx. {plano.maxAttendeesPerEvent === Infinity ? '∞' : plano.maxAttendeesPerEvent})
+                  </Label>
+                  <Input
+                    id="vagas_totais"
+                    type="number"
+                    required
+                    max={plano.maxAttendeesPerEvent}
+                    value={dadosFormulario.vagas_totais}
+                    onChange={e => setDadosFormulario({...dadosFormulario, vagas_totais: Number(e.target.value)})}
+                    className={`rounded-xl border-none bg-muted/50 h-12 shadow-sm ${dadosFormulario.vagas_totais > plano.maxAttendeesPerEvent ? 'ring-2 ring-red-500' : ''}`}
+                  />
+                  {dadosFormulario.vagas_totais > plano.maxAttendeesPerEvent && (
+                    <p className="text-[10px] text-red-500 font-bold flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      Seu plano limita este campo a {plano.maxAttendeesPerEvent}
+                    </p>
+                  )}
+                </div>
+
+                {/* Imagem de capa */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Imagem de Capa</Label>
+                  <p className="text-[10px] text-muted-foreground -mt-1">PNG ou JPEG · mínimo 1920×1080px</p>
 
                   {!imagemPreview ? (
                     <label
                       htmlFor="imagem_upload"
-                      className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-border rounded-2xl p-8 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                      className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-border/60 rounded-2xl p-8 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group bg-muted/30"
                     >
                       <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                         <ImagePlus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -375,7 +409,7 @@ export default function CreateEvent() {
                       />
                     </label>
                   ) : (
-                    <div className="relative rounded-2xl overflow-hidden border border-border">
+                    <div className="relative rounded-2xl overflow-hidden">
                       <img
                         key={imagemPreview ?? 'empty'}
                         src={imagemPreview}
@@ -412,15 +446,16 @@ export default function CreateEvent() {
                   )}
                 </div>
 
-                <div className="space-y-4">
-                  <Label htmlFor="cor_tema">Cor do Tema (Identidade Visual)</Label>
-                  <div className="flex flex-wrap gap-3 mb-2">
+                {/* Cor do tema */}
+                <div className="space-y-3">
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Cor do Tema</Label>
+                  <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
                       onClick={() => setDadosFormulario({...dadosFormulario, cor_tema: 'default'})}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${dadosFormulario.cor_tema === 'default' ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground'}`}
                     >
-                      Aleatória/Vibrante
+                      Aleatória
                     </button>
                     {CORES_EVENTO.map(color => (
                       <button
@@ -432,79 +467,62 @@ export default function CreateEvent() {
                       />
                     ))}
                   </div>
-                  <div className="flex gap-4 items-center">
-                    <Input 
-                      id="cor_tema" 
+                  <div className="flex gap-3 items-center">
+                    <Input
                       type="color"
                       value={dadosFormulario.cor_tema === 'default' ? '#000000' : dadosFormulario.cor_tema}
                       disabled={dadosFormulario.cor_tema === 'default'}
                       onChange={e => setDadosFormulario({...dadosFormulario, cor_tema: e.target.value})}
-                      className="w-20 h-10 p-1 rounded-lg cursor-pointer disabled:opacity-30"
+                      className="w-12 h-10 p-1 rounded-lg cursor-pointer disabled:opacity-30 border-none"
                     />
-                    <Input 
+                    <Input
                       type="text"
                       value={dadosFormulario.cor_tema}
                       onChange={e => setDadosFormulario({...dadosFormulario, cor_tema: e.target.value})}
-                      className="rounded-xl border-border"
+                      className="rounded-xl border-none bg-muted/50 h-10 shadow-sm flex-1"
                       placeholder="#064e3b"
                     />
                   </div>
                   <p className="text-[10px] text-muted-foreground">Esta cor será usada no cabeçalho do card e nas páginas internas do evento.</p>
                 </div>
 
-<div className="space-y-2">
-                  <Label htmlFor="descricao">Descrição do Evento</Label>
-                  <Textarea 
+                {/* Descrição */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Descrição (opcional)</Label>
+                    <span className={`text-[10px] font-semibold tabular-nums ${dadosFormulario.descricao.length > 2200 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      {dadosFormulario.descricao.length}/2500
+                    </span>
+                  </div>
+                  <Textarea
                     id="descricao"
                     value={dadosFormulario.descricao}
                     onChange={e => setDadosFormulario({...dadosFormulario, descricao: e.target.value})}
                     placeholder="Descreva os detalhes do seu evento..."
                     maxLength={2500}
-                    className="rounded-xl border-border min-h-[120px]"
+                    className="rounded-xl border-none bg-muted/50 resize-none shadow-sm min-h-[120px]"
                   />
-                  <p className="text-[10px] text-muted-foreground pl-1">{dadosFormulario.descricao.length}/2500</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="vagas_totais">Vagas Totais (Máx: {plano.maxAttendeesPerEvent})</Label>
-                    <Input 
-                      id="vagas_totais" 
-                      type="number" 
-                      required 
-                      max={plano.maxAttendeesPerEvent}
-                      value={dadosFormulario.vagas_totais}
-                      onChange={e => setDadosFormulario({...dadosFormulario, vagas_totais: Number(e.target.value)})}
-                      className={`rounded-xl border-border ${dadosFormulario.vagas_totais > plano.maxAttendeesPerEvent ? 'border-red-500 focus:ring-red-500' : ''}`}
-                    />
-                    {dadosFormulario.vagas_totais > plano.maxAttendeesPerEvent && (
-                      <p className="text-[10px] text-red-500 font-bold flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3" />
-                        Seu plano limita este campo a {plano.maxAttendeesPerEvent}
-                      </p>
+                {/* Botão */}
+                <div className="pt-2 pb-2">
+                  <Button
+                    type="submit"
+                    disabled={carregando}
+                    className="w-full bg-primary hover:bg-primary/90 text-white h-12 rounded-xl gap-2 shadow-lg transition-all active:scale-95 font-bold"
+                  >
+                    {carregando ? 'Criando...' : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        Criar Evento
+                      </>
                     )}
-                  </div>
+                  </Button>
                 </div>
-
-              </div>
-
-              <div className="pt-4">
-                <Button 
-                  type="submit" 
-                  disabled={carregando}
-                  className="w-full bg-primary hover:bg-primary/90 text-white h-12 rounded-xl gap-2 shadow-lg transition-all active:scale-95"
-                >
-                  {carregando ? 'Criando...' : (
-                    <>
-                      <Save className="w-5 h-5" />
-                      Criar Evento
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
