@@ -41,7 +41,7 @@ Explore cada seção usando o tutorial guiado ou consulte esta Base de Conhecime
     resumo: 'Adicione logo, nome da sua organização e dados de contato. Essas informações aparecem nas páginas de inscrição e nos e-mails enviados aos participantes.',
     tags: ['perfil', 'organização', 'configuração'],
     autor: 'Equipe Tovia',
-    banner_url: 'https://plus.unsplash.com/premium_photo-1752230474021-5749c334925a?w=1200&q=80&auto=format&fit=crop',
+    banner_url: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=1200&q=80&auto=format&fit=crop',
     conteudo: `O perfil da sua organização é a identidade que aparece em todos os pontos de contato com os participantes: nas páginas de inscrição, nos e-mails de confirmação e na página pública da organização.
 
 Para configurar seu perfil, acesse a aba Meu Perfil na barra lateral. Lá você pode adicionar o nome da organização, logo, bio, contatos (e-mail, WhatsApp, site), endereço e redes sociais.
@@ -1413,7 +1413,7 @@ Mantenha seu perfil completo (logo, bio, contatos) para transmitir profissionali
     resumo: 'Entenda a central de notificações: alertas automáticos, resumo financeiro diário e como acompanhar tudo que acontece no seu evento.',
     tags: ['eventos', 'configuração', 'financeiro'],
     autor: 'Equipe Tovia',
-    banner_url: 'https://images.unsplash.com/photo-1614680376408-81e91bbe261f?w=1200&q=80&auto=format&fit=crop',
+    banner_url: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Cada evento no Tovia tem uma central de notificações que registra tudo o que acontece — inscrições, pagamentos, alertas e ações da equipe.
 
 ONDE ENCONTRAR:
