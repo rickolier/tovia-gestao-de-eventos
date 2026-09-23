@@ -20,9 +20,9 @@ A plataforma foi criada para simplificar o que normalmente é complicado: recebe
 Ao acessar o Tovia, você encontrará uma barra lateral com as principais seções: Início (seus eventos), Meu Perfil, Agenda, Calculadora, Relatórios e Faturamento. Cada evento criado tem suas próprias abas internas: Visão Geral, Ingressos, Páginas de Inscrição, Participantes e outras funcionalidades conforme o plano contratado.
 
 O Tovia é organizado em três planos com nomes em hebraico:
-• Chinám (חינם) — gratuito, permanente. Ideal para começar.
-• Pétach (פֶּתַח) — R$49/mês. Abre o controle financeiro e pagamentos manuais.
-• Koách (כֹּחַ) — R$129/mês. Força total: equipe, grupos e tarefas.
+• Chinám (חינם) — gratuito, permanente. Ideal para começar: 2 eventos e até 100 vagas.
+• Pétach (פֶּתַח) — R$119/mês. Gestão completa com BYOG, equipe, grupos e tarefas: 5 eventos e até 300 vagas.
+• Chalém (שָׁלֵם) — R$299/mês. Volume alto e equipe grande: 15 eventos e até 600 vagas.
 
 Todo usuário começa com o plano Chinám e pode fazer upgrade conforme o evento crescer. Membros de equipe convidados por um organizador também recebem o plano Chinám gratuitamente — eles acessam o evento específico onde foram adicionados, com as permissões que o organizador definiu.
 
@@ -95,7 +95,7 @@ Na calculadora, você preenche: número de vagas, valor do ingresso (ou meta de 
 
 Isso é muito útil para saber se o preço do ingresso está adequado ou se a capacidade planejada é suficiente para tornar o evento viável financeiramente.
 
-A calculadora está disponível em todos os planos — inclusive no Chinám (gratuito). Nos planos Pétach e Koách, após fazer os cálculos, você pode clicar em Criar Evento para que os dados da calculadora sejam transferidos automaticamente para as configurações financeiras do evento.
+A calculadora está disponível em todos os planos — inclusive no Chinám (gratuito). Nos planos Pétach e Chalém, após fazer os cálculos, você pode clicar em Criar Evento para que os dados da calculadora sejam transferidos automaticamente para as configurações financeiras do evento.
 
 Use a calculadora antes de divulgar qualquer evento. Definir o preço certo desde o início evita problemas financeiros durante o evento.`,
     video_url: '',
@@ -139,7 +139,7 @@ Os relatórios são atualizados automaticamente conforme novas inscrições são
     banner_url: 'https://images.unsplash.com/photo-1609429019995-8c40f49535a5?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A aba Faturamento mostra as informações da sua assinatura no Tovia: qual plano você contratou, os limites de eventos e participantes incluídos, e o histórico de pagamentos da plataforma.
 
-Nessa página você encontra: o plano atual (Chinám, Pétach ou Koách), a data de renovação, o valor pago mensalmente e o status de cada cobrança (pago, pendente, vencido).
+Nessa página você encontra: o plano atual (Chinám, Pétach ou Chalém), a data de renovação, o valor pago mensalmente e o status de cada cobrança (pago, pendente, vencido).
 
 Os limites de cada plano são exibidos com indicadores de uso: por exemplo, "2 de 3 eventos utilizados" ou "87 de 200 participantes". Isso te ajuda a planejar quando pode ser necessário fazer upgrade para o próximo plano.
 
@@ -223,11 +223,11 @@ Cada ingresso tem: nome, tipo (gratuito, pago ou doação), valor (se pago), qua
 No tipo "doação", o participante decide o valor que quer contribuir, com ou sem um valor sugerido definido por você. Isso é muito usado em conferências e retiros que trabalham com ofertas livres.
 
 Disponibilidade por plano:
-• Chinám — 1 ingresso por evento (gratuito)
-• Pétach — até 3 ingressos por evento (gratuito, pago ou doação)
-• Koách — até 5 ingressos por evento
+• Chinám — até 3 ingressos por evento (gratuito)
+• Pétach — até 5 ingressos por evento (gratuito, pago ou doação)
+• Chalém — até 10 ingressos por evento
 
-Os pagamentos manuais (Pix, dinheiro, transferência) estão disponíveis a partir do plano Pétach.
+Os pagamentos manuais e automáticos (Pix, cartão, boleto) estão disponíveis a partir do plano Pétach via BYOG (Bring Your Own Gateway).
 
 Dica: crie ingressos com nomes claros que ajudem os participantes a identificar qual categoria se aplica a eles. Evite termos técnicos ou internos que só fazem sentido para a equipe organizadora.`,
     video_url: '',
@@ -248,7 +248,7 @@ Dica: crie ingressos com nomes claros que ajudem os participantes a identificar 
 
 Para criar uma página de inscrição, entre no evento e acesse a aba Páginas de Inscrição. Clique em Nova Página, defina um título, escolha quais ingressos serão oferecidos nessa página, e configure o formulário de dados que os participantes devem preencher.
 
-Um evento pode ter múltiplas páginas de inscrição (a partir do plano Koách). Por exemplo: uma página pública com ingressos gerais, e outra página privada (com link específico) para inscrições de equipe ou voluntários, com campos diferentes.
+Um evento pode ter múltiplas páginas de inscrição (a partir do plano Pétach). Por exemplo: uma página pública com ingressos gerais, e outra página privada (com link específico) para inscrições de equipe ou voluntários, com campos diferentes.
 
 O formulário de cada página é totalmente personalizável. Além dos campos padrão (nome, e-mail, telefone), você pode adicionar campos específicos do seu evento: tamanho de camiseta, restrição alimentar, cidade de origem, etc.
 
@@ -273,7 +273,7 @@ A confirmação de inscrição é enviada automaticamente por e-mail para o part
 
 Nessa aba você pode filtrar participantes por ingresso, por status de pagamento ou pesquisar pelo nome. Isso facilita encontrar um participante específico em eventos com muitas inscrições.
 
-O status de cada inscrição indica a situação do pagamento: Pendente (ainda não pagou), Pago (confirmado), Cancelado e outros. Nos planos Pétach e Koách, você pode atualizar o status manualmente conforme confirma os recebimentos.
+O status de cada inscrição indica a situação do pagamento: Pendente (ainda não pagou), Pago (confirmado), Cancelado e outros. Nos planos Pétach e Chalém, você pode atualizar o status manualmente conforme confirma os recebimentos.
 
 Você pode registrar informações adicionais em cada inscrição, como observações internas ou notas da equipe — isso não é visível para o participante.
 
@@ -296,7 +296,7 @@ Dica: use o campo de status para acompanhar o processo de confirmação em event
     banner_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80&auto=format&fit=crop',
     conteudo: `A Base de Conhecimento é o repositório de artigos e tutoriais sobre o Tovia. Aqui você encontra explicações detalhadas sobre cada funcionalidade da plataforma, dicas de uso e respostas para as perguntas mais frequentes.
 
-Os artigos estão organizados na mesma sequência do Tutorial Guiado — seguindo a lógica de uso da plataforma, do básico ao avançado, e agrupados por plano (Chinám, Pétach e Koách).
+Os artigos estão organizados na mesma sequência do Tutorial Guiado — seguindo a lógica de uso da plataforma, do básico ao avançado, e agrupados por plano (Chinám, Pétach e Chalém).
 
 Para encontrar um artigo específico, use a barra de busca no topo da página. A busca pesquisa dentro do título, das tags e do conteúdo dos artigos, então você pode buscar por termos como "ingresso", "página de inscrição" ou "exportar".
 
@@ -391,10 +391,10 @@ Dica: use o campo de observações ao registrar uma doação para anotar informa
     categoria: 'gestao',
     titulo: 'Recursos!',
     resumo: 'Na aba Recursos você cadastra tudo que o evento precisa: equipamentos, espaços, materiais. Gerencie disponibilidade e alocações em um só lugar.',
-    tags: ['recursos', 'equipamentos', 'espaços', 'koach'],
+    tags: ['recursos', 'equipamentos', 'espaços', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1629327896333-7ecec1515ae5?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Recursos (disponível nos planos Koách) permite cadastrar e gerenciar tudo que o evento precisa de infraestrutura: equipamentos, espaços físicos, materiais e qualquer outro recurso que precise de controle de disponibilidade.
+    conteudo: `A aba Recursos (disponível nos planos Pétach e Chalém) permite cadastrar e gerenciar tudo que o evento precisa de infraestrutura: equipamentos, espaços físicos, materiais e qualquer outro recurso que precise de controle de disponibilidade.
 
 Para cada recurso você define: nome, tipo (equipamento, espaço, material, etc.), quantidade disponível, responsável e observações. Você pode então alocar recursos para horários específicos dentro do evento, garantindo que não haverá conflito de uso.
 
@@ -416,10 +416,10 @@ Dica: cadastre os recursos logo após criar o evento e antes de montar a program
     categoria: 'gestao',
     titulo: 'Grupos!',
     resumo: 'Divida os participantes em grupos, quartos, mesas ou qualquer outra estrutura. Ideal para acampamentos, retiros e eventos com hospedagem.',
-    tags: ['grupos', 'quartos', 'hospedagem', 'koach'],
+    tags: ['grupos', 'quartos', 'hospedagem', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1630068846062-3ffe78aa5049?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Grupos (disponível nos planos Koách) permite dividir os participantes do evento em grupos, quartos, mesas ou qualquer outra estrutura de agrupamento. É ideal para acampamentos, retiros, conferências com hospedagem e eventos com mesas temáticas.
+    conteudo: `A aba Grupos (disponível nos planos Pétach e Chalém) permite dividir os participantes do evento em grupos, quartos, mesas ou qualquer outra estrutura de agrupamento. É ideal para acampamentos, retiros, conferências com hospedagem e eventos com mesas temáticas.
 
 Para cada grupo você define: nome, capacidade máxima, tipo (quarto, mesa, ônibus, célula, etc.) e a lista de participantes alocados. A aba exibe quantas vagas cada grupo tem disponíveis e quem já foi alocado.
 
@@ -441,10 +441,10 @@ Dica: dê nomes descritivos e intuitivos para os grupos — "Quarto 1" é menos 
     categoria: 'gestao',
     titulo: 'Tarefas!',
     resumo: 'Organize o cronograma do evento em tarefas com responsáveis e prazos. Cada membro da equipe sabe exatamente o que precisa fazer e quando.',
-    tags: ['tarefas', 'cronograma', 'equipe', 'koach'],
+    tags: ['tarefas', 'cronograma', 'equipe', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1754548930574-6a995e5eb5a7?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Tarefas (disponível nos planos Koách) é onde você monta o cronograma operacional do evento, com cada atividade organizada em tarefas que podem ser atribuídas a membros da equipe.
+    conteudo: `A aba Tarefas (disponível nos planos Pétach e Chalém) é onde você monta o cronograma operacional do evento, com cada atividade organizada em tarefas que podem ser atribuídas a membros da equipe.
 
 Para cada tarefa você define: título, descrição, responsável, data/horário de início e término, status (a fazer, em andamento, concluída) e a prioridade. As tarefas aparecem em uma lista organizada por data, facilitando a visão do que precisa ser feito e quando.
 
@@ -466,10 +466,10 @@ Dica: crie as tarefas com pelo menos uma semana de antecedência e atribua respo
     categoria: 'gestao',
     titulo: 'Equipe!',
     resumo: 'Adicione colaboradores ao evento para que eles também possam gerenciar inscrições, financeiro e tarefas. Membros convidados têm o plano Chinám gratuito — sem custo para eles.',
-    tags: ['equipe', 'colaboradores', 'permissões', 'koach'],
+    tags: ['equipe', 'colaboradores', 'permissões', 'petach'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `A aba Equipe (disponível nos planos Koách) permite adicionar colaboradores ao seu evento para que outras pessoas possam ajudar a gerenciar inscrições, financeiro, recursos e tarefas.
+    conteudo: `A aba Equipe (disponível nos planos Pétach e Chalém) permite adicionar colaboradores ao seu evento para que outras pessoas possam ajudar a gerenciar inscrições, financeiro, recursos e tarefas.
 
 COMO FUNCIONA PARA O MEMBRO CONVIDADO:
 A pessoa convidada não precisa assinar nenhum plano pago. Ao criar uma conta no Tovia, ela recebe automaticamente o plano Chinám (gratuito) e acessa o evento específico onde foi adicionada — com as permissões que você definiu. O custo do Tovia é do organizador, não da equipe.
@@ -505,7 +505,7 @@ Dica: use a aba Equipe para delegar funções antes do evento começar. Por exem
     banner_url: 'https://images.unsplash.com/photo-1503266980949-bd30d04d0b7a?w=1200&q=80&auto=format&fit=crop',
     conteudo: `Parabéns por completar o tour do Tovia! Você agora conhece todas as ferramentas disponíveis na plataforma e como cada uma contribui para a organização de eventos de sucesso.
 
-A jornada recomendada para um novo evento é: criar o evento → configurar ingressos → criar a página de inscrição → divulgar o link → acompanhar as inscrições e participantes → gerenciar o financeiro (Pétach+) → coordenar equipe, grupos e tarefas (Koách+).
+A jornada recomendada para um novo evento é: criar o evento → configurar ingressos → criar a página de inscrição → divulgar o link → acompanhar as inscrições e participantes → gerenciar o financeiro (Pétach+) → coordenar equipe, grupos e tarefas (Pétach+).
 
 Para rever qualquer etapa do tutorial, clique em Tutorial na barra lateral do painel a qualquer momento. O tutorial foi pensado para ser consultado quantas vezes forem necessárias.
 
@@ -591,9 +591,9 @@ Dica: abra a tela de check-in em um tablet na portaria. Com tela maior, a busca 
     conteudo: `O plano Chinám é gratuito e permanente — você pode usar o Tovia sem pagar enquanto o Chinám atender suas necessidades. Chinám (חינם) significa "gratuito" em hebraico. Ele é ideal para quem está começando ou organiza eventos pequenos e esporádicos.
 
 O que você pode fazer no Chinám:
-• 1 evento ativo por vez (eventos encerrados não contam no limite)
+• Até 2 eventos ativos simultaneamente (eventos encerrados não contam no limite)
 • Até 100 participantes por evento
-• 1 tipo de ingresso por evento (gratuito)
+• Até 3 tipos de ingresso por evento (gratuitos)
 • 1 página de inscrição por evento, com formulário personalizado
 • Confirmação de inscrição por e-mail automática
 • Lista de participantes com exportação
@@ -602,21 +602,23 @@ O que você pode fazer no Chinám:
 • Agenda mensal de eventos
 • Calculadora de evento
 • Relatórios consolidados
+• Até 3 membros de equipe por evento
 
 Caminho recomendado no Chinám:
 1. Complete seu perfil (logo, nome da organização, contato) → aparece em todos os e-mails e páginas de inscrição
 2. Crie seu evento (nome, data, local, imagem de capa)
-3. Configure 1 ingresso gratuito com número de vagas e prazo
+3. Configure os ingressos gratuitos com número de vagas e prazo
 4. Crie a página de inscrição e personalize o formulário
 5. Copie o link da página e divulgue
 6. Acompanhe as inscrições na aba Participantes
 7. No dia do evento, use o Check-in para confirmar presenças
 
 Quando considerar upgrade para o Pétach:
-• Se você precisa de ingressos pagos (cobrar dos participantes)
-• Se organiza mais de 1 evento simultâneo
+• Se você precisa de ingressos pagos com pagamento automático (BYOG)
+• Se organiza mais de 2 eventos simultâneos
 • Se precisa de mais de 100 participantes por evento
-• Se quer controlar o financeiro do evento (entradas, doações, saldo)
+• Se quer controle financeiro completo (pagamentos, doações, relatórios)
+• Se precisa de equipe, grupos, tarefas e recursos
 
 O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua disponível nos planos seguintes.`,
     video_url: '',
@@ -630,52 +632,61 @@ O upgrade não exclui nenhum dado — tudo que foi criado no Chinám continua di
     ordem: 31,
     categoria: 'planos',
     titulo: 'Plano Pétach: o caminho mais eficiente',
-    resumo: 'Você tem o plano Pétach com controle financeiro manual. Veja como configurar seu evento do zero até o relatório final.',
-    tags: ['petach', 'financeiro', 'caminho', 'guia de uso', 'mapa'],
+    resumo: 'Você tem o plano Pétach com gestão completa e BYOG. Veja como configurar seu evento do zero até o relatório final.',
+    tags: ['petach', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1699771913117-a747414bafd2?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O plano Pétach é ideal para organizações que precisam cobrar pelos eventos e controlar os recebimentos. Pétach (פֶּתַח) significa "abertura" em hebraico — a porta de entrada para eventos com cobrança. Você recebe via Pix, dinheiro, transferência ou qualquer meio de sua preferência, e o Tovia organiza tudo no painel financeiro do evento.
+    conteudo: `O plano Pétach é o plano completo do Tovia para organizadores que precisam de gestão profissional. Pétach (פֶּתַח) significa "abertura" em hebraico — a porta de entrada para eventos com cobrança, equipe e gestão completa. Com o BYOG (Bring Your Own Gateway), você conecta seu próprio gateway de pagamento e recebe diretamente na sua conta.
 
 O que você pode fazer no Pétach:
-• Até 3 eventos ativos simultaneamente
-• Até 200 participantes por evento
-• Até 3 tipos de ingresso por evento (gratuito, pago, doação)
-• 1 página de inscrição por evento
+• Até 5 eventos ativos simultaneamente
+• Até 300 participantes por evento
+• Até 5 tipos de ingresso por evento (gratuito, pago, doação)
+• Até 5 páginas de inscrição por evento
+• Até 10 membros de equipe por evento
 • Tudo do Chinám, mais:
+• Pagamentos automáticos via PIX, boleto e cartão (BYOG)
 • Registro manual de pagamentos por participante
 • Módulo de doações com alocação por participante
+• Equipe colaborativa com permissões específicas
+• Grupos/Quartos para organizar participantes
+• Tarefas com responsáveis e prazos
+• Recursos (equipamentos, espaços, materiais)
 • Configuração financeira do evento (custo previsto, meta de arrecadação)
 • Relatório financeiro: total arrecadado vs. custo previsto
 
 Caminho recomendado no Pétach:
 
 ANTES DO EVENTO:
-1. Complete o perfil (logo, contato, bio)
-2. Crie o evento (nome, data, local, capa)
-3. Configure os tipos de ingresso (ex: "Geral R$150", "Early Bird R$120", "Doação livre")
-4. Crie a página de inscrição com os ingressos e formulário personalizado
-5. Configure as finanças do evento: custo previsto e meta de arrecadação
-6. Divulgue o link da página de inscrição
+1. Conecte seu gateway de pagamento (Configurações → Gateway)
+2. Complete o perfil (logo, contato, bio)
+3. Crie o evento (nome, data, local, capa)
+4. Configure os tipos de ingresso (ex: "Geral R$150", "Early Bird R$120", "Doação livre")
+5. Crie as páginas de inscrição com ingressos e formulário personalizado
+6. Adicione membros de equipe com permissões adequadas
+7. Monte as tarefas do evento com responsáveis e prazos
+8. Configure as finanças do evento: custo previsto e meta de arrecadação
+9. Divulgue o link da página de inscrição
 
 DURANTE AS INSCRIÇÕES:
-7. Acompanhe novas inscrições na aba Participantes
-8. À medida que receber pagamentos (Pix, dinheiro): registre na aba Financeiro
-9. O status de cada participante é atualizado para "Pago" conforme você registra
-10. Crie cupons de desconto para grupos específicos se necessário
+10. Acompanhe novas inscrições na aba Participantes
+11. Pagamentos automáticos são confirmados pelo gateway em tempo real
+12. Organize participantes em Grupos/Quartos conforme necessário
+13. Crie cupons de desconto para grupos específicos se necessário
 
 NO DIA DO EVENTO:
-11. Use o Check-in para confirmar presenças
+14. Use o Check-in para confirmar presenças
+15. A equipe acompanha e atualiza as tarefas pelo próprio painel
 
 PÓS-EVENTO:
-12. Consulte o relatório financeiro para prestação de contas
-13. Exporte a lista de participantes para registro
+16. Consulte o relatório financeiro para prestação de contas
+17. Exporte a lista de participantes para registro
 
-Quando considerar upgrade para o Koách:
-• Se você organiza mais de 3 eventos simultâneos
-• Se precisa de mais de 200 participantes por evento
-• Se quer adicionar colaboradores como gestores do evento (equipe)
-• Se precisa organizar grupos/quartos de participantes
-• Se quer gestão de tarefas e cronograma com a equipe`,
+Quando considerar upgrade para o Chalém:
+• Se você organiza mais de 5 eventos simultâneos
+• Se precisa de mais de 300 participantes por evento
+• Se quer até 30 membros de equipe por evento
+• Se precisa de até 10 tipos de ingresso e 10 páginas por evento`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -686,52 +697,17 @@ Quando considerar upgrade para o Koách:
     slug: 'caminho-pro',
     ordem: 32,
     categoria: 'planos',
-    titulo: 'Plano Koách: o caminho mais eficiente',
-    resumo: 'Você tem o plano Koách com gestão completa. Veja como usar equipe, grupos, tarefas e recursos para eventos mais complexos.',
-    tags: ['koach', 'equipe', 'gestão', 'caminho', 'guia de uso', 'mapa'],
+    visivel: false,
+    titulo: 'Plano Koách (legado) → migrado para Pétach',
+    resumo: 'O plano Koách foi descontinuado. Usuários Koách foram migrados para o Pétach com todos os recursos mantidos.',
+    tags: ['koach', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1748356804570-1df85cbdcfb8?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O plano Koách libera a gestão completa do Tovia: equipe colaborativa, grupos de participantes, tarefas com cronograma e recursos do evento. Koách (כֹּחַ) significa "força" em hebraico. É ideal para organizações que realizam eventos com equipe e logística mais complexa.
+    conteudo: `O plano Koách foi descontinuado e todos os usuários foram migrados automaticamente para o plano Pétach, que agora inclui todos os recursos que estavam no Koách: equipe, grupos, tarefas, recursos e pagamentos automáticos via BYOG.
 
-O que você pode fazer no Koách (além de tudo do Pétach):
-• Até 5 eventos ativos simultaneamente
-• Até 500 participantes por evento
-• Até 5 tipos de ingresso e 5 páginas de inscrição por evento
-• Até 5 membros de equipe por evento
-• Equipe: adicione colaboradores com permissões específicas
-• Grupos/Quartos: organize participantes em grupos, mesas, quartos ou ônibus
-• Tarefas: monte o cronograma operacional com responsáveis e prazos
-• Recursos: gerencie equipamentos, espaços e materiais
+Se você era assinante do Koách, consulte o artigo "Plano Pétach: o caminho mais eficiente" para ver o guia atualizado com todas as funcionalidades disponíveis.
 
-Caminho recomendado no Koách:
-
-PLANEJAMENTO (semanas antes):
-1. Use a Calculadora de Evento para estimar viabilidade financeira
-2. Crie o evento com base nos resultados da calculadora
-3. Configure os ingressos e múltiplas páginas de inscrição por perfil de público
-4. Monte as Tarefas do evento com responsáveis e prazos
-5. Adicione os membros da Equipe com permissões adequadas
-
-Obs: cada membro convidado recebe o plano Chinám gratuito — não há custo adicional para a equipe.
-
-DIVULGAÇÃO:
-6. Divulgue as páginas de inscrição e acompanhe em tempo real
-7. Crie cupons de desconto por perfil de público
-
-ORGANIZAÇÃO (dias antes):
-8. Organize os participantes em Grupos/Quartos conforme inscrições chegam
-9. Aloque Recursos nas tarefas
-10. Registre pagamentos na aba Financeiro
-
-NO DIA:
-11. A equipe acessa as tarefas atribuídas pelo próprio painel
-12. Check-in na entrada — por nome ou QR Code
-13. Atualização de status de tarefas em tempo real
-
-PÓS-EVENTO:
-14. Consulte relatório financeiro e exporte participantes
-
-Precisa de algo mais? Entre em contato com o suporte para avaliarmos juntos.`,
+Seus dados, eventos e configurações foram mantidos integralmente na migração. Não é necessária nenhuma ação da sua parte.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,
@@ -742,19 +718,18 @@ Precisa de algo mais? Entre em contato com o suporte para avaliarmos juntos.`,
     slug: 'caminho-chalem',
     ordem: 33,
     categoria: 'planos',
-    visivel: false,
     titulo: 'Plano Chalém: o caminho mais eficiente',
     resumo: 'Você tem o plano Chalém — completo e sem limites de inscritos. Veja como usar pagamentos automáticos e gerir eventos de grande porte.',
     tags: ['chalem', 'pagamentos automáticos', 'gateway', 'caminho', 'guia de uso', 'mapa'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1592205644721-2fe5214762ae?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O plano Chalém é o mais completo do Tovia: inscritos ilimitados, pagamentos automáticos via PIX, boleto e cartão, e equipe com até 10 membros por evento. Chalém (שָׁלֵם) significa "completo" ou "pleno" em hebraico — da mesma raiz de Shalom.
+    conteudo: `O plano Chalém é o mais robusto do Tovia: volume alto de eventos e participantes, equipe grande e todos os recursos da plataforma com limites ampliados. Chalém (שָׁלֵם) significa "completo" ou "pleno" em hebraico — da mesma raiz de Shalom.
 
-O que você pode fazer no Chalém (além de tudo do Koách):
-• Até 10 eventos ativos simultaneamente
-• Participantes ilimitados por evento
+O que você pode fazer no Chalém (além de tudo do Pétach):
+• Até 15 eventos ativos simultaneamente
+• Até 600 participantes por evento
 • Até 10 tipos de ingresso e 10 páginas de inscrição por evento
-• Até 10 membros de equipe por evento
+• Até 30 membros de equipe por evento
 • Pagamentos automáticos via PIX, boleto e cartão de crédito (BYOG)
 • Os valores vão direto da inscrição para a sua conta bancária
 
@@ -779,8 +754,8 @@ DURANTE AS INSCRIÇÕES:
 9. Cupons de desconto funcionam normalmente
 
 GESTÃO DE EQUIPE E LOGÍSTICA:
-10. Adicione até 10 membros de equipe por evento (gratuito para eles — plano Chinám)
-11. Organize grupos/quartos, tarefas e recursos conforme o Koách
+10. Adicione até 30 membros de equipe por evento (gratuito para eles — plano Chinám)
+11. Organize grupos/quartos, tarefas e recursos
 
 NO DIA:
 12. Check-in ágil — por nome, CPF ou QR Code
@@ -932,19 +907,19 @@ USOS COMUNS:
 • Congressos com programação paralela e múltiplas salas
 
 CONFIGURAÇÃO TÍPICA:
-Chinám → ideal para evento único gratuito com até 100 participantes (culto especial pequeno, reunião de célula)
-Pétach → ideal para eventos com oferta/contribuição manual (retiros com taxa de participação)
-Koách → ideal para conferências com equipe, grupos de hospedagem e programação de múltiplas salas
+Chinám → ideal para eventos gratuitos com até 100 participantes (culto especial, reunião de célula)
+Pétach → ideal para eventos com cobrança, equipe, grupos de hospedagem e logística completa
+Chalém → ideal para conferências de grande porte com equipe numerosa e alto volume de participantes
 INGRESSOS RECOMENDADOS:
 • "Inscrição Geral" (gratuita) para eventos abertos
 • "Contribuição de R$X" para retiros e conferências com custos
 • "Doação Livre" para quem não tem condição de pagar o valor cheio
 • Cupom "LIDER" com desconto para líderes de célula ou pastores
 
-GRUPOS/QUARTOS (Koách):
+GRUPOS/QUARTOS (Pétach+):
 Retiros e acampamentos se beneficiam muito da aba Grupos. Configure quartos separados por gênero e faixa etária (ex: "Feminino Adulto", "Masculino Jovem") e aloque os participantes conforme chegam as inscrições.
 
-EQUIPE (Koách):
+EQUIPE (Pétach+):
 Adicione a secretaria como gestora de inscrições e o tesoureiro como gestor financeiro. Os membros de equipe têm o plano Chinám gratuito — não precisam pagar para ajudar no evento. Cada um cuida da sua área sem precisar compartilhar senha.
 
 DICA PARA IGREJAS:
@@ -964,7 +939,7 @@ Use o campo "Observações" no formulário de inscrição para perguntas especí
     tags: ['retiros', 'acampamentos', 'hospedagem', 'grupos', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1584068921546-2d799f7aaf1d?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `Retiros e acampamentos têm desafios únicos de logística: hospedagem em grupos, alimentação, transporte e cronograma operacional com equipe. Os planos Koách do Tovia foram projetados para esse cenário.
+    conteudo: `Retiros e acampamentos têm desafios únicos de logística: hospedagem em grupos, alimentação, transporte e cronograma operacional com equipe. Os planos Pétach e Chalém do Tovia foram projetados para esse cenário.
 
 CARACTERÍSTICAS DO PERFIL:
 • Participantes precisam ser organizados em quartos, cabanas ou ônibus
@@ -1014,7 +989,7 @@ Inclua no formulário de inscrição: restrição alimentar, tamanho de camiseta
     tags: ['conferências', 'congressos', 'palestrantes', 'mapa', 'perfil'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `Conferências e congressos reúnem grande volume de participantes, múltiplos ingressos (meia, inteira, VIP, estudante) e uma equipe numerosa na organização. Os planos Koách atendem esse perfil com recursos de gestão de equipe, múltiplos ingressos e check-in ágil.
+    conteudo: `Conferências e congressos reúnem grande volume de participantes, múltiplos ingressos (meia, inteira, VIP, estudante) e uma equipe numerosa na organização. Os planos Pétach e Chalém atendem esse perfil com recursos de gestão de equipe, múltiplos ingressos e check-in ágil.
 
 CARACTERÍSTICAS DO PERFIL:
 • Volume alto de participantes (centenas a milhares)
@@ -1028,7 +1003,7 @@ FLUXO RECOMENDADO:
 1. PLANEJAMENTO
 Comece pela Calculadora de Evento. Em conferências, os custos fixos (local, AV, palestrantes) são altos — calcule o ponto de equilíbrio com realismo antes de definir o preço dos ingressos.
 
-2. INGRESSOS (Koách: até 5)
+2. INGRESSOS (Pétach: até 5 / Chalém: até 10)
 Crie múltiplos tipos de ingresso:
 • "Inteira" — valor cheio
 • "Meia" — estudantes com carteirinha
@@ -1036,7 +1011,7 @@ Crie múltiplos tipos de ingresso:
 • "Early Bird" — desconto por tempo limitado (defina prazo de encerramento)
 • "Equipe" — gratuito para voluntários e staff
 
-3. PÁGINAS DE INSCRIÇÃO (Koách: até 5)
+3. PÁGINAS DE INSCRIÇÃO (Pétach: até 5 / Chalém: até 10)
 • Crie uma página principal para o público geral
 • Crie uma segunda para imprensa e parceiros (com link exclusivo e formulário diferente)
 • Crie uma terceira para credenciamento interno da equipe
@@ -1045,7 +1020,7 @@ Crie múltiplos tipos de ingresso:
 • Cupom de porcentagem para organizações parceiras
 • Cupom de valor fixo para influenciadores e embaixadores
 
-5. EQUIPE (Koách: até 5 membros)
+5. EQUIPE (Pétach: até 10 / Chalém: até 30)
 Adicione cada coordenador de área com a permissão correspondente. Os membros de equipe têm o plano Chinám gratuito — não há custo adicional para eles.
 • Coordenador de inscrições → acesso a Participantes e Check-in
 • Tesoureiro → acesso ao Financeiro
@@ -1128,9 +1103,9 @@ CARACTERÍSTICAS DO PERFIL:
 • Participantes com perfil diverso (diferentes idades, regiões, acesso a tecnologia)
 
 CONFIGURAÇÃO TÍPICA:
-Chinám → ideal para ONGs com 1 evento por vez e até 100 participantes — custo zero para a organização
-Pétach → quando há uma taxa de participação ou controle de doações
-Koách → quando há múltiplos eventos simultâneos com equipe voluntária
+Chinám → ideal para ONGs com até 2 eventos e 100 participantes — custo zero para a organização
+Pétach → quando há cobrança, controle de doações e equipe voluntária (até 5 eventos, 300 vagas)
+Chalém → quando há múltiplos eventos simultâneos de grande porte (até 15 eventos, 600 vagas)
 
 INGRESSOS RECOMENDADOS:
 • "Inscrição Gratuita" — para o público geral (Chinám é suficiente para isso)
@@ -1298,9 +1273,9 @@ Se você vai inscrever muitos participantes de uma vez (ex: migração de planil
 
 "NÃO CONSIGO CRIAR MAIS EVENTOS"
 Cada plano tem um limite de eventos ativos simultaneamente:
-• Chinám: 1 evento ativo
-• Pétach: 3 eventos ativos
-• Koách: 10 eventos ativos
+• Chinám: 2 eventos ativos
+• Pétach: 5 eventos ativos
+• Chalém: 15 eventos ativos
 Para liberar espaço, finalize ou desative eventos que já encerraram. Ou faça upgrade do plano.
 
 "MEU PARTICIPANTE NÃO RECEBEU O E-MAIL DE CONFIRMAÇÃO"
@@ -1311,7 +1286,7 @@ Verifique:
 4. Se o problema persistir, o participante pode consultar sua inscrição em tovia.app/consultar usando o e-mail cadastrado
 
 "O PAGAMENTO DO PARTICIPANTE NÃO FOI CONFIRMADO"
-O status precisa ser atualizado manualmente na aba Financeiro → clique no participante → marque como pago.
+Se você usa pagamento manual, o status precisa ser atualizado na aba Financeiro. Com gateway conectado (BYOG), o status é atualizado automaticamente.
 
 "NÃO CONSIGO ADICIONAR INSCRIÇÃO MANUAL"
 Você precisa ter pelo menos uma página de inscrição com formulário criada. Vá em Páginas → crie uma página com campos de formulário → depois volte a Participantes.
@@ -1323,7 +1298,7 @@ Eventos com inscrições não podem ser excluídos para proteger os dados dos pa
 Limites por plano:
 • Chinám: 100 inscritos por evento
 • Pétach: 300 inscritos por evento
-• Koách: 1.000 inscritos por evento
+• Chalém: 600 inscritos por evento
 Faça upgrade do plano para aumentar o limite.
 
 "COMO EXPORTO OS DADOS DOS PARTICIPANTES?"

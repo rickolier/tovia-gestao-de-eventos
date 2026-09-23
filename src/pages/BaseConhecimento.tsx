@@ -1,7 +1,7 @@
 import { ToviaLogo } from '~/components/ToviaLogo';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2, MessageSquare, Trash2, Clock, ChevronDown, ChevronUp, Send, RefreshCw, FolderOpen } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Tag, X, ArrowLeft, LifeBuoy, CheckCircle2, Loader2, MessageSquare, Trash2, Clock, ChevronDown, ChevronUp, Send, RefreshCw, FolderOpen, ChevronLeft, ChevronRight, Mail, SlidersHorizontal } from 'lucide-react';
 import { useAuth } from '~/context/AuthContext';
 import { listDocuments, updateDocument, removeDocument } from '~/services/firestore';
 import { ArtigoBC } from '~/types';
@@ -16,28 +16,27 @@ import { toast } from 'sonner';
 const BADGES = {
   chinam: { label: 'Chinám', color: 'bg-orange-50 text-primary' },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
-  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
+  chalem: { label: 'Chalém', color: 'bg-violet-100 text-violet-700'   },
 };
 
 const ACCENT: Record<string, string> = {
   chinam: 'bg-primary',
   petach: 'bg-blue-400',
-  koach:  'bg-violet-500',
+  chalem: 'bg-violet-500',
 };
 
-// Active filter pill styles (shown on the banner dark bg)
 const PLAN_FILTER_ACTIVE: Record<string, string> = {
   chinam: 'bg-primary text-white border-primary',
   petach: 'bg-blue-500 text-white border-blue-500',
-  koach:  'bg-violet-500 text-white border-violet-500',
+  chalem: 'bg-violet-500 text-white border-violet-500',
 };
 
-type PlanKey = 'chinam' | 'petach' | 'koach';
+type PlanKey = 'chinam' | 'petach' | 'chalem';
 
 const PLAN_FILTERS: { key: PlanKey; label: string }[] = [
   { key: 'chinam', label: 'Chinám'  },
   { key: 'petach', label: 'Pétach'  },
-  { key: 'koach',  label: 'Koách'   },
+  { key: 'chalem', label: 'Chalém'  },
 ];
 
 const PINNED_TAGS = ['início', 'configuração', 'eventos', 'financeiro', 'suporte'];
@@ -58,15 +57,15 @@ const CATEGORIA_ORDER = Object.keys(CATEGORIA_LABELS_BC);
 const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
 
 function badgesFromTags(tags: string[]): PlanKey[] {
-  const hasKoach  = tags.includes('koach');
-  const hasPetach = tags.includes('petach');
-  if (hasKoach)  return ['koach'];
-  if (hasPetach) return ['petach', 'koach'];
-  return ['chinam', 'petach', 'koach'];
+  const hasChalem = tags.includes('chalem');
+  const hasPetach = tags.includes('petach') || tags.includes('koach');
+  if (hasChalem) return ['chalem'];
+  if (hasPetach) return ['petach', 'chalem'];
+  return ['chinam', 'petach', 'chalem'];
 }
 
 function accentFromBadges(badges: PlanKey[]): string {
-  if (badges[0] === 'koach')  return ACCENT.koach;
+  if (badges[0] === 'chalem') return ACCENT.chalem;
   if (badges[0] === 'petach') return ACCENT.petach;
   return ACCENT.chinam;
 }
@@ -167,6 +166,8 @@ export default function BaseConhecimento() {
   const [planFiltro, setPlanFiltro] = useState<PlanKey | null>(null);
   const [tagFiltro, setTagFiltro]   = useState<string | null>(null);
   const [categoriaFiltro, setCategoriaFiltro] = useState<string | null>(null);
+  const [ordenacao, setOrdenacao] = useState<'recentes' | 'mais-vistos'>('recentes');
+  const [heroIndex, setHeroIndex] = useState(0);
 
   // Ticket form
   const [ticketOpen, setTicketOpen]       = useState(false);
@@ -385,18 +386,35 @@ export default function BaseConhecimento() {
       .map(cat => ({ key: cat, label: CATEGORIA_LABELS_BC[cat] || cat, artigos: groups[cat] }));
   }, [filtered, isSearching]);
 
+  const heroArticles = useMemo(() => {
+    const featured = artigos.filter(a => a.visivel !== false && a.banner_url);
+    const ids = ['bem-vindo', 'caminho-start', 'caminho-essencial', 'caminho-chalem', 'mapa-igrejas'];
+    const picked = ids.map(id => featured.find(a => a.id === id)).filter(Boolean) as ArtigoBC[];
+    return picked.length >= 3 ? picked : featured.slice(0, 5);
+  }, [artigos]);
+
+  const heroNext = useCallback(() => setHeroIndex(i => (i + 1) % heroArticles.length), [heroArticles.length]);
+  const heroPrev = useCallback(() => setHeroIndex(i => (i - 1 + heroArticles.length) % heroArticles.length), [heroArticles.length]);
+
+  useEffect(() => {
+    if (heroArticles.length <= 1) return;
+    const timer = setInterval(heroNext, 6000);
+    return () => clearInterval(timer);
+  }, [heroNext, heroArticles.length]);
+
   function clearFilters() {
     setPlanFiltro(null);
     setTagFiltro(null);
     setCategoriaFiltro(null);
+    setOrdenacao('recentes');
   }
 
   return (
     <div className="min-h-screen bg-white font-sans">
 
-      {/* ── Header ── */}
+      {/* ── Header Tovia padrão ── */}
       <header className="bg-white border-b border-gray-100 px-6 py-3 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <a href="/" className="flex items-baseline gap-1.5 hover:opacity-80 transition-opacity">
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
             <ToviaLogo className="h-7 w-auto text-primary" />
@@ -426,124 +444,174 @@ export default function BaseConhecimento() {
         </div>
       </header>
 
-      {/* ── Banner ── */}
-      <div
-        className="relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1E0B4B 0%, var(--sidebar) 45%, #FF6B1A 100%)' }}
-      >
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5" />
-        <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/20" />
+      {/* ── Hero com carrossel ── */}
+      {!isSearching && heroArticles.length > 0 && (
+        <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1E0B4B 0%, var(--sidebar) 50%, #2D1470 100%)' }}>
+          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-primary/10" />
+          <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/15" />
 
-        <div className="relative max-w-5xl mx-auto px-6 py-14 flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-5">
-            <BookOpen className="w-7 h-7 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3 flex items-center justify-center gap-2.5 flex-wrap">
-            Base de Conhecimento <ToviaLogo className="h-7 md:h-9 w-auto text-primary" />
-          </h1>
-          <p className="text-white/60 text-sm max-w-lg mb-7">
-            Tutoriais, guias e explicações sobre cada funcionalidade da plataforma para você organizar eventos incríveis.
-          </p>
-
-          {/* Search bar */}
-          <div className="relative w-full max-w-lg mb-5">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-              placeholder="Pesquise por funcionalidade, ingresso, pagamento..."
-              className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-sm bg-white border-none shadow-xl outline-none focus:ring-2 focus:ring-primary/30"
-            />
-          </div>
-
-          {/* ── Filters ── */}
-          <div className="flex flex-col items-center gap-3 w-full max-w-lg">
-
-            {/* Plan filters */}
-            <div className="flex items-center gap-2 flex-wrap justify-center">
-              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mr-1">Plano</span>
-              {PLAN_FILTERS.map(({ key, label }) => {
-                const active = planFiltro === key;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setPlanFiltro(active ? null : key)}
-                    className={cn(
-                      'text-[11px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all duration-150',
-                      active
-                        ? PLAN_FILTER_ACTIVE[key]
-                        : 'border-white/25 text-white/70 hover:border-white/50 hover:text-white bg-white/5',
-                    )}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
+          <div className="relative max-w-6xl mx-auto px-6 py-10 md:py-14">
+            <div className="flex items-center gap-2 mb-6">
+              <BookOpen className="w-5 h-5 text-primary" />
+              <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">Base de Conhecimento</h1>
             </div>
 
-            {/* Tag filters */}
-            {topTags.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap justify-center">
-                <Tag className="w-3 h-3 text-white/40 shrink-0" />
-                {topTags.map(tag => {
-                  const active = tagFiltro === tag;
-                  return (
-                    <button
-                      key={tag}
-                      onClick={() => setTagFiltro(active ? null : tag)}
-                      className={cn(
-                        'text-[11px] font-semibold px-3 py-1 rounded-full border transition-all duration-150',
-                        active
-                          ? 'bg-white text-primary border-white'
-                          : 'border-white/25 text-white/70 hover:border-white/50 hover:text-white bg-white/5',
-                      )}
-                    >
-                      {tag}
+            <div className="relative">
+              {heroArticles.map((artigo, idx) => (
+                <Link
+                  key={artigo.id}
+                  to={`/base-de-conhecimento/${artigo.slug}`}
+                  className={cn(
+                    'block rounded-2xl overflow-hidden transition-all duration-500',
+                    idx === heroIndex ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none',
+                  )}
+                >
+                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                    {artigo.banner_url && (
+                      <div className="w-full md:w-[420px] h-48 md:h-56 rounded-2xl overflow-hidden shrink-0">
+                        <img src={artigo.banner_url} alt={artigo.titulo} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {badgesFromTags(artigo.tags).map(b => (
+                          <span key={b} className={cn('text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full', BADGES[b].color)}>
+                            {BADGES[b].label}
+                          </span>
+                        ))}
+                      </div>
+                      <h2 className="text-xl md:text-2xl font-black text-white leading-tight mb-2">{artigo.titulo}</h2>
+                      <p className="text-sm text-white/60 leading-relaxed line-clamp-3 mb-4">{artigo.resumo}</p>
+                      <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
+                        Ler artigo <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+
+              {heroArticles.length > 1 && (
+                <div className="flex items-center justify-between mt-6">
+                  <div className="flex items-center gap-2">
+                    {heroArticles.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setHeroIndex(idx)}
+                        className={cn(
+                          'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+                          idx === heroIndex ? 'w-8 bg-primary' : 'w-3 bg-white/20 hover:bg-white/40',
+                        )}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={heroPrev} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer">
+                      <ChevronLeft className="w-4 h-4" />
                     </button>
-                  );
-                })}
-              </div>
-            )}
+                    <button onClick={heroNext} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
-            {/* Category filters */}
-            <div className="flex items-center gap-2 flex-wrap justify-center">
-              <FolderOpen className="w-3 h-3 text-white/40 shrink-0" />
-              {CATEGORIA_ORDER.map(cat => {
-                const active = categoriaFiltro === cat;
+      {/* ── Barra de filtros ── */}
+      <div className="sticky top-[53px] z-20 bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            {/* Busca */}
+            <div className="relative flex-1 min-w-0 w-full sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+                placeholder="Pesquisar artigos..."
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm bg-muted/50 border border-border outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30"
+              />
+            </div>
+
+            {/* Seletores de filtro */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+
+              {/* Plano */}
+              <select
+                value={planFiltro ?? ''}
+                onChange={e => setPlanFiltro((e.target.value || null) as PlanKey | null)}
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-border bg-white text-foreground cursor-pointer focus:ring-2 focus:ring-primary/30 focus:border-primary/30 outline-none"
+              >
+                <option value="">Todos os planos</option>
+                {PLAN_FILTERS.map(({ key, label }) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+
+              {/* Categoria */}
+              <select
+                value={categoriaFiltro ?? ''}
+                onChange={e => setCategoriaFiltro(e.target.value || null)}
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-border bg-white text-foreground cursor-pointer focus:ring-2 focus:ring-primary/30 focus:border-primary/30 outline-none"
+              >
+                <option value="">Todas as categorias</option>
+                {CATEGORIA_ORDER.map(cat => (
+                  <option key={cat} value={cat}>{CATEGORIA_LABELS_BC[cat]}</option>
+                ))}
+              </select>
+
+              {/* Ordenar por */}
+              <select
+                value={ordenacao}
+                onChange={e => setOrdenacao(e.target.value as 'recentes' | 'mais-vistos')}
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-border bg-white text-foreground cursor-pointer focus:ring-2 focus:ring-primary/30 focus:border-primary/30 outline-none"
+              >
+                <option value="recentes">Recentes</option>
+                <option value="mais-vistos">Mais vistos</option>
+              </select>
+
+              {hasActiveFilter && (
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <X className="w-3 h-3" /> Limpar
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Tags rápidas */}
+          {topTags.length > 0 && (
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <Tag className="w-3 h-3 text-muted-foreground/40 shrink-0" />
+              {topTags.map(tag => {
+                const active = tagFiltro === tag;
                 return (
                   <button
-                    key={cat}
-                    onClick={() => setCategoriaFiltro(active ? null : cat)}
+                    key={tag}
+                    onClick={() => setTagFiltro(active ? null : tag)}
                     className={cn(
-                      'text-[11px] font-semibold px-3 py-1 rounded-full border transition-all duration-150',
+                      'text-[11px] font-semibold px-2.5 py-0.5 rounded-full border transition-all duration-150 cursor-pointer',
                       active
-                        ? 'bg-white text-primary border-white'
-                        : 'border-white/25 text-white/70 hover:border-white/50 hover:text-white bg-white/5',
+                        ? 'bg-primary text-white border-primary'
+                        : 'border-border text-muted-foreground hover:border-primary/30 hover:text-foreground bg-muted/30',
                     )}
                   >
-                    {CATEGORIA_LABELS_BC[cat]}
+                    {tag}
                   </button>
                 );
               })}
             </div>
-
-            {/* Clear filters */}
-            {hasActiveFilter && (
-              <button
-                onClick={clearFilters}
-                className="flex items-center gap-1 text-[11px] font-semibold text-white/50 hover:text-white transition-colors"
-              >
-                <X className="w-3 h-3" />
-                Limpar filtros
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
-      {/* ── Article list ── */}
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      {/* ── Lista de artigos ── */}
+      <main className="max-w-6xl mx-auto px-6 py-10">
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -557,7 +625,7 @@ export default function BaseConhecimento() {
                 : 'Nenhum artigo encontrado com os filtros selecionados.'}
             </p>
             {hasActiveFilter && (
-              <button onClick={clearFilters} className="text-sm font-semibold text-primary hover:underline">
+              <button onClick={clearFilters} className="text-sm font-semibold text-primary hover:underline cursor-pointer">
                 Limpar filtros
               </button>
             )}
@@ -581,7 +649,7 @@ export default function BaseConhecimento() {
                         {group.artigos.length}
                       </span>
                     </div>
-                    <div className="grid gap-5 md:grid-cols-2">
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {group.artigos.map(artigo => (
                         <ArticleCard key={artigo.id} artigo={artigo} tagFiltro={tagFiltro} />
                       ))}
@@ -590,7 +658,7 @@ export default function BaseConhecimento() {
                 ))}
               </div>
             ) : (
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map(artigo => (
                   <ArticleCard key={artigo.id} artigo={artigo} tagFiltro={tagFiltro} />
                 ))}
@@ -932,13 +1000,26 @@ export default function BaseConhecimento() {
       )}
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-          <ToviaLogo className="h-6 w-auto text-primary" />
-          <p className="text-xs text-muted-foreground">Base de Conhecimento · Equipe Tovia</p>
-          <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
-            Voltar ao início
-          </Link>
+      <footer className="border-t border-border py-10 px-6 bg-muted/30">
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
+          <ToviaLogo className="h-7 w-auto text-primary" />
+          <p className="text-sm text-muted-foreground">
+            Precisa de ajuda? Entre em contato:
+          </p>
+          <a
+            href="mailto:suporte@toviaapp.com.br"
+            className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
+          >
+            <Mail className="w-4 h-4" />
+            suporte@toviaapp.com.br
+          </a>
+          <div className="flex items-center gap-4 mt-2">
+            <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
+              Voltar ao início
+            </Link>
+            <span className="text-muted-foreground/30">·</span>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tovia</p>
+          </div>
         </div>
       </footer>
     </div>
