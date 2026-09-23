@@ -52,6 +52,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
   const [form, setForm] = useState(EMPTY_FORM);
   const [tagsInput, setTagsInput] = useState('');
   const [confirmSeed, setConfirmSeed] = useState(false);
+  const [populatingBanners, setPopulatingBanners] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewArtigo, setViewArtigo] = useState<ArtigoBC | null>(null);
 
@@ -252,6 +253,35 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
     }
   };
 
+  const handlePopulateBanners = async () => {
+    setPopulatingBanners(true);
+    try {
+      const { SEED_ARTIGOS } = await import('~/data/knowledgeBaseSeeds');
+      const semBanner = artigos.filter(a => !a.banner_url);
+      let count = 0;
+      await Promise.all(
+        semBanner.map(a => {
+          const seed = SEED_ARTIGOS.find(s => s.id === a.id);
+          if (seed?.banner_url) {
+            count++;
+            return setDoc(doc(db, 'base_conhecimento', a.id), { banner_url: seed.banner_url }, { merge: true });
+          }
+          return Promise.resolve();
+        })
+      );
+      if (count > 0) {
+        toast.success(`${count} banner${count > 1 ? 's' : ''} adicionado${count > 1 ? 's' : ''}!`);
+        load();
+      } else {
+        toast.info('Todos os artigos já possuem banner.');
+      }
+    } catch {
+      toast.error('Erro ao popular banners');
+    } finally {
+      setPopulatingBanners(false);
+    }
+  };
+
   return (
     <div>
       {/* Top actions */}
@@ -292,6 +322,18 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
             </button>
           </div>
         ))}
+
+        {!readOnly && (
+          <Button
+            variant="outline"
+            onClick={handlePopulateBanners}
+            disabled={populatingBanners}
+            className="flex items-center gap-2 h-9 text-sm"
+          >
+            <ImageIcon className="w-4 h-4" />
+            {populatingBanners ? 'Adicionando...' : 'Popular banners'}
+          </Button>
+        )}
 
         <a
           href="/base-de-conhecimento"
