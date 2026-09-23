@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check, ImageIcon, Search, Eye, Tag, Calendar } from 'lucide-react';
+import { Plus, Pencil, Trash2, BookOpen, Upload, ExternalLink, X, Check, ImageIcon, Search, Eye, Tag, Calendar, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,6 +34,7 @@ const EMPTY_FORM: Omit<ArtigoBC, 'id' | 'criado_em' | 'atualizado_em'> = {
   slug: '',
   categoria: '',
   autor: 'Equipe Tovia',
+  destaque: false,
 };
 
 function normalize(text: string) {
@@ -114,6 +115,7 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
       slug: artigo.slug,
       categoria: artigo.categoria ?? '',
       autor: artigo.autor,
+      destaque: artigo.destaque ?? false,
     });
     setTagsInput(artigo.tags.join(', '));
     resetBannerState();
@@ -365,6 +367,10 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
               <span className="text-xs font-black text-muted-foreground/50 w-5 shrink-0 text-center">
                 {artigo.ordem}
               </span>
+
+              {artigo.destaque && (
+                <Star className="w-3.5 h-3.5 text-primary fill-primary shrink-0" />
+              )}
 
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-foreground truncate">{artigo.titulo}</p>
@@ -621,6 +627,21 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
                     onChange={e => setTagsInput(e.target.value)}
                     placeholder="ingressos, pagamento, essencial"
                   />
+                </div>
+
+                <div className="col-span-2">
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, destaque: !f.destaque }))}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors cursor-pointer ${
+                      form.destaque
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border text-muted-foreground hover:border-primary/30'
+                    }`}
+                  >
+                    <Star className={`w-4 h-4 ${form.destaque ? 'fill-primary' : ''}`} />
+                    <span className="text-xs font-bold">Destaque no Hero</span>
+                  </button>
                 </div>
 
               </div>

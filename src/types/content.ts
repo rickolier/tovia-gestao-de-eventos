@@ -13,6 +13,7 @@ export interface ArtigoBC {
   criado_em: string;
   atualizado_em: string;
   visivel?: boolean;
+  destaque?: boolean;
 }
 
 export interface Quarto {

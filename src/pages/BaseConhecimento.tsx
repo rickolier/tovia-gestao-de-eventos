@@ -387,10 +387,10 @@ export default function BaseConhecimento() {
   }, [filtered, isSearching]);
 
   const heroArticles = useMemo(() => {
-    const featured = artigos.filter(a => a.visivel !== false && a.banner_url);
-    const ids = ['bem-vindo', 'caminho-start', 'caminho-essencial', 'caminho-chalem', 'mapa-igrejas'];
-    const picked = ids.map(id => featured.find(a => a.id === id)).filter(Boolean) as ArtigoBC[];
-    return picked.length >= 3 ? picked : featured.slice(0, 5);
+    const destaques = artigos.filter(a => a.visivel !== false && a.destaque);
+    if (destaques.length > 0) return destaques;
+    const withBanner = artigos.filter(a => a.visivel !== false && a.banner_url);
+    return withBanner.slice(0, 5);
   }, [artigos]);
 
   const heroNext = useCallback(() => setHeroIndex(i => (i + 1) % heroArticles.length), [heroArticles.length]);
