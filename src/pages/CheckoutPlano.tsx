@@ -8,7 +8,7 @@ import Logo from '~/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Loader2, ArrowRight, TicketIcon, DollarSign, Wallet, CreditCard, QrCode } from 'lucide-react';
+import { ArrowLeft, Loader2, ArrowRight, TicketIcon, DollarSign, Wallet, CreditCard, QrCode, Ticket, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -72,6 +72,40 @@ export default function CheckoutPlano() {
   });
   const [saving, setSaving] = useState(false);
 
+  // Cupom
+  const [cupomCode, setCupomCode] = useState('');
+  const [cupomLoading, setCupomLoading] = useState(false);
+  const [cupomAplicado, setCupomAplicado] = useState<{ id: string; codigo: string; desconto_percent: number; desconto_fixo: number } | null>(null);
+  const [cupomErro, setCupomErro] = useState('');
+
+  const aplicarCupom = async () => {
+    const code = cupomCode.trim().toUpperCase();
+    if (!code) return;
+    setCupomLoading(true);
+    setCupomErro('');
+    try {
+      const { collection: col, query: q, where, getDocs } = await import('firebase/firestore');
+      const { db } = await import('~/services/firebase');
+      const snap = await getDocs(q(col(db, 'cupons'), where('codigo', '==', code), where('ativo', '==', true)));
+      if (snap.empty) { setCupomErro('Cupom não encontrado ou inativo.'); return; }
+      const cupom = snap.docs[0].data() as any;
+      if (cupom.validade && new Date(cupom.validade) < new Date()) { setCupomErro('Cupom expirado.'); return; }
+      if (cupom.max_usos > 0 && cupom.usos >= cupom.max_usos) { setCupomErro('Cupom esgotado.'); return; }
+      if (cupom.planos && !cupom.planos.includes(planLevel)) { setCupomErro(`Cupom não válido para o plano ${config.name}.`); return; }
+      setCupomAplicado({ id: cupom.id, codigo: cupom.codigo, desconto_percent: cupom.desconto_percent || 0, desconto_fixo: cupom.desconto_fixo || 0 });
+    } catch {
+      setCupomErro('Erro ao verificar cupom.');
+    } finally {
+      setCupomLoading(false);
+    }
+  };
+
+  const removerCupom = () => {
+    setCupomAplicado(null);
+    setCupomCode('');
+    setCupomErro('');
+  };
+
   const set = (field: keyof typeof form, value: string) =>
     setForm(prev => ({ ...prev, [field]: value }));
 
@@ -105,6 +139,8 @@ export default function CheckoutPlano() {
           userNumero: form.numero,
           userComplemento: form.complemento,
           userBairro: form.bairro,
+          cupomId: cupomAplicado?.id || null,
+          cupomCodigo: cupomAplicado?.codigo || null,
         }),
       });
       const data = await response.json();
@@ -353,6 +389,52 @@ export default function CheckoutPlano() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Cupom de desconto */}
+              <div className="border-t pt-4 space-y-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Cupom de desconto</p>
+                {cupomAplicado ? (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200">
+                    <Check className="w-4 h-4 text-green-600 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-green-700">{cupomAplicado.codigo}</p>
+                      <p className="text-xs text-green-600">
+                        {cupomAplicado.desconto_fixo > 0
+                          ? `R$ ${cupomAplicado.desconto_fixo.toFixed(0)} de desconto`
+                          : `${cupomAplicado.desconto_percent}% de desconto`}
+                      </p>
+                    </div>
+                    <button onClick={removerCupom} className="text-green-600 hover:text-red-500 transition-colors cursor-pointer">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          value={cupomCode}
+                          onChange={e => { setCupomCode(e.target.value.toUpperCase()); setCupomErro(''); }}
+                          onKeyDown={e => e.key === 'Enter' && aplicarCupom()}
+                          placeholder="Código do cupom"
+                          className="h-10 rounded-xl pl-9 font-mono uppercase text-sm"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={aplicarCupom}
+                        disabled={cupomLoading || !cupomCode.trim()}
+                        className="h-10 rounded-xl px-4 text-xs font-bold cursor-pointer"
+                      >
+                        {cupomLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
+                      </Button>
+                    </div>
+                    {cupomErro && <p className="text-xs text-red-500">{cupomErro}</p>}
+                  </div>
+                )}
               </div>
 
               <div className="border-t pt-4">
