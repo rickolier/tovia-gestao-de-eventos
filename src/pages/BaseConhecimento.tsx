@@ -419,9 +419,10 @@ export default function BaseConhecimento() {
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
             <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
-          <span className="hidden sm:block text-xs font-semibold text-gray-500 truncate max-w-[200px] text-center">
-            Base de Conhecimento
-          </span>
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#1E0B4B]">
+            <BookOpen className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-black text-white tracking-tight">Base de Conhecimento</span>
+          </div>
           {user ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -480,10 +481,6 @@ export default function BaseConhecimento() {
             </Link>
           ))}
 
-          <div className="absolute top-5 left-6 z-20 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" />
-            <h1 className="text-lg font-black text-white tracking-tight drop-shadow-lg">Base de Conhecimento</h1>
-          </div>
 
           {heroArticles.length > 1 && (
             <div className="absolute bottom-4 left-6 right-6 z-20 flex items-center justify-between">
