@@ -444,78 +444,71 @@ export default function BaseConhecimento() {
         </div>
       </header>
 
-      {/* ── Hero com carrossel ── */}
+      {/* ── Hero com carrossel full-bleed ── */}
       {!isSearching && heroArticles.length > 0 && (
-        <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1E0B4B 0%, var(--sidebar) 50%, #2D1470 100%)' }}>
-          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-primary/10" />
-          <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-primary/15" />
-
-          <div className="relative max-w-6xl mx-auto px-6 py-10 md:py-14">
-            <div className="flex items-center gap-2 mb-6">
-              <BookOpen className="w-5 h-5 text-primary" />
-              <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">Base de Conhecimento</h1>
-            </div>
-
-            <div className="relative">
-              {heroArticles.map((artigo, idx) => (
-                <Link
-                  key={artigo.id}
-                  to={`/base-de-conhecimento/${artigo.slug}`}
-                  className={cn(
-                    'block rounded-2xl overflow-hidden transition-all duration-500',
-                    idx === heroIndex ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none',
-                  )}
-                >
-                  <div className="flex flex-col md:flex-row gap-6 items-center">
-                    {artigo.banner_url && (
-                      <div className="w-full md:w-[420px] h-48 md:h-56 rounded-2xl overflow-hidden shrink-0">
-                        <img src={artigo.banner_url} alt={artigo.titulo} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-3 flex-wrap">
-                        {badgesFromTags(artigo.tags).map(b => (
-                          <span key={b} className={cn('text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full', BADGES[b].color)}>
-                            {BADGES[b].label}
-                          </span>
-                        ))}
-                      </div>
-                      <h2 className="text-xl md:text-2xl font-black text-white leading-tight mb-2">{artigo.titulo}</h2>
-                      <p className="text-sm text-white/60 leading-relaxed line-clamp-3 mb-4">{artigo.resumo}</p>
-                      <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
-                        Ler artigo <ArrowRight className="w-4 h-4" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-
-              {heroArticles.length > 1 && (
-                <div className="flex items-center justify-between mt-6">
-                  <div className="flex items-center gap-2">
-                    {heroArticles.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setHeroIndex(idx)}
-                        className={cn(
-                          'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
-                          idx === heroIndex ? 'w-8 bg-primary' : 'w-3 bg-white/20 hover:bg-white/40',
-                        )}
-                      />
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button onClick={heroPrev} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer">
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button onClick={heroNext} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer">
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+        <section className="relative h-[320px] md:h-[420px] overflow-hidden">
+          {heroArticles.map((artigo, idx) => (
+            <Link
+              key={artigo.id}
+              to={`/base-de-conhecimento/${artigo.slug}`}
+              className={cn(
+                'absolute inset-0 transition-opacity duration-700',
+                idx === heroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none',
               )}
-            </div>
+            >
+              {artigo.banner_url ? (
+                <img src={artigo.banner_url} alt={artigo.titulo} className="absolute inset-0 w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #1E0B4B 0%, #2D1470 100%)' }} />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+
+              <div className="relative h-full max-w-6xl mx-auto px-6 flex flex-col justify-end pb-10 md:pb-14">
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  {badgesFromTags(artigo.tags).map(b => (
+                    <span key={b} className={cn('text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-sm', BADGES[b].color)}>
+                      {BADGES[b].label}
+                    </span>
+                  ))}
+                </div>
+                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2 drop-shadow-lg">{artigo.titulo}</h2>
+                <p className="text-sm md:text-base text-white/70 leading-relaxed line-clamp-2 max-w-2xl mb-3">{artigo.resumo}</p>
+                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary">
+                  Ler artigo <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
+          ))}
+
+          <div className="absolute top-5 left-6 z-20 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            <h1 className="text-lg font-black text-white tracking-tight drop-shadow-lg">Base de Conhecimento</h1>
           </div>
+
+          {heroArticles.length > 1 && (
+            <div className="absolute bottom-4 left-6 right-6 z-20 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {heroArticles.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => { e.preventDefault(); setHeroIndex(idx); }}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+                      idx === heroIndex ? 'w-8 bg-primary' : 'w-3 bg-white/30 hover:bg-white/50',
+                    )}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center gap-1">
+                <button onClick={(e) => { e.preventDefault(); heroPrev(); }} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-colors cursor-pointer">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button onClick={(e) => { e.preventDefault(); heroNext(); }} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-colors cursor-pointer">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       )}
 
