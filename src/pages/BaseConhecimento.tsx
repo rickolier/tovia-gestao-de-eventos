@@ -419,9 +419,9 @@ export default function BaseConhecimento() {
             <span className="text-sm font-light text-gray-400 tracking-tight">feito com</span>
             <ToviaLogo className="h-7 w-auto text-primary" />
           </a>
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#1E0B4B]">
-            <BookOpen className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-black text-white tracking-tight">Base de Conhecimento</span>
+          <div className="hidden sm:flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            <span className="text-sm font-black text-[#1E0B4B] tracking-tight">Base de Conhecimento</span>
           </div>
           {user ? (
             <div className="flex items-center gap-3">
