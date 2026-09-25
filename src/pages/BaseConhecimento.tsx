@@ -154,6 +154,7 @@ function ArticleCard({ artigo, tagFiltro }: { artigo: ArtigoBC; tagFiltro: strin
           Ler artigo <ArrowRight className="w-3 h-3" />
         </div>
       </div>
+      <div className={cn('h-1 mt-auto', accent)} />
     </Link>
   );
 }
