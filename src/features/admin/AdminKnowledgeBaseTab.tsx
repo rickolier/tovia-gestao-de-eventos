@@ -9,8 +9,7 @@ import { ArtigoBC } from '~/types';
 import { orderBy, setDoc, doc } from 'firebase/firestore';
 import { db } from '~/services/firebase';
 import { toast } from 'sonner';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '~/services/firebase';
+import { auth } from '~/services/firebase';
 import ImageCropper from '~/components/ImageCropper';
 
 function slugify(text: string): string {
@@ -160,17 +159,24 @@ export default function AdminKnowledgeBaseTab({ readOnly = false }: { readOnly?:
 
   const uploadBanner = async (articleSlug: string): Promise<string> => {
     if (!bannerFile) return form.banner_url ?? '';
-    const ext = bannerFile.type === 'image/png' ? 'png' : 'jpg';
-    const storageRef = ref(storage, `base_conhecimento/${articleSlug}/banner.${ext}`);
-    return new Promise<string>((resolve, reject) => {
-      const task = uploadBytesResumable(storageRef, bannerFile, { contentType: bannerFile.type });
-      task.on(
-        'state_changed',
-        snap => setUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        reject,
-        async () => { resolve(await getDownloadURL(task.snapshot.ref)); },
-      );
+    setUploadProgress(10);
+    const reader = new FileReader();
+    const base64 = await new Promise<string>((resolve) => {
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.readAsDataURL(bannerFile);
     });
+    setUploadProgress(30);
+    const token = await auth.currentUser?.getIdToken();
+    const res = await fetch('/api/upload?action=uploadKBBanner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ slug: articleSlug, imageBase64: base64, contentType: bannerFile.type }),
+    });
+    setUploadProgress(80);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro no upload');
+    setUploadProgress(100);
+    return data.downloadUrl;
   };
 
   // ── Save ──────────────────────────────────────────────────────────────────

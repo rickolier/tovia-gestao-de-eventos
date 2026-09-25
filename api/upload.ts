@@ -127,10 +127,56 @@ async function handleUploadEventCover(req: VercelRequest, res: VercelResponse) {
   }
 }
 
+// ── uploadKBBanner ──
+async function handleUploadKBBanner(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  let decoded;
+  try {
+    decoded = await verifyAuth(req.headers.authorization);
+  } catch (e: unknown) {
+    const authErr = e as AuthError;
+    return res.status(authErr.status ?? 401).json({ error: authErr.message });
+  }
+
+  const email = decoded.email ?? '';
+  const ADMIN_EMAILS = ['admin@toviaapp.com.br', 'suporte@toviaapp.com.br'];
+  if (!ADMIN_EMAILS.includes(email)) return res.status(403).json({ error: 'Acesso restrito a administradores.' });
+
+  const { slug, imageBase64, contentType } = req.body as { slug?: string; imageBase64?: string; contentType?: string };
+  if (!slug || !imageBase64 || !contentType) return res.status(400).json({ error: 'slug, imageBase64 e contentType são obrigatórios.' });
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedTypes.includes(contentType)) return res.status(400).json({ error: 'Tipo inválido. Use JPEG, PNG ou WebP.' });
+  if (imageBase64.length > 14 * 1024 * 1024) return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
+
+  try {
+    const buffer = Buffer.from(imageBase64, 'base64');
+    const resized = await sharp(buffer)
+      .resize(1200, 400, { fit: 'cover', position: 'centre' })
+      .jpeg({ quality: 85 })
+      .toBuffer();
+
+    const path = `base_conhecimento/${slug}/banner.jpg`;
+    const bucket = getStorage().bucket(BUCKET);
+    const file = bucket.file(path);
+    await file.save(resized, { contentType: 'image/jpeg', resumable: false });
+    await file.makePublic();
+
+    const downloadUrl = `https://storage.googleapis.com/${BUCKET}/${path}?t=${Date.now()}`;
+    console.log(`[uploadKBBanner] email=${email} slug=${slug}`);
+    return res.json({ downloadUrl });
+  } catch (err: unknown) {
+    console.error('[uploadKBBanner]', err);
+    return res.status(500).json({ error: 'Erro ao fazer upload do banner.' });
+  }
+}
+
 // ── Router ──
 const handlers: Record<string, (req: VercelRequest, res: VercelResponse) => Promise<VercelResponse | void>> = {
   uploadProfilePhoto: handleUploadProfilePhoto,
   uploadEventCover: handleUploadEventCover,
+  uploadKBBanner: handleUploadKBBanner,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
