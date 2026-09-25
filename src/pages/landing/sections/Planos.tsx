@@ -76,8 +76,8 @@ export function Planos() {
               key={plan.name}
               className={
                 plan.highlight
-                  ? 'rounded-3xl bg-primary p-7 flex flex-col gap-5 shadow-xl shadow-primary/25 relative overflow-hidden'
-                  : 'rounded-3xl border border-border bg-card p-7 flex flex-col gap-5'
+                  ? 'rounded-3xl bg-primary p-7 flex flex-col gap-5 shadow-xl shadow-primary/25 relative overflow-hidden transition-transform duration-300 hover:scale-[1.03]'
+                  : 'rounded-3xl border border-border bg-card p-7 flex flex-col gap-5 transition-transform duration-300 hover:scale-[1.03]'
               }
             >
               {plan.highlight && (
