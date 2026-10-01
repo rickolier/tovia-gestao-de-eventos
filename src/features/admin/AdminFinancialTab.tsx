@@ -14,9 +14,9 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 
-const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 119, koach: 119, chalem: 299, start: 0, essencial: 119, pro: 119, personalizado: 299 };
-const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
-const PLAN_COLORS_HEX: Record<string, string> = { chinam: '#9ca3af', petach: '#3b82f6', koach: '#7c3aed', chalem: '#16a34a', start: '#9ca3af', essencial: '#3b82f6', pro: '#7c3aed' };
+const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 119, chalem: 299, start: 0, essencial: 119, koach: 119, pro: 119, personalizado: 299 };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', chalem: 'Plano 3 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', koach: 'Plano 2 - Pétach', pro: 'Plano 2 - Pétach', personalizado: 'Plano 3 - Chalém' };
+const PLAN_COLORS_HEX: Record<string, string> = { chinam: '#9ca3af', petach: '#3b82f6', chalem: '#16a34a', start: '#9ca3af', essencial: '#3b82f6', koach: '#3b82f6', pro: '#3b82f6' };
 
 function fmt(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -106,7 +106,7 @@ export default function AdminFinancialTab() {
   const deactivated = useMemo(() => users.filter(u => u.desativado), [users]);
   const pendingCheckout = useMemo(() => users.filter(u => u.planoPendente && !u.desativado), [users]);
 
-  const planStats = useMemo(() => (['chinam', 'petach', 'koach', 'chalem'] as const).map(plan => {
+  const planStats = useMemo(() => (['chinam', 'petach', 'chalem'] as const).map(plan => {
     const count = activeUsers.filter(u => u.plano === plan).length;
     return { plan, count, revenue: count * PLAN_PRICES[plan] };
   }), [activeUsers]);
@@ -245,7 +245,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Assinantes pagos',
             value: payingUsers,
-            sub: 'Pétach + Koách + Chalém ativos',
+            sub: 'Pétach + Chalém ativos',
             icon: Users,
             color: 'text-violet-600',
             bg: 'bg-violet-50',
@@ -253,7 +253,7 @@ export default function AdminFinancialTab() {
           {
             label: 'Conversão',
             value: `${conversionRate}%`,
-            sub: 'Chinám → Pétach/Koách',
+            sub: 'Chinám → Pétach/Chalém',
             icon: Percent,
             color: 'text-orange-600',
             bg: 'bg-orange-50',
@@ -450,8 +450,7 @@ export default function AdminFinancialTab() {
                         <span className={cn(
                           'text-[10px] font-bold px-2 py-0.5 rounded-full',
                           (u.plano === 'chalem') ? 'bg-primary/10 text-primary' :
-                          (u.plano === 'koach') ? 'bg-violet-100 text-violet-700' :
-                          (u.plano === 'petach') ? 'bg-blue-100 text-blue-700' :
+                          (u.plano === 'petach' || (u.plano as string) === 'koach') ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-600'
                         )}>
                           {u.plano ? PLAN_LABELS[u.plano] : '—'}

@@ -1,4 +1,4 @@
-export type PlanLevel = 'chinam' | 'petach' | 'koach' | 'chalem';
+export type PlanLevel = 'chinam' | 'petach' | 'chalem';
 
 export interface OrganizerSecrets {
   type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';

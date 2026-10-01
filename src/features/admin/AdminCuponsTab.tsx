@@ -25,7 +25,6 @@ interface Cupom {
 
 const PLANOS = [
   { key: 'petach', label: 'Pétach' },
-  { key: 'koach', label: 'Koách' },
   { key: 'chalem', label: 'Chalém' },
 ];
 
@@ -33,7 +32,7 @@ const EMPTY_FORM = {
   codigo: '',
   desconto_percent: 0,
   desconto_fixo: 0,
-  planos: ['petach', 'koach', 'chalem'] as string[],
+  planos: ['petach', 'chalem'] as string[],
   max_usos: 0,
   validade: '',
   descricao: '',

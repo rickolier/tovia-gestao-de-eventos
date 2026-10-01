@@ -27,7 +27,7 @@ type PaymentMethod = 'credit_card' | 'pix';
 export default function Onboarding() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<PlanLevel>('koach');
+  const [selected, setSelected] = useState<PlanLevel>('petach');
   const [period, setPeriod] = useState<Period>('monthly');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');
   const [saving, setSaving] = useState(false);

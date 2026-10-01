@@ -12,16 +12,16 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', chalem: 'Plano 3 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', koach: 'Plano 2 - Pétach', pro: 'Plano 2 - Pétach', personalizado: 'Plano 3 - Chalém' };
 const PLAN_COLORS: Record<string, string> = {
   chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
   petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
-  koach: 'bg-violet-100 text-violet-700', pro: 'bg-violet-100 text-violet-700',
+  koach: 'bg-blue-100 text-blue-700', pro: 'bg-blue-100 text-blue-700',
   chalem: 'bg-primary/10 text-primary',
 };
-const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'chalem'];
 
-type Filter = 'all' | 'chalem' | 'koach' | 'petach' | 'chinam' | 'pending' | 'none' | 'deactivated';
+type Filter = 'all' | 'chalem' | 'petach' | 'chinam' | 'pending' | 'none' | 'deactivated';
 
 export default function AdminClientesTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -122,8 +122,7 @@ export default function AdminClientesTab() {
 
   const filters: { id: Filter; label: string }[] = [
     { id: 'all', label: 'Todos' },
-    { id: 'chalem', label: 'Plano 4 - Chalém' },
-    { id: 'koach',  label: 'Plano 3 - Koách'  },
+    { id: 'chalem', label: 'Plano 3 - Chalém' },
     { id: 'petach', label: 'Plano 2 - Pétach' },
     { id: 'chinam', label: 'Plano 1 - Chinám' },
     { id: 'pending', label: 'Pendente' },

@@ -14,13 +14,12 @@ const STATUS = [
 const PLANOS = [
   { label: 'Chinám', cls: 'bg-muted text-muted-foreground border border-border' },
   { label: 'Pétach', cls: 'bg-blue-50 text-blue-600 border border-blue-200' },
-  { label: 'Koách', cls: 'bg-primary/10 text-primary border border-primary/20' },
   { label: 'Chalém', cls: 'bg-accent/10 text-accent border border-accent/20' },
 ];
 
 export function BadgesSection() {
   return (
-    <Section title="09. Badges & Status" subtitle="Pill shape (rounded-full) · 10–11px · bold — Koách usa laranja (plano principal), Chalém usa violeta (top)">
+    <Section title="09. Badges & Status" subtitle="Pill shape (rounded-full) · 10–11px · bold — Pétach usa azul, Chalém usa violeta (top)">
       <div className="bg-card border border-border rounded-2xl p-6 space-y-6">
         <div>
           <SubLabel>Status Semânticos</SubLabel>

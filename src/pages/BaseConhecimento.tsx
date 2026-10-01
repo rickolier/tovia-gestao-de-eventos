@@ -54,7 +54,7 @@ const CATEGORIA_LABELS_BC: Record<string, string> = {
 
 const CATEGORIA_ORDER = Object.keys(CATEGORIA_LABELS_BC);
 
-const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
+const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'chalem']);
 
 function badgesFromTags(tags: string[]): PlanKey[] {
   const hasChalem = tags.includes('chalem');

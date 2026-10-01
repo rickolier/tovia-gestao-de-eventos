@@ -25,11 +25,10 @@ import ImageExtension from '@tiptap/extension-image';
 const PLAN_LABELS: Record<PlanLevel, string> = {
   chinam: 'Chinam',
   petach: 'Pétach',
-  koach: 'Koách',
   chalem: 'Chalém',
 };
 
-const ALL_PLANS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+const ALL_PLANS: PlanLevel[] = ['chinam', 'petach', 'chalem'];
 
 const FILTER_OPTIONS: Array<{
   tipo: FiltroDef['tipo'];
@@ -514,7 +513,7 @@ export default function AdminComunicadosTab() {
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-foreground">Nome do grupo</label>
               <Input
-                placeholder="Ex: Clientes Koách — São Paulo"
+                placeholder="Ex: Clientes Pétach — São Paulo"
                 value={grupoNome}
                 onChange={e => setGrupoNome(e.target.value)}
               />

@@ -196,7 +196,7 @@ export function emailBoasVindasChinam(nome: string) {
     </table>
     ${p('Você começa com <strong>1 evento ativo</strong>, com até <strong>100 vagas</strong> e <strong>1 tipo de ingresso</strong>. Perfeito para o primeiro passo!')}
     ${divider()}
-    ${p('Precisa de mais recursos? Explore os planos Pétach e Koách para desbloquear o módulo financeiro, gestão de equipe e muito mais.')}
+    ${p('Precisa de mais recursos? Explore os planos Pétach e Chalém para desbloquear o módulo financeiro, gestão de equipe e muito mais.')}
     ${btn('Acessar o painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
     ${divider()}
     ${p('Tem dúvidas? Nossa <a href="https://tovia-gestao-de-eventos.vercel.app/base-de-conhecimento" style="color:${PRIMARY};font-weight:600;">Base de Conhecimento</a> tem guias passo a passo para cada funcionalidade. E se precisar de ajuda direta, abra um ticket de suporte no painel.')}
@@ -225,30 +225,6 @@ export function emailBoasVindasPetach(nome: string, valor: string, proxVenciment
     ${divider()}
     ${p('Explore a <a href="https://tovia-gestao-de-eventos.vercel.app/base-de-conhecimento" style="color:${PRIMARY};font-weight:600;">Base de Conhecimento</a> para aprender a usar o módulo financeiro. Qualquer dúvida, abra um ticket no painel — estamos aqui.')}
   `, 'Plano Pétach ativo — módulo financeiro liberado');
-}
-
-export function emailBoasVindasKoach(nome: string, valor: string, proxVencimento: string) {
-  return wrap(`
-    ${h1(`Bem-vindo ao Koách, ${nome || 'organizador'}! ⚡`)}
-    ${p('Pagamento confirmado! O <strong>Plano Koách</strong> está ativo. Você agora tem acesso à gestão completa de eventos — equipe, grupos, tarefas e muito mais:')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="margin-top:16px;margin-bottom:24px;">
-      ${feature('📋', 'Inscrições + Financeiro', 'Tudo do plano anterior, com ainda mais capacidade.')}
-      ${feature('🗂️', 'Gestão de eventos', 'Controle recursos, grupos e configure seu evento com detalhes.')}
-      ${feature('✅', 'Tarefas e equipe', 'Convide até 5 colaboradores, distribua tarefas e acompanhe o andamento.')}
-      ${feature('📊', 'Relatórios avançados', 'Visão completa de inscrições, financeiro e desempenho da equipe.')}
-    </table>
-    ${p('Você tem <strong>5 eventos ativos</strong>, até <strong>500 vagas</strong> por evento, <strong>5 ingressos</strong> e <strong>5 membros de equipe</strong>.')}
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ef;border:1px solid #FFD4B3;border-radius:12px;padding:16px 20px;margin:20px 0;">
-      <tr><td>
-        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Plano: <strong style="color:${TEXT};">Koách · כֹּחַ</strong></p>
-        <p style="font-size:13px;color:${MUTED};margin:2px 0;">Valor: <strong style="color:${TEXT};">${valor}</strong></p>
-        ${proxVencimento ? `<p style="font-size:13px;color:${MUTED};margin:2px 0;">Próxima renovação: <strong style="color:${TEXT};">${proxVencimento}</strong></p>` : ''}
-      </td></tr>
-    </table>
-    ${btn('Acessar o painel', 'https://tovia-gestao-de-eventos.vercel.app/dashboard')}
-    ${divider()}
-    ${p('Sugerimos começar pela <a href="https://tovia-gestao-de-eventos.vercel.app/base-de-conhecimento" style="color:${PRIMARY};font-weight:600;">Base de Conhecimento</a> para conhecer os módulos de equipe e tarefas. Qualquer dúvida, abra um ticket de suporte no painel.')}
-  `, 'Plano Koách ativo — gestão completa e equipe liberadas');
 }
 
 export function emailBoasVindasChalem(nome: string, valor: string, proxVencimento: string) {

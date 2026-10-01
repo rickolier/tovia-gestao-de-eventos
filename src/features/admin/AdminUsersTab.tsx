@@ -11,7 +11,7 @@ import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import { PlanLevel } from '~/types';
 import { auth } from '~/services/firebase';
 
-const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+const PLAN_OPTIONS: PlanLevel[] = ['chinam', 'petach', 'chalem'];
 
 export default function AdminUsersTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -152,8 +152,7 @@ export default function AdminUsersTab() {
                       <span className={cn(
                         'text-xs font-bold px-2 py-1 rounded-full',
                         (u.plano === 'chalem') ? 'bg-primary/10 text-primary' :
-                        (u.plano === 'koach') ? 'bg-violet-100 text-violet-700' :
-                        (u.plano === 'petach') ? 'bg-blue-100 text-blue-700' :
+                        (u.plano === 'petach' || (u.plano as string) === 'koach') ? 'bg-blue-100 text-blue-700' :
                         (u.plano === 'chinam') ? 'bg-gray-100 text-gray-600' :
                         'bg-red-100 text-red-600'
                       )}>

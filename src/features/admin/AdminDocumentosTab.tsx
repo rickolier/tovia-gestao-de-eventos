@@ -121,7 +121,6 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
             .swot-cell.t { background: #fffbeb !important; }
             .plan-card.chinam  { background: #f0f4f8 !important; }
             .plan-card.petach  { background: #fff2eb !important; }
-            .plan-card.koach   { background: #e8f5ee !important; }
             .plan-card.chalem  { background: #fefbe8 !important; }
             * { color-scheme: light !important; }
           }

@@ -6,12 +6,12 @@ import { isAdminEmail, getTestPlan } from '~/utils/admin-config';
 import { Users, CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 119, koach: 119, chalem: 299, start: 0, essencial: 119, pro: 119, personalizado: 299 };
-const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', koach: 'Plano 3 - Koách', chalem: 'Plano 4 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', pro: 'Plano 3 - Koách', personalizado: 'Plano 4 - Chalém' };
+const PLAN_PRICES: Record<string, number> = { chinam: 0, petach: 119, chalem: 299, start: 0, essencial: 119, pro: 119, koach: 119, personalizado: 299 };
+const PLAN_LABELS: Record<string, string> = { chinam: 'Plano 1 - Chinám', petach: 'Plano 2 - Pétach', chalem: 'Plano 3 - Chalém', start: 'Plano 1 - Chinám', essencial: 'Plano 2 - Pétach', koach: 'Plano 2 - Pétach', pro: 'Plano 2 - Pétach', personalizado: 'Plano 3 - Chalém' };
 const PLAN_COLORS: Record<string, string> = {
   chinam: 'bg-gray-100 text-gray-600', start: 'bg-gray-100 text-gray-600',
   petach: 'bg-blue-100 text-blue-700', essencial: 'bg-blue-100 text-blue-700',
-  koach: 'bg-violet-100 text-violet-700', pro: 'bg-violet-100 text-violet-700',
+  koach: 'bg-blue-100 text-blue-700', pro: 'bg-blue-100 text-blue-700',
   chalem: 'bg-primary/10 text-primary',
 };
 
@@ -27,13 +27,13 @@ export default function AdminOverviewTab() {
   }, []);
 
   const totalUsers = users.length;
-  const byPlan: Record<string, number> = { chinam: 0, petach: 0, koach: 0, chalem: 0, none: 0 };
+  const byPlan: Record<string, number> = { chinam: 0, petach: 0, chalem: 0, none: 0 };
   let mrr = 0;
   let pending = 0;
 
   users.forEach(u => {
     if (u.planoPendente) { pending++; return; }
-    const normalizedPlano = u.plano ? ({ start: 'chinam', essencial: 'petach', pro: 'koach', personalizado: 'chalem', chinam: 'chinam', petach: 'petach', koach: 'koach', chalem: 'chalem' } as Record<string, string>)[u.plano] ?? u.plano : null;
+    const normalizedPlano = u.plano ? ({ start: 'chinam', essencial: 'petach', pro: 'petach', koach: 'petach', personalizado: 'chalem', chinam: 'chinam', petach: 'petach', chalem: 'chalem' } as Record<string, string>)[u.plano] ?? u.plano : null;
     if (normalizedPlano && byPlan[normalizedPlano] !== undefined) {
       byPlan[normalizedPlano]++;
       mrr += PLAN_PRICES[normalizedPlano] || 0;
@@ -42,7 +42,7 @@ export default function AdminOverviewTab() {
     }
   });
 
-  const paying = byPlan.petach + byPlan.koach + byPlan.chalem;
+  const paying = byPlan.petach + byPlan.chalem;
 
   const statCards = [
     {
@@ -59,7 +59,7 @@ export default function AdminOverviewTab() {
       icon: TrendingUp,
       color: 'text-primary',
       bg: 'bg-primary/10',
-      sub: `${byPlan.petach} Pétach · ${byPlan.koach} Koách · ${byPlan.chalem} Chalém`,
+      sub: `${byPlan.petach} Pétach · ${byPlan.chalem} Chalém`,
     },
     {
       label: 'Pagamentos pendentes',
@@ -115,7 +115,7 @@ export default function AdminOverviewTab() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 pt-2 space-y-3">
-            {(['chalem', 'koach', 'petach', 'chinam'] as const).map(plan => {
+            {(['chalem', 'petach', 'chinam'] as const).map(plan => {
               const count = byPlan[plan];
               const pct = totalUsers > 0 ? Math.round((count / totalUsers) * 100) : 0;
               return (
@@ -131,7 +131,7 @@ export default function AdminOverviewTab() {
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${pct}%`, opacity: plan === 'chalem' ? 1 : plan === 'koach' ? 0.8 : plan === 'petach' ? 0.6 : 0.3 }}
+                      style={{ width: `${pct}%`, opacity: plan === 'chalem' ? 1 : plan === 'petach' ? 0.7 : 0.3 }}
                     />
                   </div>
                 </div>
@@ -149,7 +149,6 @@ export default function AdminOverviewTab() {
           <CardContent className="p-6 pt-2 space-y-4">
             {[
               { label: 'Ativos (pagos)', value: paying, color: 'text-green-600', dot: 'bg-green-500' },
-              { label: 'Koách (legacy)', value: byPlan.koach, color: 'text-violet-500', dot: 'bg-violet-400' },
               { label: 'Pendente pagamento', value: pending, color: 'text-yellow-600', dot: 'bg-yellow-400' },
               { label: 'Sem plano', value: byPlan.none, color: 'text-red-500', dot: 'bg-red-400' },
             ].map(item => (

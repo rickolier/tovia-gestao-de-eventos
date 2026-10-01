@@ -9,7 +9,6 @@ import {
   emailCustomHtml,
   emailBoasVindasChinam,
   emailBoasVindasPetach,
-  emailBoasVindasKoach,
   emailTicketCriado,
   emailTicketRespondido,
   emailTicketFechado,
@@ -68,9 +67,9 @@ export const Email = {
   customHtml: (to: string, subject: string, corpo: string, preview?: string) =>
     send(to, subject, emailCustomHtml(corpo, preview)),
 
-  boasVindasPlano: (to: string, nome: string, plano: 'chinam' | 'petach' | 'koach' | 'chalem', valor?: string, proxVencimento?: string) => {
-    if (plano === 'petach') return send(to, 'Bem-vindo ao Tovia Pétach! 🚪', emailBoasVindasPetach(nome, valor || 'R$ 49/mês', proxVencimento || ''));
-    if (plano === 'koach')  return send(to, 'Bem-vindo ao Tovia Koách! ⚡',  emailBoasVindasKoach(nome, valor || 'R$ 129/mês', proxVencimento || ''));
+  boasVindasPlano: (to: string, nome: string, plano: 'chinam' | 'petach' | 'chalem', valor?: string, proxVencimento?: string) => {
+    if (plano === 'petach') return send(to, 'Bem-vindo ao Tovia Pétach! 🚪', emailBoasVindasPetach(nome, valor || 'R$ 119/mês', proxVencimento || ''));
+    if (plano === 'chalem') return send(to, 'Bem-vindo ao Tovia Chalém! 🌟', emailBoasVindasPetach(nome, valor || 'R$ 299/mês', proxVencimento || ''));
     return send(to, 'Bem-vindo ao Tovia! 🌱', emailBoasVindasChinam(nome));
   },
 

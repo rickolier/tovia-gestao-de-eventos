@@ -110,42 +110,6 @@ export const PLAN_CONFIGS: Record<PlanLevel, PlanConfig> = {
       calculator: true,
     },
   },
-  koach: {
-    name: 'Plano 2 - Pétach',
-    label: 'Pétach · פֶּתַח',
-    description: 'BYOG + equipe + gestão completa. A porta de entrada para eventos profissionais.',
-    descriptionHebrew: 'Pétach (פֶּתַח) significa "abertura" ou "portal" em hebraico.',
-    legacy: true,
-    price: {
-      monthly: 119,
-      annual: 1190,
-      monthlyLabel: 'R$ 119/mês',
-      annualMonthLabel: 'R$ 99,17/mês',
-      annualTotalLabel: 'R$ 1.190/ano',
-    },
-    modulesCount: 3,
-    limitsLabel: '5 eventos · até 300 vagas · 10 membros de equipe',
-    maxActiveEvents: 5,
-    maxAttendeesPerEvent: 300,
-    maxTicketsPerEvent: 5,
-    maxSalesPagesPerEvent: 5,
-    maxTeamMembers: 10,
-    maxComunicadosPerEvent: 1,
-    maxEmailsPerMonth: 15000,
-    byog: true,
-    allowExtraCredits: true,
-    extraCreditPrice: 199,
-    modules: {
-      registrations: true,
-      manualPayments: true,
-      donations: true,
-      autoPayments: true,
-      eventManagement: true,
-      tasksAndTeam: true,
-      reports: true,
-      calculator: true,
-    },
-  },
   chalem: {
     name: 'Plano 3 - Chalém',
     label: 'Chalém · שָׁלֵם',
@@ -187,6 +151,7 @@ const LEGACY_MAP: Record<string, PlanLevel> = {
   start: 'chinam',
   essencial: 'petach',
   pro: 'petach',
+  koach: 'petach',
   personalizado: 'chalem',
 };
 
@@ -195,10 +160,10 @@ export const getPlanConfig = (level?: PlanLevel | string | null): PlanConfig => 
   return PLAN_CONFIGS[normalized] ?? PLAN_CONFIGS.chinam;
 };
 
-export const PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'koach', 'chalem'];
+export const PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'chalem'];
 
 export const VISIBLE_PLAN_ORDER: PlanLevel[] = ['chinam', 'petach', 'chalem'];
 
 export const PLAN_RANK: Record<PlanLevel, number> = {
-  chinam: 0, petach: 1, koach: 2, chalem: 3,
+  chinam: 0, petach: 1, chalem: 2,
 };

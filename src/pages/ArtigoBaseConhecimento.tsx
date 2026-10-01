@@ -9,49 +9,42 @@ import { cn } from '@/lib/utils';
 
 const PLAN_LABELS: Record<string, { label: string; color: string }> = {
   chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
-  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
 };
 
-const BADGES = {
+const BADGES: Record<string, { label: string; color: string }> = {
   chinam: { label: 'Chinám', color: 'bg-orange-50 text-primary' },
   petach: { label: 'Pétach', color: 'bg-blue-100 text-blue-700'       },
-  koach:  { label: 'Koách',  color: 'bg-violet-100 text-violet-700'   },
   chalem: { label: 'Chalém', color: 'bg-amber-100 text-amber-700'     },
 };
 
 const ACCENT: Record<string, string> = {
   chinam: 'bg-primary',
   petach: 'bg-blue-400',
-  koach:  'bg-violet-500',
   chalem: 'bg-amber-500',
 };
 
-const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'koach', 'chalem']);
+const PLAN_TAG_KEYS = new Set<string>(['chinam', 'petach', 'chalem']);
 
-type PlanKey = 'chinam' | 'petach' | 'koach' | 'chalem';
+type PlanKey = 'chinam' | 'petach' | 'chalem';
 
 function badgesFromTags(tags: string[]): PlanKey[] {
   const hasChalem = tags.includes('chalem');
-  const hasKoach  = tags.includes('koach');
-  const hasPetach = tags.includes('petach');
-  if (hasChalem && !hasKoach && !hasPetach) return ['chalem'];
-  if (hasKoach)  return ['koach', 'chalem'];
-  if (hasPetach) return ['petach', 'koach', 'chalem'];
-  return ['chinam', 'petach', 'koach', 'chalem'];
+  const hasPetach = tags.includes('petach') || tags.includes('koach');
+  if (hasChalem && !hasPetach) return ['chalem'];
+  if (hasPetach) return ['petach', 'chalem'];
+  return ['chinam', 'petach', 'chalem'];
 }
 
 function accentFromBadges(badges: PlanKey[]): string {
   if (badges[0] === 'chalem') return ACCENT.chalem;
-  if (badges[0] === 'koach')  return ACCENT.koach;
   if (badges[0] === 'petach') return ACCENT.petach;
   return ACCENT.chinam;
 }
 
 function planFromTags(tags: string[]): string | null {
   if (tags.includes('chalem')) return 'chalem';
-  if (tags.includes('koach'))  return 'koach';
-  if (tags.includes('petach')) return 'petach';
+  if (tags.includes('koach') || tags.includes('petach')) return 'petach';
   return null;
 }
 

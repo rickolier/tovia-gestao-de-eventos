@@ -46,28 +46,28 @@ export const TOUR_DEFS: TourMeta[] = [
     label: 'Tutorial Inicial',
     description: 'Conheça o painel do Tovia: navegação, perfil, agenda e como criar seu primeiro evento.',
     icon: <Sparkles className="w-4 h-4" />,
-    plans: ['chinam', 'petach', 'koach'],
+    plans: ['chinam', 'petach', 'chalem'],
   },
   {
     id: 'inscricoes',
     label: 'Módulo de Inscrições',
     description: 'Ingressos, páginas de venda, participantes, cupons e check-in — dentro do seu evento.',
     icon: <Ticket className="w-4 h-4" />,
-    plans: ['chinam', 'petach', 'koach'],
+    plans: ['chinam', 'petach', 'chalem'],
   },
   {
     id: 'financeiro',
     label: 'Módulo Financeiro',
     description: 'Configuração financeira, pagamentos manuais e doações.',
     icon: <DollarSign className="w-4 h-4" />,
-    plans: ['petach', 'koach'],
+    plans: ['petach', 'chalem'],
   },
   {
     id: 'gestao',
     label: 'Módulo de Gestão',
     description: 'Recursos, grupos, tarefas, equipe e calculadora de eventos.',
     icon: <ListChecks className="w-4 h-4" />,
-    plans: ['koach'],
+    plans: ['petach', 'chalem'],
   },
 ];
 
@@ -94,22 +94,18 @@ const PLAN_WELCOME: Record<PlanLevel, string> = {
   chinam:
     'Você está no plano Chinám (gratuito): 1 evento ativo, até 100 participantes, 1 ingresso por evento. Vamos ver o caminho mais rápido para começar!',
   petach:
-    'Plano Pétach: até 3 eventos simultâneos, 200 participantes cada, 3 tipos de ingresso, controle financeiro manual e doações incluídos. Vamos configurar tudo!',
-  koach:
-    'Plano Koách: até 5 eventos com 500 participantes cada, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
+    'Plano Pétach: até 5 eventos simultâneos, 300 participantes cada, equipe colaborativa, pagamentos automáticos e gestão completa. Vamos configurar tudo!',
   chalem:
-    'Plano Koách: até 5 eventos com 500 participantes cada, equipe colaborativa, grupos, tarefas e recursos. Aqui vai o caminho para extrair o máximo do Tovia!',
+    'Plano Chalém: até 15 eventos com 600 participantes cada, equipe grande e volume alto. Aqui vai o caminho para extrair o máximo do Tovia!',
 };
 
 const PLAN_TICKET_DESC: Record<PlanLevel, string> = {
   chinam:
     'No plano Chinám você cria 1 ingresso gratuito por evento, com número de vagas e prazo. Para criar ingressos pagos ou múltiplos tipos, faça upgrade para o Pétach.',
   petach:
-    'Configure ingressos gratuitos, pagos (Pix, dinheiro, transferência) ou por doação — até 3 tipos por evento.',
-  koach:
     'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes.',
   chalem:
-    'Crie até 5 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes.',
+    'Crie até 10 tipos de ingresso: gratuitos, pagos e doações, cada um com valor, vagas e prazo independentes.',
 };
 
 const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
@@ -117,8 +113,6 @@ const PLAN_FINAL_DESC: Record<PlanLevel, string> = {
     'Você conhece o módulo de inscrições! Crie seu evento, configure o ingresso e divulgue o link. Para desbloquear pagamentos e doações, conheça o plano Pétach em Configurações → Faturamento.',
   petach:
     'Você conhece o módulo de inscrições! Próximo passo: explore o Módulo Financeiro — clique em Tutorial na barra lateral e escolha "Módulo Financeiro" para aprender a registrar pagamentos.',
-  koach:
-    'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão em Tutorial para usar o Tovia ao máximo.',
   chalem:
     'Você conhece o módulo de inscrições! Explore também o Módulo Financeiro e o Módulo de Gestão para usar o Tovia ao máximo.',
 };

@@ -696,27 +696,6 @@ Quando considerar upgrade para o Chalém:
   },
 
   {
-    id: 'caminho-pro',
-    slug: 'caminho-pro',
-    ordem: 32,
-    categoria: 'planos',
-    visivel: false,
-    titulo: 'Plano Koách (legado) → migrado para Pétach',
-    resumo: 'O plano Koách foi descontinuado. Usuários Koách foram migrados para o Pétach com todos os recursos mantidos.',
-    tags: ['koach', 'caminho', 'guia de uso', 'mapa'],
-    autor: 'Equipe Tovia',
-    banner_url: 'https://images.unsplash.com/photo-1748356804570-1df85cbdcfb8?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O plano Koách foi descontinuado e todos os usuários foram migrados automaticamente para o plano Pétach, que agora inclui todos os recursos que estavam no Koách: equipe, grupos, tarefas, recursos e pagamentos automáticos via BYOG.
-
-Se você era assinante do Koách, consulte o artigo "Plano Pétach: o caminho mais eficiente" para ver o guia atualizado com todas as funcionalidades disponíveis.
-
-Seus dados, eventos e configurações foram mantidos integralmente na migração. Não é necessária nenhuma ação da sua parte.`,
-    video_url: '',
-    criado_em: NOW,
-    atualizado_em: NOW,
-  },
-
-  {
     id: 'caminho-chalem',
     slug: 'caminho-chalem',
     ordem: 33,
@@ -964,7 +943,7 @@ Use a Calculadora de Evento: defina número de vagas, valor da taxa de participa
 
 3. INSCRIÇÕES E PAGAMENTOS
 • Abra as inscrições com antecedência suficiente
-• Registre os pagamentos na aba Financeiro conforme chegam (Pétach/Koách)
+• Registre os pagamentos na aba Financeiro conforme chegam (Pétach/Chalém)
 • Acompanhe o total arrecadado vs. custo previsto em tempo real
 
 4. ORGANIZAÇÃO (semana antes)

@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const loginAsDemo = async (plano: PlanLevel = 'koach') => {
+  const loginAsDemo = async (plano: PlanLevel = 'petach') => {
     setLoading(true);
     try {
       // Sign in anonymously to get a real Firebase Auth session for rules

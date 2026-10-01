@@ -103,7 +103,7 @@ export default function EquipeDashTab() {
         </div>
         <div className="rounded-3xl border border-dashed border-border p-16 flex flex-col items-center gap-4 text-center max-w-lg mx-auto mt-8">
           <Crown className="w-10 h-10 text-primary/40" />
-          <p className="font-bold text-foreground">Disponível a partir do Plano 3 - Koách</p>
+          <p className="font-bold text-foreground">Disponível a partir do Plano 2 - Pétach</p>
           <p className="text-sm text-muted-foreground">
             Faça upgrade para cadastrar membros de equipe e vinculá-los a eventos específicos.
           </p>

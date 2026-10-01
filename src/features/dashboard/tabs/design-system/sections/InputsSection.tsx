@@ -44,8 +44,7 @@ export function InputsSection() {
               <option>Selecione uma opção</option>
               <option>Plano 1 - Chinám</option>
               <option>Plano 2 - Pétach</option>
-              <option>Plano 3 - Koách</option>
-              <option>Plano 4 - Chalém</option>
+              <option>Plano 3 - Chalém</option>
             </select>
           </div>
 

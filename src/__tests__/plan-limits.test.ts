@@ -30,12 +30,6 @@ describe('PLAN_CONFIGS', () => {
     expect(PLAN_CONFIGS.chalem.maxTeamMembers).toBe(30);
   });
 
-  it('koách é legado e espelha pétach', () => {
-    expect(PLAN_CONFIGS.koach.legacy).toBe(true);
-    expect(PLAN_CONFIGS.koach.maxActiveEvents).toBe(PLAN_CONFIGS.petach.maxActiveEvents);
-    expect(PLAN_CONFIGS.koach.price.monthly).toBe(PLAN_CONFIGS.petach.price.monthly);
-  });
-
   it('cada plano tem nome correto', () => {
     expect(PLAN_CONFIGS.chinam.name).toBe('Plano 1 - Chinám');
     expect(PLAN_CONFIGS.petach.name).toBe('Plano 2 - Pétach');
@@ -88,7 +82,7 @@ describe('getPlanConfig', () => {
 
 describe('PLAN_ORDER', () => {
   it('tem 4 entradas incluindo legado', () => {
-    expect(PLAN_ORDER).toEqual(['chinam', 'petach', 'koach', 'chalem']);
+    expect(PLAN_ORDER).toEqual(['chinam', 'petach', 'chalem']);
   });
 });
 
@@ -102,8 +96,7 @@ describe('PLAN_RANK', () => {
   it('rank crescente', () => {
     expect(PLAN_RANK.chinam).toBe(0);
     expect(PLAN_RANK.petach).toBe(1);
-    expect(PLAN_RANK.koach).toBe(2);
-    expect(PLAN_RANK.chalem).toBe(3);
+    expect(PLAN_RANK.chalem).toBe(2);
   });
 });
 
