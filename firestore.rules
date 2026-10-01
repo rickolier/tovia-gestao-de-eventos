@@ -275,6 +275,14 @@ service cloud.firestore {
     }
 
     // ===============================================================
+    // Cupons de desconto — somente admin
+    // ===============================================================
+    match /cupons/{cupomId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ===============================================================
     // Base de Conhecimento — leitura pública, escrita apenas admin
     // ===============================================================
     match /base_conhecimento/{artigoId} {
