@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
 import { getDocument, listDocuments, updateDocument } from '~/services/firestore';
 import { where, limit } from 'firebase/firestore';
 import { Evento, Inscricao } from '~/types';
-import { CheckCircle2, Search, ArrowLeft, Users, UserCheck, UserX, Smartphone } from 'lucide-react';
+import { CheckCircle2, Search, ArrowLeft, Users, UserCheck, UserX, Camera, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '~/components/Logo';
+import QrScanner from '~/components/QrScanner';
 
 export default function CheckinPage() {
   const { id: eventoId } = useParams<{ id: string }>();
@@ -18,6 +19,8 @@ export default function CheckinPage() {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [search, setSearch] = useState('');
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ type: 'success' | 'error' | 'already'; nome: string } | null>(null);
 
   useEffect(() => {
     if (!eventoId || !user) return;
@@ -37,6 +40,25 @@ export default function CheckinPage() {
       setLoading(false);
     })();
   }, [eventoId, user]);
+
+  const handleQrScan = useCallback(async (inscricaoId: string) => {
+    const insc = inscricoes.find(i => i.id === inscricaoId);
+    if (!insc) {
+      setScanFeedback({ type: 'error', nome: 'Inscrição não encontrada neste evento.' });
+      setTimeout(() => setScanFeedback(null), 3000);
+      return;
+    }
+    if (insc.presenca) {
+      setScanFeedback({ type: 'already', nome: insc.nome ?? 'Participante' });
+      setTimeout(() => setScanFeedback(null), 3000);
+      return;
+    }
+    const now = new Date().toISOString();
+    await updateDocument(`eventos/${eventoId}/inscricoes`, insc.id, { presenca: true, checkin_at: now });
+    setInscricoes(prev => prev.map(i => i.id === insc.id ? { ...i, presenca: true, checkin_at: now } : i));
+    setScanFeedback({ type: 'success', nome: insc.nome ?? 'Participante' });
+    setTimeout(() => setScanFeedback(null), 3000);
+  }, [inscricoes, eventoId]);
 
   const handleManualCheckin = async (insc: Inscricao) => {
     if (insc.presenca) return;
@@ -95,15 +117,35 @@ export default function CheckinPage() {
         </div>
       </div>
 
-      {/* Mobile app banner */}
-      <div className="mx-4 mt-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-          <Smartphone className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-black text-foreground">Use o Tovia Mobile para QR Code</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Leitura de QR Code disponível no app. Baixe o Tovia Mobile e escaneie os ingressos com a câmera.</p>
-        </div>
+      {/* QR Scanner */}
+      <div className="mx-4 mt-4 space-y-3">
+        {!scannerOpen ? (
+          <button
+            onClick={() => setScannerOpen(true)}
+            className="w-full rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 p-4 flex items-center justify-center gap-3 hover:bg-primary/10 transition-colors"
+          >
+            <Camera className="w-6 h-6 text-primary" />
+            <span className="text-sm font-black text-primary">Escanear QR Code</span>
+          </button>
+        ) : (
+          <QrScanner scanning={scannerOpen} onScan={handleQrScan} onClose={() => setScannerOpen(false)} />
+        )}
+
+        {scanFeedback && (
+          <div className={cn(
+            'rounded-xl px-4 py-3 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-200',
+            scanFeedback.type === 'success' && 'bg-green-50 border border-green-200 text-green-800',
+            scanFeedback.type === 'already' && 'bg-amber-50 border border-amber-200 text-amber-800',
+            scanFeedback.type === 'error' && 'bg-red-50 border border-red-200 text-red-800',
+          )}>
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
+            <p className="text-sm font-semibold">
+              {scanFeedback.type === 'success' && `✓ ${scanFeedback.nome} — check-in realizado!`}
+              {scanFeedback.type === 'already' && `${scanFeedback.nome} já fez check-in.`}
+              {scanFeedback.type === 'error' && scanFeedback.nome}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Lista manual */}

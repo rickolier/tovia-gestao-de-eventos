@@ -77,14 +77,14 @@ export default function CheckinTab({ eventoId }: Props) {
         </div>
       </div>
 
-      {/* Mobile app banner */}
+      {/* Dica de check-in */}
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-4">
         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
           <Smartphone className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <p className="text-sm font-black text-foreground">Faça o check-in pelo Tovia Mobile</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Use a câmera do celular para escanear os QR Codes dos ingressos em tempo real.</p>
+          <p className="text-sm font-black text-foreground">Check-in com QR Code</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Abra a página de check-in no celular para escanear os QR Codes dos participantes com a câmera.</p>
         </div>
       </div>
 
