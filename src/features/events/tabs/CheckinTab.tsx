@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { listDocuments } from '~/services/firestore';
 import { limit } from 'firebase/firestore';
 import { Inscricao } from '~/types';
 import { Button } from '@/components/ui/button';
-import { UserCheck, UserX, Download, Smartphone } from 'lucide-react';
+import { UserCheck, UserX, Download, Camera } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -77,16 +78,19 @@ export default function CheckinTab({ eventoId }: Props) {
         </div>
       </div>
 
-      {/* Dica de check-in */}
-      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-4">
+      {/* Link para página de check-in com scanner */}
+      <Link
+        to={`/eventos/${eventoId}/checkin`}
+        className="rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 p-4 flex items-center gap-4 hover:bg-primary/10 transition-colors block"
+      >
         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-          <Smartphone className="w-5 h-5 text-primary" />
+          <Camera className="w-5 h-5 text-primary" />
         </div>
-        <div>
-          <p className="text-sm font-black text-foreground">Check-in com QR Code</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Abra a página de check-in no celular para escanear os QR Codes dos participantes com a câmera.</p>
+        <div className="flex-1">
+          <p className="text-sm font-black text-primary">Abrir check-in com QR Code</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Escaneie os QR Codes dos participantes com a câmera ou marque presença manualmente.</p>
         </div>
-      </div>
+      </Link>
 
       {/* Read-only list */}
       {inscricoes.length === 0 ? (
