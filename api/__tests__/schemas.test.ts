@@ -25,7 +25,7 @@ describe('checkoutSchema', () => {
   });
 
   it('aceita todos os planos pagos', () => {
-    for (const plan of ['petach', 'koach', 'chalem']) {
+    for (const plan of ['petach', 'chalem']) {
       expect(checkoutSchema.safeParse({ ...valid, planLevel: plan }).success).toBe(true);
     }
   });

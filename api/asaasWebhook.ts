@@ -1,4 +1,4 @@
-// Webhook de BILLING da plataforma — Asaas notifica sobre assinaturas de planos (Pétach/Koách/Chalém).
+// Webhook de BILLING da plataforma — Asaas notifica sobre assinaturas de planos (Pétach/Chalém).
 // NÃO confundir com eventPaymentWebhook.ts, que trata pagamentos de eventos (BYOG do organizador).
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { timingSafeEqual } from 'crypto';
@@ -7,12 +7,10 @@ import { sendEmail } from './_email/send.js';
 
 const PLAN_NAMES: Record<string, string> = {
   petach: 'Pétach',
-  koach:  'Koách',
   chalem: 'Chalém',
 };
 const PLAN_VALUES: Record<string, string> = {
   petach: 'R$ 119/mês',
-  koach:  'R$ 119/mês',
   chalem: 'R$ 299/mês',
 };
 
@@ -79,23 +77,6 @@ function buildEmailBoasVindasPetach(nome: string, valor: string, proxVencimento:
     ${planBox('Pétach · פֶּתַח', valor, proxVencimento)}
     <a href="https://tovia-gestao-de-eventos.vercel.app/dashboard" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;">Acessar o painel</a>
     <p style="font-size:13px;color:${MUTED};margin:24px 0 0;line-height:1.6;">Explore a <a href="https://tovia-gestao-de-eventos.vercel.app/base-de-conhecimento" style="color:${PRIMARY};font-weight:600;">Base de Conhecimento</a> para aprender a usar o módulo financeiro.</p>
-  `);
-}
-
-function buildEmailBoasVindasKoach(nome: string, valor: string, proxVencimento: string) {
-  return emailWrap(`
-    <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">Bem-vindo ao Koách, ${nome}! ⚡</h1>
-    <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 16px;">Pagamento confirmado! O <strong>Plano Koách</strong> está ativo — gestão completa com equipe:</p>
-    <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px;">
-      ${feature('📋', 'Inscrições + Financeiro', 'Tudo do plano anterior, com ainda mais capacidade.')}
-      ${feature('🗂️', 'Gestão de eventos', 'Controle recursos, grupos e detalhes do seu evento.')}
-      ${feature('✅', 'Tarefas e equipe', 'Convide até 5 colaboradores e distribua tarefas.')}
-      ${feature('📊', 'Relatórios avançados', 'Visão completa de inscrições e desempenho da equipe.')}
-    </table>
-    <p style="font-size:13px;color:${MUTED};margin:0 0 4px;"><strong style="color:${TEXT};">5 eventos</strong> · até <strong style="color:${TEXT};">500 vagas</strong> · <strong style="color:${TEXT};">5 membros de equipe</strong></p>
-    ${planBox('Koách · כֹּחַ', valor, proxVencimento)}
-    <a href="https://tovia-gestao-de-eventos.vercel.app/dashboard" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;">Acessar o painel</a>
-    <p style="font-size:13px;color:${MUTED};margin:24px 0 0;line-height:1.6;">Explore a <a href="https://tovia-gestao-de-eventos.vercel.app/base-de-conhecimento" style="color:${PRIMARY};font-weight:600;">Base de Conhecimento</a> para conhecer os módulos de equipe e tarefas.</p>
   `);
 }
 
@@ -239,9 +220,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (planLevel === 'petach') {
           subject = 'Bem-vindo ao Tovia Pétach! 🚪';
           html = buildEmailBoasVindasPetach(userName, planValor, proxVencimento);
-        } else if (planLevel === 'koach') {
-          subject = 'Bem-vindo ao Tovia Koách! ⚡';
-          html = buildEmailBoasVindasKoach(userName, planValor, proxVencimento);
         } else {
           subject = 'Bem-vindo ao Tovia Chalém! 🌟';
           html = buildEmailBoasVindasChalem(userName, planValor, proxVencimento);

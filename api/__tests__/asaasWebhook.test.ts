@@ -112,17 +112,6 @@ describe('asaasWebhook', () => {
     expect(body.subject).toContain('Pétach');
   });
 
-  it('sends welcome email for koach plan', async () => {
-    seedDoc('users', 'user1', { email: 'user@test.com', nome: 'Test' });
-
-    const req = webhookReq('PAYMENT_CONFIRMED', { externalReference: 'user1:koach:monthly' });
-    const res = createMockRes();
-    await handler(req, res);
-
-    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.subject).toContain('Koách');
-  });
-
   it('sends welcome email for chalem plan', async () => {
     seedDoc('users', 'user1', { email: 'user@test.com', nome: 'Test' });
 
@@ -160,9 +149,9 @@ describe('asaasWebhook', () => {
   });
 
   it('cancels plan on SUBSCRIPTION_INACTIVATED', async () => {
-    seedDoc('users', 'user1', { email: 'user@test.com', nome: 'Test', plano: 'koach' });
+    seedDoc('users', 'user1', { email: 'user@test.com', nome: 'Test', plano: 'petach' });
 
-    const req = webhookReq('SUBSCRIPTION_INACTIVATED', { externalReference: 'user1:koach:monthly' });
+    const req = webhookReq('SUBSCRIPTION_INACTIVATED', { externalReference: 'user1:petach:monthly' });
     const res = createMockRes();
     await handler(req, res);
 

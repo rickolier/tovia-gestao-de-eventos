@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { PLAN_CONFIGS, getPlanConfig, PLAN_ORDER, PLAN_RANK, VISIBLE_PLAN_ORDER } from '~/utils/plan-limits';
 
 describe('PLAN_CONFIGS', () => {
-  it('define 4 entradas (3 planos + 1 legado)', () => {
-    expect(Object.keys(PLAN_CONFIGS)).toHaveLength(4);
+  it('define 3 planos', () => {
+    expect(Object.keys(PLAN_CONFIGS)).toHaveLength(3);
   });
 
   it('chinám é gratuito', () => {

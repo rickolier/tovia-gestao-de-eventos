@@ -145,7 +145,7 @@ describe('createCheckout', () => {
   });
 
   it('creates annual payment with PIX', async () => {
-    const req = checkoutReq({ period: 'annual', paymentMethod: 'pix', planLevel: 'koach' });
+    const req = checkoutReq({ period: 'annual', paymentMethod: 'pix', planLevel: 'chalem' });
     const res = createMockRes();
     await handler(req, res);
 

@@ -3,8 +3,8 @@ import { PLAN_CONFIGS, getPlanConfig, PLAN_ORDER, PLAN_RANK, VISIBLE_PLAN_ORDER 
 import type { PlanLevel } from '../../src/types';
 
 describe('PLAN_CONFIGS', () => {
-  it('define 4 entradas (3 planos + 1 legado)', () => {
-    expect(Object.keys(PLAN_CONFIGS)).toHaveLength(4);
+  it('define 3 planos', () => {
+    expect(Object.keys(PLAN_CONFIGS)).toHaveLength(3);
   });
 
   it('nomes corretos: Chinám, Pétach, Chalém', () => {
@@ -66,18 +66,6 @@ describe('PLAN_CONFIGS', () => {
     });
   });
 
-  describe('Koách (legado)', () => {
-    const k = PLAN_CONFIGS.koach;
-    it('marcado como legado', () => {
-      expect(k.legacy).toBe(true);
-    });
-    it('mesmos limites do Pétach', () => {
-      expect(k.maxActiveEvents).toBe(PLAN_CONFIGS.petach.maxActiveEvents);
-      expect(k.maxAttendeesPerEvent).toBe(PLAN_CONFIGS.petach.maxAttendeesPerEvent);
-      expect(k.maxTeamMembers).toBe(PLAN_CONFIGS.petach.maxTeamMembers);
-    });
-  });
-
   describe('Chalém', () => {
     const ch = PLAN_CONFIGS.chalem;
     it('limites: 15 eventos, 600 vagas, 30 equipe', () => {
@@ -113,10 +101,6 @@ describe('PLAN_CONFIGS', () => {
     it('anual = mensal × 10', () => {
       expect(PLAN_CONFIGS.petach.price.annual).toBe(PLAN_CONFIGS.petach.price.monthly * 10);
       expect(PLAN_CONFIGS.chalem.price.annual).toBe(PLAN_CONFIGS.chalem.price.monthly * 10);
-    });
-    it('koách tem mesmo preço que pétach', () => {
-      expect(PLAN_CONFIGS.koach.price.monthly).toBe(PLAN_CONFIGS.petach.price.monthly);
-      expect(PLAN_CONFIGS.koach.price.annual).toBe(PLAN_CONFIGS.petach.price.annual);
     });
   });
 
@@ -158,8 +142,8 @@ describe('getPlanConfig', () => {
 });
 
 describe('PLAN_ORDER', () => {
-  it('tem 4 planos na ordem crescente', () => {
-    expect(PLAN_ORDER).toEqual(['chinam', 'petach', 'koach', 'chalem']);
+  it('tem 3 planos na ordem crescente', () => {
+    expect(PLAN_ORDER).toEqual(['chinam', 'petach', 'chalem']);
   });
 });
 
@@ -170,9 +154,8 @@ describe('VISIBLE_PLAN_ORDER', () => {
 });
 
 describe('PLAN_RANK', () => {
-  it('ordena chinam < petach < koach < chalem', () => {
+  it('ordena chinam < petach < chalem', () => {
     expect(PLAN_RANK.chinam).toBeLessThan(PLAN_RANK.petach);
-    expect(PLAN_RANK.petach).toBeLessThan(PLAN_RANK.koach);
-    expect(PLAN_RANK.koach).toBeLessThan(PLAN_RANK.chalem);
+    expect(PLAN_RANK.petach).toBeLessThan(PLAN_RANK.chalem);
   });
 });
