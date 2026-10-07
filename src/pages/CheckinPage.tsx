@@ -8,6 +8,7 @@ import { CheckCircle2, Search, ArrowLeft, Users, UserCheck, UserX, Camera, X } f
 import { cn } from '@/lib/utils';
 import Logo from '~/components/Logo';
 import QrScanner from '~/components/QrScanner';
+import SwipeRow from '~/components/SwipeRow';
 
 export default function CheckinPage() {
   const { id: eventoId } = useParams<{ id: string }>();
@@ -60,11 +61,17 @@ export default function CheckinPage() {
     setTimeout(() => setScanFeedback(null), 3000);
   }, [inscricoes, eventoId]);
 
-  const handleManualCheckin = async (insc: Inscricao) => {
+  const handleCheckin = async (insc: Inscricao) => {
     if (insc.presenca) return;
     const now = new Date().toISOString();
     await updateDocument(`eventos/${eventoId}/inscricoes`, insc.id, { presenca: true, checkin_at: now });
     setInscricoes(prev => prev.map(i => i.id === insc.id ? { ...i, presenca: true, checkin_at: now } : i));
+  };
+
+  const handleUncheckin = async (insc: Inscricao) => {
+    if (!insc.presenca) return;
+    await updateDocument(`eventos/${eventoId}/inscricoes`, insc.id, { presenca: false, checkin_at: null });
+    setInscricoes(prev => prev.map(i => i.id === insc.id ? { ...i, presenca: false, checkin_at: undefined } : i));
   };
 
   const checkins = inscricoes.filter(i => i.presenca).length;
@@ -164,43 +171,52 @@ export default function CheckinPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-border/50 border-t border-border">
+        <div className="flex-1 overflow-y-auto border-t border-border">
           {filtered.length === 0 && (
             <div className="py-16 text-center text-muted-foreground text-sm">
               Nenhum participante encontrado.
             </div>
           )}
           {filtered.map(insc => (
-            <button
+            <SwipeRow
               key={insc.id}
-              disabled={insc.presenca}
-              onClick={() => handleManualCheckin(insc)}
-              className={cn(
-                'w-full flex items-center gap-4 px-4 py-4 text-left transition-colors',
-                insc.presenca ? 'bg-orange-50/60 dark:bg-primary/10 cursor-default' : 'hover:bg-muted/40'
-              )}
+              onSwipeRight={!insc.presenca ? () => handleCheckin(insc) : undefined}
+              onSwipeLeft={insc.presenca ? () => handleUncheckin(insc) : undefined}
+              rightLabel="Confirmar"
+              leftLabel="Desmarcar"
+              rightColor="bg-green-500"
+              leftColor="bg-red-500"
             >
-              <div className={cn(
-                'w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                insc.presenca ? 'bg-primary border-primary' : 'border-border bg-background'
-              )}>
-                {insc.presenca && <CheckCircle2 className="w-5 h-5 text-white" />}
+              <div
+                className={cn(
+                  'flex items-center gap-4 px-4 py-4 border-b border-border/50',
+                  insc.presenca ? 'bg-orange-50/60 dark:bg-primary/10' : 'bg-background'
+                )}
+              >
+                <div className={cn(
+                  'w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                  insc.presenca ? 'bg-primary border-primary' : 'border-border bg-background'
+                )}>
+                  {insc.presenca && <CheckCircle2 className="w-5 h-5 text-white" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={cn('font-bold text-sm truncate', insc.presenca ? 'text-primary' : 'text-foreground')}>
+                    {insc.nome ?? '—'}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {insc.ticket_nome}
+                    {insc.presenca && insc.checkin_at && (
+                      <span className="text-primary font-semibold"> · {fmtTime(insc.checkin_at)}</span>
+                    )}
+                  </p>
+                </div>
+                {!insc.presenca ? (
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30 shrink-0">← Arraste</span>
+                ) : (
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary/40 shrink-0">Arraste →</span>
+                )}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className={cn('font-bold text-sm truncate', insc.presenca ? 'text-primary' : 'text-foreground')}>
-                  {insc.nome ?? '—'}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {insc.ticket_nome}
-                  {insc.presenca && insc.checkin_at && (
-                    <span className="text-primary font-semibold"> · {fmtTime(insc.checkin_at)}</span>
-                  )}
-                </p>
-              </div>
-              {!insc.presenca && (
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 shrink-0">Marcar</span>
-              )}
-            </button>
+            </SwipeRow>
           ))}
         </div>
       </div>
