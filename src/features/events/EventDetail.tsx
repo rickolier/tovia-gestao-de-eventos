@@ -472,13 +472,13 @@ export default function EventDetail() {
           ))}
 
           {/* Category buttons */}
-          {(['Inscrições', 'Financeiro', 'Gestão do Evento'] as const).map(cat => {
+          {(['Inscrições', 'Financeiro', 'Gestão'] as const).map(cat => {
             const section = sidebarSections.find(s => s.category === cat);
             const items = section?.items.filter(t => t.show !== false) ?? [];
             const isActiveCategory = mobileSubmenu === cat ||
               (mobileSubmenu === null && items.some(t => activeTab === t.value));
-            const labels: Record<string, string> = { 'Inscrições': 'Inscrições', 'Financeiro': 'Financeiro', 'Gestão do Evento': 'Gestão' };
-            const icons: Record<string, React.ElementType> = { 'Inscrições': Users, 'Financeiro': DollarSign, 'Gestão do Evento': Wallet };
+            const labels: Record<string, string> = { 'Inscrições': 'Inscrições', 'Financeiro': 'Financeiro', 'Gestão': 'Gestão' };
+            const icons: Record<string, React.ElementType> = { 'Inscrições': Users, 'Financeiro': DollarSign, 'Gestão': Wallet };
             const Icon = icons[cat];
             return (
               <button
