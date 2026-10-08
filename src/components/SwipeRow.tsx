@@ -30,16 +30,16 @@ export default function SwipeRow({
   const [offset, setOffset] = useState(0);
   const rowRef = useRef<HTMLDivElement>(null);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleStart = (clientX: number) => {
     if (disabled) return;
-    startX.current = e.touches[0].clientX;
-    currentX.current = startX.current;
+    startX.current = clientX;
+    currentX.current = clientX;
     swiping.current = true;
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleMove = (clientX: number) => {
     if (!swiping.current) return;
-    currentX.current = e.touches[0].clientX;
+    currentX.current = clientX;
     let dx = currentX.current - startX.current;
 
     if (!onSwipeRight && dx > 0) dx = 0;
@@ -49,7 +49,7 @@ export default function SwipeRow({
     setOffset(clamped);
   };
 
-  const handleTouchEnd = () => {
+  const handleEnd = () => {
     if (!swiping.current) return;
     swiping.current = false;
 
@@ -60,6 +60,18 @@ export default function SwipeRow({
     }
     setOffset(0);
   };
+
+  const handleTouchStart = (e: React.TouchEvent) => handleStart(e.touches[0].clientX);
+  const handleTouchMove = (e: React.TouchEvent) => handleMove(e.touches[0].clientX);
+  const handleTouchEnd = () => handleEnd();
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX);
+  };
+  const handleMouseMove = (e: React.MouseEvent) => handleMove(e.clientX);
+  const handleMouseUp = () => handleEnd();
+  const handleMouseLeave = () => { if (swiping.current) handleEnd(); };
 
   const rightProgress = Math.min(1, Math.max(0, offset / THRESHOLD));
   const leftProgress = Math.min(1, Math.max(0, -offset / THRESHOLD));
@@ -102,7 +114,11 @@ export default function SwipeRow({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="relative bg-background transition-transform"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        className="relative bg-background transition-transform select-none"
         style={{
           transform: `translateX(${offset}px)`,
           transitionDuration: swiping.current ? '0ms' : '200ms',
