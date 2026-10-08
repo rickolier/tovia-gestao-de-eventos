@@ -14,7 +14,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Plus, Copy, Trash2, ExternalLink, Globe, GlobeLock,
-  Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft, FileDown, Loader2,
+  Edit2, GripVertical, X, Settings2, TicketIcon, FileText, Eye, ArrowLeft,
   ChevronUp, ChevronDown, LinkIcon,
 } from 'lucide-react';
 import { PaginaVenda, CampoFormulario } from '~/types';
@@ -31,13 +31,12 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
     activeSection, setActiveSection,
     previewPagina, setPreviewPagina,
     previewKey, setPreviewKey,
-    exportingId,
     form, setForm,
     novoCampo, setNovoCampo,
     novaOpcao, setNovaOpcao,
     openCreate, openEdit, handleSave,
     toggleAtiva, handleDelete,
-    getPageUrl, copyLink, exportarFicha,
+    getPageUrl, copyLink,
     addCampoPadrao, addCampoCustom, removeCampo, moveCampo, toggleCampoObrigatorio,
   } = useSalesPagesTab(eventoId);
 
@@ -106,17 +105,6 @@ export default function SalesPagesTab({ eventoId }: { eventoId: string }) {
                       className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
                     >
                       <Eye className="w-3.5 h-3.5" /> Abrir
-                    </button>
-                    <button
-                      onClick={() => exportarFicha(p)}
-                      disabled={exportingId === p.id}
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-medium disabled:opacity-50"
-                    >
-                      {exportingId === p.id
-                        ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        : <FileDown className="w-3.5 h-3.5" />
-                      }
-                      Ficha PDF
                     </button>
                     <div className="ml-auto flex gap-1">
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>

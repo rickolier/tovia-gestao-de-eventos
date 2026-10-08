@@ -52,7 +52,7 @@ export function useSalesPagesTab(eventoId: string) {
   const [activeSection, setActiveSection] = useState<'tickets' | 'campos'>('tickets');
   const [previewPagina, setPreviewPagina] = useState<PaginaVenda | null>(null);
   const [previewKey, setPreviewKey] = useState(0);
-  const [exportingId, setExportingId] = useState<string | null>(null);
+
 
   const emptyForm = (): Omit<PaginaVenda, 'id' | 'eventoId' | 'criado_em'> => ({
     nome: '',
@@ -156,37 +156,6 @@ export function useSalesPagesTab(eventoId: string) {
     navigator.clipboard.writeText(getPageUrl(p)).then(() => toast.success('Link copiado!'));
   };
 
-  const exportarFicha = async (pagina: PaginaVenda) => {
-    if (!evento) return;
-    setExportingId(pagina.id);
-    try {
-      const [{ pdf }, { default: FichaInscricaoPDF }] = await Promise.all([
-        import('@react-pdf/renderer'),
-        import('~/features/pdf/FichaInscricaoPDF'),
-      ]);
-      const ticketsDaPagina = tickets.filter(t => pagina.ticketIds.includes(t.id));
-      const blob = await pdf(
-        <FichaInscricaoPDF
-          evento={evento}
-          pagina={pagina}
-          tickets={ticketsDaPagina}
-          organizerProfile={organizerProfile}
-        />
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `ficha-inscricao-${pagina.slug}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success('Ficha exportada com sucesso!');
-    } catch {
-      toast.error('Erro ao gerar PDF. Tente novamente.');
-    } finally {
-      setExportingId(null);
-    }
-  };
-
   const addCampoPadrao = (campo: Omit<CampoFormulario, 'id'>) => {
     setForm(prev => ({ ...prev, campos_formulario: [...prev.campos_formulario, { ...campo, id: uuidv4() }] }));
   };
@@ -228,13 +197,12 @@ export function useSalesPagesTab(eventoId: string) {
     activeSection, setActiveSection,
     previewPagina, setPreviewPagina,
     previewKey, setPreviewKey,
-    exportingId,
     form, setForm,
     novoCampo, setNovoCampo,
     novaOpcao, setNovaOpcao,
     openCreate, openEdit, handleSave,
     toggleAtiva, handleDelete,
-    getPageUrl, copyLink, exportarFicha,
+    getPageUrl, copyLink,
     addCampoPadrao, addCampoCustom, removeCampo, moveCampo, toggleCampoObrigatorio,
   };
 }
