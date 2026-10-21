@@ -1,5 +1,5 @@
 import { ToviaLogo } from '~/components/ToviaLogo';
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Evento, Ticket, PaginaVenda, CampoFormulario, UserProfile } from '~/types';
 import { maskTelefone, maskCPF } from '~/utils/validators';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Calendar, MapPin, Clock, Plus, Minus, CheckCircle2, ArrowLeft,
   Ticket as TicketIcon, Shield, Lock, HeadphonesIcon, Instagram, Globe, Mail, Phone,
-  CreditCard, Copy, ExternalLink, Tag, Loader2, X,
+  CreditCard, Copy, ExternalLink, Tag, Loader2, X, QrCode, FileText, Timer,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Logo from '~/components/Logo';
@@ -96,6 +96,58 @@ function getFormStepData(state: SalesPageState) {
   return { allowedMethods, maxParcelasCredito, maxParcelasBoleto, maxParcelasRecorrente, needsCard, isGatewayPaid, canSubmit, methodLabels, methodDescs };
 }
 
+// ─── PIX countdown timer ──────────────────────────────────────────────────────
+const PixCountdown: React.FC<{ expirationDate?: string }> = ({ expirationDate }) => {
+  const [remaining, setRemaining] = useState('');
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    if (!expirationDate) return;
+    const target = new Date(expirationDate).getTime();
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) { setExpired(true); setRemaining('Expirado'); return; }
+      const m = Math.floor(diff / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setRemaining(`${m}:${s.toString().padStart(2, '0')}`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [expirationDate]);
+
+  if (!expirationDate) return null;
+  return (
+    <div className={`flex items-center justify-center gap-1.5 text-xs font-semibold ${expired ? 'text-red-500' : 'text-gray-500'}`}>
+      <Timer className="w-3.5 h-3.5" />
+      {expired ? 'QR Code expirado — recarregue a página' : `Expira em ${remaining}`}
+    </div>
+  );
+};
+
+// ─── Payment status polling ───────────────────────────────────────────────────
+function usePaymentPolling(eventoId: string, inscricaoId: string | null, active: boolean) {
+  const [confirmed, setConfirmed] = useState(false);
+
+  const poll = useCallback(async () => {
+    if (!inscricaoId || !active) return;
+    try {
+      const res = await fetch(`/api/createEventCharge?eventoId=${eventoId}&inscricaoId=${inscricaoId}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.status === 'pago') setConfirmed(true);
+    } catch {}
+  }, [eventoId, inscricaoId, active]);
+
+  useEffect(() => {
+    if (!active || !inscricaoId) return;
+    const id = setInterval(poll, 5000);
+    return () => clearInterval(id);
+  }, [poll, active, inscricaoId]);
+
+  return confirmed;
+}
+
 // ─── Checkout result screen ────────────────────────────────────────────────────
 const CheckoutResultBody: React.FC<{
   selectedMethod: string;
@@ -106,19 +158,24 @@ const CheckoutResultBody: React.FC<{
   if (selectedMethod === 'pix' && checkoutResult.pixQrCode) {
     return (
       <div className="w-full space-y-4">
-        <img src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`} alt="QR Code PIX"
-          className="w-44 h-44 mx-auto rounded-2xl border border-gray-200" />
+        <div className="relative mx-auto w-48 h-48">
+          <img src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`} alt="QR Code PIX"
+            className="w-full h-full rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5" />
+          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow">
+            <QrCode className="w-4 h-4 text-white" />
+          </div>
+        </div>
+        <PixCountdown expirationDate={checkoutResult.pixQrCode.expirationDate} />
         <div className="space-y-2">
           <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
           <div className="flex gap-2">
             <input readOnly value={checkoutResult.pixQrCode.payload}
-              className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700" />
-            <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.pixQrCode!.payload); toast.success('Chave copiada!'); }}
-              className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+              className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 truncate" />
+            <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.pixQrCode!.payload); toast.success('Código copiado!'); }}
+              className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform">
               <Copy className="w-4 h-4 text-gray-500" />
             </button>
           </div>
-          <p className="text-xs text-gray-400">Após o pagamento, sua inscrição é confirmada automaticamente.</p>
         </div>
       </div>
     );
@@ -126,6 +183,9 @@ const CheckoutResultBody: React.FC<{
   if (selectedMethod === 'boleto') {
     return (
       <div className="w-full space-y-4">
+        <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto">
+          <FileText className="w-7 h-7 text-amber-600" />
+        </div>
         {checkoutResult.identificationField && (
           <div className="space-y-2">
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Linha digitável</p>
@@ -133,7 +193,7 @@ const CheckoutResultBody: React.FC<{
               <input readOnly value={checkoutResult.identificationField}
                 className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 break-all" />
               <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.identificationField!); toast.success('Código copiado!'); }}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 shrink-0">
+                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 shrink-0 active:scale-95 transition-transform">
                 <Copy className="w-4 h-4 text-gray-500" />
               </button>
             </div>
@@ -141,43 +201,42 @@ const CheckoutResultBody: React.FC<{
         )}
         <p className="text-xs text-gray-500">Vence em 3 dias. Pague em qualquer banco, app ou lotérica.</p>
         {checkoutResult.bankSlipUrl && (
-          <a href={checkoutResult.bankSlipUrl} target="_blank" rel="noopener noreferrer">
-            <button type="button" className="w-full h-11 rounded-xl border border-gray-200 text-gray-600 font-bold flex items-center justify-center gap-2 hover:bg-gray-50 text-sm">
-              Ver boleto em PDF <ExternalLink className="w-3.5 h-3.5" />
-            </button>
+          <a href={checkoutResult.bankSlipUrl} target="_blank" rel="noopener noreferrer"
+            className="w-full h-11 rounded-xl border border-gray-200 text-gray-600 font-bold flex items-center justify-center gap-2 hover:bg-gray-50 text-sm">
+            Ver boleto em PDF <ExternalLink className="w-3.5 h-3.5" />
           </a>
         )}
-        <p className="text-xs text-gray-400">Sua inscrição é confirmada automaticamente após o pagamento.</p>
       </div>
     );
   }
   if (selectedMethod === 'credito') {
     return (
       <div className="w-full space-y-3 text-center">
-        <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-7 h-7 text-green-600" />
+        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-8 h-8 text-green-600" />
         </div>
-        <p className="text-sm font-bold text-gray-700">Pagamento aprovado!</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-base font-bold text-gray-900">Pagamento aprovado!</p>
+        <p className="text-sm text-gray-500">
           {installments > 1
-            ? `Parcelado em ${installments}x de ${formatPrice(total / installments)}. Inscrição confirmada.`
-            : 'Seu cartão foi cobrado com sucesso. Inscrição confirmada.'}
+            ? `Parcelado em ${installments}x de ${formatPrice(total / installments)}.`
+            : 'Seu cartão foi cobrado com sucesso.'}
         </p>
+        <p className="text-xs text-green-600 font-semibold">Inscrição confirmada</p>
       </div>
     );
   }
   if (selectedMethod === 'recorrente') {
     return (
       <div className="w-full space-y-3 text-center">
-        <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-7 h-7 text-green-600" />
+        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-8 h-8 text-green-600" />
         </div>
-        <p className="text-sm font-bold text-gray-700">Cobrança recorrente ativada!</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-base font-bold text-gray-900">Cobrança recorrente ativada!</p>
+        <p className="text-sm text-gray-500">
           1ª parcela de {formatPrice(total / installments)} cobrada agora.{' '}
-          {installments > 1 && `${installments - 1} parcela(s) restante(s) cobrada(s) mensalmente.`}
+          {installments > 1 && `${installments - 1} restante(s) cobrada(s) mensalmente.`}
         </p>
-        <p className="text-xs text-gray-400">Sua inscrição será confirmada após o processamento do cartão.</p>
+        <p className="text-xs text-gray-400">Sua inscrição será confirmada após o processamento.</p>
       </div>
     );
   }
@@ -186,10 +245,9 @@ const CheckoutResultBody: React.FC<{
       <div className="w-full space-y-3 text-center">
         <p className="text-sm text-gray-600">Finalize o pagamento no link abaixo:</p>
         {checkoutResult.paymentUrl && (
-          <a href={checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer">
-            <button type="button" className="w-full h-11 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 text-sm hover:opacity-90">
-              Pagar com débito <ExternalLink className="w-3.5 h-3.5" />
-            </button>
+          <a href={checkoutResult.paymentUrl} target="_blank" rel="noopener noreferrer"
+            className="w-full h-11 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 text-sm hover:opacity-90">
+            Pagar com débito <ExternalLink className="w-3.5 h-3.5" />
           </a>
         )}
         <p className="text-xs text-gray-400">Sua inscrição é confirmada automaticamente após o pagamento.</p>
@@ -198,10 +256,9 @@ const CheckoutResultBody: React.FC<{
   }
   return (
     <div className="w-full space-y-3">
-      <a href={checkoutResult.paymentUrl ?? undefined} target="_blank" rel="noopener noreferrer">
-        <button type="button" className="w-full h-11 rounded-xl bg-primary text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-          Ir para pagamento <ExternalLink className="w-4 h-4" />
-        </button>
+      <a href={checkoutResult.paymentUrl ?? undefined} target="_blank" rel="noopener noreferrer"
+        className="w-full h-11 rounded-xl bg-primary text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+        Ir para pagamento <ExternalLink className="w-4 h-4" />
       </a>
     </div>
   );
@@ -211,34 +268,91 @@ const CheckoutScreen: React.FC<{
   selectedMethod: string;
   checkoutResult: CheckoutResult;
   inscricaoId: string | null;
+  eventoId: string;
   total: number;
   installments: number;
+  ticketName?: string;
   onDone: () => void;
-}> = ({ selectedMethod, checkoutResult, inscricaoId, total, installments, onDone }) => {
+}> = ({ selectedMethod, checkoutResult, inscricaoId, eventoId, total, installments, ticketName, onDone }) => {
+  const needsPolling = selectedMethod === 'pix' || selectedMethod === 'boleto' || selectedMethod === 'debito';
+  const confirmed = usePaymentPolling(eventoId, inscricaoId, needsPolling);
+
+  useEffect(() => {
+    if (confirmed) {
+      toast.success('Pagamento confirmado!');
+      onDone();
+    }
+  }, [confirmed, onDone]);
+
+  const isInstant = selectedMethod === 'credito' || selectedMethod === 'recorrente';
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="border-b border-gray-100 px-6 py-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-white border-b border-gray-100 px-6 py-4">
         <Logo showTagline={false} />
       </header>
-      <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 text-center max-w-sm mx-auto w-full">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-          {selectedMethod === 'pix'
-            ? <span className="text-xl font-black text-primary">PIX</span>
-            : <CreditCard className="w-8 h-8 text-primary" />}
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 max-w-md mx-auto w-full">
+        {/* Resumo do pedido */}
+        <div className="w-full bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Pedido</p>
+              <p className="text-sm font-bold text-gray-900 mt-0.5">{ticketName || `#${inscricaoId?.slice(0, 8).toUpperCase()}`}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-black text-gray-900">{formatPrice(total)}</p>
+              {installments > 1 && (
+                <p className="text-xs text-gray-500">{installments}x de {formatPrice(total / installments)}</p>
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-black text-gray-900">
-            {selectedMethod === 'pix' ? 'Pague via PIX' : selectedMethod === 'boleto' ? 'Boleto gerado' : 'Pagamento online'}
+
+        {/* Título do método */}
+        <div className="text-center">
+          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            {selectedMethod === 'pix' && <QrCode className="w-7 h-7 text-primary" />}
+            {selectedMethod === 'boleto' && <FileText className="w-7 h-7 text-primary" />}
+            {(selectedMethod === 'credito' || selectedMethod === 'recorrente' || selectedMethod === 'debito') && <CreditCard className="w-7 h-7 text-primary" />}
+            {!['pix', 'boleto', 'credito', 'recorrente', 'debito'].includes(selectedMethod) && <CreditCard className="w-7 h-7 text-primary" />}
+          </div>
+          <h1 className="text-xl font-black text-gray-900">
+            {selectedMethod === 'pix' ? 'Pague via PIX' : selectedMethod === 'boleto' ? 'Boleto gerado' : selectedMethod === 'credito' || selectedMethod === 'recorrente' ? 'Pagamento processado' : 'Pagamento online'}
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Pedido #{inscricaoId?.slice(0, 8).toUpperCase()}</p>
         </div>
 
-        <CheckoutResultBody selectedMethod={selectedMethod} checkoutResult={checkoutResult} total={total} installments={installments} />
+        {/* Conteúdo do pagamento */}
+        <div className="w-full bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+          <CheckoutResultBody selectedMethod={selectedMethod} checkoutResult={checkoutResult} total={total} installments={installments} />
+        </div>
 
-        <button type="button" onClick={onDone}
-          className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2">
-          Já realizei o pagamento
-        </button>
+        {/* Status de polling */}
+        {needsPolling && !confirmed && (
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            Aguardando confirmação do pagamento...
+          </div>
+        )}
+
+        {/* Ações */}
+        {!isInstant && (
+          <button type="button" onClick={onDone}
+            className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2">
+            Já realizei o pagamento
+          </button>
+        )}
+        {isInstant && (
+          <button type="button" onClick={onDone}
+            className="w-full h-11 rounded-xl bg-primary text-white font-bold text-sm hover:opacity-90 transition-opacity">
+            Continuar
+          </button>
+        )}
+
+        {/* Segurança */}
+        <div className="flex items-center gap-1.5 text-gray-300 text-xs">
+          <Lock className="w-3 h-3" />
+          Pagamento seguro via Tovia
+        </div>
       </div>
     </div>
   );
@@ -275,16 +389,6 @@ const SuccessScreen: React.FC<{
           <p className="text-xs text-gray-400 font-mono bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
             Protocolo: {inscricaoId.slice(0, 8).toUpperCase()}
           </p>
-        )}
-        {pagina?.link_pagamento && !isDoacaoSubmission && (
-          <a
-            href={pagina.link_pagamento}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md"
-          >
-            Realizar pagamento
-          </a>
         )}
         <div className="flex items-center gap-2 mt-2">
           <Logo showTagline={false} />
@@ -1133,8 +1237,10 @@ const SalesPageContent: React.FC<Props> = ({ evento, pagina, tickets, eventoId, 
         selectedMethod={selectedMethod}
         checkoutResult={checkoutResult}
         inscricaoId={inscricaoId}
+        eventoId={eventoId}
         total={total}
         installments={installments}
+        ticketName={state.selectedTickets[0]?.nome}
         onDone={() => { setStep('success'); onSuccess?.(inscricaoId!); }}
       />
     );

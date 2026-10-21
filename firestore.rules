@@ -46,7 +46,7 @@ service cloud.firestore {
     function isValidInscricao(data) {
       return isValidId(data.eventoId) && 
              isValidId(data.ticketId) &&
-             data.status in ['pendente', 'pagamento_iniciado', 'pago', 'ajuda_solicitada', 'analise', 'cancelada'] &&
+             data.status in ['pendente', 'pagamento_iniciado', 'pago', 'ajuda_solicitada', 'analise', 'cancelada', 'estornado'] &&
              data.valor_total is number && data.valor_total >= 0 && data.valor_total <= 1000000;
     }
 

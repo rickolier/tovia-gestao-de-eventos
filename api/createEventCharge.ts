@@ -27,6 +27,16 @@ async function checkRateLimit(key: string): Promise<boolean> {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // GET: polling de status de pagamento (página pública)
+  if (req.method === 'GET') {
+    const { eventoId, inscricaoId } = req.query as { eventoId?: string; inscricaoId?: string };
+    if (!eventoId || !inscricaoId) return res.status(400).json({ error: 'eventoId e inscricaoId obrigatórios' });
+    const doc = await db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId as string).get();
+    if (!doc.exists) return res.status(404).json({ error: 'Inscrição não encontrada' });
+    const data = doc.data()!;
+    return res.json({ status: data.status, valor_pago: data.valor_pago ?? 0 });
+  }
+
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const data = validateBody(req.body, res, createEventChargeSchema);
