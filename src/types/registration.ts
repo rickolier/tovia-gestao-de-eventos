@@ -87,7 +87,6 @@ export interface PaginaVenda {
   descricao?: string;
   ticketIds: string[];
   campos_formulario: CampoFormulario[];
-  link_pagamento?: string;
   criado_em: string;
   evento_snapshot?: EventoSnapshot;
 }

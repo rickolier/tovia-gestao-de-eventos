@@ -1459,33 +1459,32 @@ Se você conectou um gateway de pagamento, sua chave de API é criptografada com
   },
 
   {
-    id: 'link-pagamento',
-    slug: 'link-pagamento-externo',
+    id: 'checkout-transparente',
+    slug: 'checkout-transparente',
     ordem: 42,
     categoria: 'financeiro',
-    titulo: 'Como adicionar um link de pagamento externo?',
-    resumo: 'Configure um link de pagamento no e-mail de confirmação para que os participantes paguem pelo meio que você preferir.',
-    tags: ['financeiro', 'pagamento', 'link', 'configuração', 'inscrição'],
+    titulo: 'Como funciona o checkout transparente?',
+    resumo: 'O participante paga direto na página do evento — PIX, boleto ou cartão — sem sair do Tovia.',
+    tags: ['financeiro', 'pagamento', 'checkout', 'pix', 'cartão', 'boleto'],
     autor: 'Equipe Tovia',
     banner_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80&auto=format&fit=crop',
-    conteudo: `O Tovia permite que você inclua um link de pagamento externo no e-mail de confirmação de inscrição. Assim, o participante recebe o link logo após se inscrever e pode pagar pelo meio que você preferir — Sympla, PagSeguro, Mercado Pago, Pix do banco, ou qualquer outro.
+    conteudo: `O Tovia oferece checkout transparente: o participante paga diretamente na página de inscrição do evento, sem ser redirecionado para sites externos.
+
+MÉTODOS DISPONÍVEIS:
+• PIX — QR Code exibido na tela com contagem regressiva
+• Boleto — código de barras e PDF para download
+• Cartão de crédito — pagamento processado na hora, com parcelamento
+• Crédito recorrente — parcelas mensais automáticas no cartão
 
 COMO CONFIGURAR:
-1. Acesse o evento no painel
-2. Na aba Visão Geral, localize o card "Link de pagamento"
-3. Clique em "Adicionar" e cole o link completo (ex: https://pay.exemplo.com/seu-link)
-4. Salve — pronto!
+1. Conecte seu gateway de pagamento (Asaas) na aba "Gateway" do painel
+2. Ao criar um ingresso pago, selecione os métodos de pagamento aceitos
+3. Pronto! A página de inscrição já mostra as opções de pagamento
 
-ONDE O LINK APARECE:
-• No e-mail de confirmação da inscrição (botão "Realizar pagamento")
-• Na tela de sucesso após o participante se inscrever
+CONFIRMAÇÃO AUTOMÁTICA:
+Quando o pagamento é confirmado pelo gateway (webhook), o status da inscrição é atualizado automaticamente para "pago" e o participante recebe um e-mail de confirmação.
 
-O link é enviado para todos os participantes que se inscrevem naquele evento. Se você quiser remover, basta editar e deixar o campo vazio.
-
-DICA: use links de pagamento que já incluam o valor do ingresso. Assim o participante não precisa digitar o valor manualmente.
-
-VARIÁVEL PARA E-MAIL CUSTOMIZADO:
-Se você usa o e-mail personalizado (em Comunicação), pode inserir o link usando a variável {link_pagamento} no corpo do e-mail. Ela será substituída pelo link configurado.`,
+Para PIX e boleto, a página de checkout verifica automaticamente se o pagamento foi confirmado — o participante não precisa recarregar a página.`,
     video_url: '',
     criado_em: NOW,
     atualizado_em: NOW,

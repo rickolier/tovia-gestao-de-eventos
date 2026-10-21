@@ -43,8 +43,8 @@ export const Email = {
   primeiroEvento: (to: string, nome: string, eventoNome: string) =>
     send(to, `${eventoNome} foi criado com sucesso! 🚀`, emailPrimeiroEvento(nome, eventoNome)),
 
-  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string, linkPagamento?: string) =>
-    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal, acessoUrl, linkPagamento)),
+  confirmacaoInscricao: (to: string, participanteNome: string, eventoNome: string, eventoData: string, eventoLocal: string, acessoUrl?: string) =>
+    send(to, `Inscrição confirmada: ${eventoNome}`, emailConfirmacaoInscricao(participanteNome, eventoNome, eventoData, eventoLocal, acessoUrl)),
 
   pagamentoNaoRealizado: (to: string, nome: string, plano: string, vencimento: string) =>
     send(to, 'Atenção: pagamento pendente na sua conta Tovia ⚠️', emailPagamentoNaoRealizado(nome, plano, vencimento)),
