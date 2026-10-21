@@ -117,24 +117,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (paidTypes.includes(parsedEvent.type)) {
       const dataPagamento = parsedEvent.paymentDate ?? new Date().toISOString();
+      const isRecorrente = !!inscricao.gateway_subscription_id;
+      const valorPagoAnterior = inscricao.valor_pago || 0;
+      const valorTotal = inscricao.valor_total || 0;
+      const novoValorPago = isRecorrente
+        ? valorPagoAnterior + parsedEvent.value
+        : parsedEvent.value;
 
       if (isDonation) {
         await inscricaoRef.update({
           status: 'aprovada',
-          valor_pago: parsedEvent.value,
+          valor_pago: novoValorPago,
           data_pagamento: dataPagamento,
           formaPagamento: parsedEvent.paymentMethod,
         });
       } else {
+        const quitado = novoValorPago >= valorTotal;
         await inscricaoRef.update({
-          status: 'pago',
-          valor_pago: parsedEvent.value,
+          status: quitado ? 'pago' : 'pagamento_iniciado',
+          valor_pago: novoValorPago,
           data_pagamento: dataPagamento,
           validada_manual: true,
         });
       }
 
-      const pagamentoId = `auto_${inscricaoId}`;
+      // Recorrente: um registro por parcela; avulso: registro único
+      const pagamentoId = isRecorrente
+        ? `auto_${inscricaoId}_${parsedEvent.paymentId}`
+        : `auto_${inscricaoId}`;
       await db.collection(`eventos/${eventoId}/pagamentos`).doc(pagamentoId).set({
         id: pagamentoId,
         inscricaoId,
@@ -146,6 +156,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         data_pagamento: dataPagamento,
         origem: 'automatico',
         gateway_payment_id: parsedEvent.paymentId,
+        ...(isRecorrente && { parcela: true }),
       });
 
       const recipientName = isDonation ? (inscricao.doadorNome ?? '') : (inscricao.nome ?? '');
