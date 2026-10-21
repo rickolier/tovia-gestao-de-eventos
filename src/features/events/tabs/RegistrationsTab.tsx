@@ -124,27 +124,27 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
       <div className="tab-page-header">
         <div><h2>Participantes</h2><p>Lista de inscrições e controle de presença.</p></div>
       </div>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="relative w-full md:w-96 group">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="relative w-full lg:w-96 group shrink-0">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input 
-            placeholder="Buscar por nome ou email..." 
+          <Input
+            placeholder="Buscar por nome ou email..."
             className="pl-11 rounded-2xl border-none bg-card h-12 font-bold shadow-sm focus-visible:ring-primary transition-all"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
         {!readOnly && (
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto shrink-0">
             <Button
               variant="outline"
               onClick={() => setIsImportDialogOpen(true)}
-              className="border-primary/20 text-primary hover:bg-primary/5 gap-2 rounded-2xl h-12 px-6 font-black transition-all active:scale-95 flex-1 md:flex-none"
+              className="border-primary/20 text-primary hover:bg-primary/5 gap-2 rounded-2xl h-12 px-6 font-black transition-all active:scale-95 whitespace-nowrap"
             >
               <Upload className="w-5 h-5 shrink-0" />
               Importar / Exportar
             </Button>
-            <div className="flex-1 md:flex-none flex flex-col">
+            <div className="flex flex-col">
               <Button
                 onClick={() => {
                   const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
@@ -158,13 +158,13 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                   setDynamicValues({});
                   setShowPageSelector(true);
                 }}
-                className="w-full bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95"
+                className="w-full bg-primary hover:bg-primary/90 text-white gap-2 rounded-2xl h-12 px-6 font-black shadow-lg shadow-primary/20 transition-all active:scale-95 whitespace-nowrap"
               >
                 <UserPlus className="w-5 h-5 shrink-0" />
                 Inscrição Manual
               </Button>
               {paginas.filter(p => p.campos_formulario?.length > 0).length === 0 && (
-                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 max-w-xs">
                   Crie uma página de inscrição com formulário na aba "Páginas" para habilitar inscrições manuais.
                 </p>
               )}
@@ -595,8 +595,8 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
       </div>
 
       <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden bg-card transition-colors border border-border/50">
-        <div>
-          <Table className="table-fixed w-full">
+        <div className="overflow-x-auto">
+          <Table className="w-full min-w-[800px]">
             <TableHeader className="bg-muted/50 border-b border-border/50 hover:bg-muted/50">
               <TableRow className="hover:bg-transparent">
                 <TableHead className="font-semibold text-xs uppercase tracking-widest text-muted-foreground h-14 px-4 w-[22%] group">
