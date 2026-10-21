@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Backlog Tovia</title>
+<style>
+  :root {
+    --bg: #f5f5f3;
+    --card: #fff;
+    --text: #1a1a18;
+    --muted: #6b7280;
+    --border: #e5e5e3;
+    --primary: #FF6B1A;
+    --primary-light: #fff5ef;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --yellow: #d97706;
+    --yellow-bg: #fffbeb;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --blue: #2563eb;
+    --blue-bg: #eff6ff;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --gray: #6b7280;
+    --gray-bg: #f9fafb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --card: #1a1a18;
+      --text: #f5f5f3;
+      --muted: #9ca3af;
+      --border: #2a2a28;
+      --primary-light: #2a1a0e;
+      --red-bg: #1a0a0a;
+      --yellow-bg: #1a150a;
+      --green-bg: #0a1a0e;
+      --blue-bg: #0a0e1a;
+      --purple-bg: #0f0a1a;
+      --gray-bg: #1a1a18;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .doc {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+  .section {
+    margin-bottom: 36px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-gray { background: var(--gray-bg); color: var(--gray); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .item-title { font-weight: 700; }
+  .item-desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+  .dot-red { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--blue); }
+  .dot-purple { background: var(--purple); }
+  .dot-gray { background: var(--gray); }
+  .note {
+    background: var(--primary-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 32px;
+    line-height: 1.7;
+  }
+  .note strong { color: var(--text); }
+  @media print {
+    body { background: #fff; }
+    .doc { padding: 24px; }
+  }
+  @media (max-width: 640px) {
+    .doc { padding: 24px 16px; }
+    table { font-size: 13px; }
+    th, td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <h1>Backlog Tovia</h1>
+  <p class="subtitle">Atualizado em 21 de outubro de 2026 &mdash; 11 itens pendentes (19 resolvidos) &mdash; 212 testes passando (Vitest) &mdash; CI: lint + audit + test + gitleaks</p>
+
+  <!-- BUGS -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-red">Bugs</span> Correções pendentes</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:100px">Status</th></tr>
+      <tr>
+        <td>1</td>
+        <td>
+          <div class="item-title">Webhook gateway: validar em produção</div>
+          <div class="item-desc">Webhooks completos: confirmação de pagamento, estornos (<code>payment_refunded</code>), parcelas recorrentes (acumulação de <code>valor_pago</code>). Status <code>estornado</code> adicionado às Firestore Rules. Falta validação end-to-end com organizador externo real.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>A verificar</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- INFRA -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-yellow">Infra</span> Infraestrutura pendente</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr>
+        <td>2</td>
+        <td>
+          <div class="item-title">Resend API keys instáveis</div>
+          <div class="item-desc">Retorna 401 sem motivo aparente. Já aconteceu várias vezes. Mitigado: abstração <code>EmailProvider</code> com failover em <code>api/_email/</code>. Se Resend cair, basta adicionar segundo provider.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>Mitigado</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- PRODUTO -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-green">Produto</span> Features pendentes</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr><td>3</td><td><div class="item-title">SEO completo</div><div class="item-desc">Open Graph, Twitter Card, <code>sitemap.xml</code>, <code>robots.txt</code> adicionados (set/2026). Falta: Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>4</td><td><div class="item-title">PWA (Progressive Web App)</div><div class="item-desc"><code>manifest.json</code> criado (set/2026). Falta service worker para funcionar offline e ser instalável.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>5</td><td><div class="item-title">Publicar Tovia Mobile nas lojas</div><div class="item-desc">Projeto Expo funcional em <code>mobile/app/</code>. Spec completa em <code>tovia-mobile-spec.html</code>. Não publicado na App Store / Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>6</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Checkout transparente (Fase 1), estornos via webhook (Fase 2), cleanup de <code>link_pagamento</code> (Fase 3) concluídos. Parcelas recorrentes acumulando <code>valor_pago</code>. Falta validação end-to-end com organizador externo real.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>7</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. Relatórios financeiros limitados ao evento individual.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>8</td><td><div class="item-title">Curso como evento recorrente com turmas</div><div class="item-desc">Curso ocupa 1 slot de evento ativo com turmas (instâncias) dentro. Feature de clonar/versionar turma anterior. Evita queimar N slots para N turmas/semestre.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-blue">Fase 3</span> Crescimento</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr><td>9</td><td><div class="item-title">Integração Google Calendar</div><div class="item-desc">Sincronizar eventos automaticamente. Nenhuma referência a googleapis no codebase.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>10</td><td><div class="item-title">Webhooks customizáveis para organizadores</div><div class="item-desc">Webhook de pagamento existe mas é interno. Organizador não pode configurar webhooks próprios.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>11</td><td><div class="item-title">Analytics de comportamento</div><div class="item-desc">Sentry funciona para error tracking. Sem analytics de uso (GA, Mixpanel, PostHog).</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>12</td><td><div class="item-title">Gateways adicionais</div><div class="item-desc">Stripe, Pagar.me e Mercado Pago. Abstração PaymentProvider já suporta multi-gateway, mas apenas Asaas implementado.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>13</td><td><div class="item-title">Meta: R$5k MRR</div><div class="item-desc">Objetivo financeiro da Fase 3.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 4 -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-purple">Fase 4</span> Escala</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr><td>14</td><td><div class="item-title">API pública</div><div class="item-desc">Para integrações de terceiros. Sem documentação OpenAPI/Swagger.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>15</td><td><div class="item-title">Expansão de segmento</div><div class="item-desc">Igrejas, associações, escolas. Sem diferenciação no produto.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>16</td><td><div class="item-title">Marketplace de eventos</div><div class="item-desc">Página pública para descoberta de eventos.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>17</td><td><div class="item-title">Internacionalização (i18n)</div><div class="item-desc">Strings hardcoded em português. Sem framework i18n.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- CACHE — Firestore persistence e React Query implementados em set/2026 -->
+
+  <!-- NOTAS FISCAIS -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-purple">NF</span> Notas Fiscais (pós-pagamentos)</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr><td>18</td><td><div class="item-title">NF da taxa Tovia</div><div class="item-desc">NFS-e automática via API do gateway. Requer configuração fiscal: inscrição municipal, CNAE, série RPS, credenciais da prefeitura. Configuração única.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+      <tr><td>19</td><td><div class="item-title">NF dos eventos (feature premium)</div><div class="item-desc">Organizador configura dados fiscais próprios. Complexo: Simples Nacional vs Lucro Presumido. Sugestão: feature premium para Pétach/Chalém.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
+    </table>
+  </div>
+
+  <!-- SEGURANCA -->
+  <div class="section">
+    <div class="section-title"><span class="badge badge-red">Segurança</span> Auditoria</div>
+    <table>
+      <tr><th style="width:40px">#</th><th>Item</th><th style="width:120px">Status</th></tr>
+      <tr>
+        <td>20</td>
+        <td>
+          <div class="item-title">Testes de payload malicioso</div>
+          <div class="item-desc">Testes automatizados com payloads de XSS refletido e injection nos endpoints públicos. Validação Zod existe mas sem testes que confirmem rejeição de inputs maliciosos.</div>
+        </td>
+        <td><span class="status-dot dot-red"></span>Pendente</td>
+      </tr>
+      <tr>
+        <td>21</td>
+        <td>
+          <div class="item-title">SAST (análise estática de segurança)</div>
+          <div class="item-desc">Adicionar <code>semgrep</code> ou <code>CodeQL</code> ao CI. Detecta padrões inseguros como eval(), innerHTML, uso direto de req.body sem validação.</div>
+        </td>
+        <td><span class="status-dot dot-gray"></span>Futuro</td>
+      </tr>
+      <tr>
+        <td>22</td>
+        <td>
+          <div class="item-title">Testes de Firestore rules</div>
+          <div class="item-desc">Harness com <code>@firebase/rules-unit-testing</code> para validar regras automaticamente. Bloqueado: requer Java instalado para o emulador Firebase.</div>
+        </td>
+        <td><span class="status-dot dot-yellow"></span>Bloqueado</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Sobre este documento:</strong> Apenas itens pendentes, parciais ou futuros. Itens concluídos foram removidos (ver histórico git para referência).<br/><br/>
+    <strong>Itens resolvidos em set/2026 (Tier 0+1+2):</strong> migração de segredos para <code>organizer_secrets</code>, Firestore rules deployadas, <code>evento_snapshot</code> em paginas_venda, gitleaks no CI, threat model documentado, abstração EmailProvider com failover, webhooks documentados, EquipeTab órfã removida, package name corrigido, Open Graph + manifest.json + robots.txt + sitemap.xml, Firestore persistence offline, React Query instalado, <strong>T2.2a</strong> planos/preços/limites reescritos (<code>plan-limits.ts</code> com 3+1 planos: Chinám gratuito, Pétach R$119/mês, Chalém R$299/mês, Koách legacy→Pétach), <strong>T2.2b</strong> ciclo de vida do evento (<code>evento-lifecycle.ts</code>, 15 testes), <strong>T2.2c</strong> gating e degradação graciosa por plano (<code>plan-gating.ts</code>, 23 testes), <strong>T2.3</strong> créditos avulsos R$199/evento (<code>createCheckout</code> credit flow + <code>asaasWebhook</code> credit handler), <strong>T2.5</strong> comunicados organizador→participantes (<code>sendEmail</code> comunicado flow), banner escalonado + modal de crédito avulso (<code>CreditoBanner.tsx</code> em OverviewTab).<br/><br/>
+    <strong>Números do codebase (set/2026):</strong> 212 testes passando (Vitest), 62 códigos de erro mapeados, CI com lint + npm audit + test + gitleaks, criptografia AES-256-GCM para chaves de gateway, validação Zod em todas as APIs, Firebase Auth + Sentry + Resend integrados, React Query + Firestore persistence habilitados.<br/><br/>
+    <strong>Documentos relacionados:</strong> <code>tovia-mobile-spec.html</code> (spec mobile), <code>documento-produto.html</code> (roadmap), <code>brandguide-checklist.html</code> (brand guide), <code>codigos-erro.html</code> (62 erros, 212 testes), <code>threat-model-rascunho.md</code> (threat model).
+  </div>
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import { FileText, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { loadDocHtml } from '~/docs/loader';
 
 interface Doc {
   id: string;
@@ -92,18 +93,6 @@ const SUPORTE_DOC_IDS = ['codigos-erro'];
 
 export default function AdminDocumentosTab({ filterSupporte = false }: { filterSupporte?: boolean }) {
   const docs = filterSupporte ? DOCS.filter(d => SUPORTE_DOC_IDS.includes(d.id)) : DOCS;
-  const fetchDocHtml = async (path: string): Promise<string | null> => {
-    try {
-      const res = await fetch(path);
-      if (!res.ok) return null;
-      const html = await res.text();
-      if (html.includes('id="root"')) return null;
-      return html;
-    } catch {
-      return null;
-    }
-  };
-
   const openHtmlBlob = (html: string) => {
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -111,7 +100,7 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
   };
 
   const handleView = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
+    const html = await loadDocHtml(doc.file);
     if (html) {
       openHtmlBlob(html);
     } else {
@@ -120,7 +109,7 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
   };
 
   const handleDownload = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
+    const html = await loadDocHtml(doc.file);
     const blob = html
       ? new Blob([html], { type: 'text/html' })
       : null;
@@ -134,7 +123,7 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
   };
 
   const handleExportPdf = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
+    const html = await loadDocHtml(doc.file);
     const win = html ? openHtmlBlob(html) : window.open(doc.file, '_blank');
     if (!win) return;
     win.addEventListener('afterprint', () => win.close());
