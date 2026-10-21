@@ -258,7 +258,7 @@ export function useFinancial(eventoId: string, isActive?: boolean) {
         body.valor = refundValue;
       }
 
-      const res = await fetch('/api/refundCharge', {
+      const res = await fetch('/api/gateway?action=refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(body),

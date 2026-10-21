@@ -55,7 +55,7 @@ export default function GatewayTab() {
     setAccountInfo(null);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const gwRes = await fetch('/api/saveGatewayConfig?step=validate', {
+      const gwRes = await fetch('/api/gateway?action=saveConfig&step=validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
         body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
@@ -80,7 +80,7 @@ export default function GatewayTab() {
     setLoading(true);
     try {
       const idToken = await auth.currentUser?.getIdToken();
-      const gwRes = await fetch('/api/saveGatewayConfig?step=confirm', {
+      const gwRes = await fetch('/api/gateway?action=saveConfig&step=confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
         body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
