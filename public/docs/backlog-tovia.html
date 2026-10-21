@@ -157,7 +157,7 @@
 <body>
 <div class="doc">
   <h1>Backlog Tovia</h1>
-  <p class="subtitle">Atualizado em 21 de setembro de 2026 &mdash; 13 itens pendentes (17 resolvidos) &mdash; 212 testes passando (Vitest) &mdash; CI: lint + audit + test + gitleaks</p>
+  <p class="subtitle">Atualizado em 21 de outubro de 2026 &mdash; 11 itens pendentes (19 resolvidos) &mdash; 212 testes passando (Vitest) &mdash; CI: lint + audit + test + gitleaks</p>
 
   <!-- BUGS -->
   <div class="section">
@@ -168,7 +168,7 @@
         <td>1</td>
         <td>
           <div class="item-title">Webhook gateway: validar em produção</div>
-          <div class="item-desc">Dois webhooks ativos e documentados: <code>asaasWebhook.ts</code> (billing plataforma) e <code>eventPaymentWebhook.ts</code> (BYOG eventos). Token migrado para <code>organizer_secrets</code> com validação SHA-256. Falta validação end-to-end com pagamento real de organizador externo.</div>
+          <div class="item-desc">Webhooks completos: confirmação de pagamento, estornos (<code>payment_refunded</code>), parcelas recorrentes (acumulação de <code>valor_pago</code>). Status <code>estornado</code> adicionado às Firestore Rules. Falta validação end-to-end com organizador externo real.</div>
         </td>
         <td><span class="status-dot dot-yellow"></span>A verificar</td>
       </tr>
@@ -199,7 +199,7 @@
       <tr><td>3</td><td><div class="item-title">SEO completo</div><div class="item-desc">Open Graph, Twitter Card, <code>sitemap.xml</code>, <code>robots.txt</code> adicionados (set/2026). Falta: Schema.org structured data.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
       <tr><td>4</td><td><div class="item-title">PWA (Progressive Web App)</div><div class="item-desc"><code>manifest.json</code> criado (set/2026). Falta service worker para funcionar offline e ser instalável.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
       <tr><td>5</td><td><div class="item-title">Publicar Tovia Mobile nas lojas</div><div class="item-desc">Projeto Expo funcional em <code>mobile/app/</code>. Spec completa em <code>tovia-mobile-spec.html</code>. Não publicado na App Store / Google Play.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
-      <tr><td>6</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Abstração PaymentProvider implementada. Segredos em <code>organizer_secrets</code>. Falta validação end-to-end com organizador externo.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
+      <tr><td>6</td><td><div class="item-title">Fluxo de pagamento validado em produção</div><div class="item-desc">Checkout transparente (Fase 1), estornos via webhook (Fase 2), cleanup de <code>link_pagamento</code> (Fase 3) concluídos. Parcelas recorrentes acumulando <code>valor_pago</code>. Falta validação end-to-end com organizador externo real.</div></td><td><span class="status-dot dot-yellow"></span>Parcial</td></tr>
       <tr><td>7</td><td><div class="item-title">Relatórios cross-evento</div><div class="item-desc">Visão consolidada de todos os eventos do organizador. Relatórios financeiros limitados ao evento individual.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
       <tr><td>8</td><td><div class="item-title">Curso como evento recorrente com turmas</div><div class="item-desc">Curso ocupa 1 slot de evento ativo com turmas (instâncias) dentro. Feature de clonar/versionar turma anterior. Evita queimar N slots para N turmas/semestre.</div></td><td><span class="status-dot dot-gray"></span>Futuro</td></tr>
     </table>
