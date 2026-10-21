@@ -99,7 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!parsedEvent) return res.status(200).send('ok');
 
   const paidTypes = ['payment_confirmed'];
-  const canceledTypes = ['payment_overdue', 'payment_deleted', 'payment_refunded'];
+  const canceledTypes = ['payment_overdue', 'payment_deleted'];
 
   try {
     let inscricaoRef = db.collection(`eventos/${eventoId}/inscricoes`).doc(inscricaoId);
@@ -190,7 +190,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    if (canceledTypes.includes(parsedEvent.type)) {
+    if (parsedEvent.type === 'payment_refunded') {
+      const pagamentoId = `auto_${inscricaoId}`;
+      const pagamentoDoc = await db.collection(`eventos/${eventoId}/pagamentos`).doc(pagamentoId).get();
+      if (pagamentoDoc.exists) {
+        await db.collection(`eventos/${eventoId}/pagamentos`).doc(pagamentoId).update({ status: 'estornado' });
+      }
+
+      const novoValorPago = Math.max(0, (inscricao.valor_pago || 0) - parsedEvent.value);
+      await inscricaoRef.update({
+        valor_pago: novoValorPago,
+        status: novoValorPago <= 0 ? 'estornado' : 'pagamento_iniciado',
+      });
+
+      if (!isDonation && inscricao.email) {
+        const evDoc = await db.collection('eventos').doc(eventoId).get();
+        const eventoNome: string = evDoc.exists ? (evDoc.data()!.nome ?? 'evento') : 'evento';
+        const valorFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parsedEvent.value);
+        const metodoMap: Record<string, string> = {
+          pix: 'PIX', credit_card: 'Cartão de crédito', boleto: 'Boleto', debit_card: 'Cartão de débito',
+          credit_card_installment: 'Cartão de crédito', credit_card_subscription: 'Cartão de crédito',
+          boleto_installment: 'Boleto',
+        };
+        const metodoLabel = metodoMap[parsedEvent.paymentMethod] || parsedEvent.paymentMethod;
+        const prazoMap: Record<string, string> = {
+          pix: 'até 1 dia útil', credit_card: 'até 10 dias úteis', boleto: 'até 5 dias úteis',
+          debit_card: 'até 5 dias úteis', credit_card_installment: 'até 10 dias úteis',
+          credit_card_subscription: 'até 10 dias úteis', boleto_installment: 'até 5 dias úteis',
+        };
+        const prazo = prazoMap[parsedEvent.paymentMethod] || 'alguns dias úteis';
+        const recipientName = inscricao.nome ?? '';
+
+        const html = wrapCustomEmail(
+          `Olá, ${recipientName}! Informamos que o estorno da sua inscrição no evento ${eventoNome} foi processado.\n\n` +
+          `Valor estornado: ${valorFmt}\n` +
+          `Método original: ${metodoLabel}\n` +
+          `Prazo estimado: ${prazo}\n\n` +
+          `O valor será devolvido pela mesma forma de pagamento utilizada. Se tiver dúvidas, entre em contato com o organizador.`
+        );
+        await sendNotificationEmail(inscricao.email, `Estorno processado — ${eventoNome}`, html);
+      }
+    } else if (canceledTypes.includes(parsedEvent.type)) {
       await inscricaoRef.update({ status: 'cancelada' });
     }
 

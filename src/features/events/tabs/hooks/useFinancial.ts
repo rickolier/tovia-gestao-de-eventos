@@ -6,6 +6,7 @@ import { where, limit } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '~/context/AuthContext';
+import { getAuth } from 'firebase/auth';
 import { getPlanConfig } from '~/utils/plan-limits';
 import { hasTourBeenSeen } from '~/features/dashboard/OnboardingTour';
 
@@ -27,6 +28,12 @@ export function useFinancial(eventoId: string, isActive?: boolean) {
   const [lockedInscricaoId, setLockedInscricaoId] = useState<string | null>(null);
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [isRefundDialogOpen, setIsRefundDialogOpen] = useState(false);
+  const [refundTarget, setRefundTarget] = useState<Pagamento | null>(null);
+  const [refundType, setRefundType] = useState<'total' | 'parcial'>('total');
+  const [refundValue, setRefundValue] = useState(0);
+  const [refundLoading, setRefundLoading] = useState(false);
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
@@ -229,6 +236,48 @@ export function useFinancial(eventoId: string, isActive?: boolean) {
     return 0;
   });
 
+  const openRefundDialog = (pay: Pagamento) => {
+    setRefundTarget(pay);
+    setRefundType('total');
+    setRefundValue(pay.valor);
+    setIsRefundDialogOpen(true);
+  };
+
+  const handleRefund = async () => {
+    if (!refundTarget) return;
+    setRefundLoading(true);
+    try {
+      const token = await getAuth().currentUser?.getIdToken();
+      if (!token) throw new Error('Não autenticado');
+
+      const body: Record<string, unknown> = {
+        eventoId,
+        pagamentoId: refundTarget.id,
+      };
+      if (refundType === 'parcial' && refundValue > 0 && refundValue < refundTarget.valor) {
+        body.valor = refundValue;
+      }
+
+      const res = await fetch('/api/refundCharge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao processar estorno');
+
+      toast.success('Estorno solicitado com sucesso!');
+      setIsRefundDialogOpen(false);
+      setRefundTarget(null);
+      fetchData();
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Erro ao processar estorno');
+    } finally {
+      setRefundLoading(false);
+    }
+  };
+
   const selectedReg = registrations.find(r => r.id === selectedRegId);
   const regPayments = payments.filter(p => p.inscricaoId === selectedRegId);
 
@@ -248,5 +297,9 @@ export function useFinancial(eventoId: string, isActive?: boolean) {
     fetchData, requestSort,
     handleSubmit, handleEditPayment, handleDeletePayment,
     getInscritoNome,
+    isRefundDialogOpen, setIsRefundDialogOpen,
+    refundTarget, refundType, setRefundType,
+    refundValue, setRefundValue, refundLoading,
+    openRefundDialog, handleRefund,
   };
 }

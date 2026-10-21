@@ -89,6 +89,13 @@ export interface SubscriptionResult {
   status: string;
 }
 
+export interface RefundResult {
+  id: string;
+  status: string;
+  value: number;
+  dateCreated?: string;
+}
+
 export interface ValidateCredentialsResult {
   valid: boolean;
   accountName?: string;

@@ -11,12 +11,14 @@ import type {
   WebhookEvent,
   PaymentMethod,
   WebhookEventType,
+  RefundResult,
 } from '../types.js';
 import {
   createOrFindAsaasCustomer,
   createAsaasCharge,
   createAsaasSubscription,
   registerAsaasWebhook,
+  refundAsaasCharge,
   asaasBaseUrl,
   type AsaasBillingType,
 } from '../../_gateway-utils.js';
@@ -170,6 +172,10 @@ export class AsaasAdapter implements PaymentProvider {
         ? new Date(payment.paymentDate as string).toISOString()
         : undefined,
     };
+  }
+
+  async refundCharge(chargeId: string, value?: number): Promise<RefundResult> {
+    return refundAsaasCharge(this.apiKey, this.sandbox, chargeId, value);
   }
 
   supportedMethods(): PaymentMethod[] {

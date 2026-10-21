@@ -43,7 +43,7 @@ export interface Inscricao {
   eventoId: string;
   ticketId: string;
   ticket_nome?: string;
-  status: 'pendente' | 'pagamento_iniciado' | 'pago' | 'ajuda_solicitada' | 'analise' | 'cancelada';
+  status: 'pendente' | 'pagamento_iniciado' | 'pago' | 'ajuda_solicitada' | 'analise' | 'cancelada' | 'estornado';
   valor_total: number;
   valor_pago: number;
   forma_pagamento?: string;

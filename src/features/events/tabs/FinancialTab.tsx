@@ -5,7 +5,7 @@ import { useFinancial } from './hooks/useFinancial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Trash2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X, PlugZap, AlertCircle } from 'lucide-react';
+import { DollarSign, Plus, CheckCircle, Clock, XCircle, CreditCard, QrCode, FileText, Eye, Edit2, Trash2, Search, ArrowUp, ArrowDown, ArrowUpAZ, ArrowDownZA, Filter, X, PlugZap, AlertCircle, RotateCcw } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
@@ -41,6 +41,10 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
     fetchData, requestSort,
     handleSubmit, handleEditPayment, handleDeletePayment,
     getInscritoNome,
+    isRefundDialogOpen, setIsRefundDialogOpen,
+    refundTarget, refundType, setRefundType,
+    refundValue, setRefundValue, refundLoading,
+    openRefundDialog, handleRefund,
   } = useFinancial(eventoId, isActive);
 
   const totalArrecadado = payments.filter(p => p.status === 'pago').reduce((acc, curr) => acc + curr.valor, 0);
@@ -477,6 +481,8 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                         <TableCell>
                           {pay.status === 'pago' ? (
                             <Badge className="bg-primary/10 text-primary border-none font-black text-[9px] uppercase px-2 py-1 rounded-md">Confirmado</Badge>
+                          ) : pay.status === 'estornado' ? (
+                            <Badge className="bg-red-500/10 text-red-600 border-none font-black text-[9px] uppercase px-2 py-1 rounded-md">Estornado</Badge>
                           ) : (
                             <Badge className="bg-amber-500/10 text-amber-600 border-none font-black text-[9px] uppercase px-2 py-1 rounded-md">Pendente</Badge>
                           )}
@@ -491,16 +497,24 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                           )}
                         </TableCell>
                         <TableCell className="px-6 text-right">
-                          {pay.origem === 'manual' && (
-                            <div className="flex items-center justify-end gap-1">
-                              <Button variant="ghost" size="icon" onClick={() => handleEditPayment(pay)} className="h-8 w-8 hover:bg-primary/10 text-primary rounded-lg">
-                                <Edit2 className="w-4 h-4" />
+                          <div className="flex items-center justify-end gap-1">
+                            {pay.origem === 'manual' && (
+                              <>
+                                <Button variant="ghost" size="icon" onClick={() => handleEditPayment(pay)} className="h-8 w-8 hover:bg-primary/10 text-primary rounded-lg">
+                                  <Edit2 className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleDeletePayment(pay)} className="h-8 w-8 hover:bg-red-50 text-muted-foreground hover:text-red-500 rounded-lg">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
+                            {pay.origem === 'automatico' && pay.status === 'pago' && (
+                              <Button variant="ghost" size="sm" onClick={() => openRefundDialog(pay)} className="h-8 px-3 hover:bg-red-50 text-red-500 hover:text-red-600 rounded-lg gap-1.5 font-black text-[10px] uppercase tracking-widest">
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                Estornar
                               </Button>
-                              <Button variant="ghost" size="icon" onClick={() => handleDeletePayment(pay)} className="h-8 w-8 hover:bg-red-50 text-muted-foreground hover:text-red-500 rounded-lg">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
@@ -524,6 +538,84 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog de Estorno */}
+      <Dialog open={isRefundDialogOpen} onOpenChange={v => { if (!refundLoading) setIsRefundDialogOpen(v); }}>
+        <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
+          <DialogHeader className="mb-6">
+            <DialogTitle className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-500/10 rounded-2xl flex items-center justify-center text-red-500">
+                <RotateCcw className="w-6 h-6 shrink-0" />
+              </div>
+              Estornar Pagamento
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mt-2">
+              O estorno será processado pelo gateway de pagamento. O participante receberá o valor de volta pelo mesmo método utilizado.
+            </DialogDescription>
+          </DialogHeader>
+
+          {refundTarget && (
+            <div className="space-y-6 pt-2">
+              <div className="bg-muted/30 p-5 rounded-2xl border border-border/50">
+                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-2">Pagamento original</p>
+                <p className="text-lg font-black text-foreground">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(refundTarget.valor)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1 capitalize">{refundTarget.metodo}</p>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Tipo de estorno</Label>
+                <Select value={refundType} onValueChange={v => { setRefundType(v as 'total' | 'parcial'); if (v === 'total') setRefundValue(refundTarget.valor); }}>
+                  <SelectTrigger className="rounded-xl border-none bg-muted/50 h-12 font-bold shadow-sm focus:ring-primary">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    <SelectItem value="total" className="font-medium">Estorno total</SelectItem>
+                    <SelectItem value="parcial" className="font-medium">Estorno parcial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {refundType === 'parcial' && (
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">Valor do estorno (R$)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    max={refundTarget.valor}
+                    value={refundValue || ''}
+                    onFocus={e => e.target.select()}
+                    onChange={e => setRefundValue(Number(e.target.value))}
+                    className="rounded-xl border-none bg-muted/50 h-12 font-bold focus-visible:ring-primary transition-colors"
+                  />
+                </div>
+              )}
+
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                <p className="text-xs font-black text-amber-800">Atenção: esta ação não pode ser desfeita.</p>
+                <p className="text-xs text-amber-700 mt-1">O valor será devolvido ao participante. O prazo depende do método de pagamento (PIX: 1 dia útil, Cartão: até 10 dias úteis, Boleto: até 5 dias úteis).</p>
+              </div>
+
+              <Button
+                onClick={handleRefund}
+                disabled={refundLoading || (refundType === 'parcial' && (!refundValue || refundValue <= 0 || refundValue > refundTarget.valor))}
+                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-2xl h-12 font-black shadow-xl shadow-red-500/20 transition-all active:scale-[0.98] mt-2"
+              >
+                {refundLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <RotateCcw className="w-5 h-5" />
+                    Confirmar Estorno de {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(refundType === 'parcial' ? refundValue : refundTarget.valor)}
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

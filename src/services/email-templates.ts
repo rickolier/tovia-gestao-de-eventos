@@ -310,6 +310,39 @@ export function emailTicketFechado(nome: string, titulo: string, satisfacaoUrl: 
   `, 'Seu ticket foi encerrado — avalie o atendimento');
 }
 
+export function emailEstorno(
+  participanteNome: string,
+  eventoNome: string,
+  valor: string,
+  metodo: string,
+  tipo: 'total' | 'parcial',
+) {
+  const prazoMap: Record<string, string> = {
+    cartao: 'até 10 dias úteis',
+    credito_recorrencia: 'até 10 dias úteis',
+    pix: 'até 1 dia útil',
+    boleto: 'até 5 dias úteis após preenchimento dos dados bancários',
+    dinheiro: 'a combinar com o organizador',
+    transferencia: 'até 3 dias úteis',
+  };
+  const prazo = prazoMap[metodo] || 'alguns dias úteis';
+  const tipoLabel = tipo === 'parcial' ? 'parcial' : 'total';
+
+  return wrap(`
+    ${h1(`Estorno ${tipoLabel} confirmado`)}
+    ${p(`Olá, <strong>${participanteNome}</strong>. Informamos que o estorno ${tipoLabel} da sua inscrição no evento <strong>${eventoNome}</strong> foi solicitado com sucesso.`)}
+    <table cellpadding="0" cellspacing="0" width="100%" style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:20px;margin:20px 0;">
+      <tr><td>
+        <p style="font-size:13px;color:#6b7280;margin:2px 0;">Valor estornado: <strong style="color:#1a1a1a;">${valor}</strong></p>
+        <p style="font-size:13px;color:#6b7280;margin:2px 0;">Método original: <strong style="color:#1a1a1a;">${metodo}</strong></p>
+        <p style="font-size:13px;color:#6b7280;margin:2px 0;">Prazo estimado: <strong style="color:#1a1a1a;">${prazo}</strong></p>
+      </td></tr>
+    </table>
+    ${p('O valor será devolvido pela mesma forma de pagamento utilizada na compra. Caso o prazo estimado expire sem que o valor apareça, entre em contato com o organizador do evento.')}
+    ${p('Se tiver dúvidas, responda este e-mail ou procure o organizador do evento.')}
+  `, `Estorno ${tipoLabel} de ${valor} para ${eventoNome}`);
+}
+
 // Envolve corpo customizado (texto do organizador) no template Tovia padrão
 export function emailCustom(corpo: string, preview = '') {
   const html = corpo

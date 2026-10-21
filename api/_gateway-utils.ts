@@ -240,6 +240,30 @@ export async function createAsaasSubscription(
   return { id: res.data.id, status: res.data.status ?? 'ACTIVE' };
 }
 
+export async function refundAsaasCharge(
+  apiKey: string,
+  sandbox: boolean,
+  chargeId: string,
+  value?: number,
+): Promise<{ id: string; status: string; value: number; dateCreated?: string }> {
+  const base = asaasBaseUrl(sandbox);
+  const headers = asaasHeaders(apiKey);
+  const body: Record<string, unknown> = {};
+  if (value !== undefined && value > 0) body.value = value;
+
+  const res = await axios.post(`${base}/payments/${chargeId}/refund`, body, {
+    headers,
+    timeout: 15000,
+  });
+
+  return {
+    id: res.data.id ?? chargeId,
+    status: res.data.status ?? 'REFUNDED',
+    value: value ?? res.data.value ?? 0,
+    dateCreated: res.data.dateCreated,
+  };
+}
+
 export function mapBillingType(method: string): AsaasBillingType {
   const map: Record<string, AsaasBillingType> = {
     pix: 'PIX',

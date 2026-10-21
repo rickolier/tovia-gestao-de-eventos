@@ -115,11 +115,11 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       Catálogo completo de erros da API do Tovia. Cada erro tem um código público (TV-xxx), o HTTP status correspondente, a mensagem exibida ao usuário e a causa raiz para resolução rápida.
     </div>
     <div class="cover-meta">
-      <span>16 endpoints</span>
+      <span>17 endpoints</span>
       <span>·</span>
-      <span>80 respostas de erro mapeadas</span>
+      <span>93 respostas de erro mapeadas</span>
       <span>·</span>
-      <span>Atualizado em 21 set 2026</span>
+      <span>Atualizado em 21 out 2026</span>
     </div>
   </div>
 
@@ -139,7 +139,8 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
       <a class="toc-item" href="#checkout-credit"><span class="toc-num">11</span> Checkout crédito avulso</a>
       <a class="toc-item" href="#comunicado"><span class="toc-num">12</span> Comunicados</a>
       <a class="toc-item" href="#gating"><span class="toc-num">13</span> Plan gating</a>
-      <a class="toc-item" href="#testes"><span class="toc-num">14</span> Cobertura de testes</a>
+      <a class="toc-item" href="#estornos"><span class="toc-num">14</span> refundCharge (estornos)</a>
+      <a class="toc-item" href="#testes"><span class="toc-num">15</span> Cobertura de testes</a>
     </div>
   </nav>
 
@@ -153,7 +154,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">80</div>
+        <div class="stat-value">93</div>
         <div class="stat-label">Erros mapeados</div>
       </div>
       <div class="stat-card">
@@ -161,7 +162,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
         <div class="stat-label">HTTP Status</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">16</div>
+        <div class="stat-value">17</div>
         <div class="stat-label">Endpoints</div>
       </div>
       <div class="stat-card">
@@ -896,9 +897,158 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
   </section>
 
-  <!-- ═══════════ 14. Cobertura de testes ═══════════ -->
+  <!-- ═══════════ 14. refundCharge (estornos) ═══════════ -->
+  <section class="section" id="estornos">
+    <h2>14. refundCharge <span class="badge">POST /api/refundCharge</span></h2>
+    <p>Processa estornos de pagamentos automáticos (BYOG). O organizador solicita o estorno pelo painel, o Tovia chama a API do Asaas, e o participante recebe um e-mail com prazo estimado. Estornos parciais são suportados para PIX e cartão de crédito.</p>
+
+    <div class="error-group">
+      <div class="error-group-header">Validação de entrada <span class="error-group-badge badge-client">client</span></div>
+      <div class="overflow-x">
+        <table class="error-table">
+          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem exibida ao organizador</th><th>Causa / Ação</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Dados incompletos. Recarregue a página e tente novamente.</span></td>
+              <td>eventoId ou pagamentoId ausente no body. Bug no frontend ou requisição manual malformada.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">O estorno automático está disponível apenas para pagamentos processados pelo gateway.</span></td>
+              <td>Tentativa de estornar pagamento manual (<code>origem: 'manual'</code>). Organizador deve devolver diretamente.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Este pagamento não possui um identificador no gateway.</span></td>
+              <td>Campo <code>gateway_payment_id</code> ausente. Webhook de confirmação pode não ter sido recebido. Verificar no painel Asaas.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Este pagamento já foi estornado anteriormente.</span></td>
+              <td>Pagamento com status <code>'estornado'</code>. Duplo clique ou requisição duplicada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">Autenticação e permissão <span class="error-group-badge badge-auth">auth</span></div>
+      <div class="overflow-x">
+        <table class="error-table">
+          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-401">401</span></td>
+              <td><span class="error-msg">Não autorizado</span></td>
+              <td>Header Authorization ausente ou sem prefixo "Bearer ".</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-401">401</span></td>
+              <td><span class="error-msg">Token inválido</span></td>
+              <td>Firebase ID token expirado ou malformado. Sessão expirada — fazer login novamente.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-403">403</span></td>
+              <td><span class="error-msg">Sem permissão</span></td>
+              <td>Usuário autenticado não é o <code>criado_por</code> do evento. Apenas o dono pode estornar.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">Configuração do gateway <span class="error-group-badge badge-client">config</span></div>
+      <div class="overflow-x">
+        <table class="error-table">
+          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Seu gateway de pagamento não está configurado.</span></td>
+              <td>Documento <code>organizer_secrets/{uid}</code> não existe. Organizador precisa conectar gateway primeiro.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">—</span></td>
+              <td><span class="http-badge http-500">500</span></td>
+              <td><span class="error-msg">Erro interno do servidor. A equipe técnica foi notificada.</span></td>
+              <td>Variável <code>GATEWAY_ENCRYPTION_KEY</code> ausente no ambiente. Erro de deploy.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <div class="error-group-header">Erros do gateway Asaas <span class="error-group-badge badge-server">gateway</span></div>
+      <div class="overflow-x">
+        <table class="error-table">
+          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem exibida ao organizador</th><th>Causa original no Asaas</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="error-code">TV008</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">O valor do estorno é inválido. Verifique se não excede o valor original.</span></td>
+              <td>Asaas: "Payment value is not valid" — valor negativo, zero ou maior que o permitido.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">TV009</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">O gateway não permite estorno para este pagamento.</span></td>
+              <td>Asaas: "Payment refund is not allowed" — cobrança pendente, já estornada, ou tipo não suportado.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">TV010</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Pagamento não encontrado no gateway.</span></td>
+              <td>Asaas: "Invalid payment" — cobrança removida diretamente no painel Asaas.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">TV011</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">O valor do estorno é maior que o valor do pagamento original.</span></td>
+              <td>Asaas: "Payment refund value is greater than the payment value" — estorno parcial com valor excessivo.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">TV012</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Sua chave de API do gateway expirou ou foi revogada.</span></td>
+              <td>Asaas retornou 401 — chave API inválida. Reconectar em Configurações → Financeiro.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">TV013</span></td>
+              <td><span class="http-badge http-400">400</span></td>
+              <td><span class="error-msg">Sua chave de API não tem permissão para processar estornos.</span></td>
+              <td>Asaas retornou 403 — chave sem permissão de estorno. Verificar permissões no painel Asaas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Comunicação ao participante:</strong> quando o webhook <code>PAYMENT_REFUNDED</code> chega do Asaas, o participante recebe um e-mail automático com: valor estornado, método original, e prazo estimado de devolução (PIX: 1 dia útil · Cartão: até 10 dias úteis · Boleto: até 5 dias úteis). Se o estorno falhar no gateway, apenas o organizador vê o erro no toast — o participante não é notificado, pois nenhum estorno foi de fato processado.</p>
+    </div>
+    <div class="callout">
+      <p><strong>Erros mais comuns em produção:</strong> (1) Organizador tenta estornar pagamento que já foi estornado pelo painel do Asaas — resolve com TV009. (2) Chave API expirou entre a conexão e o primeiro estorno — resolve com TV012. (3) Estorno parcial com valor digitado incorretamente (ex: R$ 1.000 ao invés de R$ 100,00) — resolve com TV011.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════ 15. Cobertura de testes ═══════════ -->
   <section class="section" id="testes">
-    <h2>14. Cobertura de testes automatizados</h2>
+    <h2>15. Cobertura de testes automatizados</h2>
     <p>Suíte Vitest com 212 testes cobrindo schemas, validação, planos, pagamentos, webhooks, masks, admin-config, créditos avulsos, comunicados, gating e geração de códigos.</p>
     <div class="table-wrapper">
       <table>

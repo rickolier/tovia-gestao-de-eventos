@@ -3,7 +3,8 @@ export interface Pagamento {
   inscricaoId: string;
   eventoId: string;
   valor: number;
-  status: 'pendente' | 'pago' | 'atrasado' | 'cancelado';
+  status: 'pendente' | 'pago' | 'atrasado' | 'cancelado' | 'estornado';
+  gateway_payment_id?: string;
   metodo: 'pix' | 'cartao' | 'credito_recorrencia' | 'boleto' | 'dinheiro' | 'transferencia';
   data_vencimento: string;
   data_pagamento?: string;
@@ -13,6 +14,21 @@ export interface Pagamento {
   doadorNome?: string;
   destino?: string;
   origem: 'manual' | 'automatico';
+}
+
+export interface Estorno {
+  id: string;
+  eventoId: string;
+  inscricaoId: string;
+  pagamentoId: string;
+  gateway_payment_id: string;
+  valor: number;
+  tipo: 'total' | 'parcial';
+  status: 'solicitado' | 'processando' | 'concluido' | 'negado';
+  metodo_original: string;
+  solicitado_em: string;
+  concluido_em?: string;
+  motivo?: string;
 }
 
 export interface FinancialTransaction {

@@ -8,6 +8,7 @@ import type {
   ValidateCredentialsResult,
   WebhookEvent,
   PaymentMethod,
+  RefundResult,
 } from './types.js';
 
 export interface PaymentProvider {
@@ -18,4 +19,5 @@ export interface PaymentProvider {
   registerWebhook(url: string, authToken: string): Promise<void>;
   parseWebhookEvent(headers: Record<string, string>, body: unknown): WebhookEvent | null;
   supportedMethods(): PaymentMethod[];
+  refundCharge(chargeId: string, value?: number): Promise<RefundResult>;
 }
