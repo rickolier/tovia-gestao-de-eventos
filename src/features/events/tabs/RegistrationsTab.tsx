@@ -135,7 +135,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
           />
         </div>
         {!readOnly && (
-          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full lg:w-auto shrink-0">
             <Button
               variant="outline"
               onClick={() => setIsImportDialogOpen(true)}
@@ -144,7 +144,7 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
               <Upload className="w-5 h-5 shrink-0" />
               Importar / Exportar
             </Button>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-stretch">
               <Button
                 onClick={() => {
                   const paginasComFormulario = paginas.filter(p => p.campos_formulario.length > 0);
