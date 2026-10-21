@@ -1,14 +1,29 @@
 import { FileText, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+import documentoProdutoHtml from '~/docs/documento-produto.html?raw';
+import codigosErroHtml from '~/docs/codigos-erro.html?raw';
+import designSystemHtml from '~/docs/tovia-design-system.html?raw';
+import mobileSpecHtml from '~/docs/tovia-mobile-spec.html?raw';
+import arquiteturaHtml from '~/docs/arquitetura-tovia.html?raw';
+import marketingHtml from '~/docs/marketing-gtm-tovia.html?raw';
+import kpisHtml from '~/docs/kpis-tovia.html?raw';
+import backlogHtml from '~/docs/backlog-tovia.html?raw';
+import brandguideHtml from '~/docs/brandguide-checklist.html?raw';
+
+import mobileSpecMd from '~/docs/tovia-mobile-spec.md?raw';
+import arquiteturaJson from '~/docs/arquitetura-tovia.json?raw';
+
 interface Doc {
   id: string;
   title: string;
   description: string;
-  file: string;
+  html: string;
   hasPreview: boolean;
   updatedAt: string;
-  downloadFile?: string;
+  downloadContent?: string;
+  downloadFilename?: string;
+  downloadMime?: string;
 }
 
 const DOCS: Doc[] = [
@@ -16,7 +31,7 @@ const DOCS: Doc[] = [
     id: 'produto',
     title: 'Documento de Produto',
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
-    file: '/assets/docs/documento-produto.html',
+    html: documentoProdutoHtml,
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -24,7 +39,7 @@ const DOCS: Doc[] = [
     id: 'codigos-erro',
     title: 'Códigos de Erro',
     description: '93 erros mapeados com códigos públicos (TV001–TV013) e internos. Inclui estornos, gateway e webhooks.',
-    file: '/assets/docs/codigos-erro.html',
+    html: codigosErroHtml,
     hasPreview: true,
     updatedAt: '2026-10-21',
   },
@@ -32,7 +47,7 @@ const DOCS: Doc[] = [
     id: 'design-system',
     title: 'Design System',
     description: 'Paleta de cores, tipografia, componentes, espaçamento e padrões visuais do Tovia.',
-    file: '/assets/docs/tovia-design-system.html',
+    html: designSystemHtml,
     hasPreview: true,
     updatedAt: '2026-07-20',
   },
@@ -40,25 +55,29 @@ const DOCS: Doc[] = [
     id: 'mobile-spec',
     title: 'Tovia Mobile — Especificação',
     description: 'Spec completa do app mobile: telas, navegação, componentes, feature gating por plano.',
-    file: '/assets/docs/tovia-mobile-spec.html',
+    html: mobileSpecHtml,
     hasPreview: true,
-    downloadFile: '/assets/docs/tovia-mobile-spec.md',
+    downloadContent: mobileSpecMd,
+    downloadFilename: 'tovia-mobile-spec.md',
+    downloadMime: 'text/markdown',
     updatedAt: '2026-07-24',
   },
   {
     id: 'arquitetura',
     title: 'Arquitetura Tovia',
     description: 'Mapa mental interativo da arquitetura completa. Visualize o mapa ou baixe os dados em JSON.',
-    file: '/assets/docs/arquitetura-tovia.html',
+    html: arquiteturaHtml,
     hasPreview: true,
-    downloadFile: '/assets/docs/arquitetura-tovia.json',
+    downloadContent: arquiteturaJson,
+    downloadFilename: 'arquitetura-tovia.json',
+    downloadMime: 'application/json',
     updatedAt: '2026-09-21',
   },
   {
     id: 'marketing-gtm',
     title: 'Marketing e Go-To-Market',
     description: 'Posicionamento, prospecção direta, gatilhos, conteúdo, pirâmide de distribuição e fases do GTM.',
-    file: '/assets/docs/marketing-gtm-tovia.html',
+    html: marketingHtml,
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -66,7 +85,7 @@ const DOCS: Doc[] = [
     id: 'kpis',
     title: 'KPIs e Métricas',
     description: 'North Star, funil de conversão, modelo financeiro, OKRs e metas por fase. Scorecard completo.',
-    file: '/assets/docs/kpis-tovia.html',
+    html: kpisHtml,
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -74,7 +93,7 @@ const DOCS: Doc[] = [
     id: 'backlog',
     title: 'Backlog Tovia',
     description: 'Pendências ativas: bugs, infra, produto, segurança, crescimento e escala. 11 itens pendentes (19 resolvidos).',
-    file: '/assets/docs/backlog-tovia.html',
+    html: backlogHtml,
     hasPreview: true,
     updatedAt: '2026-10-21',
   },
@@ -82,7 +101,7 @@ const DOCS: Doc[] = [
     id: 'brandguide',
     title: 'Brand Guide — Checklist',
     description: 'Checklist interativo dos 12 capítulos do brand guide. Marque os itens conforme for desenvolvendo cada peça.',
-    file: '/assets/docs/brandguide-checklist.html',
+    html: brandguideHtml,
     hasPreview: true,
     updatedAt: '2026-07-25',
   },
@@ -90,51 +109,46 @@ const DOCS: Doc[] = [
 
 const SUPORTE_DOC_IDS = ['codigos-erro'];
 
-async function fetchDocHtml(path: string): Promise<string | null> {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) return null;
-    const html = await res.text();
-    if (html.includes('id="root"')) return null;
-    return html;
-  } catch {
-    return null;
-  }
-}
-
 function openHtmlBlob(html: string) {
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
-  return window.open(url, '_blank');
+  window.open(url, '_blank');
 }
 
 export default function AdminDocumentosTab({ filterSupporte = false }: { filterSupporte?: boolean }) {
   const docs = filterSupporte ? DOCS.filter(d => SUPORTE_DOC_IDS.includes(d.id)) : DOCS;
 
-  const handleView = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
-    if (html) {
-      openHtmlBlob(html);
-    } else {
-      window.open(doc.file, '_blank');
-    }
+  const handleView = (doc: Doc) => {
+    openHtmlBlob(doc.html);
   };
 
-  const handleDownload = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
-    const blob = html ? new Blob([html], { type: 'text/html' }) : null;
+  const handleDownload = (doc: Doc) => {
     const a = document.createElement('a');
-    a.href = blob ? URL.createObjectURL(blob) : doc.file;
-    a.download = doc.file.split('/').pop() || 'documento';
+    const blob = new Blob([doc.html], { type: 'text/html' });
+    a.href = URL.createObjectURL(blob);
+    a.download = doc.id + '.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    if (blob) URL.revokeObjectURL(a.href);
+    URL.revokeObjectURL(a.href);
   };
 
-  const handleExportPdf = async (doc: Doc) => {
-    const html = await fetchDocHtml(doc.file);
-    const win = html ? openHtmlBlob(html) : window.open(doc.file, '_blank');
+  const handleDownloadFile = (doc: Doc) => {
+    if (!doc.downloadContent) return;
+    const a = document.createElement('a');
+    const blob = new Blob([doc.downloadContent], { type: doc.downloadMime || 'text/plain' });
+    a.href = URL.createObjectURL(blob);
+    a.download = doc.downloadFilename || 'download';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  };
+
+  const handleExportPdf = (doc: Doc) => {
+    const blob = new Blob([doc.html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
     if (!win) return;
     win.addEventListener('afterprint', () => win.close());
     win.addEventListener('load', () => {
@@ -195,7 +209,7 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
                   Visualizar
                 </Button>
               )}
-              {doc.hasPreview && !doc.downloadFile && (
+              {doc.hasPreview && !doc.downloadContent && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -206,18 +220,18 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
                   Exportar PDF
                 </Button>
               )}
-              {doc.downloadFile && (
+              {doc.downloadContent && (
                 <Button
                   variant="outline"
                   size="sm"
                   className="flex-1 text-xs"
-                  onClick={() => handleDownload({ ...doc, file: doc.downloadFile! })}
+                  onClick={() => handleDownloadFile(doc)}
                 >
                   <Download className="w-3.5 h-3.5 mr-1.5" />
-                  Baixar JSON
+                  Baixar {doc.downloadMime === 'application/json' ? 'JSON' : 'MD'}
                 </Button>
               )}
-              {!doc.hasPreview && !doc.downloadFile && (
+              {!doc.hasPreview && !doc.downloadContent && (
                 <Button
                   variant="outline"
                   size="sm"
