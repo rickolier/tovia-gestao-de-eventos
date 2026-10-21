@@ -163,11 +163,6 @@ export default function RegistrationsTab({ eventoId, readOnly = false }: { event
                 <UserPlus className="w-5 h-5 shrink-0" />
                 Inscrição Manual
               </Button>
-              {paginas.filter(p => p.campos_formulario?.length > 0).length === 0 && (
-                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 max-w-xs">
-                  Crie uma página de inscrição com formulário na aba "Páginas" para habilitar inscrições manuais.
-                </p>
-              )}
             </div>
           </div>
         )}
