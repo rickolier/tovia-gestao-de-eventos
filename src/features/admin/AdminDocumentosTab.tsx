@@ -92,44 +92,72 @@ const SUPORTE_DOC_IDS = ['codigos-erro'];
 
 export default function AdminDocumentosTab({ filterSupporte = false }: { filterSupporte?: boolean }) {
   const docs = filterSupporte ? DOCS.filter(d => SUPORTE_DOC_IDS.includes(d.id)) : DOCS;
-  const handleView = (doc: Doc) => {
-    window.open(doc.file, '_blank');
+  const fetchDocHtml = async (path: string): Promise<string | null> => {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) return null;
+      const html = await res.text();
+      if (html.includes('id="root"')) return null;
+      return html;
+    } catch {
+      return null;
+    }
   };
 
-  const handleDownload = (doc: Doc) => {
+  const openHtmlBlob = (html: string) => {
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    return window.open(url, '_blank');
+  };
+
+  const handleView = async (doc: Doc) => {
+    const html = await fetchDocHtml(doc.file);
+    if (html) {
+      openHtmlBlob(html);
+    } else {
+      window.open(doc.file, '_blank');
+    }
+  };
+
+  const handleDownload = async (doc: Doc) => {
+    const html = await fetchDocHtml(doc.file);
+    const blob = html
+      ? new Blob([html], { type: 'text/html' })
+      : null;
     const a = document.createElement('a');
-    a.href = doc.file;
+    a.href = blob ? URL.createObjectURL(blob) : doc.file;
     a.download = doc.file.split('/').pop() || 'documento';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    if (blob) URL.revokeObjectURL(a.href);
   };
 
-  const handleExportPdf = (doc: Doc) => {
-    const win = window.open(doc.file, '_blank');
-    if (win) {
-      win.addEventListener('afterprint', () => win.close());
-      win.addEventListener('load', () => {
-        const style = win.document.createElement('style');
-        style.textContent = `
-          @media print {
-            body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .doc { padding: 24px !important; max-width: 100% !important; }
-            .swot-cell.s { background: #e8f5ee !important; }
-            .swot-cell.w { background: #fef2f2 !important; }
-            .swot-cell.o { background: #eff6ff !important; }
-            .swot-cell.t { background: #fffbeb !important; }
-            .plan-card.chinam  { background: #f0f4f8 !important; }
-            .plan-card.petach  { background: #fff2eb !important; }
-            .plan-card.chalem  { background: #fefbe8 !important; }
-            * { color-scheme: light !important; }
-          }
-          @page { margin: 1.5cm; size: A4; }
-        `;
-        win.document.head.appendChild(style);
-        setTimeout(() => win.print(), 300);
-      });
-    }
+  const handleExportPdf = async (doc: Doc) => {
+    const html = await fetchDocHtml(doc.file);
+    const win = html ? openHtmlBlob(html) : window.open(doc.file, '_blank');
+    if (!win) return;
+    win.addEventListener('afterprint', () => win.close());
+    win.addEventListener('load', () => {
+      const style = win.document.createElement('style');
+      style.textContent = `
+        @media print {
+          body { background: #fff !important; color: #1a1a18 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .doc { padding: 24px !important; max-width: 100% !important; }
+          .swot-cell.s { background: #e8f5ee !important; }
+          .swot-cell.w { background: #fef2f2 !important; }
+          .swot-cell.o { background: #eff6ff !important; }
+          .swot-cell.t { background: #fffbeb !important; }
+          .plan-card.chinam  { background: #f0f4f8 !important; }
+          .plan-card.petach  { background: #fff2eb !important; }
+          .plan-card.chalem  { background: #fefbe8 !important; }
+          * { color-scheme: light !important; }
+        }
+        @page { margin: 1.5cm; size: A4; }
+      `;
+      win.document.head.appendChild(style);
+      setTimeout(() => win.print(), 300);
+    });
   };
 
   return (
