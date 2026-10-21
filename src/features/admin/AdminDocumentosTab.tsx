@@ -1,6 +1,5 @@
 import { FileText, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { loadDocHtml } from '~/docs/loader';
 
 interface Doc {
   id: string;
@@ -17,7 +16,7 @@ const DOCS: Doc[] = [
     id: 'produto',
     title: 'Documento de Produto',
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
-    file: '/docs/documento-produto.html',
+    file: '/assets/docs/documento-produto.html',
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -25,7 +24,7 @@ const DOCS: Doc[] = [
     id: 'codigos-erro',
     title: 'Códigos de Erro',
     description: '93 erros mapeados com códigos públicos (TV001–TV013) e internos. Inclui estornos, gateway e webhooks.',
-    file: '/docs/codigos-erro.html',
+    file: '/assets/docs/codigos-erro.html',
     hasPreview: true,
     updatedAt: '2026-10-21',
   },
@@ -33,7 +32,7 @@ const DOCS: Doc[] = [
     id: 'design-system',
     title: 'Design System',
     description: 'Paleta de cores, tipografia, componentes, espaçamento e padrões visuais do Tovia.',
-    file: '/docs/tovia-design-system.html',
+    file: '/assets/docs/tovia-design-system.html',
     hasPreview: true,
     updatedAt: '2026-07-20',
   },
@@ -41,25 +40,25 @@ const DOCS: Doc[] = [
     id: 'mobile-spec',
     title: 'Tovia Mobile — Especificação',
     description: 'Spec completa do app mobile: telas, navegação, componentes, feature gating por plano.',
-    file: '/docs/tovia-mobile-spec.html',
+    file: '/assets/docs/tovia-mobile-spec.html',
     hasPreview: true,
-    downloadFile: '/docs/tovia-mobile-spec.md',
+    downloadFile: '/assets/docs/tovia-mobile-spec.md',
     updatedAt: '2026-07-24',
   },
   {
     id: 'arquitetura',
     title: 'Arquitetura Tovia',
     description: 'Mapa mental interativo da arquitetura completa. Visualize o mapa ou baixe os dados em JSON.',
-    file: '/docs/arquitetura-tovia.html',
+    file: '/assets/docs/arquitetura-tovia.html',
     hasPreview: true,
-    downloadFile: '/docs/arquitetura-tovia.json',
+    downloadFile: '/assets/docs/arquitetura-tovia.json',
     updatedAt: '2026-09-21',
   },
   {
     id: 'marketing-gtm',
     title: 'Marketing e Go-To-Market',
     description: 'Posicionamento, prospecção direta, gatilhos, conteúdo, pirâmide de distribuição e fases do GTM.',
-    file: '/docs/marketing-gtm-tovia.html',
+    file: '/assets/docs/marketing-gtm-tovia.html',
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -67,7 +66,7 @@ const DOCS: Doc[] = [
     id: 'kpis',
     title: 'KPIs e Métricas',
     description: 'North Star, funil de conversão, modelo financeiro, OKRs e metas por fase. Scorecard completo.',
-    file: '/docs/kpis-tovia.html',
+    file: '/assets/docs/kpis-tovia.html',
     hasPreview: true,
     updatedAt: '2026-09-21',
   },
@@ -75,7 +74,7 @@ const DOCS: Doc[] = [
     id: 'backlog',
     title: 'Backlog Tovia',
     description: 'Pendências ativas: bugs, infra, produto, segurança, crescimento e escala. 11 itens pendentes (19 resolvidos).',
-    file: '/docs/backlog-tovia.html',
+    file: '/assets/docs/backlog-tovia.html',
     hasPreview: true,
     updatedAt: '2026-10-21',
   },
@@ -83,7 +82,7 @@ const DOCS: Doc[] = [
     id: 'brandguide',
     title: 'Brand Guide — Checklist',
     description: 'Checklist interativo dos 12 capítulos do brand guide. Marque os itens conforme for desenvolvendo cada peça.',
-    file: '/docs/brandguide-checklist.html',
+    file: '/assets/docs/brandguide-checklist.html',
     hasPreview: true,
     updatedAt: '2026-07-25',
   },
@@ -91,16 +90,29 @@ const DOCS: Doc[] = [
 
 const SUPORTE_DOC_IDS = ['codigos-erro'];
 
+async function fetchDocHtml(path: string): Promise<string | null> {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) return null;
+    const html = await res.text();
+    if (html.includes('id="root"')) return null;
+    return html;
+  } catch {
+    return null;
+  }
+}
+
+function openHtmlBlob(html: string) {
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  return window.open(url, '_blank');
+}
+
 export default function AdminDocumentosTab({ filterSupporte = false }: { filterSupporte?: boolean }) {
   const docs = filterSupporte ? DOCS.filter(d => SUPORTE_DOC_IDS.includes(d.id)) : DOCS;
-  const openHtmlBlob = (html: string) => {
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    return window.open(url, '_blank');
-  };
 
   const handleView = async (doc: Doc) => {
-    const html = await loadDocHtml(doc.file);
+    const html = await fetchDocHtml(doc.file);
     if (html) {
       openHtmlBlob(html);
     } else {
@@ -109,10 +121,8 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
   };
 
   const handleDownload = async (doc: Doc) => {
-    const html = await loadDocHtml(doc.file);
-    const blob = html
-      ? new Blob([html], { type: 'text/html' })
-      : null;
+    const html = await fetchDocHtml(doc.file);
+    const blob = html ? new Blob([html], { type: 'text/html' }) : null;
     const a = document.createElement('a');
     a.href = blob ? URL.createObjectURL(blob) : doc.file;
     a.download = doc.file.split('/').pop() || 'documento';
@@ -123,7 +133,7 @@ export default function AdminDocumentosTab({ filterSupporte = false }: { filterS
   };
 
   const handleExportPdf = async (doc: Doc) => {
-    const html = await loadDocHtml(doc.file);
+    const html = await fetchDocHtml(doc.file);
     const win = html ? openHtmlBlob(html) : window.open(doc.file, '_blank');
     if (!win) return;
     win.addEventListener('afterprint', () => win.close());
