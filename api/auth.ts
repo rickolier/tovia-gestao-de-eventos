@@ -282,6 +282,10 @@ async function handleEnviarCodigoInscricao(req: VercelRequest, res: VercelRespon
 
   const emailNorm = body.email.trim().toLowerCase();
 
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+  const ipAllowed = await checkRateLimit(`otp_ip_${ip.replace(/[^a-z0-9]/gi, '_')}`);
+  if (!ipAllowed) return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
+
   const allowed = await checkRateLimit(`inscricao_otp_${emailNorm.replace(/[^a-z0-9]/gi, '_')}`);
   if (!allowed) return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
 

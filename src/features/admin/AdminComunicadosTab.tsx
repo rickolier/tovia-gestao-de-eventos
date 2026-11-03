@@ -1,4 +1,5 @@
 import { ToviaLogo } from '~/components/ToviaLogo';
+import DOMPurify from 'dompurify';
 import React, { useState } from 'react';
 import { UserProfile, PlanLevel } from '~/types';
 import { useAdminComunicados, FiltroDef, ComunicadoGrupo, ComunicadoEnviado, MainView } from './hooks/useAdminComunicados';
@@ -348,7 +349,7 @@ function EmailPreviewPanel({ assunto, corpo, previewText, assinatura }: {
           {corpo && !isEditorEmpty(corpo) ? (
             <div
               className="text-[12px] text-gray-700 dark:text-zinc-300 leading-relaxed min-h-12 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_a]:text-[#FF6B1A] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_u]:underline"
-              dangerouslySetInnerHTML={{ __html: corpo }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(corpo, { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li'], ALLOWED_ATTR: ['href', 'target', 'rel'] }) }}
             />
           ) : (
             <p className="text-[12px] text-gray-300 dark:text-zinc-600 italic min-h-12">
