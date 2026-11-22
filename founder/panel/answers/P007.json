@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "Pra igreja pequena, R$49 por mês parado é dinheiro que faz falta, e eu já pago a Sympla sem pensar muito. Não compro uma assinatura mensal pra um evento que faço uma ou duas vezes no ano.",
+  "objection": "Se eu pago a mensalidade e no fim do mês o evento não foi grande, eu perdi dinheiro e ainda tenho que explicar pro tesoureiro por que gastei.",
+  "would_change_my_mind": "Rodar um evento inteiro de graça no Chinám, ver o relatório pronto pra apresentar pro pastor e só pagar a taxa por transação se for melhor que a Sympla.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 35,
+  "price_too_expensive": 49
+}

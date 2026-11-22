@@ -1,0 +1,172 @@
+{
+ "business": "Tovia — plataforma de gestão de eventos para igrejas e comunidades no Brasil",
+ "seed": 204892,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 3,
+ "passes": 17,
+ "buy_rate": 0.15,
+ "by_segment": [
+  [
+   "Igreja média (200–800 membros)",
+   7,
+   0.2857142857142857
+  ],
+  [
+   "Igreja pequena (até 200 membros)",
+   9,
+   0.1111111111111111
+  ],
+  [
+   "Igreja grande ou rede denominacional (800+ membros)",
+   4,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Busca profissionalizar",
+   2,
+   0.5
+  ],
+  [
+   "Usa planilha",
+   4,
+   0.25
+  ],
+  [
+   "Faz tudo no WhatsApp",
+   6,
+   0.16666666666666666
+  ],
+  [
+   "Delega para voluntários",
+   3,
+   0.0
+  ],
+  [
+   "Já usa plataforma de eventos",
+   2,
+   0.0
+  ],
+  [
+   "Desconfia de tecnologia",
+   2,
+   0.0
+  ],
+  [
+   "Sensível a custo",
+   1,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$4,000 to $8,000",
+   8,
+   0.25
+  ],
+  [
+   "$8,000 and up",
+   8,
+   0.125
+  ],
+  [
+   "under $4,000",
+   4,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "trust",
+   9,
+   [
+    "Eu nunca ouvi falar dessa plataforma e não sei quem mais usa. Dinheiro de igreja passa por mim e pelo tesoureiro, então preciso de gente conhecida que já tenha usado antes de colocar o link no grupo.",
+    "Eu sou o voluntário que vai ter que executar, mas quem decide é o pastor, e ele vai perguntar primeiro onde o dinheiro dos inscritos cai. Pela página, o dinheiro vai pra conta Asaas da igreja, mas eu não entendi quem é o Tovia nessa história nem quem garante o que acontece se der errado."
+   ],
+   [
+    "P001",
+    "P002"
+   ]
+  ],
+  [
+   "habit",
+   6,
+   [
+    "Eu já organizo tudo no WhatsApp e no Pix e, mesmo sendo trabalhoso, funciona. Quem aprova gasto na igreja é o pastor e o tesoureiro, e eles não vão querer mais um sistema para aprender.",
+    "Minha planilha funciona e eu faço só dois eventos por ano, então não vejo motivo para pagar agora. Se for para testar, testo no plano grátis, mas não compro."
+   ],
+   [
+    "P005",
+    "P006"
+   ]
+  ],
+  [
+   "price",
+   2,
+   [
+    "Pra igreja pequena, R$49 por mês parado é dinheiro que faz falta, e eu já pago a Sympla sem pensar muito. Não compro uma assinatura mensal pra um evento que faço uma ou duas vezes no ano.",
+    "Para mim R$119 por mês é caro demais para a realidade da igreja, e o pastor é quem decide gasto. Eu até acho a ideia boa, mas não consigo justificar mensalidade para um sistema que eu ainda nem vi funcionar com a nossa gente."
+   ],
+   [
+    "P007",
+    "P016"
+   ]
+  ]
+ ],
+ "why_yes": [
+  [
+   "trust",
+   1,
+   [
+    "Eu compraria um evento avulso de R$19 pra testar, porque hoje confiro Pix um a um na planilha e isso me consome horas. Mas só porque o dinheiro cai direto na conta da igreja; se fosse passar pelo Tovia, eu não encostaria."
+   ],
+   [
+    "P003"
+   ]
+  ],
+  [
+   "need",
+   1,
+   [
+    "Já perdi o controle de quem pagou e quem não pagou no evento, e isso me dá dor de cabeça com o tesoureiro. Se o Tovia resolve a conferência de Pix e o relatório, eu pago, mas só se o valor couber no orçamento da igreja."
+   ],
+   [
+    "P011"
+   ]
+  ],
+  [
+   "convenience",
+   1,
+   [
+    "Eu faço dois eventos por ano, então mensalidade não faz sentido, mas se eu pagar R$19 por um evento e o Pix e o relatório saírem prontos, economizo dias de conferência. Só compro se o avulso for mesmo a opção, e se o relatório servir para o pastor sem eu montar nada."
+   ],
+   [
+    "P019"
+   ]
+  ]
+ ],
+ "flip": [
+  "Ver duas ou três igrejas parecidas com a minha, com nomes e contatos, que rodaram um evento e apresentaram o relatório ao pastor sem dor de cabeça.",
+  "Ver um tesoureiro de outra igreja usando o sistema num evento real e um contrato ou CNPJ visível com o responsável pelo Tovia.",
+  "Ver outra igreja parecida, com pastor ou tesoureiro conhecido, que rodou um evento inteiro com o Tovia e o dinheiro caiu na conta dela, com relatório que o tesoureiro aprovou.",
+  "Se o tesoureiro pedir o relatório financeiro e o Tovia provar, num evento de teste gratuito, que ele economiza tempo sem exigir que ninguém aprenda nada novo.",
+  "Ver outra igreja parecida com a minha usando o Tovia num evento real e o tesoureiro aprovando o relatório sem eu ter que refazer nada na planilha.",
+  "Rodar um evento inteiro de graça no Chinám, ver o relatório pronto pra apresentar pro pastor e só pagar a taxa por transação se for melhor que a Sympla.",
+  "Se o pastor aprovasse e eu pudesse rodar um evento inteiro de graça, sem cartão, e ver o relatório pronto para a liderança sem ter que montar planilha.",
+  "Uma pessoa de confiança da minha rede de igrejas recomendar e eu ver um evento inteiro rodando sem risco para a tesouraria.",
+  "Uma igreja parecida com a minha usando o Tovia num evento real e o tesoureiro aprovando o relatório.",
+  "Ver um evento real rodando de ponta a ponta no plano grátis, com o relatório financeiro saindo pronto e o pastor aprovando o uso.",
+  "Um pastor ou líder de confiança me recomendar, com um evento real já rodado, e alguém me mostrar o setup ao vivo no meu WhatsApp.",
+  "Um pastor ou tesoureiro de outra igreja, que eu conheço, me mostrar um evento real fechado pelo Tovia com o dinheiro caindo na conta deles.",
+  "Ver um evento real rodado de ponta a ponta por outro líder de igreja parecido comigo, com suporte disponível no dia e sem nenhuma taxa escondida.",
+  "Se o pastor aprovar um evento avulso de R$19 e eu conseguir rodar um evento inteiro no plano grátis, vendo o relatório funcionando e a taxa do Asaas não passar do que eu já pago.",
+  "Ver duas ou três igrejas parecidas com a minha usando e aprovando o relatório financeiro com a liderança.",
+  "Ver um evento de verdade rodando de ponta a ponta no plano grátis, com o relatório financeiro pronto e o custo total do Asaas mostrado de forma clara antes de pagar.",
+  "Ver um relatório financeiro real de um evento de verdade, já fechado, que o pastor e o tesoureiro aceitaram sem eu precisar montar planilha nenhuma."
+ ],
+ "purchases_first_month_per_buyer": 1.0,
+ "price_answers": 20
+}

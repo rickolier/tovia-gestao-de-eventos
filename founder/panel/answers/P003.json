@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "trust",
+  "reason": "Eu compraria um evento avulso de R$19 pra testar, porque hoje confiro Pix um a um na planilha e isso me consome horas. Mas só porque o dinheiro cai direto na conta da igreja; se fosse passar pelo Tovia, eu não encostaria.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente? Quero ver isso escrito e entender a taxa do Asaas antes de qualquer coisa, e o pastor e o tesoureiro precisam aprovar o gasto.",
+  "would_change_my_mind": "Ver um exemplo real de relatório financeiro e um contrato simples dizendo que o Tovia não retém nem movimenta o dinheiro.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 149
+}

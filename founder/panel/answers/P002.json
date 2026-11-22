@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Eu sou o voluntário que vai ter que executar, mas quem decide é o pastor, e ele vai perguntar primeiro onde o dinheiro dos inscritos cai. Pela página, o dinheiro vai pra conta Asaas da igreja, mas eu não entendi quem é o Tovia nessa história nem quem garante o que acontece se der errado.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente? Se eu conecto uma conta Asaas, quem responde se alguma coisa der errado, e o Tovia é uma empresa de verdade ou um projeto de uma pessoa só?",
+  "would_change_my_mind": "Ver um tesoureiro de outra igreja usando o sistema num evento real e um contrato ou CNPJ visível com o responsável pelo Tovia.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 149
+}

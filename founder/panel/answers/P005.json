@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Eu já organizo tudo no WhatsApp e no Pix e, mesmo sendo trabalhoso, funciona. Quem aprova gasto na igreja é o pastor e o tesoureiro, e eles não vão querer mais um sistema para aprender.",
+  "objection": "O pastor e o tesoureiro não vão querer mexer em mais um sistema, e eu não tenho tempo para ensinar isso a eles.",
+  "would_change_my_mind": "Se o tesoureiro pedir o relatório financeiro e o Tovia provar, num evento de teste gratuito, que ele economiza tempo sem exigir que ninguém aprenda nada novo.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 79
+}

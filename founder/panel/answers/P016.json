@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "Para mim R$119 por mês é caro demais para a realidade da igreja, e o pastor é quem decide gasto. Eu até acho a ideia boa, mas não consigo justificar mensalidade para um sistema que eu ainda nem vi funcionar com a nossa gente.",
+  "objection": "Não sei se o pastor vai aprovar pagar uma mensalidade para um sistema novo, e não tenho como provar para ele que o relatório vai ficar pronto. Ainda tem a taxa do Asaas por Pix em cima de tudo.",
+  "would_change_my_mind": "Se o pastor aprovar um evento avulso de R$19 e eu conseguir rodar um evento inteiro no plano grátis, vendo o relatório funcionando e a taxa do Asaas não passar do que eu já pago.",
+  "price_too_cheap": 9,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 80
+}

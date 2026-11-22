@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Raj",
+  "age": 46,
+  "segment": "Igreja grande ou rede denominacional (800+ membros)",
+  "income": 9000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "Nunca ouvi falar dessa plataforma, quem mais usa?",
+  "habit": "você recebe inscrições por mensagem no WhatsApp e confere Pix manualmente"
+ },
+ {
+  "id": "P002",
+  "name": "Daniel",
+  "age": 49,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 9000,
+  "behaviour": "Delega para voluntários",
+  "behaviour_how": "O pastor decide, mas quem executa é um voluntário com pouca experiência técnica.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente?",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P003",
+  "name": "Tess",
+  "age": 34,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 5000,
+  "behaviour": "Usa planilha",
+  "behaviour_how": "Mantém uma planilha Google ou Excel com inscritos, pagamentos e check-in. Funciona, mas dá trabalho.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente?",
+  "habit": "você já perdeu o controle de quem pagou e quem não pagou num evento"
+ },
+ {
+  "id": "P004",
+  "name": "Celine",
+  "age": 47,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 4000,
+  "behaviour": "Já usa plataforma de eventos",
+  "behaviour_how": "Usa Sympla, E-inscrição ou Evento da Igreja. Paga taxa por transação e aceita porque não conhece alternativa.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente?",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P005",
+  "name": "Declan",
+  "age": 42,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 8000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "O pastor/tesoureiro não vai querer mexer em mais um sistema",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P006",
+  "name": "Sana",
+  "age": 27,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 5000,
+  "behaviour": "Usa planilha",
+  "behaviour_how": "Mantém uma planilha Google ou Excel com inscritos, pagamentos e check-in. Funciona, mas dá trabalho.",
+  "objection": "A gente faz poucos eventos por ano, não compensa mensalidade",
+  "habit": "você organiza retiros, conferências ou encontros de jovens pelo menos 2 vezes por ano"
+ },
+ {
+  "id": "P007",
+  "name": "Wes",
+  "age": 38,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 3000,
+  "behaviour": "Já usa plataforma de eventos",
+  "behaviour_how": "Usa Sympla, E-inscrição ou Evento da Igreja. Paga taxa por transação e aceita porque não conhece alternativa.",
+  "objection": "R$119/mês é caro para a realidade da nossa igreja",
+  "habit": "você precisa prestar contas do dinheiro do evento para a liderança da igreja"
+ },
+ {
+  "id": "P008",
+  "name": "Bilal",
+  "age": 56,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 2000,
+  "behaviour": "Delega para voluntários",
+  "behaviour_how": "O pastor decide, mas quem executa é um voluntário com pouca experiência técnica.",
+  "objection": "WhatsApp e planilha já funcionam, por que mudar?",
+  "habit": "você organiza retiros, conferências ou encontros de jovens pelo menos 2 vezes por ano"
+ },
+ {
+  "id": "P009",
+  "name": "Ada",
+  "age": 45,
+  "segment": "Igreja grande ou rede denominacional (800+ membros)",
+  "income": 12000,
+  "behaviour": "Desconfia de tecnologia",
+  "behaviour_how": "Prefere papel e caneta. Só adota ferramenta nova se alguém de confiança recomendar.",
+  "objection": "R$119/mês é caro para a realidade da nossa igreja",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P010",
+  "name": "Nia",
+  "age": 34,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 2000,
+  "behaviour": "Sensível a custo",
+  "behaviour_how": "Cada real importa. Só paga por software se economizar tempo visível.",
+  "objection": "Nunca ouvi falar dessa plataforma, quem mais usa?",
+  "habit": "você precisa prestar contas do dinheiro do evento para a liderança da igreja"
+ },
+ {
+  "id": "P011",
+  "name": "Levi",
+  "age": 35,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 8000,
+  "behaviour": "Busca profissionalizar",
+  "behaviour_how": "Quer sair do amadorismo, procura ferramentas que deem credibilidade aos eventos da igreja.",
+  "objection": "R$119/mês é caro para a realidade da nossa igreja",
+  "habit": "você já perdeu o controle de quem pagou e quem não pagou num evento"
+ },
+ {
+  "id": "P012",
+  "name": "Adrian",
+  "age": 25,
+  "segment": "Igreja grande ou rede denominacional (800+ membros)",
+  "income": 24000,
+  "behaviour": "Usa planilha",
+  "behaviour_how": "Mantém uma planilha Google ou Excel com inscritos, pagamentos e check-in. Funciona, mas dá trabalho.",
+  "objection": "WhatsApp e planilha já funcionam, por que mudar?",
+  "habit": "você organiza retiros, conferências ou encontros de jovens pelo menos 2 vezes por ano"
+ },
+ {
+  "id": "P013",
+  "name": "Andre",
+  "age": 47,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 7000,
+  "behaviour": "Desconfia de tecnologia",
+  "behaviour_how": "Prefere papel e caneta. Só adota ferramenta nova se alguém de confiança recomendar.",
+  "objection": "Nunca ouvi falar dessa plataforma, quem mais usa?",
+  "habit": "você recebe inscrições por mensagem no WhatsApp e confere Pix manualmente"
+ },
+ {
+  "id": "P014",
+  "name": "Tomas",
+  "age": 44,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 4000,
+  "behaviour": "Usa planilha",
+  "behaviour_how": "Mantém uma planilha Google ou Excel com inscritos, pagamentos e check-in. Funciona, mas dá trabalho.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente?",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P015",
+  "name": "Nico",
+  "age": 41,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 3000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "E se der problema no dia do evento? Tem suporte?",
+  "habit": "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+ },
+ {
+  "id": "P016",
+  "name": "Sol",
+  "age": 49,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 7000,
+  "behaviour": "Delega para voluntários",
+  "behaviour_how": "O pastor decide, mas quem executa é um voluntário com pouca experiência técnica.",
+  "objection": "R$119/mês é caro para a realidade da nossa igreja",
+  "habit": "você já perdeu o controle de quem pagou e quem não pagou num evento"
+ },
+ {
+  "id": "P017",
+  "name": "Maya",
+  "age": 43,
+  "segment": "Igreja pequena (até 200 membros)",
+  "income": 4000,
+  "behaviour": "Busca profissionalizar",
+  "behaviour_how": "Quer sair do amadorismo, procura ferramentas que deem credibilidade aos eventos da igreja.",
+  "objection": "Nunca ouvi falar dessa plataforma, quem mais usa?",
+  "habit": "você precisa prestar contas do dinheiro do evento para a liderança da igreja"
+ },
+ {
+  "id": "P018",
+  "name": "Dana",
+  "age": 43,
+  "segment": "Igreja grande ou rede denominacional (800+ membros)",
+  "income": 18000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "Tem taxa do gateway (Asaas) por cima da mensalidade?",
+  "habit": "você recebe inscrições por mensagem no WhatsApp e confere Pix manualmente"
+ },
+ {
+  "id": "P019",
+  "name": "Lucia",
+  "age": 43,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 6000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "A gente faz poucos eventos por ano, não compensa mensalidade",
+  "habit": "você organiza retiros, conferências ou encontros de jovens pelo menos 2 vezes por ano"
+ },
+ {
+  "id": "P020",
+  "name": "Emma",
+  "age": 57,
+  "segment": "Igreja média (200–800 membros)",
+  "income": 12000,
+  "behaviour": "Faz tudo no WhatsApp",
+  "behaviour_how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um.",
+  "objection": "WhatsApp e planilha já funcionam, por que mudar?",
+  "habit": "você precisa prestar contas do dinheiro do evento para a liderança da igreja"
+ }
+]

@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "need",
+  "reason": "Já perdi o controle de quem pagou e quem não pagou no evento, e isso me dá dor de cabeça com o tesoureiro. Se o Tovia resolve a conferência de Pix e o relatório, eu pago, mas só se o valor couber no orçamento da igreja.",
+  "objection": "Não sei se a igreja vai aceitar pagar R$49 por mês por algo que ainda não provei, e ainda tem a taxa de R$1,99 por Pix em cima.",
+  "would_change_my_mind": "Testar com um evento real no plano grátis e ver o relatório financeiro pronto para mostrar ao pastor sem precisar montar planilha.",
+  "price_too_cheap": 9,
+  "price_cheap": 29,
+  "price_expensive": 49,
+  "price_too_expensive": 100
+}

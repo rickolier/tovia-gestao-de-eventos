@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "A planilha funciona e eu já conheço. Eu até testaria o plano grátis num evento pequeno, mas não pago R$49 por mês por uma ferramenta de um sujeito que nunca vi, pra mexer no dinheiro da igreja.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente? Quem garante que o Tovia não some e a gente fica sem conseguir o dinheiro ou sem os dados do evento?",
+  "would_change_my_mind": "Um pastor ou tesoureiro de outra igreja, que eu conheço, me mostrar um evento real fechado pelo Tovia com o dinheiro caindo na conta deles.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 80
+}

@@ -1,0 +1,37 @@
+{
+  "business": "Tovia — plataforma de gestão de eventos para igrejas e comunidades no Brasil",
+  "target": "Organizadores de eventos em igrejas e comunidades evangélicas no Brasil — pastores, líderes de jovens, coordenadores de retiros, secretárias de igreja",
+  "where": "Brasil, online",
+  "age": [25, 60],
+  "segments": [
+    {"name": "Igreja pequena (até 200 membros)", "share": 0.45, "income": [2000, 5000]},
+    {"name": "Igreja média (200–800 membros)", "share": 0.35, "income": [5000, 12000]},
+    {"name": "Igreja grande ou rede denominacional (800+ membros)", "share": 0.20, "income": [8000, 25000]}
+  ],
+  "behaviours": [
+    {"name": "Faz tudo no WhatsApp", "share": 0.30, "how": "Organiza eventos inteiros em grupos de WhatsApp, cobra Pix avulso e confere comprovantes um a um."},
+    {"name": "Usa planilha", "share": 0.20, "how": "Mantém uma planilha Google ou Excel com inscritos, pagamentos e check-in. Funciona, mas dá trabalho."},
+    {"name": "Já usa plataforma de eventos", "share": 0.12, "how": "Usa Sympla, E-inscrição ou Evento da Igreja. Paga taxa por transação e aceita porque não conhece alternativa."},
+    {"name": "Delega para voluntários", "share": 0.15, "how": "O pastor decide, mas quem executa é um voluntário com pouca experiência técnica."},
+    {"name": "Desconfia de tecnologia", "share": 0.10, "how": "Prefere papel e caneta. Só adota ferramenta nova se alguém de confiança recomendar."},
+    {"name": "Busca profissionalizar", "share": 0.08, "how": "Quer sair do amadorismo, procura ferramentas que deem credibilidade aos eventos da igreja."},
+    {"name": "Sensível a custo", "share": 0.05, "how": "Cada real importa. Só paga por software se economizar tempo visível."}
+  ],
+  "objections": [
+    "R$119/mês é caro para a realidade da nossa igreja",
+    "WhatsApp e planilha já funcionam, por que mudar?",
+    "Nunca ouvi falar dessa plataforma, quem mais usa?",
+    "E se der problema no dia do evento? Tem suporte?",
+    "O dinheiro dos inscritos vai pra onde exatamente?",
+    "Tem taxa do gateway (Asaas) por cima da mensalidade?",
+    "O pastor/tesoureiro não vai querer mexer em mais um sistema",
+    "A gente faz poucos eventos por ano, não compensa mensalidade"
+  ],
+  "habits": [
+    "você organiza retiros, conferências ou encontros de jovens pelo menos 2 vezes por ano",
+    "você recebe inscrições por mensagem no WhatsApp e confere Pix manualmente",
+    "você já perdeu o controle de quem pagou e quem não pagou num evento",
+    "você precisa prestar contas do dinheiro do evento para a liderança da igreja",
+    "você anuncia eventos no grupo de WhatsApp da igreja e no Instagram"
+  ]
+}

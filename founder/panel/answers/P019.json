@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "Eu faço dois eventos por ano, então mensalidade não faz sentido, mas se eu pagar R$19 por um evento e o Pix e o relatório saírem prontos, economizo dias de conferência. Só compro se o avulso for mesmo a opção, e se o relatório servir para o pastor sem eu montar nada.",
+  "objection": "Meu medo é o dinheiro da igreja passar pela conta de vocês ou ficar preso num gateway que eu não entendo. E quem vai configurar a Asaas? Eu não tenho tempo para isso no meio do evento.",
+  "would_change_my_mind": "Ver o relatório financeiro de um evento de verdade, já pronto, que eu possa mostrar ao tesoureiro sem abrir planilha nenhuma.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 60
+}

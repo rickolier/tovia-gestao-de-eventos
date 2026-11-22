@@ -1,0 +1,25 @@
+{
+  "business": "Tovia — SaaS de gestão de eventos para igrejas",
+  "unit": "assinatura Pétach mensal",
+  "price": 119,
+  "variable": [
+    {"label": "Supabase (proporcional)", "cost": 4},
+    {"label": "Vercel (proporcional)", "cost": 3},
+    {"label": "Resend (proporcional)", "cost": 2},
+    {"label": "Suporte / overhead", "cost": 1},
+    {"label": "Garantia (10% claim de R$49)", "cost": 4.90}
+  ],
+  "fixed_monthly": [
+    {"label": "Claude (AI)", "cost": 100},
+    {"label": "Domínio", "cost": 3.33},
+    {"label": "Sentry", "cost": 0},
+    {"label": "Zoho Mail", "cost": 0}
+  ],
+  "startup": [
+    {"label": "Domínio (primeiro ano)", "cost": 40},
+    {"label": "CNPJ + contabilidade (estimativa)", "cost": 500}
+  ],
+  "days_per_month": 30,
+  "plan_per_day": 0.27,
+  "ramp_per_day": [0.03, 0.03, 0.07, 0.07, 0.1, 0.13, 0.17, 0.2, 0.23, 0.27, 0.27, 0.27]
+}

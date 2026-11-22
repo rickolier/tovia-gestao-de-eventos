@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Minha planilha funciona e eu faço só dois eventos por ano, então não vejo motivo para pagar agora. Se for para testar, testo no plano grátis, mas não compro.",
+  "objection": "Não conheço o Tovia nem o Henrique, e entregar a inscrição e o dinheiro da igreja para um sistema novo, com Asaas no meio, me deixa com medo de dar problema na prestação de contas.",
+  "would_change_my_mind": "Ver outra igreja parecida com a minha usando o Tovia num evento real e o tesoureiro aprovando o relatório sem eu ter que refazer nada na planilha.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 35
+}

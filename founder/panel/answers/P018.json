@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Eu já faço tudo no WhatsApp e confiro o Pix na mão, e funciona, mesmo que dê trabalho. Pra trocar eu precisaria ver o custo real somado e o tesoureiro aprovar, e isso não acontece em uma semana.",
+  "objection": "Tem taxa do gateway (Asaas) por cima da mensalidade? Se eu pago R$1,99 por Pix em cada inscrição de 800 pessoas, o custo some rápido e eu tenho que explicar isso pro pastor.",
+  "would_change_my_mind": "Ver um evento de verdade rodando de ponta a ponta no plano grátis, com o relatório financeiro pronto e o custo total do Asaas mostrado de forma clara antes de pagar.",
+  "price_too_cheap": 0,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 149
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Eu nunca ouvi falar dessa plataforma e não sei quem mais usa. Dinheiro de igreja passa por mim e pelo tesoureiro, então preciso de gente conhecida que já tenha usado antes de colocar o link no grupo.",
+  "objection": "Quero saber quem são as igrejas que já usam, e se o dinheiro cai mesmo na conta da igreja sem a plataforma tocar nele. Também me preocupa depender de um setup com o criador antes de conseguir mexer sozinho.",
+  "would_change_my_mind": "Ver duas ou três igrejas parecidas com a minha, com nomes e contatos, que rodaram um evento e apresentaram o relatório ao pastor sem dor de cabeça.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 79,
+  "price_too_expensive": 149
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P020",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Eu já faço tudo no WhatsApp e na planilha, e confere o Pix um a um, mas funciona. Não tenho tempo nem vontade de aprender outra ferramenta no meio de um evento, mesmo que pareça melhor no papel.",
+  "objection": "Se eu trocar, o dinheiro passa a cair direto na conta da igreja pelo Asaas, e eu não sei se isso vai mesmo me poupar trabalho ou só criar mais uma coisa para configurar e explicar para o tesoureiro.",
+  "would_change_my_mind": "Ver um relatório financeiro real de um evento de verdade, já fechado, que o pastor e o tesoureiro aceitaram sem eu precisar montar planilha nenhuma.",
+  "price_too_cheap": 9,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 149
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Eu entendo a conta da taxa, mas não conheço o Tovia e não sei quem está por trás. Quem toca o dinheiro é o Asaas, e a promessa de que o Tovia nunca toca no dinheiro é só texto na página para mim. Já uso a Sympla e a E-inscrição, que todo mundo conhece.",
+  "objection": "O dinheiro dos inscritos vai pra onde exatamente? Se a igreja vai cobrar Pix de 100 pessoas por um sistema que nunca vi, quero ver a conta da igreja no Asaas e alguém de confiança que já usou.",
+  "would_change_my_mind": "Ver outra igreja parecida, com pastor ou tesoureiro conhecido, que rodou um evento inteiro com o Tovia e o dinheiro caiu na conta dela, com relatório que o tesoureiro aprovou.",
+  "price_too_cheap": 5,
+  "price_cheap": 19,
+  "price_expensive": 49,
+  "price_too_expensive": 99
+}
