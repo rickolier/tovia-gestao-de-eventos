@@ -67,10 +67,10 @@ export function Gateway() {
           >
             <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway disponível</p>
             <div className="mb-4">
-              <img src="/efi-logo-white.svg" alt="Efí Bank" className="h-8 w-auto" />
+              <img src="/efi-logo-white.svg" alt="Efí Bank" className="h-6 w-auto" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
-              O Tovia também se integra com a Efí Bank. Conecte seu Client ID e Client Secret e receba via PIX, boleto e cartão.
+              O Tovia também se integra com a Efí Bank. Conecte sua conta e receba via Pix, boleto e cartão.
             </p>
             <div className="mt-4 pt-4 border-t border-white/20">
               <p className="text-xs text-white/60">Clique e conheça mais sobre a Efí Bank</p>
@@ -105,7 +105,7 @@ export function Gateway() {
 
           <div className="rounded-3xl border border-border bg-card p-6">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/efi-logo.svg" alt="Efí Bank" className="h-5 w-auto" />
+              <img src="/efi-logo.svg" alt="Efí Bank" className="h-4 w-auto" />
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Taxas Efí Bank</p>
             </div>
             <div className="space-y-3">
