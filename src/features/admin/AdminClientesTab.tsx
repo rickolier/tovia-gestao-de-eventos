@@ -454,7 +454,7 @@ export default function AdminClientesTab() {
                   </div>
                   {selected.asaasCustomerId && (
                     <a
-                      href={`https://sandbox.asaas.com/customers/${selected.asaasCustomerId}`}
+                      href={`https://www.asaas.com/customers/${selected.asaasCustomerId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-2 flex items-center gap-1.5 text-xs text-primary hover:underline"
