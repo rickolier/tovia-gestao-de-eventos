@@ -51,7 +51,7 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
   const data = validateBody(req.body, res, saveGatewayConfigSchema);
   if (!data) return;
 
-  const { gatewayType, apiKey, sandbox } = data;
+  const { gatewayType, sandbox } = data;
   const userId = decoded.uid;
 
   const allowed = await checkRateLimit(userId);
@@ -59,7 +59,26 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
   }
 
-  const provider = createPaymentProvider(gatewayType as GatewayType, apiKey, !!sandbox);
+  let resolvedApiKey: string;
+  let certificate: Buffer | undefined;
+  if (gatewayType === 'efi') {
+    const clientId = data.clientId;
+    const clientSecret = data.clientSecret;
+    if (!clientId || !clientSecret) {
+      return res.status(400).json({ error: 'Client ID e Client Secret são obrigatórios para Efí Bank.' });
+    }
+    resolvedApiKey = JSON.stringify({ clientId, clientSecret });
+    if (data.certificateP12) {
+      certificate = Buffer.from(data.certificateP12, 'base64');
+    }
+  } else {
+    if (!data.apiKey) {
+      return res.status(400).json({ error: 'Chave de API obrigatória.' });
+    }
+    resolvedApiKey = data.apiKey;
+  }
+
+  const provider = createPaymentProvider(gatewayType as GatewayType, resolvedApiKey, !!sandbox, certificate);
   const step = (req.query.step as string) || data.step || 'validate';
 
   if (step === 'validate') {
@@ -133,7 +152,7 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
     }
 
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
-    const encryptedKey = encrypt(apiKey, encKey);
+    const encryptedKey = encrypt(resolvedApiKey, encKey);
     const webhookToken = genToken();
     const encryptedWebhookToken = encrypt(webhookToken, encKey);
 
@@ -147,14 +166,23 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
     const connectedAt = new Date().toISOString();
     const webhookTokenHash = createHash('sha256').update(webhookToken).digest('hex');
 
-    await db.collection('organizer_secrets').doc(userId).set({
+    const secretsDoc: Record<string, unknown> = {
       type: gatewayType,
       encrypted_api_key: encryptedKey,
       encrypted_webhook_token: encryptedWebhookToken,
       sandbox: !!sandbox,
       connected_at: connectedAt,
       webhook_token_hash: webhookTokenHash,
-    }, { merge: true });
+    };
+    if (gatewayType === 'efi') {
+      secretsDoc.encrypted_client_id = encrypt(data.clientId!, encKey);
+      secretsDoc.encrypted_client_secret = encrypt(data.clientSecret!, encKey);
+      if (data.certificateP12) {
+        secretsDoc.encrypted_certificate_p12 = encrypt(data.certificateP12, encKey);
+      }
+    }
+
+    await db.collection('organizer_secrets').doc(userId).set(secretsDoc, { merge: true });
 
     await db.collection('users').doc(userId).set({
       gateway_connected: true,
@@ -225,11 +253,16 @@ async function handleRefund(req: VercelRequest, res: VercelResponse) {
   const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
   if (!encKey) return res.status(500).json({ error: 'Erro interno do servidor. A equipe técnica foi notificada. Tente novamente mais tarde.' });
 
-  const apiKey = decrypt(secrets.api_key_encrypted, encKey);
+  const apiKey = decrypt(secrets.api_key_encrypted || secrets.encrypted_api_key, encKey);
   const sandbox: boolean = secrets.sandbox ?? false;
   const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
 
-  const provider = createPaymentProvider(gatewayType, apiKey, sandbox);
+  let refundCertificate: Buffer | undefined;
+  if (gatewayType === 'efi' && secrets.encrypted_certificate_p12) {
+    refundCertificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
+  }
+
+  const provider = createPaymentProvider(gatewayType, apiKey, sandbox, refundCertificate);
 
   try {
     const refundValue = valor && valor > 0 && valor < pagamento.valor ? valor : undefined;

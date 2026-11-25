@@ -88,15 +88,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Determina o gateway do organizador e parseia o evento
   const secrets = secretsDoc.exists ? secretsDoc.data()! : {};
   const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
-  const provider = createPaymentProvider(gatewayType, '', false);
+
+  let providerApiKey = '';
+  let providerCertificate: Buffer | undefined;
+  if (gatewayType === 'efi' && secrets.encrypted_api_key) {
+    const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
+    const { decrypt } = await import('./_gateway-utils.js');
+    providerApiKey = decrypt(secrets.encrypted_api_key, encKey);
+    if (secrets.encrypted_certificate_p12) {
+      providerCertificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
+    }
+  }
+  const provider = createPaymentProvider(gatewayType, providerApiKey, secrets.sandbox ?? false, providerCertificate);
 
   const headers: Record<string, string> = {};
   for (const [k, v] of Object.entries(req.headers)) {
     if (typeof v === 'string') headers[k] = v;
   }
 
-  const parsedEvent = provider.parseWebhookEvent(headers, rawBody);
+  let parsedEvent = provider.parseWebhookEvent(headers, rawBody);
   if (!parsedEvent) return res.status(200).send('ok');
+
+  // EFí Cobranças webhooks require a 2-step resolution
+  if (gatewayType === 'efi' && parsedEvent.value === 0 && parsedEvent.externalRef === '' && 'resolveNotification' in provider) {
+    const resolved = await (provider as any).resolveNotification(parsedEvent.paymentId);
+    if (!resolved) return res.status(200).send('ok');
+    parsedEvent = resolved;
+  }
 
   const paidTypes = ['payment_confirmed'];
   const canceledTypes = ['payment_overdue', 'payment_deleted'];

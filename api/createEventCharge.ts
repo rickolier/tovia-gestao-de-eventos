@@ -111,7 +111,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const sandbox: boolean = secrets.sandbox ?? false;
     const gatewayType: GatewayType = secrets.type ?? 'asaas';
 
-    const provider = createPaymentProvider(gatewayType, apiKey, sandbox);
+    let certificate: Buffer | undefined;
+    if (gatewayType === 'efi' && secrets.encrypted_certificate_p12) {
+      certificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
+    }
+
+    const provider = createPaymentProvider(gatewayType, apiKey, sandbox, certificate);
 
     let customerId: string;
     try {

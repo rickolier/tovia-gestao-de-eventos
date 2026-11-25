@@ -81,11 +81,17 @@ export const confirmarCodigoInscricaoSchema = z.object({
 // ── saveGatewayConfig ───────────────────────────────────────────────────────
 
 export const saveGatewayConfigSchema = z.object({
-  gatewayType: z.enum(['asaas'], { message: 'Gateway inválido.' }),
-  apiKey: z.string().min(1, 'Chave de API obrigatória.'),
+  gatewayType: z.enum(['asaas', 'efi'], { message: 'Gateway inválido.' }),
+  apiKey: z.string().optional(),
+  clientId: z.string().optional(),
+  clientSecret: z.string().optional(),
+  certificateP12: z.string().optional(),
   sandbox: z.boolean({ message: 'Campo sandbox obrigatório.' }),
   step: z.enum(['validate', 'confirm']).optional(),
-});
+}).refine(
+  d => d.gatewayType === 'efi' ? (!!d.clientId && !!d.clientSecret) : !!d.apiKey,
+  { message: 'Credenciais obrigatórias.' },
+);
 
 // ── createEventCharge ───────────────────────────────────────────────────────
 

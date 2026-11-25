@@ -24,11 +24,18 @@ const GATEWAY_LABELS: Record<string, string> = {
   stripe: 'Stripe',
   mercadopago: 'Mercado Pago',
   pagarme: 'Pagar.me',
+  efi: 'Efí Bank',
 };
+
+type GatewayProvider = 'asaas' | 'efi';
 
 export default function GatewayTab() {
   const { profile, user, refreshProfile } = useAuth();
+  const [provider, setProvider] = useState<GatewayProvider>('asaas');
   const [apiKey, setApiKey] = useState('');
+  const [efiClientId, setEfiClientId] = useState('');
+  const [efiClientSecret, setEfiClientSecret] = useState('');
+  const [efiCertFile, setEfiCertFile] = useState<File | null>(null);
   const [sandbox, setSandbox] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,15 +57,27 @@ export default function GatewayTab() {
     : null;
 
   const handleValidate = async () => {
-    if (!apiKey.trim()) { toast.error('Insira a chave de API.'); return; }
+    if (provider === 'asaas' && !apiKey.trim()) { toast.error('Insira a chave de API.'); return; }
+    if (provider === 'efi' && (!efiClientId.trim() || !efiClientSecret.trim())) { toast.error('Insira o Client ID e Client Secret.'); return; }
     setLoading(true);
     setAccountInfo(null);
     try {
       const idToken = await auth.currentUser?.getIdToken();
+      let certBase64: string | undefined;
+      if (provider === 'efi' && efiCertFile) {
+        const buf = await efiCertFile.arrayBuffer();
+        certBase64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+      }
       const gwRes = await fetch('/api/gateway?action=saveConfig&step=validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
-        body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
+        body: JSON.stringify({
+          gatewayType: provider,
+          ...(provider === 'asaas'
+            ? { apiKey: apiKey.trim() }
+            : { clientId: efiClientId.trim(), clientSecret: efiClientSecret.trim(), certificateP12: certBase64 }),
+          sandbox,
+        }),
       });
       const gwData = await gwRes.json();
       if (!gwRes.ok) throw new Error(gwData.error || 'Erro ao validar a chave.');
@@ -80,10 +99,21 @@ export default function GatewayTab() {
     setLoading(true);
     try {
       const idToken = await auth.currentUser?.getIdToken();
+      let certBase64: string | undefined;
+      if (provider === 'efi' && efiCertFile) {
+        const buf = await efiCertFile.arrayBuffer();
+        certBase64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+      }
       const gwRes = await fetch('/api/gateway?action=saveConfig&step=confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
-        body: JSON.stringify({ gatewayType: 'asaas', apiKey: apiKey.trim(), sandbox }),
+        body: JSON.stringify({
+          gatewayType: provider,
+          ...(provider === 'asaas'
+            ? { apiKey: apiKey.trim() }
+            : { clientId: efiClientId.trim(), clientSecret: efiClientSecret.trim(), certificateP12: certBase64 }),
+          sandbox,
+        }),
       });
       const gwData = await gwRes.json();
       if (!gwRes.ok) throw new Error(gwData.error || 'Erro ao conectar o gateway.');
@@ -95,6 +125,9 @@ export default function GatewayTab() {
       refreshProfile();
       toast.success('Gateway conectado! Pagamentos automáticos habilitados.');
       setApiKey('');
+      setEfiClientId('');
+      setEfiClientSecret('');
+      setEfiCertFile(null);
     } catch (err: any) {
       toast.error(err?.message ?? 'Erro ao conectar o gateway.');
     } finally {
@@ -252,6 +285,26 @@ export default function GatewayTab() {
                   </div>
                 </div>
 
+                {/* Provider selector */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                    Provedor
+                  </Label>
+                  <div className="flex items-center gap-2 p-3 rounded-2xl bg-muted/40">
+                    {(['asaas', 'efi'] as GatewayProvider[]).map(p => (
+                      <button
+                        key={p}
+                        onClick={() => setProvider(p)}
+                        className={`px-4 py-1.5 rounded-xl text-xs font-black transition-all ${
+                          provider === p ? 'bg-primary text-white shadow' : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {GATEWAY_LABELS[p]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Sandbox toggle */}
                 <div className="flex items-center gap-2 p-3 rounded-2xl bg-muted/40">
                   <button
@@ -277,36 +330,97 @@ export default function GatewayTab() {
                   )}
                 </div>
 
-                {/* API Key */}
-                <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                    Chave de API {sandbox ? 'Sandbox' : 'Produção'}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      type={showKey ? 'text' : 'password'}
-                      value={apiKey}
-                      onChange={e => setApiKey(e.target.value)}
-                      placeholder="$aact_..."
-                      className="h-12 rounded-2xl border-none bg-muted/40 pr-12 font-mono text-sm"
-                      onKeyDown={e => e.key === 'Enter' && handleValidate()}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowKey(v => !v)}
-                      className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground"
-                    >
-                      {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                {provider === 'asaas' ? (
+                  /* Asaas: API Key */
+                  <div className="space-y-2">
+                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                      Chave de API {sandbox ? 'Sandbox' : 'Produção'}
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type={showKey ? 'text' : 'password'}
+                        value={apiKey}
+                        onChange={e => setApiKey(e.target.value)}
+                        placeholder="$aact_..."
+                        className="h-12 rounded-2xl border-none bg-muted/40 pr-12 font-mono text-sm"
+                        onKeyDown={e => e.key === 'Enter' && handleValidate()}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowKey(v => !v)}
+                        className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground"
+                      >
+                        {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground px-1">
+                      Encontre em <strong>Minha Conta → Integrações → Chave de API</strong> no painel Asaas.
+                    </p>
                   </div>
-                  <p className="text-[11px] text-muted-foreground px-1">
-                    Encontre em <strong>Minha Conta → Integrações → Chave de API</strong> no painel Asaas.
-                  </p>
-                </div>
+                ) : (
+                  /* Efí Bank: Client ID + Client Secret + Certificate */
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        Client ID
+                      </Label>
+                      <Input
+                        type={showKey ? 'text' : 'password'}
+                        value={efiClientId}
+                        onChange={e => setEfiClientId(e.target.value)}
+                        placeholder="Client_Id_..."
+                        className="h-12 rounded-2xl border-none bg-muted/40 font-mono text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        Client Secret
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          type={showKey ? 'text' : 'password'}
+                          value={efiClientSecret}
+                          onChange={e => setEfiClientSecret(e.target.value)}
+                          placeholder="Client_Secret_..."
+                          className="h-12 rounded-2xl border-none bg-muted/40 pr-12 font-mono text-sm"
+                          onKeyDown={e => e.key === 'Enter' && handleValidate()}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowKey(v => !v)}
+                          className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground"
+                        >
+                          {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        Certificado PIX (.p12) <span className="normal-case font-medium">— necessário para cobranças PIX</span>
+                      </Label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept=".p12,.pem"
+                          onChange={e => setEfiCertFile(e.target.files?.[0] ?? null)}
+                          className="w-full h-12 rounded-2xl border-none bg-muted/40 text-sm file:mr-3 file:px-4 file:py-2 file:rounded-xl file:border-0 file:bg-primary/10 file:text-primary file:font-bold file:text-xs file:cursor-pointer cursor-pointer"
+                        />
+                      </div>
+                      {efiCertFile && (
+                        <p className="text-[11px] text-green-600 px-1 font-semibold">
+                          {efiCertFile.name} selecionado
+                        </p>
+                      )}
+                      <p className="text-[11px] text-muted-foreground px-1">
+                        Gere em <strong>API → Meus Certificados</strong> no painel Efí. Sem certificado, apenas boleto e cartão ficam disponíveis.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 <Button
                   onClick={handleValidate}
-                  disabled={loading || confirming || !apiKey.trim()}
+                  disabled={loading || confirming || (provider === 'asaas' ? !apiKey.trim() : (!efiClientId.trim() || !efiClientSecret.trim()))}
                   className="w-full h-12 rounded-2xl font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95"
                 >
                   {loading && !confirming ? (
