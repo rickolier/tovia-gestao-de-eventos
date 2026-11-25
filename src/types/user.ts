@@ -46,6 +46,7 @@ export interface UserProfile {
   onboardingComplete?: boolean;
   desativado?: boolean;
   email_verificado?: boolean;
+  ultimo_acesso?: string;
   gateway_connected?: boolean;
   gateway?: {
     type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';

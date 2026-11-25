@@ -5,7 +5,7 @@ import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import { auth } from '~/services/firebase';
 import {
   Search, RefreshCw, X, ExternalLink, ChevronRight,
-  ShieldOff, ArrowUpCircle, UserX, UserCheck, Mail, MailCheck, CalendarPlus, Users,
+  ShieldOff, ArrowUpCircle, UserX, UserCheck, Mail, MailCheck, CalendarPlus, Users, Clock,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -379,6 +379,15 @@ export default function AdminClientesTab() {
                       </span>
                       <span className={cn('text-xs font-semibold', inscricaoCountMap[selected.uid] ? 'text-blue-600' : 'text-amber-500')}>
                         {inscricaoCountMap[selected.uid] || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Clock className={cn('w-3.5 h-3.5', selected.ultimo_acesso ? 'text-violet-500' : 'text-muted-foreground/50')} />
+                        Último acesso
+                      </span>
+                      <span className={cn('text-xs font-semibold', selected.ultimo_acesso ? 'text-foreground' : 'text-amber-500')}>
+                        {selected.ultimo_acesso ? new Date(selected.ultimo_acesso).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Nunca'}
                       </span>
                     </div>
                   </div>

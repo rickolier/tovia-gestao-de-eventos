@@ -240,6 +240,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(userProfile);
           Sentry.setUser({ id: firebaseUser.uid, email: firebaseUser.email ?? undefined });
           void logAccess(firebaseUser.uid, firebaseUser.email);
+          updateDocument('users', firebaseUser.uid, { ultimo_acesso: new Date().toISOString() }).catch(() => {});
         } else {
           setUser(null);
           setProfile(null);
