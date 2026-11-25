@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pagamento, Inscricao, Pessoa } from '~/types';
 import { Button } from '@/components/ui/button';
 import { useFinancial } from './hooks/useFinancial';
@@ -46,6 +46,8 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
     refundValue, setRefundValue, refundLoading,
     openRefundDialog, handleRefund,
   } = useFinancial(eventoId, isActive);
+
+  const [refundConfirmed, setRefundConfirmed] = useState(false);
 
   const totalArrecadado = payments.filter(p => p.status === 'pago').reduce((acc, curr) => acc + curr.valor, 0);
   const totalEsperado = registrations.reduce((acc, curr) => acc + curr.valor_total, 0);
@@ -542,7 +544,7 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
       </Dialog>
 
       {/* Dialog de Estorno */}
-      <Dialog open={isRefundDialogOpen} onOpenChange={v => { if (!refundLoading) setIsRefundDialogOpen(v); }}>
+      <Dialog open={isRefundDialogOpen} onOpenChange={v => { if (!refundLoading) { setIsRefundDialogOpen(v); if (v) setRefundConfirmed(false); } }}>
         <DialogContent className="sm:max-w-md rounded-[2.5rem] border-none shadow-2xl p-8 bg-card transition-colors">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
@@ -595,15 +597,77 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
                 </div>
               )}
 
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                <p className="text-xs font-black text-amber-800">Atenção: esta ação não pode ser desfeita.</p>
-                <p className="text-xs text-amber-700 mt-1">O valor será devolvido ao participante. O prazo depende do método de pagamento (PIX: 1 dia útil, Cartão: até 10 dias úteis, Boleto: até 5 dias úteis).</p>
-              </div>
+              {/* Info box com prazos por método e gateway */}
+              {(() => {
+                const gw = profile?.gateway?.type ?? 'asaas';
+                const metodo = (refundTarget.metodo || '').toLowerCase();
+                const isBoleto = metodo.includes('boleto');
+                const isPix = metodo.includes('pix');
+                const isCard = metodo.includes('cart') || metodo.includes('crédit') || metodo.includes('credit') || metodo.includes('débit') || metodo.includes('debit');
+                const isRecorrente = metodo.includes('recorr');
+
+                let prazoTexto = '';
+                let alertaExtra = '';
+
+                if (isBoleto) {
+                  alertaExtra = gw === 'efi'
+                    ? 'Boletos pagos não podem ser estornados automaticamente pela Efí. Você precisará fazer a devolução manualmente pelo painel da Efí ou via transferência.'
+                    : 'Boletos pagos no Asaas podem não ser estornados automaticamente. Caso o estorno falhe, faça a devolução pelo painel do Asaas ou via transferência.';
+                  prazoTexto = 'Boleto: estorno manual necessário';
+                } else if (isPix) {
+                  prazoTexto = 'PIX: o valor é devolvido em segundos';
+                } else if (isCard || isRecorrente) {
+                  prazoTexto = gw === 'efi'
+                    ? 'Cartão: o estorno pode levar até 30 dias para aparecer na fatura do cliente'
+                    : 'Cartão: o estorno pode levar de 7 a 30 dias para aparecer na fatura do cliente';
+                } else {
+                  prazoTexto = 'O prazo de devolução depende do método de pagamento';
+                }
+
+                return (
+                  <div className={`rounded-2xl p-4 space-y-2 ${isBoleto ? 'bg-red-50 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}>
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className={`w-4 h-4 mt-0.5 shrink-0 ${isBoleto ? 'text-red-500' : 'text-amber-600'}`} />
+                      <div>
+                        <p className={`text-xs font-black ${isBoleto ? 'text-red-800' : 'text-amber-800'}`}>
+                          Atenção: esta ação não pode ser desfeita.
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                          <p className={`text-xs font-semibold ${isBoleto ? 'text-red-700' : 'text-amber-700'}`}>{prazoTexto}</p>
+                        </div>
+                        {alertaExtra && (
+                          <p className="text-xs text-red-600 mt-2 leading-relaxed">{alertaExtra}</p>
+                        )}
+                        <p className="text-[10px] text-muted-foreground mt-2">
+                          Gateway: <span className="font-bold">{gw === 'efi' ? 'Efí Bank' : 'Asaas'}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Checkbox de confirmação */}
+              <label className="flex items-start gap-3 cursor-pointer select-none group">
+                <input
+                  type="checkbox"
+                  checked={refundConfirmed}
+                  onChange={e => setRefundConfirmed(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-gray-300 text-red-500 focus:ring-red-500 cursor-pointer"
+                />
+                <span className="text-xs text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
+                  Li as informações acima e confirmo que desejo prosseguir com o estorno de{' '}
+                  <strong className="text-foreground">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(refundType === 'parcial' ? refundValue : refundTarget.valor)}
+                  </strong>
+                </span>
+              </label>
 
               <Button
                 onClick={handleRefund}
-                disabled={refundLoading || (refundType === 'parcial' && (!refundValue || refundValue <= 0 || refundValue > refundTarget.valor))}
-                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-2xl h-12 font-black shadow-xl shadow-red-500/20 transition-all active:scale-[0.98] mt-2"
+                disabled={refundLoading || !refundConfirmed || (refundType === 'parcial' && (!refundValue || refundValue <= 0 || refundValue > refundTarget.valor))}
+                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-2xl h-12 font-black shadow-xl shadow-red-500/20 transition-all active:scale-[0.98] mt-2 disabled:opacity-40"
               >
                 {refundLoading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
