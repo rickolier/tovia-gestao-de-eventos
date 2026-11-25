@@ -7,12 +7,44 @@ import { Evento } from '~/types';
 import { updateDocument } from '~/services/firestore';
 import { toast } from 'sonner';
 
+type GatewayType = 'asaas' | 'efi';
+
+const GATEWAY_FEES: Record<GatewayType, {
+  label: string;
+  pix: number; pixType: 'fixed' | 'pct';
+  boleto: number; boletoType: 'fixed' | 'pct';
+  credit: number;
+  recurring: number;
+  pixAutomatico?: number; pixAutomaticoType?: 'fixed' | 'pct';
+  note: string;
+}> = {
+  asaas: {
+    label: 'Asaas',
+    pix: 1.99, pixType: 'fixed',
+    boleto: 1.99, boletoType: 'fixed',
+    credit: 2.99,
+    recurring: 2.49,
+    pixAutomatico: 1.99, pixAutomaticoType: 'fixed',
+    note: 'Taxas padrão do Asaas: PIX R$ 1,99 · Boleto R$ 1,99 · Crédito 2,99% · Recorrente 2,49% · PIX Automático R$ 1,99.',
+  },
+  efi: {
+    label: 'Efí Bank',
+    pix: 1.19, pixType: 'pct',
+    boleto: 3.45, boletoType: 'fixed',
+    credit: 3.49,
+    recurring: 3.49,
+    pixAutomatico: 3.50, pixAutomaticoType: 'fixed',
+    note: 'Taxas padrão da Efí Bank: PIX 1,19% · Boleto R$ 3,45 · Crédito 3,49% · Recorrente 3,49% · PIX Automático R$ 3,50.',
+  },
+};
+
 interface Props {
   evento: Evento;
   onUpdate?: () => void;
+  gatewayType?: GatewayType;
 }
 
-export default function CalculatorTab({ evento, onUpdate }: Props) {
+export default function CalculatorTab({ evento, onUpdate, gatewayType = 'asaas' }: Props) {
   const [venueCostType, setVenueCostType] = useState<'total' | 'per_person'>('total');
   const [venueValue, setVenueValue] = useState<number>(0);
   const [minParticipants, setMinParticipants] = useState<number>(0);
@@ -23,11 +55,22 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
 
   const [taxaAbsorbida, setTaxaAbsorbida] = useState<'pagador' | 'margem'>('pagador');
 
-  // Taxas Asaas — defaults públicos do site deles
-  const [pixFee, setPixFee] = useState<number>(1.99);         // R$ fixo por transação
-  const [boletoFee, setBoletoFee] = useState<number>(1.99);   // R$ fixo por boleto
-  const [creditFee, setCreditFee] = useState<number>(2.99);   // % à vista
-  const [recurringFee, setRecurringFee] = useState<number>(2.49); // % por parcela recorrente
+  const gw = GATEWAY_FEES[gatewayType] || GATEWAY_FEES.asaas;
+
+  const [pixFee, setPixFee] = useState<number>(gw.pix);
+  const [boletoFee, setBoletoFee] = useState<number>(gw.boleto);
+  const [creditFee, setCreditFee] = useState<number>(gw.credit);
+  const [recurringFee, setRecurringFee] = useState<number>(gw.recurring);
+  const [pixAutoFee, setPixAutoFee] = useState<number>(gw.pixAutomatico ?? 0);
+
+  useEffect(() => {
+    const g = GATEWAY_FEES[gatewayType] || GATEWAY_FEES.asaas;
+    setPixFee(g.pix);
+    setBoletoFee(g.boleto);
+    setCreditFee(g.credit);
+    setRecurringFee(g.recurring);
+    setPixAutoFee(g.pixAutomatico ?? 0);
+  }, [gatewayType]);
 
   const [results, setResults] = useState({
     totalVenueCost: 0,
@@ -37,6 +80,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
     suggestedPriceBoleto: 0,
     suggestedPriceCredit: 0,
     suggestedPriceRecurring: 0,
+    suggestedPricePixAuto: 0,
     marginAmountPerPerson: 0,
   });
 
@@ -65,27 +109,28 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
 
     const base = costPerPerson + marginAmount;
 
-    // Preço sugerido por método:
-    // pagador = participante paga a taxa em cima do base (organizer recebe base)
-    // margem  = participante paga o base (organizer paga a taxa do próprio bolso)
     const calcPct = (fee: number) =>
       taxaAbsorbida === 'pagador' ? (fee >= 100 ? 0 : base / (1 - fee / 100)) : base;
 
     const calcFixed = (fee: number) =>
       taxaAbsorbida === 'pagador' ? base + fee : base;
 
+    const calcFee = (fee: number, type: 'fixed' | 'pct') =>
+      type === 'pct' ? calcPct(fee) : calcFixed(fee);
+
     setResults({
       totalVenueCost,
       costPerPersonMin,
       costPerPersonMax,
-      suggestedPricePix: calcFixed(pixFee),
-      suggestedPriceBoleto: calcFixed(boletoFee),
+      suggestedPricePix: calcFee(pixFee, gw.pixType),
+      suggestedPriceBoleto: calcFee(boletoFee, gw.boletoType),
       suggestedPriceCredit: calcPct(creditFee),
       suggestedPriceRecurring: calcPct(recurringFee),
+      suggestedPricePixAuto: calcFee(pixAutoFee, gw.pixAutomaticoType ?? 'fixed'),
       marginAmountPerPerson: marginAmount,
     });
   }, [venueCostType, venueValue, minParticipants, maxParticipants, marginType, marginValue,
-      taxaAbsorbida, pixFee, boletoFee, creditFee, recurringFee]);
+      taxaAbsorbida, pixFee, boletoFee, creditFee, recurringFee, pixAutoFee, gw]);
 
   const [savingMargem, setSavingMargem] = useState(false);
   const [margemSalva, setMargemSalva] = useState(false);
@@ -282,19 +327,21 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                 </div>
               </div>
 
-              {/* Taxas Asaas */}
+              {/* Taxas do Gateway */}
               <div className="pt-4 border-t border-border/60 space-y-3">
                 <div>
                   <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground block mb-0.5">
-                    Taxas do Asaas (seu contrato)
+                    Taxas do {gw.label} (seu contrato)
                   </Label>
                   <p className="text-[11px] text-muted-foreground font-medium">
-                    Valores padrão do Asaas. Ajuste se seu plano for diferente.
+                    Valores padrão do {gw.label}. Ajuste se seu plano for diferente.
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PIX (R$ fixo)</Label>
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                      PIX ({gw.pixType === 'pct' ? '%' : 'R$ fixo'})
+                    </Label>
                     <Input
                       type="number" step="0.01"
                       className="h-10 rounded-xl bg-muted/20 font-bold text-center"
@@ -303,7 +350,9 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">BOLETO (R$ fixo)</Label>
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                      BOLETO ({gw.boletoType === 'pct' ? '%' : 'R$ fixo'})
+                    </Label>
                     <Input
                       type="number" step="0.01"
                       className="h-10 rounded-xl bg-muted/20 font-bold text-center"
@@ -327,6 +376,17 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                       className="h-10 rounded-xl bg-muted/20 font-bold text-center"
                       value={recurringFee}
                       onChange={e => setRecurringFee(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="space-y-1.5 col-span-2">
+                    <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                      PIX AUTOMÁTICO ({(gw.pixAutomaticoType ?? 'fixed') === 'pct' ? '%' : 'R$ fixo'})
+                    </Label>
+                    <Input
+                      type="number" step="0.01"
+                      className="h-10 rounded-xl bg-muted/20 font-bold text-center"
+                      value={pixAutoFee}
+                      onChange={e => setPixAutoFee(Number(e.target.value))}
                     />
                   </div>
                 </div>
@@ -384,10 +444,11 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
                 </h4>
                 <div className="space-y-2">
                   {[
-                    { label: 'PIX',        price: results.suggestedPricePix,       fee: `R$ ${pixFee.toFixed(2)}`,  color: 'bg-orange-500/10 text-primary' },
-                    { label: 'Boleto',     price: results.suggestedPriceBoleto,    fee: fmt(boletoFee),       color: 'bg-amber-500/10 text-amber-600' },
+                    { label: 'PIX',        price: results.suggestedPricePix,       fee: gw.pixType === 'pct' ? `${pixFee}%` : `R$ ${pixFee.toFixed(2)}`,  color: 'bg-orange-500/10 text-primary' },
+                    { label: 'Boleto',     price: results.suggestedPriceBoleto,    fee: gw.boletoType === 'pct' ? `${boletoFee}%` : fmt(boletoFee),       color: 'bg-amber-500/10 text-amber-600' },
                     { label: 'Crédito',    price: results.suggestedPriceCredit,    fee: `${creditFee}%`,      color: 'bg-primary text-white', highlight: true },
                     { label: 'Recorrente', price: results.suggestedPriceRecurring, fee: `${recurringFee}%`,   color: 'bg-purple-500/10 text-purple-600' },
+                    { label: 'PIX Auto',   price: results.suggestedPricePixAuto,   fee: (gw.pixAutomaticoType ?? 'fixed') === 'pct' ? `${pixAutoFee}%` : `R$ ${pixAutoFee.toFixed(2)}`, color: 'bg-green-500/10 text-green-600' },
                   ].map(({ label, price, fee, color, highlight }) => (
                     <div
                       key={label}
@@ -442,8 +503,7 @@ export default function CalculatorTab({ evento, onUpdate }: Props) {
 
       <div className="bg-muted/30 px-5 py-4 rounded-xl border border-border/50 text-center">
         <p className="text-xs text-muted-foreground font-medium max-w-2xl mx-auto">
-          Taxas padrão do Asaas: PIX R$ 1,99 fixo · Boleto R$ 1,99 fixo · Crédito 2,99% + R$ 0,49 · Recorrente 2,49%.
-          Esses valores podem variar conforme seu plano contratado. Consulte seu painel Asaas para confirmar.
+          {gw.note} Esses valores podem variar conforme seu plano contratado. Consulte seu painel {gw.label} para confirmar.
         </p>
       </div>
     </div>

@@ -377,7 +377,7 @@ export default function EventDetail() {
               <FinancialTab eventoId={evento.id} isActive={activeTab === 'financial'} />
             </TabsContent>
             <TabsContent value="calculadora" className="mt-0 border-none p-0 shadow-none bg-transparent">
-              <CalculatorTab evento={evento} onUpdate={fetchEventoData} />
+              <CalculatorTab evento={evento} onUpdate={fetchEventoData} gatewayType={profile?.gateway?.type} />
             </TabsContent>
             <TabsContent value="management" className="mt-0 border-none p-0 shadow-none bg-transparent">
               <ManagementTab evento={evento} onUpdate={fetchEventoData} />
