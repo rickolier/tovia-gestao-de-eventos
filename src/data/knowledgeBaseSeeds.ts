@@ -717,7 +717,7 @@ O que você pode fazer no Chalém (além de tudo do Pétach):
 • Os valores vão direto da inscrição para a sua conta bancária
 
 BYOG — Bring Your Own Gateway (Traga Seu Próprio Gateway):
-O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (hoje o Asaas; em breve Stripe, Mercado Pago e Pagar.me) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
+O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (hoje o Asaas) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
 
 Caminho recomendado no Chalém:
 
@@ -1135,7 +1135,7 @@ A página de inscrição pública do Tovia é simples de usar no celular — o q
 
 REQUISITOS:
 • Plano Chalém ativo (R$299/mês)
-• Conta no Asaas (asaas.com) — pessoa física ou jurídica. Em breve: Stripe, Mercado Pago e Pagar.me.
+• Conta no Asaas (asaas.com) — pessoa física ou jurídica.
 
 PASSO 1 — CRIAR CONTA NO ASAAS:
 Acesse asaas.com e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação (geralmente 1-2 dias úteis). Após aprovação, sua conta estará pronta para receber pagamentos.
