@@ -96,6 +96,25 @@ export interface RefundResult {
   dateCreated?: string;
 }
 
+export interface CreatePixAutomaticoInput {
+  customerId: string;
+  value: number;
+  frequency: 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'SEMIANNUALLY' | 'ANNUALLY';
+  startDate: string;
+  contractId: string;
+  description: string;
+  externalRef: string;
+  expirationSeconds?: number;
+  retryPolicy?: 'ALLOW_THREE_IN_SEVEN_DAYS' | 'NOT_ALLOWED';
+}
+
+export interface PixAutomaticoResult {
+  id: string;
+  status: string;
+  encodedImage: string;
+  payload: string;
+}
+
 export interface ValidateCredentialsResult {
   valid: boolean;
   accountName?: string;

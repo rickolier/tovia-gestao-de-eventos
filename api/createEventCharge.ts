@@ -141,6 +141,55 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       : undefined;
 
+    // ── PIX Automático (recorrente via PIX) ────────────────────────────────
+    if (paymentMethod === 'pix_automatico') {
+      const totalInstallments = Math.max(2, installments ?? 2);
+      const installmentValue = parseFloat((valor / totalInstallments).toFixed(2));
+      const contractId = `tovia-evt-${inscricaoId}`.slice(0, 35);
+
+      let pixAuto: { id: string; status: string; encodedImage: string; payload: string };
+      try {
+        pixAuto = await provider.createPixAutomatico({
+          customerId,
+          value: installmentValue,
+          frequency: 'MONTHLY',
+          startDate: dueDateStr,
+          contractId,
+          description: `${evento.nome}`.slice(0, 35),
+          externalRef: `event:${eventoId}:${inscricaoId}`,
+          retryPolicy: 'ALLOW_THREE_IN_SEVEN_DAYS',
+        });
+      } catch (e: any) {
+        console.error('[createEventCharge] createPixAutomatico failed — status:', e?.response?.status ?? 'unknown');
+        return res.status(500).json({ error: 'Erro ao criar PIX Automático. Verifique se o gateway está habilitado para PIX Automático.' });
+      }
+
+      const pixColl = isDonation ? 'doacoes' : 'inscricoes';
+      await db.collection(`eventos/${eventoId}/${pixColl}`).doc(inscricaoId).update({
+        ...(isDonation
+          ? { formaPagamento: 'pix_automatico' }
+          : { status: 'pagamento_iniciado', forma_pagamento: 'pix_automatico' }),
+        pix_automatico_authorization_id: pixAuto.id,
+        installments: totalInstallments,
+        installment_value: installmentValue,
+      });
+
+      return res.json({
+        type: 'pix_automatico',
+        authorizationId: pixAuto.id,
+        encodedImage: pixAuto.encodedImage,
+        payload: pixAuto.payload,
+        status: pixAuto.status,
+        paymentUrl: null,
+        pixQrCode: null,
+        bankSlipUrl: null,
+        identificationField: null,
+        chargeId: pixAuto.id,
+        installmentValue,
+        installmentCount: totalInstallments,
+      });
+    }
+
     // ── Cobrança recorrente (assinatura mensal com maxPayments) ──────────────
     if (paymentMethod === 'recorrente') {
       if (!creditCard) {

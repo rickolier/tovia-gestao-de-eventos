@@ -126,6 +126,56 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const eventType: string = event?.event;
   const payment = event?.payment;
 
+  // PIX Automático: autorização recusada após pagamento inicial
+  if (eventType === 'PIX_AUTOMATIC_RECURRING_AUTHORIZATION_REFUSED') {
+    const authorization = event?.pixAutomaticAuthorization || event?.authorization;
+    console.warn('PIX Automático autorização recusada:', JSON.stringify(authorization));
+
+    // Find user by pixAutomaticoAuthorizationId
+    const authId = authorization?.id;
+    if (authId) {
+      try {
+        const usersSnap = await db.collection('users')
+          .where('pixAutomaticoAuthorizationId', '==', authId).limit(1).get();
+        if (!usersSnap.empty) {
+          const userDoc = usersSnap.docs[0];
+          const userData = userDoc.data();
+          const userId = userDoc.id;
+
+          await db.collection('users').doc(userId).update({ pixAutomaticoFalhou: true });
+
+          const notifId = `pix_auto_refused_${userId}`;
+          await db.collection('notificacoes').doc(notifId).set({
+            id: notifId,
+            userId,
+            tipo: 'alerta',
+            titulo: 'PIX Automático não autorizado',
+            mensagem: 'O banco não autorizou o PIX recorrente. O primeiro pagamento foi recebido, mas os próximos não serão cobrados automaticamente. Acesse Planos para trocar a forma de pagamento.',
+            data: new Date().toISOString(),
+            lida: false,
+            acao_requirida: true,
+          });
+
+          if (userData?.email) {
+            await sendNotificationEmail(
+              userData.email,
+              'PIX Automático não autorizado ⚠️',
+              emailWrap(`
+                <h1 style="font-size:24px;font-weight:900;color:${TEXT};margin:0 0 12px;">PIX Automático não autorizado</h1>
+                <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 12px;">Olá, <strong>${userData.nome || 'organizador'}</strong>. O seu banco não autorizou a cobrança recorrente via PIX Automático.</p>
+                <p style="font-size:15px;color:${MUTED};line-height:1.7;margin:0 0 12px;">O primeiro pagamento foi recebido normalmente, mas os próximos não serão cobrados automaticamente. Para manter sua assinatura ativa, troque para cartão de crédito.</p>
+                <a href="https://toviaapp.com.br/planos" style="display:inline-block;background:${PRIMARY};color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:12px;text-decoration:none;margin-top:8px;">Trocar forma de pagamento</a>
+              `),
+            );
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao processar PIX Automático recusado:', e);
+      }
+    }
+    return res.status(200).send('ok');
+  }
+
   if (!payment) return res.status(200).send('ok');
 
   const paidEvents = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'];

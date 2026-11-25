@@ -16,7 +16,7 @@ const MODULE_ICONS = [TicketIcon, DollarSign, Wallet];
 const MODULE_LABELS = ['Inscrições', 'Financeiro', 'Gestão do Evento'];
 
 type Period = 'monthly' | 'annual';
-type PaymentMethod = 'credit_card' | 'pix';
+type PaymentMethod = 'credit_card' | 'pix' | 'pix_automatico';
 
 function maskCpfCnpj(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 14);
@@ -71,6 +71,7 @@ export default function CheckoutPlano() {
     bairro: profile?.bairro || '',
   });
   const [saving, setSaving] = useState(false);
+  const [pixQrCode, setPixQrCode] = useState<{ encodedImage: string; payload: string } | null>(null);
 
   // Cupom
   const [cupomCode, setCupomCode] = useState('');
@@ -145,7 +146,11 @@ export default function CheckoutPlano() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Erro ao processar.');
-      if (data.paymentUrl) {
+      if (data.type === 'pix_automatico' && data.encodedImage) {
+        setPixQrCode({ encodedImage: data.encodedImage, payload: data.payload });
+        toast.success('QR Code gerado! Escaneie para autorizar o PIX Automático.');
+        await refreshProfile?.();
+      } else if (data.paymentUrl) {
         toast.success('Redirecionando para o pagamento...');
         window.open(data.paymentUrl, '_blank');
         await refreshProfile?.();
@@ -307,7 +312,15 @@ export default function CheckoutPlano() {
           {/* Payment method info */}
           <div className="bg-card rounded-2xl border p-6 space-y-3">
             <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Forma de pagamento</h2>
-            {period === 'monthly' ? (
+            {paymentMethod === 'pix_automatico' ? (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+                <QrCode className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-bold text-foreground">PIX Automático</p>
+                  <p className="text-xs text-muted-foreground">Assinatura mensal recorrente via PIX. Você autoriza uma vez e os pagamentos seguintes são automáticos.</p>
+                </div>
+              </div>
+            ) : period === 'monthly' ? (
               <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <CreditCard className="w-5 h-5 text-primary shrink-0" />
                 <div>
@@ -345,9 +358,61 @@ export default function CheckoutPlano() {
               : <>Gerar link de pagamento <ArrowRight className="w-5 h-5 ml-2" /></>}
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center">
-            Ao continuar você será redirecionado para a página de pagamento seguro do Asaas.
-          </p>
+          {!pixQrCode && (
+            <p className="text-xs text-muted-foreground text-center">
+              {paymentMethod === 'pix_automatico'
+                ? 'Ao continuar será gerado um QR Code para autorizar o PIX Automático.'
+                : 'Ao continuar você será redirecionado para a página de pagamento seguro do Asaas.'}
+            </p>
+          )}
+
+          {/* PIX Automático QR Code */}
+          {pixQrCode && (
+            <div className="bg-card rounded-2xl border p-6 space-y-4 text-center">
+              <div>
+                <h2 className="text-lg font-black text-foreground">Escaneie o QR Code</h2>
+                <p className="text-sm text-muted-foreground mt-1">Abra o app do seu banco e escaneie o código para autorizar o PIX Automático mensal.</p>
+              </div>
+              <div className="flex justify-center">
+                <img
+                  src={`data:image/png;base64,${pixQrCode.encodedImage}`}
+                  alt="QR Code PIX Automático"
+                  className="w-56 h-56 rounded-xl border"
+                />
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Ou copie o código PIX:</p>
+                <div className="flex gap-2">
+                  <input
+                    readOnly
+                    value={pixQrCode.payload}
+                    className="flex-1 text-xs bg-muted/50 border rounded-xl px-3 py-2 font-mono truncate"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl shrink-0"
+                    onClick={() => {
+                      navigator.clipboard.writeText(pixQrCode.payload);
+                      toast.success('Código PIX copiado!');
+                    }}
+                  >
+                    Copiar
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">Após autorizar, os próximos pagamentos serão cobrados automaticamente todo mês via PIX.</p>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-sm"
+                onClick={() => navigate('/planos/aguardando')}
+              >
+                Já autorizei o pagamento
+              </Button>
+            </div>
+          )}
         </form>
 
         {/* Right — Plan summary */}

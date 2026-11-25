@@ -7,6 +7,8 @@ import type {
   ChargeResult,
   CreateSubscriptionInput,
   SubscriptionResult,
+  CreatePixAutomaticoInput,
+  PixAutomaticoResult,
   ValidateCredentialsResult,
   WebhookEvent,
   PaymentMethod,
@@ -108,6 +110,33 @@ export class AsaasAdapter implements PaymentProvider {
       creditCard: input.creditCard,
       creditCardHolderInfo: input.cardHolder,
     });
+  }
+
+  async createPixAutomatico(input: CreatePixAutomaticoInput): Promise<PixAutomaticoResult> {
+    const base = asaasBaseUrl(this.sandbox);
+    const headers = { access_token: this.apiKey, 'Content-Type': 'application/json' };
+
+    const res = await axios.post(`${base}/pix/automatic/authorizations`, {
+      frequency: input.frequency,
+      contractId: input.contractId.slice(0, 35),
+      startDate: input.startDate,
+      customerId: input.customerId,
+      value: input.value,
+      description: (input.description || '').slice(0, 35),
+      paymentCreationMode: 'SUBSCRIPTION',
+      retryPolicy: input.retryPolicy ?? 'NOT_ALLOWED',
+      immediateQrCode: {
+        expirationSeconds: input.expirationSeconds ?? 3600,
+        originalValue: input.value,
+      },
+    }, { headers, timeout: 15000 });
+
+    return {
+      id: res.data.id,
+      status: res.data.status,
+      encodedImage: res.data.encodedImage,
+      payload: res.data.payload,
+    };
   }
 
   async validateCredentials(): Promise<ValidateCredentialsResult> {

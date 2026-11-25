@@ -22,7 +22,7 @@ const MODULE_DESCRIPTIONS = [
 
 
 type Period = 'monthly' | 'annual';
-type PaymentMethod = 'credit_card' | 'pix';
+type PaymentMethod = 'credit_card' | 'pix' | 'pix_automatico';
 
 export default function Plans() {
   const { user, profile } = useAuth();
@@ -44,7 +44,7 @@ export default function Plans() {
       state: {
         planLevel: selected,
         period,
-        paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
+        paymentMethod,
       },
     });
   };
@@ -213,10 +213,12 @@ export default function Plans() {
           })}
         </div>
 
-        {/* Annual payment method selector */}
-        {period === 'annual' && selected && selected !== 'chinam' && (
+        {/* Payment method selector */}
+        {selected && selected !== 'chinam' && (
           <div className="bg-white/10 rounded-2xl p-5 mb-6">
-            <p className="text-white/70 text-sm font-semibold mb-3">Forma de pagamento para o plano anual:</p>
+            <p className="text-white/70 text-sm font-semibold mb-3">
+              {period === 'monthly' ? 'Forma de pagamento mensal:' : 'Forma de pagamento para o plano anual:'}
+            </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setPaymentMethod('credit_card')}
@@ -228,22 +230,40 @@ export default function Plans() {
                 <CreditCard className={cn('w-5 h-5 shrink-0', paymentMethod === 'credit_card' ? 'text-primary' : 'text-white')} />
                 <div className="text-left">
                   <p className={cn('text-sm font-bold', paymentMethod === 'credit_card' ? 'text-foreground' : 'text-white')}>Cartão de crédito</p>
-                  <p className={cn('text-xs', paymentMethod === 'credit_card' ? 'text-muted-foreground' : 'text-white/60')}>12x sem juros</p>
+                  <p className={cn('text-xs', paymentMethod === 'credit_card' ? 'text-muted-foreground' : 'text-white/60')}>
+                    {period === 'monthly' ? 'Recorrente mensal' : '12x sem juros'}
+                  </p>
                 </div>
               </button>
-              <button
-                onClick={() => setPaymentMethod('pix')}
-                className={cn(
-                  'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
-                  paymentMethod === 'pix' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
-                )}
-              >
-                <QrCode className={cn('w-5 h-5 shrink-0', paymentMethod === 'pix' ? 'text-primary' : 'text-white')} />
-                <div className="text-left">
-                  <p className={cn('text-sm font-bold', paymentMethod === 'pix' ? 'text-foreground' : 'text-white')}>PIX</p>
-                  <p className={cn('text-xs', paymentMethod === 'pix' ? 'text-muted-foreground' : 'text-white/60')}>À vista</p>
-                </div>
-              </button>
+              {period === 'monthly' ? (
+                <button
+                  onClick={() => setPaymentMethod('pix_automatico')}
+                  className={cn(
+                    'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
+                    paymentMethod === 'pix_automatico' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
+                  )}
+                >
+                  <QrCode className={cn('w-5 h-5 shrink-0', paymentMethod === 'pix_automatico' ? 'text-primary' : 'text-white')} />
+                  <div className="text-left">
+                    <p className={cn('text-sm font-bold', paymentMethod === 'pix_automatico' ? 'text-foreground' : 'text-white')}>PIX Automático</p>
+                    <p className={cn('text-xs', paymentMethod === 'pix_automatico' ? 'text-muted-foreground' : 'text-white/60')}>Recorrente mensal via PIX</p>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setPaymentMethod('pix')}
+                  className={cn(
+                    'flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all',
+                    paymentMethod === 'pix' ? 'bg-white border-white' : 'border-white/20 hover:border-white/40',
+                  )}
+                >
+                  <QrCode className={cn('w-5 h-5 shrink-0', paymentMethod === 'pix' ? 'text-primary' : 'text-white')} />
+                  <div className="text-left">
+                    <p className={cn('text-sm font-bold', paymentMethod === 'pix' ? 'text-foreground' : 'text-white')}>PIX</p>
+                    <p className={cn('text-xs', paymentMethod === 'pix' ? 'text-muted-foreground' : 'text-white/60')}>À vista</p>
+                  </div>
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -239,6 +239,56 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Fluxo de checkout de plano
     const description = `Tovia · ${getPlanLabel(planLevel!)} · ${period === 'annual' ? 'Anual' : 'Mensal'}`;
 
+    // PIX Automático — assinatura mensal via PIX recorrente
+    if (period === 'monthly' && paymentMethod === 'pix_automatico') {
+      try {
+        const startDate = new Date().toISOString().split('T')[0];
+        const contractId = `tovia-plan-${userId}`.slice(0, 35);
+        const pixRes = await axios.post(
+          `${ASAAS_BASE_URL}/pix/automatic/authorizations`,
+          {
+            frequency: 'MONTHLY',
+            contractId,
+            startDate,
+            customerId,
+            value: price,
+            description: `Tovia ${getPlanLabel(planLevel!)}`.slice(0, 35),
+            paymentCreationMode: 'SUBSCRIPTION',
+            retryPolicy: 'ALLOW_THREE_IN_SEVEN_DAYS',
+            immediateQrCode: {
+              expirationSeconds: 3600,
+              originalValue: price,
+            },
+          },
+          { headers }
+        );
+
+        const authorizationId = pixRes.data.id;
+
+        await db.collection('users').doc(userId).set(
+          {
+            pixAutomaticoAuthorizationId: authorizationId,
+            plano: planLevel,
+            planoPendente: planLevel,
+            subscriptionPeriod: 'monthly',
+          },
+          { merge: true }
+        );
+
+        return res.json({
+          type: 'pix_automatico',
+          authorizationId,
+          encodedImage: pixRes.data.encodedImage,
+          payload: pixRes.data.payload,
+          status: pixRes.data.status,
+        });
+      } catch (pixErr: unknown) {
+        const e = pixErr as { response?: { data?: unknown; status?: number } };
+        console.error('Erro ao criar PIX Automático:', JSON.stringify(e?.response?.data), '| Status:', e?.response?.status);
+        return res.status(500).json({ error: 'Erro ao criar PIX Automático. Verifique se a conta está habilitada para PIX Automático no Asaas.' });
+      }
+    }
+
     if (period === 'monthly') {
       // Assinatura recorrente mensal com cartão de crédito
       let subscriptionId: string;

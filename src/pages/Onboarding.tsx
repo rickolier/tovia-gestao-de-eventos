@@ -22,7 +22,7 @@ const MODULE_DESCRIPTIONS = [
 ];
 
 type Period = 'monthly' | 'annual';
-type PaymentMethod = 'credit_card' | 'pix';
+type PaymentMethod = 'credit_card' | 'pix' | 'pix_automatico';
 
 export default function Onboarding() {
   const { user, profile, refreshProfile } = useAuth();
@@ -49,7 +49,7 @@ export default function Onboarding() {
       state: {
         planLevel: selected,
         period,
-        paymentMethod: period === 'monthly' ? 'credit_card' : paymentMethod,
+        paymentMethod,
       },
     });
   };

@@ -47,6 +47,8 @@ export interface UserProfile {
   desativado?: boolean;
   email_verificado?: boolean;
   ultimo_acesso?: string;
+  pixAutomaticoAuthorizationId?: string;
+  pixAutomaticoFalhou?: boolean;
   gateway_connected?: boolean;
   gateway?: {
     type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme';

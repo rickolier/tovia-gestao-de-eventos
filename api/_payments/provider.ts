@@ -5,6 +5,8 @@ import type {
   ChargeResult,
   CreateSubscriptionInput,
   SubscriptionResult,
+  CreatePixAutomaticoInput,
+  PixAutomaticoResult,
   ValidateCredentialsResult,
   WebhookEvent,
   PaymentMethod,
@@ -15,6 +17,7 @@ export interface PaymentProvider {
   createCustomer(input: CreateCustomerInput): Promise<Customer>;
   createCharge(input: CreateChargeInput): Promise<ChargeResult>;
   createSubscription(input: CreateSubscriptionInput): Promise<SubscriptionResult>;
+  createPixAutomatico(input: CreatePixAutomaticoInput): Promise<PixAutomaticoResult>;
   validateCredentials(): Promise<ValidateCredentialsResult>;
   registerWebhook(url: string, authToken: string): Promise<void>;
   parseWebhookEvent(headers: Record<string, string>, body: unknown): WebhookEvent | null;
