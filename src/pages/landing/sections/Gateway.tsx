@@ -38,7 +38,7 @@ export function Gateway() {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
           <a
             href="https://www.asaas.com/"
             target="_blank"
@@ -58,8 +58,32 @@ export function Gateway() {
             </div>
           </a>
 
+          <a
+            href="https://sejaefi.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-3xl p-6 text-white block hover:opacity-90 transition-opacity cursor-pointer"
+            style={{ background: '#1a1a2e' }}
+          >
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway disponível</p>
+            <div className="mb-4">
+              <img src="/efi-logo-white.svg" alt="Efí Bank" className="h-8 w-auto" />
+            </div>
+            <p className="text-sm text-white/80 leading-relaxed">
+              O Tovia também se integra com a Efí Bank. Conecte seu Client ID e Client Secret e receba via PIX, boleto e cartão.
+            </p>
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <p className="text-xs text-white/60">Clique e conheça mais sobre a Efí Bank</p>
+            </div>
+          </a>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
           <div className="rounded-3xl border border-border bg-card p-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Formas de pagamento disponíveis</p>
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/asaas-logo.svg" alt="Asaas" className="h-5 w-auto" style={{ filter: 'brightness(0) saturate(100%) invert(23%) sepia(96%) saturate(7495%) hue-rotate(230deg)' }} />
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Taxas Asaas</p>
+            </div>
             <div className="space-y-3">
               {[
                 { method: 'PIX',               fee: 'R$ 1,99 por transação',  color: 'bg-orange-50 text-primary' },
@@ -75,7 +99,31 @@ export function Gateway() {
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
-              Taxas cobradas pelo Asaas diretamente ao organizador. Valores podem variar conforme o plano contratado com o gateway.
+              Taxas cobradas pelo Asaas diretamente ao organizador. Valores podem variar conforme o plano contratado.
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-card p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/efi-logo.svg" alt="Efí Bank" className="h-5 w-auto" />
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Taxas Efí Bank</p>
+            </div>
+            <div className="space-y-3">
+              {[
+                { method: 'PIX',               fee: '1,19% por transação',    color: 'bg-orange-50 text-primary' },
+                { method: 'Boleto Bancário',   fee: 'R$ 3,45 por boleto',     color: 'bg-orange-50 text-orange-700'  },
+                { method: 'Cartão de crédito', fee: '3,49%',                  color: 'bg-blue-50 text-blue-700'      },
+                { method: 'Parcelado',         fee: '4,39% (2-12x)',          color: 'bg-violet-50 text-violet-700'  },
+                { method: 'PIX Automático',    fee: 'R$ 3,50 por transação',  color: 'bg-green-50 text-green-700'    },
+              ].map(item => (
+                <div key={item.method} className="flex items-center justify-between">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.color}`}>{item.method}</span>
+                  <span className="text-xs text-muted-foreground">{item.fee}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
+              Taxas cobradas pela Efí Bank diretamente ao organizador. Valores podem variar conforme o plano contratado.
             </p>
           </div>
         </div>

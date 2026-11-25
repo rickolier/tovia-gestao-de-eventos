@@ -717,12 +717,12 @@ O que você pode fazer no Chalém (além de tudo do Pétach):
 • Os valores vão direto da inscrição para a sua conta bancária
 
 BYOG — Bring Your Own Gateway (Traga Seu Próprio Gateway):
-O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (hoje o Asaas) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
+O modelo de pagamento do Tovia é o BYOG: você conecta o seu próprio gateway de pagamento (Asaas ou Efí Bank) ao evento. Assim, os valores das inscrições vão diretamente para a sua conta bancária, sem passar pelo Tovia. O Tovia só cuida da organização — não da intermediação financeira.
 
 Caminho recomendado no Chalém:
 
 ANTES DE QUALQUER EVENTO:
-1. Acesse Configurações → Gateway de Pagamento e conecte sua conta Asaas
+1. Acesse Configurações → Gateway de Pagamento e conecte sua conta (Asaas ou Efí Bank)
 2. Defina as taxas que você vai absorver ou repassar nos ingressos pagos
 
 PLANEJAMENTO DO EVENTO:
@@ -1135,7 +1135,9 @@ A página de inscrição pública do Tovia é simples de usar no celular — o q
 
 REQUISITOS:
 • Plano Chalém ativo (R$299/mês)
-• Conta no Asaas (asaas.com) — pessoa física ou jurídica.
+• Conta em um dos gateways suportados: Asaas (asaas.com) ou Efí Bank (sejaefi.com.br) — pessoa física ou jurídica.
+
+OPÇÃO A — ASAAS:
 
 PASSO 1 — CRIAR CONTA NO ASAAS:
 Acesse asaas.com e crie sua conta. Você precisará informar CPF ou CNPJ, dados bancários e aguardar a validação (geralmente 1-2 dias úteis). Após aprovação, sua conta estará pronta para receber pagamentos.
@@ -1144,13 +1146,30 @@ PASSO 2 — LOCALIZAR SUA CHAVE DE API:
 No painel do Asaas, acesse: Minha Conta → Integrações → Chave de API. Copie a chave de Produção (não a de Sandbox). A chave começa com "$aact_" seguida de caracteres alfanuméricos.
 
 PASSO 3 — CONECTAR NO TOVIA:
-No Tovia, acesse: Configurações → Gateway de Pagamentos. Cole a chave de API no campo indicado e clique em "Validar chave". O Tovia vai verificar os dados da sua conta no gateway (nome, CPF/CNPJ) — o CPF/CNPJ precisa bater com o cadastro do seu perfil no Tovia. Confirme os dados e clique em "Confirmar e conectar".
+No Tovia, acesse: Configurações → Gateway de Pagamentos. Selecione "Asaas" como provedor. Cole a chave de API no campo indicado e clique em "Validar chave".
+
+OPÇÃO B — EFÍ BANK:
+
+PASSO 1 — CRIAR CONTA NA EFÍ BANK:
+Acesse sejaefi.com.br e crie sua conta. Você precisará informar CPF ou CNPJ e dados bancários. Após aprovação, acesse o painel de desenvolvedores.
+
+PASSO 2 — CRIAR APLICAÇÃO E OBTER CREDENCIAIS:
+No painel da Efí, acesse: API → Minhas Aplicações → Nova Aplicação. Defina um nome (ex: "Tovia") e selecione os escopos necessários. Após criar, copie o Client ID e o Client Secret.
+
+PASSO 3 — CERTIFICADO PIX (OPCIONAL):
+Para receber via PIX, você precisará gerar um certificado .p12 no painel da Efí: API → Meus Certificados → Novo Certificado. Baixe o arquivo .p12.
+
+PASSO 4 — CONECTAR NO TOVIA:
+No Tovia, acesse: Configurações → Gateway de Pagamentos. Selecione "Efí Bank" como provedor. Informe o Client ID, o Client Secret e, se quiser usar PIX, faça o upload do certificado .p12.
+
+VALIDAÇÃO E CONFIRMAÇÃO (AMBOS):
+O Tovia vai verificar os dados da sua conta no gateway (nome, CPF/CNPJ) — o CPF/CNPJ precisa bater com o cadastro do seu perfil no Tovia. Confirme os dados e clique em "Confirmar e conectar".
 
 AMBIENTE SANDBOX vs. PRODUÇÃO:
 O Tovia oferece um toggle entre Sandbox (testes) e Produção (dinheiro real). Use o Sandbox para testar o fluxo de pagamento antes de publicar — pagamentos em sandbox não movimentam dinheiro real. Quando estiver confiante, mude para Produção.
 
 SEGURANÇA:
-Sua chave de API é criptografada com AES-256 antes de ser armazenada. O Tovia nunca exibe a chave completa após a conexão — apenas os últimos caracteres. Se precisar trocar a chave, desconecte e conecte novamente.
+Suas credenciais são criptografadas com AES-256 antes de serem armazenadas. O Tovia nunca exibe as credenciais completas após a conexão. Se precisar trocar, desconecte e conecte novamente.
 
 IMPORTANTE:
 O saldo dos pagamentos aparece diretamente no painel do seu gateway, não no Tovia. O Tovia registra as transações e atualiza o status de pagamento dos participantes automaticamente, mas o dinheiro é gerenciado inteiramente pelo gateway.`,
@@ -1477,7 +1496,7 @@ MÉTODOS DISPONÍVEIS:
 • Crédito recorrente — parcelas mensais automáticas no cartão
 
 COMO CONFIGURAR:
-1. Conecte seu gateway de pagamento (Asaas) na aba "Gateway" do painel
+1. Conecte seu gateway de pagamento (Asaas ou Efí Bank) na aba "Gateway" do painel
 2. Ao criar um ingresso pago, selecione os métodos de pagamento aceitos
 3. Pronto! A página de inscrição já mostra as opções de pagamento
 
