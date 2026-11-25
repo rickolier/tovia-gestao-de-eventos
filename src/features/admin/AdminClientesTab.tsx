@@ -43,7 +43,8 @@ export default function AdminClientesTab() {
         listDocuments<Evento>('eventos'),
         listCollectionGroup<Inscricao & { eventoId?: string }>('inscricoes'),
       ]);
-      setUsers(data.filter(u => !u.isDemo).sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
+      const ADMIN_EMAILS = ['suporte@toviaapp.com.br', 'admin@toviaapp.com.br', 'testepro@toviaapp.com.br'];
+      setUsers(data.filter(u => !u.isDemo && !ADMIN_EMAILS.includes(u.email || '')).sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
       const map: Record<string, number> = {};
       const eventoOwner: Record<string, string> = {};
       for (const e of eventos) {
