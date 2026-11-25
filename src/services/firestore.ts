@@ -13,7 +13,8 @@ import {
   DocumentData,
   QueryConstraint,
   WithFieldValue,
-  UpdateData
+  UpdateData,
+  collectionGroup,
 } from 'firebase/firestore';
 import { db, auth } from '~/services/firebase';
 
@@ -69,6 +70,18 @@ export const listDocuments = async <T>(path: string, constraints: QueryConstrain
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, path);
+    return [];
+  }
+};
+
+export const listCollectionGroup = async <T>(groupName: string, constraints: QueryConstraint[] = []): Promise<T[]> => {
+  try {
+    const groupRef = collectionGroup(db, groupName);
+    const q = query(groupRef, ...constraints);
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, eventoId: d.ref.parent.parent?.id, ...d.data() } as T));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, `collectionGroup:${groupName}`);
     return [];
   }
 };

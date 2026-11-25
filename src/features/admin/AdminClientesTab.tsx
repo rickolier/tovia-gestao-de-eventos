@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { listDocuments, updateDocument } from '~/services/firestore';
-import { UserProfile, PlanLevel, Evento } from '~/types';
+import { listDocuments, listCollectionGroup, updateDocument } from '~/services/firestore';
+import { UserProfile, PlanLevel, Evento, Inscricao } from '~/types';
 import { PLAN_CONFIGS } from '~/utils/plan-limits';
 import { auth } from '~/services/firebase';
 import {
   Search, RefreshCw, X, ExternalLink, ChevronRight,
-  ShieldOff, ArrowUpCircle, UserX, UserCheck, Mail, MailCheck, CalendarPlus,
+  ShieldOff, ArrowUpCircle, UserX, UserCheck, Mail, MailCheck, CalendarPlus, Users,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -33,20 +33,32 @@ export default function AdminClientesTab() {
   const [saving, setSaving] = useState<string | null>(null);
   const [suspending, setSuspending] = useState<string | null>(null);
   const [eventCountMap, setEventCountMap] = useState<Record<string, number>>({});
+  const [inscricaoCountMap, setInscricaoCountMap] = useState<Record<string, number>>({});
 
   const load = async () => {
     setLoading(true);
     try {
-      const [data, eventos] = await Promise.all([
+      const [data, eventos, inscricoes] = await Promise.all([
         listDocuments<UserProfile>('users'),
         listDocuments<Evento>('eventos'),
+        listCollectionGroup<Inscricao & { eventoId?: string }>('inscricoes'),
       ]);
       setUsers(data.filter(u => !u.isDemo).sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
       const map: Record<string, number> = {};
+      const eventoOwner: Record<string, string> = {};
       for (const e of eventos) {
         map[e.criado_por] = (map[e.criado_por] || 0) + 1;
+        eventoOwner[e.id] = e.criado_por;
       }
       setEventCountMap(map);
+      const inscrMap: Record<string, number> = {};
+      for (const i of inscricoes) {
+        const owner = i.eventoId ? eventoOwner[i.eventoId] : undefined;
+        if (owner) {
+          inscrMap[owner] = (inscrMap[owner] || 0) + 1;
+        }
+      }
+      setInscricaoCountMap(inscrMap);
     } catch (e) {
       console.error(e);
     } finally {
@@ -253,6 +265,10 @@ export default function AdminClientesTab() {
                           <span title={eventCountMap[u.uid] ? `${eventCountMap[u.uid]} evento(s)` : 'Nenhum evento criado'}>
                             <CalendarPlus className={cn('w-4 h-4', eventCountMap[u.uid] ? 'text-green-500' : 'text-muted-foreground/40')} />
                           </span>
+                          <span title={inscricaoCountMap[u.uid] ? `${inscricaoCountMap[u.uid]} inscrição(ões)` : 'Nenhuma inscrição'} className="flex items-center gap-0.5">
+                            <Users className={cn('w-4 h-4', inscricaoCountMap[u.uid] ? 'text-blue-500' : 'text-muted-foreground/40')} />
+                            {inscricaoCountMap[u.uid] ? <span className="text-[10px] font-bold text-blue-600">{inscricaoCountMap[u.uid]}</span> : null}
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-4 text-right">
@@ -353,6 +369,15 @@ export default function AdminClientesTab() {
                       </span>
                       <span className={cn('text-xs font-semibold', eventCountMap[selected.uid] ? 'text-green-600' : 'text-amber-500')}>
                         {eventCountMap[selected.uid] || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Users className={cn('w-3.5 h-3.5', inscricaoCountMap[selected.uid] ? 'text-blue-500' : 'text-muted-foreground/50')} />
+                        Total de inscrições
+                      </span>
+                      <span className={cn('text-xs font-semibold', inscricaoCountMap[selected.uid] ? 'text-blue-600' : 'text-amber-500')}>
+                        {inscricaoCountMap[selected.uid] || 0}
                       </span>
                     </div>
                   </div>
