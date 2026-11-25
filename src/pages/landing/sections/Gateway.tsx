@@ -69,6 +69,7 @@ export function Gateway() {
                 { method: 'Boleto Bancário',   fee: 'R$ 1,99 por boleto',     color: 'bg-orange-50 text-orange-700'  },
                 { method: 'Cartão de crédito', fee: '2,99% + R$ 0,49',       color: 'bg-blue-50 text-blue-700'      },
                 { method: 'Parcelado',         fee: '3,49% + R$ 0,49/parc.', color: 'bg-violet-50 text-violet-700'  },
+                { method: 'PIX Automático',    fee: 'R$ 1,99 por transação',  color: 'bg-green-50 text-green-700'    },
               ].map(item => (
                 <div key={item.method} className="flex items-center justify-between">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.color}`}>{item.method}</span>

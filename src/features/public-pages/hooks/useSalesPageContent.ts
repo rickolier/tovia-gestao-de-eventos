@@ -17,6 +17,10 @@ export interface CheckoutResult {
   chargeId: string;
   installmentValue?: number | null;
   installmentCount?: number | null;
+  type?: string;
+  encodedImage?: string;
+  payload?: string;
+  authorizationId?: string;
 }
 
 interface Props {

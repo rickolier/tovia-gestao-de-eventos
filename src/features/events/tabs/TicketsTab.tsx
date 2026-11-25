@@ -260,6 +260,7 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                           { id: 'credito', label: 'Cartão de Crédito' },
                           { id: 'debito', label: 'Cartão de Débito' },
                           { id: 'recorrente', label: 'Recorrente (crédito)' },
+                          { id: 'pix_automatico', label: 'PIX Automático (recorrente)' },
                         ].map(method => (
                           <div key={method.id} className="space-y-2">
                             <label className="flex items-center gap-2 cursor-pointer group">
@@ -318,6 +319,11 @@ export default function TicketsTab({ eventoId }: { eventoId: string }) {
                                     <option key={n} value={n}>até {n}x</option>
                                   ))}
                                 </select>
+                              </div>
+                            )}
+                            {method.id === 'pix_automatico' && (formData.metodos_pagamento || []).includes('pix_automatico') && (
+                              <div className="ml-6">
+                                <p className="text-[11px] text-muted-foreground">O participante autoriza via QR Code e os pagamentos seguintes são cobrados automaticamente via PIX.</p>
                               </div>
                             )}
                           </div>

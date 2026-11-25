@@ -54,7 +54,7 @@ function getFormStepData(state: SalesPageState) {
   if (allDoacao) {
     // Doações: usar métodos configurados no ingresso ou padrão (exceto recorrente)
     const donationTicket = selectedTickets[0];
-    const configured = (donationTicket?.metodos_pagamento || []).filter(m => ['pix', 'boleto', 'credito', 'debito'].includes(m));
+    const configured = (donationTicket?.metodos_pagamento || []).filter(m => ['pix', 'boleto', 'credito', 'debito', 'pix_automatico'].includes(m));
     allowedMethods = configured.length > 0 ? configured : ['pix', 'boleto', 'credito'];
   } else {
     allowedMethods = paidTickets[0]?.metodos_pagamento || ['pix', 'boleto', 'credito'];
@@ -63,7 +63,7 @@ function getFormStepData(state: SalesPageState) {
       allowedMethods = allowedMethods.filter(x => m.includes(x));
     });
   }
-  allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'debito', 'recorrente'].includes(m));
+  allowedMethods = allowedMethods.filter(m => ['pix', 'boleto', 'credito', 'debito', 'recorrente', 'pix_automatico'].includes(m));
 
   const firstTicket = allDoacao ? selectedTickets[0] : paidTickets[0];
   const maxParcelasCredito = firstTicket?.max_parcelas_credito ?? 1;
@@ -71,6 +71,7 @@ function getFormStepData(state: SalesPageState) {
   const maxParcelasRecorrente = firstTicket?.max_parcelas_recorrente ?? 2;
 
   const needsCard = state.selectedMethod === 'credito' || state.selectedMethod === 'recorrente';
+  const isPixAutomatico = state.selectedMethod === 'pix_automatico';
   const isGatewayPaid = gatewayConnected && total > 0;
   const canSubmit = !state.submitting && (!isGatewayPaid || (
     !!state.selectedMethod &&
@@ -84,6 +85,7 @@ function getFormStepData(state: SalesPageState) {
     credito: 'Cartão de crédito',
     debito: 'Cartão de débito',
     recorrente: 'Recorrente',
+    pix_automatico: 'PIX Automático',
   };
   const methodDescs: Record<string, string> = {
     pix: 'Confirmação imediata após o pagamento',
@@ -91,6 +93,7 @@ function getFormStepData(state: SalesPageState) {
     credito: maxParcelasCredito > 1 ? `À vista ou em até ${maxParcelasCredito}x — reserva o total do limite` : 'Débito imediato no cartão',
     debito: 'Pagamento à vista no cartão de débito',
     recorrente: `Cobranças mensais de ${maxParcelasRecorrente}x — reserva apenas a parcela do mês`,
+    pix_automatico: 'Autorize uma vez e os pagamentos seguintes são automáticos via PIX',
   };
 
   return { allowedMethods, maxParcelasCredito, maxParcelasBoleto, maxParcelasRecorrente, needsCard, isGatewayPaid, canSubmit, methodLabels, methodDescs };
@@ -155,6 +158,33 @@ const CheckoutResultBody: React.FC<{
   total: number;
   installments: number;
 }> = ({ selectedMethod, checkoutResult, total, installments }) => {
+  if (selectedMethod === 'pix_automatico' && checkoutResult.type === 'pix_automatico' && checkoutResult.encodedImage) {
+    return (
+      <div className="w-full space-y-4">
+        <div className="relative mx-auto w-48 h-48">
+          <img src={`data:image/png;base64,${checkoutResult.encodedImage}`} alt="QR Code PIX Automático"
+            className="w-full h-full rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5" />
+          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow">
+            <QrCode className="w-4 h-4 text-white" />
+          </div>
+        </div>
+        <p className="text-center text-xs text-gray-500">Escaneie o QR Code para autorizar o PIX Automático</p>
+        {checkoutResult.payload && (
+          <div className="space-y-2">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
+            <div className="flex gap-2">
+              <input readOnly value={checkoutResult.payload}
+                className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 truncate" />
+              <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.payload!); toast.success('Código copiado!'); }}
+                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform">
+                <Copy className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
   if (selectedMethod === 'pix' && checkoutResult.pixQrCode) {
     return (
       <div className="w-full space-y-4">
@@ -274,7 +304,7 @@ const CheckoutScreen: React.FC<{
   ticketName?: string;
   onDone: () => void;
 }> = ({ selectedMethod, checkoutResult, inscricaoId, eventoId, total, installments, ticketName, onDone }) => {
-  const needsPolling = selectedMethod === 'pix' || selectedMethod === 'boleto' || selectedMethod === 'debito';
+  const needsPolling = selectedMethod === 'pix' || selectedMethod === 'boleto' || selectedMethod === 'debito' || selectedMethod === 'pix_automatico';
   const confirmed = usePaymentPolling(eventoId, inscricaoId, needsPolling);
 
   useEffect(() => {

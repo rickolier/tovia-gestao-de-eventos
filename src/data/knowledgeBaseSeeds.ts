@@ -228,7 +228,7 @@ Disponibilidade por plano:
 • Pétach — até 5 ingressos por evento (gratuito, pago ou doação)
 • Chalém — até 10 ingressos por evento
 
-Os pagamentos manuais e automáticos (Pix, cartão, boleto) estão disponíveis a partir do plano Pétach via BYOG (Bring Your Own Gateway).
+Os pagamentos manuais e automáticos (Pix, cartão, boleto, PIX Automático) estão disponíveis a partir do plano Pétach via BYOG (Bring Your Own Gateway). O PIX Automático permite que o participante autorize uma vez e os pagamentos seguintes sejam debitados automaticamente via PIX.
 
 Dica: crie ingressos com nomes claros que ajudem os participantes a identificar qual categoria se aplica a eles. Evite termos técnicos ou internos que só fazem sentido para a equipe organizadora.`,
     video_url: '',
