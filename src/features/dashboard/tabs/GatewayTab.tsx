@@ -21,9 +21,6 @@ import { updateDocument } from '~/services/firestore';
 
 const GATEWAY_LABELS: Record<string, string> = {
   asaas: 'Asaas',
-  stripe: 'Stripe',
-  mercadopago: 'Mercado Pago',
-  pagarme: 'Pagar.me',
   efi: 'Efí Bank',
 };
 

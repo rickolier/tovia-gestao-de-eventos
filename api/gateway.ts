@@ -7,27 +7,8 @@ import { validateBody } from './_validate.js';
 import { encrypt, decrypt, genToken } from './_gateway-utils.js';
 import { createPaymentProvider } from './_payments/factory.js';
 import type { GatewayType } from './_payments/types.js';
-
-// ── Rate limit: 10 requests per hour ────────────────────────────────────────
-const RATE_WINDOW_MS = 60 * 60 * 1000;
-const RATE_LIMIT = 10;
-
-async function checkRateLimit(uid: string): Promise<boolean> {
-  const key = `saveGatewayConfig_${uid}`;
-  const ref = db.collection('_rate_limits').doc(key);
-  const snap = await ref.get();
-  const now = Date.now();
-  if (snap.exists) {
-    const data = snap.data()!;
-    const requests: number[] = (data.requests || []).filter((t: number) => now - t < RATE_WINDOW_MS);
-    if (requests.length >= RATE_LIMIT) return false;
-    requests.push(now);
-    await ref.set({ requests });
-  } else {
-    await ref.set({ requests: [now] });
-  }
-  return true;
-}
+import { checkRateLimit } from './_rate-limit.js';
+import { loadProvider } from './_provider-loader.js';
 
 const CONFIG_ERROR_MAP: Record<number, string> = {
   401: 'ERRO TV001 — Chave de API não autorizada. Verifique se está correta e ativa.',
@@ -37,6 +18,40 @@ const CONFIG_ERROR_MAP: Record<number, string> = {
   500: 'ERRO TV005 — Erro temporário no gateway. Tente novamente em alguns minutos.',
   503: 'ERRO TV006 — Gateway temporariamente indisponível. Tente mais tarde.',
 };
+
+async function validateAndCheckDocument(
+  provider: ReturnType<typeof createPaymentProvider>,
+  userId: string,
+): Promise<{ error?: string; status?: number; result?: { accountName?: string; document?: string } }> {
+  let result;
+  try {
+    result = await provider.validateCredentials();
+  } catch (e: any) {
+    const status = e?.response?.status;
+    const msg = status && CONFIG_ERROR_MAP[status]
+      ? CONFIG_ERROR_MAP[status]
+      : 'ERRO TV007 — Falha de conexão. Verifique sua internet e tente novamente.';
+    return { error: msg, status: 400 };
+  }
+
+  if (!result.valid) {
+    return { error: CONFIG_ERROR_MAP[401], status: 400 };
+  }
+
+  const userDoc = await db.collection('users').doc(userId).get();
+  const userData = userDoc.exists ? userDoc.data()! : {};
+  const userDocument = (userData.cpf_cnpj || userData.cpfCnpj || '').replace(/\D/g, '');
+  const gatewayDocument = (result.document || '').replace(/\D/g, '');
+
+  if (userDocument && gatewayDocument && userDocument !== gatewayDocument) {
+    return {
+      error: 'O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia. Verifique seus dados.',
+      status: 400,
+    };
+  }
+
+  return { result: { accountName: result.accountName, document: gatewayDocument } };
+}
 
 // ── saveConfig ──────────────────────────────────────────────────────────────
 async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
@@ -54,7 +69,7 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
   const { gatewayType, sandbox } = data;
   const userId = decoded.uid;
 
-  const allowed = await checkRateLimit(userId);
+  const allowed = await checkRateLimit('saveGatewayConfig', userId, 10);
   if (!allowed) {
     return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
   }
@@ -82,33 +97,10 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
   const step = (req.query.step as string) || data.step || 'validate';
 
   if (step === 'validate') {
-    let result;
-    try {
-      result = await provider.validateCredentials();
-    } catch (e: any) {
-      const status = e?.response?.status;
-      const msg = status && CONFIG_ERROR_MAP[status]
-        ? CONFIG_ERROR_MAP[status]
-        : 'ERRO TV007 — Falha de conexão. Verifique sua internet e tente novamente.';
-      return res.status(400).json({ error: msg });
-    }
+    const check = await validateAndCheckDocument(provider, userId);
+    if (check.error) return res.status(check.status!).json({ error: check.error });
 
-    if (!result.valid) {
-      return res.status(400).json({ error: CONFIG_ERROR_MAP[401] });
-    }
-
-    const userDoc = await db.collection('users').doc(userId).get();
-    const userData = userDoc.exists ? userDoc.data()! : {};
-    const userDocument = (userData.cpf_cnpj || userData.cpfCnpj || '').replace(/\D/g, '');
-    const gatewayDocument = (result.document || '').replace(/\D/g, '');
-
-    if (userDocument && gatewayDocument && userDocument !== gatewayDocument) {
-      return res.status(400).json({
-        error: 'O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia. Verifique seus dados.',
-      });
-    }
-
-    const cpfCnpj = gatewayDocument;
+    const cpfCnpj = check.result!.document ?? '';
     const masked = cpfCnpj.length === 11
       ? `***.***.${cpfCnpj.slice(6, 9)}-${cpfCnpj.slice(9)}`
       : cpfCnpj.length === 14
@@ -125,31 +117,8 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
   }
 
   if (step === 'confirm') {
-    let result;
-    try {
-      result = await provider.validateCredentials();
-    } catch (e: any) {
-      const status = e?.response?.status;
-      const msg = status && CONFIG_ERROR_MAP[status]
-        ? CONFIG_ERROR_MAP[status]
-        : 'ERRO TV007 — Falha de conexão. Verifique sua internet e tente novamente.';
-      return res.status(400).json({ error: msg });
-    }
-
-    if (!result.valid) {
-      return res.status(400).json({ error: 'Chave inválida. Tente novamente.' });
-    }
-
-    const userDoc = await db.collection('users').doc(userId).get();
-    const userData = userDoc.exists ? userDoc.data()! : {};
-    const userDocument = (userData.cpf_cnpj || userData.cpfCnpj || '').replace(/\D/g, '');
-    const gatewayDocument = (result.document || '').replace(/\D/g, '');
-
-    if (userDocument && gatewayDocument && userDocument !== gatewayDocument) {
-      return res.status(400).json({
-        error: 'O CPF/CNPJ da conta do gateway não corresponde ao seu cadastro no Tovia.',
-      });
-    }
+    const check = await validateAndCheckDocument(provider, userId);
+    if (check.error) return res.status(check.status!).json({ error: check.error });
 
     const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
     const encryptedKey = encrypt(resolvedApiKey, encKey);
@@ -253,16 +222,8 @@ async function handleRefund(req: VercelRequest, res: VercelResponse) {
   const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
   if (!encKey) return res.status(500).json({ error: 'Erro interno do servidor. A equipe técnica foi notificada. Tente novamente mais tarde.' });
 
-  const apiKey = decrypt(secrets.api_key_encrypted || secrets.encrypted_api_key, encKey);
-  const sandbox: boolean = secrets.sandbox ?? false;
-  const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
-
-  let refundCertificate: Buffer | undefined;
-  if (gatewayType === 'efi' && secrets.encrypted_certificate_p12) {
-    refundCertificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
-  }
-
-  const provider = createPaymentProvider(gatewayType, apiKey, sandbox, refundCertificate);
+  const resolvedSecrets = { ...secrets, encrypted_api_key: secrets.api_key_encrypted || secrets.encrypted_api_key };
+  const { provider } = loadProvider(resolvedSecrets, encKey);
 
   try {
     const refundValue = valor && valor > 0 && valor < pagamento.valor ? valor : undefined;

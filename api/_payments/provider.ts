@@ -23,4 +23,5 @@ export interface PaymentProvider {
   parseWebhookEvent(headers: Record<string, string>, body: unknown): WebhookEvent | null;
   supportedMethods(): PaymentMethod[];
   refundCharge(chargeId: string, value?: number): Promise<RefundResult>;
+  resolveNotification?(notificationToken: string): Promise<WebhookEvent | null>;
 }

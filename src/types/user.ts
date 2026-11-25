@@ -1,7 +1,7 @@
 export type PlanLevel = 'chinam' | 'petach' | 'chalem';
 
 export interface OrganizerSecrets {
-  type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme' | 'efi';
+  type: 'asaas' | 'efi';
   encrypted_api_key: string;
   encrypted_client_id?: string;
   encrypted_client_secret?: string;
@@ -54,7 +54,7 @@ export interface UserProfile {
   pixAutomaticoFalhou?: boolean;
   gateway_connected?: boolean;
   gateway?: {
-    type: 'asaas' | 'stripe' | 'mercadopago' | 'pagarme' | 'efi';
+    type: 'asaas' | 'efi';
     sandbox: boolean;
     connected_at: string;
   };

@@ -44,6 +44,39 @@ interface Props {
   onSuccess?: (inscricaoId: string) => void;
 }
 
+const PixQrCodeDisplay: React.FC<{
+  encodedImage: string;
+  payload: string;
+  alt: string;
+  subtitle: string;
+  countdown?: React.ReactNode;
+}> = ({ encodedImage, payload, alt, subtitle, countdown }) => (
+  <div className="w-full space-y-4">
+    <div className="relative mx-auto w-48 h-48">
+      <img src={`data:image/png;base64,${encodedImage}`} alt={alt}
+        className="w-full h-full rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5" />
+      <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow">
+        <QrCode className="w-4 h-4 text-white" />
+      </div>
+    </div>
+    {countdown}
+    <p className="text-center text-xs text-gray-500">{subtitle}</p>
+    {payload && (
+      <div className="space-y-2">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
+        <div className="flex gap-2">
+          <input readOnly value={payload}
+            className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 truncate" />
+          <button type="button" onClick={() => { navigator.clipboard.writeText(payload); toast.success('Código copiado!'); }}
+            className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform">
+            <Copy className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
 // ─── Derived data for the "form" step ─────────────────────────────────────────
 type SalesPageState = ReturnType<typeof useSalesPageContent>;
 
@@ -160,54 +193,23 @@ const CheckoutResultBody: React.FC<{
 }> = ({ selectedMethod, checkoutResult, total, installments }) => {
   if (selectedMethod === 'pix_automatico' && checkoutResult.type === 'pix_automatico' && checkoutResult.encodedImage) {
     return (
-      <div className="w-full space-y-4">
-        <div className="relative mx-auto w-48 h-48">
-          <img src={`data:image/png;base64,${checkoutResult.encodedImage}`} alt="QR Code PIX Automático"
-            className="w-full h-full rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5" />
-          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow">
-            <QrCode className="w-4 h-4 text-white" />
-          </div>
-        </div>
-        <p className="text-center text-xs text-gray-500">Escaneie o QR Code para autorizar o PIX Automático</p>
-        {checkoutResult.payload && (
-          <div className="space-y-2">
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
-            <div className="flex gap-2">
-              <input readOnly value={checkoutResult.payload}
-                className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 truncate" />
-              <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.payload!); toast.success('Código copiado!'); }}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform">
-                <Copy className="w-4 h-4 text-gray-500" />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      <PixQrCodeDisplay
+        encodedImage={checkoutResult.encodedImage}
+        payload={checkoutResult.payload ?? ''}
+        alt="QR Code PIX Automático"
+        subtitle="Escaneie o QR Code para autorizar o PIX Automático"
+      />
     );
   }
   if (selectedMethod === 'pix' && checkoutResult.pixQrCode) {
     return (
-      <div className="w-full space-y-4">
-        <div className="relative mx-auto w-48 h-48">
-          <img src={`data:image/png;base64,${checkoutResult.pixQrCode.encodedImage}`} alt="QR Code PIX"
-            className="w-full h-full rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5" />
-          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow">
-            <QrCode className="w-4 h-4 text-white" />
-          </div>
-        </div>
-        <PixCountdown expirationDate={checkoutResult.pixQrCode.expirationDate} />
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">PIX copia e cola</p>
-          <div className="flex gap-2">
-            <input readOnly value={checkoutResult.pixQrCode.payload}
-              className="flex-1 font-mono text-xs rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 truncate" />
-            <button type="button" onClick={() => { navigator.clipboard.writeText(checkoutResult!.pixQrCode!.payload); toast.success('Código copiado!'); }}
-              className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform">
-              <Copy className="w-4 h-4 text-gray-500" />
-            </button>
-          </div>
-        </div>
-      </div>
+      <PixQrCodeDisplay
+        encodedImage={checkoutResult.pixQrCode.encodedImage}
+        payload={checkoutResult.pixQrCode.payload}
+        alt="QR Code PIX"
+        subtitle=""
+        countdown={<PixCountdown expirationDate={checkoutResult.pixQrCode.expirationDate} />}
+      />
     );
   }
   if (selectedMethod === 'boleto') {

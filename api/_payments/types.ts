@@ -1,4 +1,4 @@
-export type GatewayType = 'asaas' | 'stripe' | 'mercadopago' | 'pagarme' | 'efi';
+export type GatewayType = 'asaas' | 'efi';
 
 export type PaymentMethod =
   | 'pix'

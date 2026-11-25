@@ -18,9 +18,56 @@ import { Progress } from '@/components/ui/progress';
 
 const GATEWAY_LABELS: Record<string, string> = {
   asaas: 'Asaas',
-  stripe: 'Stripe',
-  mercadopago: 'Mercado Pago',
-  pagarme: 'Pagar.me',
+  efi: 'Efí Bank',
+};
+
+const RefundInfoBox: React.FC<{ gatewayType: string; metodo: string }> = ({ gatewayType, metodo }) => {
+  const m = metodo.toLowerCase();
+  const isBoleto = m.includes('boleto');
+  const isPix = m.includes('pix');
+  const isCard = m.includes('cart') || m.includes('crédit') || m.includes('credit') || m.includes('débit') || m.includes('debit');
+  const isRecorrente = m.includes('recorr');
+
+  let prazoTexto: string;
+  let alertaExtra = '';
+
+  if (isBoleto) {
+    alertaExtra = gatewayType === 'efi'
+      ? 'Boletos pagos não podem ser estornados automaticamente pela Efí. Você precisará fazer a devolução manualmente pelo painel da Efí ou via transferência.'
+      : 'Boletos pagos no Asaas podem não ser estornados automaticamente. Caso o estorno falhe, faça a devolução pelo painel do Asaas ou via transferência.';
+    prazoTexto = 'Boleto: estorno manual necessário';
+  } else if (isPix) {
+    prazoTexto = 'PIX: o valor é devolvido em segundos';
+  } else if (isCard || isRecorrente) {
+    prazoTexto = gatewayType === 'efi'
+      ? 'Cartão: o estorno pode levar até 30 dias para aparecer na fatura do cliente'
+      : 'Cartão: o estorno pode levar de 7 a 30 dias para aparecer na fatura do cliente';
+  } else {
+    prazoTexto = 'O prazo de devolução depende do método de pagamento';
+  }
+
+  return (
+    <div className={`rounded-2xl p-4 space-y-2 ${isBoleto ? 'bg-red-50 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}>
+      <div className="flex items-start gap-2">
+        <AlertCircle className={`w-4 h-4 mt-0.5 shrink-0 ${isBoleto ? 'text-red-500' : 'text-amber-600'}`} />
+        <div>
+          <p className={`text-xs font-black ${isBoleto ? 'text-red-800' : 'text-amber-800'}`}>
+            Atenção: esta ação não pode ser desfeita.
+          </p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <p className={`text-xs font-semibold ${isBoleto ? 'text-red-700' : 'text-amber-700'}`}>{prazoTexto}</p>
+          </div>
+          {alertaExtra && (
+            <p className="text-xs text-red-600 mt-2 leading-relaxed">{alertaExtra}</p>
+          )}
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Gateway: <span className="font-bold">{GATEWAY_LABELS[gatewayType] ?? gatewayType}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default function FinancialTab({ eventoId, isActive }: { eventoId: string; isActive?: boolean }) {
@@ -598,55 +645,10 @@ export default function FinancialTab({ eventoId, isActive }: { eventoId: string;
               )}
 
               {/* Info box com prazos por método e gateway */}
-              {(() => {
-                const gw = profile?.gateway?.type ?? 'asaas';
-                const metodo = (refundTarget.metodo || '').toLowerCase();
-                const isBoleto = metodo.includes('boleto');
-                const isPix = metodo.includes('pix');
-                const isCard = metodo.includes('cart') || metodo.includes('crédit') || metodo.includes('credit') || metodo.includes('débit') || metodo.includes('debit');
-                const isRecorrente = metodo.includes('recorr');
-
-                let prazoTexto = '';
-                let alertaExtra = '';
-
-                if (isBoleto) {
-                  alertaExtra = gw === 'efi'
-                    ? 'Boletos pagos não podem ser estornados automaticamente pela Efí. Você precisará fazer a devolução manualmente pelo painel da Efí ou via transferência.'
-                    : 'Boletos pagos no Asaas podem não ser estornados automaticamente. Caso o estorno falhe, faça a devolução pelo painel do Asaas ou via transferência.';
-                  prazoTexto = 'Boleto: estorno manual necessário';
-                } else if (isPix) {
-                  prazoTexto = 'PIX: o valor é devolvido em segundos';
-                } else if (isCard || isRecorrente) {
-                  prazoTexto = gw === 'efi'
-                    ? 'Cartão: o estorno pode levar até 30 dias para aparecer na fatura do cliente'
-                    : 'Cartão: o estorno pode levar de 7 a 30 dias para aparecer na fatura do cliente';
-                } else {
-                  prazoTexto = 'O prazo de devolução depende do método de pagamento';
-                }
-
-                return (
-                  <div className={`rounded-2xl p-4 space-y-2 ${isBoleto ? 'bg-red-50 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}>
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className={`w-4 h-4 mt-0.5 shrink-0 ${isBoleto ? 'text-red-500' : 'text-amber-600'}`} />
-                      <div>
-                        <p className={`text-xs font-black ${isBoleto ? 'text-red-800' : 'text-amber-800'}`}>
-                          Atenção: esta ação não pode ser desfeita.
-                        </p>
-                        <div className="flex items-center gap-1.5 mt-2">
-                          <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                          <p className={`text-xs font-semibold ${isBoleto ? 'text-red-700' : 'text-amber-700'}`}>{prazoTexto}</p>
-                        </div>
-                        {alertaExtra && (
-                          <p className="text-xs text-red-600 mt-2 leading-relaxed">{alertaExtra}</p>
-                        )}
-                        <p className="text-[10px] text-muted-foreground mt-2">
-                          Gateway: <span className="font-bold">{gw === 'efi' ? 'Efí Bank' : 'Asaas'}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
+              <RefundInfoBox
+                gatewayType={profile?.gateway?.type ?? 'asaas'}
+                metodo={refundTarget.metodo || ''}
+              />
 
               {/* Checkbox de confirmação */}
               <label className="flex items-start gap-3 cursor-pointer select-none group">

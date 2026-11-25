@@ -3,28 +3,8 @@ import { db, verifyAuth } from './_firebase.js';
 import type { AuthError } from './_types.js';
 import { createEventChargeSchema } from './_schemas.js';
 import { validateBody } from './_validate.js';
-import { decrypt } from './_gateway-utils.js';
-import { createPaymentProvider } from './_payments/factory.js';
-import type { GatewayType } from './_payments/types.js';
-
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const RATE_LIMIT = 15;
-
-async function checkRateLimit(key: string): Promise<boolean> {
-  const ref = db.collection('_rate_limits').doc(`eventCharge_${key}`);
-  const snap = await ref.get();
-  const now = Date.now();
-  if (snap.exists) {
-    const data = snap.data()!;
-    const requests: number[] = (data.requests || []).filter((t: number) => now - t < RATE_WINDOW_MS);
-    if (requests.length >= RATE_LIMIT) return false;
-    requests.push(now);
-    await ref.set({ requests });
-  } else {
-    await ref.set({ requests: [now] });
-  }
-  return true;
-}
+import { checkRateLimit } from './_rate-limit.js';
+import { loadProvider } from './_provider-loader.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // GET: polling de status de pagamento (página pública)
@@ -65,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     rateLimitKey = `anon_${attendeeEmail}`;
   }
 
-  const allowed = await checkRateLimit(rateLimitKey);
+  const allowed = await checkRateLimit('eventCharge', rateLimitKey, 15);
   if (!allowed) {
     return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
   }
@@ -107,16 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(422).json({ error: 'Organizador não tem gateway configurado.' });
     }
 
-    const apiKey = decrypt(secrets.encrypted_api_key, encKey);
-    const sandbox: boolean = secrets.sandbox ?? false;
-    const gatewayType: GatewayType = secrets.type ?? 'asaas';
-
-    let certificate: Buffer | undefined;
-    if (gatewayType === 'efi' && secrets.encrypted_certificate_p12) {
-      certificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
-    }
-
-    const provider = createPaymentProvider(gatewayType, apiKey, sandbox, certificate);
+    const { provider } = loadProvider(secrets, encKey);
 
     let customerId: string;
     try {

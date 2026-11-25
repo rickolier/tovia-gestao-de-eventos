@@ -3,8 +3,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createHash, timingSafeEqual } from 'crypto';
 import { db } from './_firebase.js';
-import { createPaymentProvider } from './_payments/factory.js';
 import type { GatewayType } from './_payments/types.js';
+import { loadProvider } from './_provider-loader.js';
 
 import { sendEmail } from './_email/send.js';
 
@@ -89,17 +89,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const secrets = secretsDoc.exists ? secretsDoc.data()! : {};
   const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
 
-  let providerApiKey = '';
-  let providerCertificate: Buffer | undefined;
-  if (gatewayType === 'efi' && secrets.encrypted_api_key) {
-    const encKey = process.env.GATEWAY_ENCRYPTION_KEY!;
-    const { decrypt } = await import('./_gateway-utils.js');
-    providerApiKey = decrypt(secrets.encrypted_api_key, encKey);
-    if (secrets.encrypted_certificate_p12) {
-      providerCertificate = Buffer.from(decrypt(secrets.encrypted_certificate_p12, encKey), 'base64');
-    }
+  const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
+  let provider;
+  if (encKey && secrets.encrypted_api_key) {
+    ({ provider } = loadProvider(secrets, encKey));
+  } else {
+    const { createPaymentProvider } = await import('./_payments/factory.js');
+    provider = createPaymentProvider(gatewayType, '', secrets.sandbox ?? false);
   }
-  const provider = createPaymentProvider(gatewayType, providerApiKey, secrets.sandbox ?? false, providerCertificate);
 
   const headers: Record<string, string> = {};
   for (const [k, v] of Object.entries(req.headers)) {
@@ -110,8 +107,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!parsedEvent) return res.status(200).send('ok');
 
   // EFí Cobranças webhooks require a 2-step resolution
-  if (gatewayType === 'efi' && parsedEvent.value === 0 && parsedEvent.externalRef === '' && 'resolveNotification' in provider) {
-    const resolved = await (provider as any).resolveNotification(parsedEvent.paymentId);
+  if (gatewayType === 'efi' && parsedEvent.value === 0 && parsedEvent.externalRef === '' && provider.resolveNotification) {
+    const resolved = await provider.resolveNotification(parsedEvent.paymentId);
     if (!resolved) return res.status(200).send('ok');
     parsedEvent = resolved;
   }
