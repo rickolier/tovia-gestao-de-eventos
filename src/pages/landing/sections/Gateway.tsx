@@ -48,7 +48,7 @@ export function Gateway() {
           >
             <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway disponível</p>
             <div className="mb-4">
-              <img src="/asaas-logo.svg" alt="Asaas" className="h-8 w-auto" />
+              <img src="/asaas-logo.svg" alt="Asaas" className="h-12 w-auto" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               O Tovia se integra com o Asaas. Você cria sua conta no Asaas, conecta ao Tovia e começa a receber. Simples assim.
@@ -67,7 +67,7 @@ export function Gateway() {
           >
             <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Gateway disponível</p>
             <div className="mb-4">
-              <img src="/efi-logo-white.svg" alt="Efí Bank" className="h-6 w-auto" />
+              <img src="/efi-logo-white.svg" alt="Efí Bank" className="h-12 w-auto" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               O Tovia também se integra com a Efí Bank. Conecte sua conta e receba via Pix, boleto e cartão.
@@ -80,8 +80,8 @@ export function Gateway() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="rounded-3xl border border-border bg-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <img src="/asaas-logo.svg" alt="Asaas" className="h-5 w-auto" style={{ filter: 'brightness(0) saturate(100%) invert(23%) sepia(96%) saturate(7495%) hue-rotate(230deg)' }} />
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/asaas-logo.svg" alt="Asaas" className="h-7 w-auto" style={{ filter: 'brightness(0) saturate(100%) invert(23%) sepia(96%) saturate(7495%) hue-rotate(230deg)' }} />
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Taxas Asaas</p>
             </div>
             <div className="space-y-3">
@@ -104,8 +104,8 @@ export function Gateway() {
           </div>
 
           <div className="rounded-3xl border border-border bg-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <img src="/efi-logo.svg" alt="Efí Bank" className="h-4 w-auto" />
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/efi-logo.svg" alt="Efí Bank" className="h-7 w-auto" />
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Taxas Efí Bank</p>
             </div>
             <div className="space-y-3">
