@@ -226,8 +226,13 @@ function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
     return [
       {
         title: 'Módulo Financeiro desbloqueado!',
-        description: 'O Tovia não cobra seus participantes — você usa Pix, dinheiro, transferência ou qualquer meio, e registra aqui o que recebeu. Vamos ver como funciona!',
+        description: 'O Tovia oferece duas formas de gerenciar pagamentos: manual (você registra o que recebeu) ou automático via gateway (Asaas ou Efí Bank). Vamos ver como funciona!',
         icon: <DollarSign className="w-4 h-4" />,
+      },
+      {
+        title: 'Conecte seu gateway de pagamento!',
+        description: 'Em Configurações → Gateway, conecte sua conta Asaas ou Efí Bank. Os participantes pagam via PIX, boleto ou cartão e o dinheiro cai direto na sua conta — o Tovia nunca toca no dinheiro.',
+        icon: <CreditCard className="w-4 h-4" />,
       },
       {
         title: 'Configure as finanças do evento!',
@@ -236,7 +241,7 @@ function buildSteps(tourId: TourId, plan: PlanLevel): TourStep[] {
       },
       {
         title: 'Registre e acompanhe pagamentos!',
-        description: 'Na aba Financeiro você registra pagamentos manualmente, confirma entradas, acompanha parcelas e tem uma visão clara do fluxo de caixa.',
+        description: 'Na aba Financeiro você acompanha todos os pagamentos — automáticos via gateway ou registrados manualmente. Veja o fluxo de caixa completo do evento.',
         icon: <DollarSign className="w-4 h-4" />,
       },
       {
