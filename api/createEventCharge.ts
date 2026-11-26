@@ -88,6 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const { provider } = loadProvider(secrets, encKey);
+    const gatewayType = secrets.type ?? 'asaas';
 
     let customerId: string;
     try {
@@ -229,6 +230,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (e: any) {
       console.error('[createEventCharge] createCharge failed — status:', e?.response?.status ?? 'unknown');
       return res.status(500).json({ error: 'Erro ao criar cobrança. Tente novamente.' });
+    }
+
+    // Store EFí PIX txid mapping so webhooks can resolve eventoId/inscricaoId
+    if (gatewayType === 'efi' && paymentMethod === 'pix') {
+      const txid = `event:${eventoId}:${inscricaoId}`.replace(/[^a-zA-Z0-9]/g, '').slice(0, 35);
+      await db.collection('_efi_txid_map').doc(txid).set({ eventoId, inscricaoId });
     }
 
     const chargeColl = isDonation ? 'doacoes' : 'inscricoes';

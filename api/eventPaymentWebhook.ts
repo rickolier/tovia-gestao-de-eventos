@@ -51,43 +51,102 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const rawBody = req.body;
-  const rawEvent: string = rawBody?.event;
+
+  // ── Route 1: Asaas webhook (has payment.externalReference) ──────────────
   const rawPayment = rawBody?.payment;
+  if (rawPayment) {
+    const externalRef: string = rawPayment.externalReference || '';
+    if (!externalRef.startsWith('event:')) return res.status(200).send('ok');
 
-  if (!rawPayment) return res.status(200).send('ok');
+    const parts = externalRef.split(':');
+    const eventoId = parts[1];
+    const inscricaoId = parts[2];
+    if (!eventoId || !inscricaoId) return res.status(200).send('ok');
 
-  const externalRef: string = rawPayment.externalReference || '';
+    return handleParsedWebhook(req, res, eventoId, inscricaoId, rawBody);
+  }
 
-  if (!externalRef.startsWith('event:')) return res.status(200).send('ok');
+  // ── Route 2: EFí PIX webhook (has pix[] array with txid) ───────────────
+  if (rawBody?.pix && Array.isArray(rawBody.pix)) {
+    for (const pixEntry of rawBody.pix) {
+      const txid: string = pixEntry.txid ?? '';
+      if (!txid) continue;
+      // txid was constructed as externalRef with colons stripped; look it up
+      // Format was: "event:<eventoId>:<inscricaoId>" → "event<eventoId><inscricaoId>"
+      // We need to find the inscricao by querying the charge record
+      // For now, search organizer_secrets for an EFí organizer, then resolve via the provider
+      const resolved = await resolveEfiPixTxid(req, res, txid, rawBody);
+      if (resolved) return resolved;
+    }
+    return res.status(200).send('ok');
+  }
 
-  const parts = externalRef.split(':');
-  const eventoId = parts[1];
-  const inscricaoId = parts[2];
+  // ── Route 3: EFí Cobranças notification (has notification token) ────────
+  if (rawBody?.notification) {
+    // Cobranças notifications require knowing the organizer to resolve.
+    // The notification endpoint is global; we'd need a lookup table.
+    // For now, return 200 — these are resolved per-charge via custom_id.
+    console.warn('[eventPaymentWebhook] EFí Cobranças notification received — not yet routed');
+    return res.status(200).send('ok');
+  }
 
-  if (!eventoId || !inscricaoId) return res.status(200).send('ok');
+  return res.status(200).send('ok');
+}
 
-  // Valida token via SHA256
+// ── Resolve EFí PIX txid to eventoId + inscricaoId ───────────────────────
+async function resolveEfiPixTxid(
+  req: VercelRequest,
+  res: VercelResponse,
+  txid: string,
+  rawBody: unknown,
+): Promise<VercelResponse | void> {
+  // The txid was built from "event:<eventoId>:<inscricaoId>" by stripping non-alphanum.
+  // Pattern: "event" + eventoId + inscricaoId (no separators).
+  // We can't split it back, so we look up charges with this txid.
+  // Store a mapping at charge-creation time: txid → eventoId:inscricaoId
+  const mappingDoc = await db.collection('_efi_txid_map').doc(txid).get();
+  if (!mappingDoc.exists) {
+    console.warn(`[eventPaymentWebhook] EFí PIX txid ${txid} não encontrado no mapa`);
+    return res.status(200).send('ok');
+  }
+  const { eventoId, inscricaoId } = mappingDoc.data()! as { eventoId: string; inscricaoId: string };
+  return handleParsedWebhook(req, res, eventoId, inscricaoId, rawBody);
+}
+
+// ── Core webhook processing ──────────────────────────────────────────────
+async function handleParsedWebhook(
+  req: VercelRequest,
+  res: VercelResponse,
+  eventoId: string,
+  inscricaoId: string,
+  rawBody: unknown,
+): Promise<VercelResponse | void> {
   const eventoDoc = await db.collection('eventos').doc(eventoId).get();
   if (!eventoDoc.exists) return res.status(200).send('ok');
   const organizerId: string = eventoDoc.data()!.criado_por;
   const secretsDoc = await db.collection('organizer_secrets').doc(organizerId).get();
-  const storedHash: string = secretsDoc.exists ? (secretsDoc.data()!.webhook_token_hash ?? '') : '';
-  if (!storedHash) {
-    console.warn(`[eventPaymentWebhook] evento ${eventoId} sem webhook_token_hash — rejeitado`);
-    return res.status(401).send('Unauthorized');
-  }
-  const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
-  const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
-  const hashA = Buffer.from(incomingHash, 'hex');
-  const hashB = Buffer.from(storedHash, 'hex');
-  if (hashA.length !== hashB.length || !timingSafeEqual(hashA, hashB)) {
-    console.warn(`[eventPaymentWebhook] token mismatch para evento ${eventoId}`);
-    return res.status(401).send('Unauthorized');
+  if (!secretsDoc.exists) return res.status(200).send('ok');
+  const storedHash: string = secretsDoc.data()!.webhook_token_hash ?? '';
+  const orgGatewayType: GatewayType = (secretsDoc.data()!.type as GatewayType) ?? 'asaas';
+
+  // Auth: Asaas uses token header; EFí PIX uses mTLS (infra-level); EFí Cobranças uses notification resolution.
+  if (orgGatewayType === 'asaas') {
+    if (!storedHash) {
+      console.warn(`[eventPaymentWebhook] evento ${eventoId} sem webhook_token_hash — rejeitado`);
+      return res.status(401).send('Unauthorized');
+    }
+    const incomingToken: string = String(req.headers['asaas-access-token'] ?? '');
+    const incomingHash = createHash('sha256').update(incomingToken).digest('hex');
+    const hashA = Buffer.from(incomingHash, 'hex');
+    const hashB = Buffer.from(storedHash, 'hex');
+    if (hashA.length !== hashB.length || !timingSafeEqual(hashA, hashB)) {
+      console.warn(`[eventPaymentWebhook] token mismatch para evento ${eventoId}`);
+      return res.status(401).send('Unauthorized');
+    }
   }
 
-  // Determina o gateway do organizador e parseia o evento
-  const secrets = secretsDoc.exists ? secretsDoc.data()! : {};
-  const gatewayType: GatewayType = (secrets.type as GatewayType) ?? 'asaas';
+  const secrets = secretsDoc.data()!;
+  const gatewayType = orgGatewayType;
 
   const encKey = process.env.GATEWAY_ENCRYPTION_KEY;
   let provider;

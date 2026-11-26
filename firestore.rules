@@ -266,6 +266,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Server-only: EFí PIX txid → eventoId/inscricaoId mapping
+    match /_efi_txid_map/{txid} {
+      allow read, write: if false;
+    }
+
     // ===============================================================
     // Metadados públicos do organizador (gateway_connected, pagina_publica)
     // ===============================================================

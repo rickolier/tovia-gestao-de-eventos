@@ -110,7 +110,7 @@ async function handleSaveConfig(req: VercelRequest, res: VercelResponse) {
     return res.json({
       validated: true,
       accountInfo: {
-        name: result.accountName || '',
+        name: check.result!.accountName || '',
         cpfCnpjMasked: masked,
       },
     });
