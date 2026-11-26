@@ -33,15 +33,15 @@ const DOCS: Doc[] = [
     description: 'Visão completa do Tovia: produto, estratégia, infraestrutura, SWOT, planos, roadmap e app mobile.',
     html: documentoProdutoHtml,
     hasPreview: true,
-    updatedAt: '2026-09-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'codigos-erro',
     title: 'Códigos de Erro',
-    description: '93 erros mapeados com códigos públicos (TV001–TV013) e internos. Inclui estornos, gateway e webhooks.',
+    description: '93+ erros mapeados com códigos públicos (TV001–TV013) e internos. Inclui estornos, gateway (Asaas/Efí Bank) e webhooks.',
     html: codigosErroHtml,
     hasPreview: true,
-    updatedAt: '2026-10-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'design-system',
@@ -71,7 +71,7 @@ const DOCS: Doc[] = [
     downloadContent: arquiteturaJson,
     downloadFilename: 'arquitetura-tovia.json',
     downloadMime: 'application/json',
-    updatedAt: '2026-09-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'marketing-gtm',
@@ -79,7 +79,7 @@ const DOCS: Doc[] = [
     description: 'Posicionamento, prospecção direta, gatilhos, conteúdo, pirâmide de distribuição e fases do GTM.',
     html: marketingHtml,
     hasPreview: true,
-    updatedAt: '2026-09-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'kpis',
@@ -87,7 +87,7 @@ const DOCS: Doc[] = [
     description: 'North Star, funil de conversão, modelo financeiro, OKRs e metas por fase. Scorecard completo.',
     html: kpisHtml,
     hasPreview: true,
-    updatedAt: '2026-09-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'backlog',
@@ -95,7 +95,7 @@ const DOCS: Doc[] = [
     description: 'Pendências ativas: bugs, infra, produto, segurança, crescimento e escala. 11 itens pendentes (19 resolvidos).',
     html: backlogHtml,
     hasPreview: true,
-    updatedAt: '2026-10-21',
+    updatedAt: '2026-11-26',
   },
   {
     id: 'brandguide',

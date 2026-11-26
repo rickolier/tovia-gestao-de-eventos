@@ -224,7 +224,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <section id="webhooks">
     <div class="section-label">Webhooks</div>
     <h2>Webhooks de pagamento</h2>
-    <p>Recebem notificações do gateway de pagamento. Retornam texto simples (não JSON). Erros silenciosos retornam <code>200 ok</code> para evitar retentativas do gateway.</p>
+    <p>Recebem notificações do gateway de pagamento (Asaas ou Efí Bank). Retornam texto simples (não JSON). Erros silenciosos retornam <code>200 ok</code> para evitar retentativas do gateway. Autenticação varia por gateway: Asaas usa header <code>asaas-access-token</code> validado com SHA-256 timing-safe; Efí PIX usa mTLS (certificado no nível da infraestrutura).</p>
 
     <div class="error-group">
       <div class="error-group-header">
@@ -239,16 +239,22 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
             <td><span class="error-code">TV-100</span></td>
             <td><span class="http-badge http-401">401</span></td>
             <td><span class="error-msg">Unauthorized</span></td>
-            <td>Evento não tem webhook_token_hash configurado</td>
+            <td>Evento não tem webhook_token_hash configurado (apenas Asaas — Efí PIX usa mTLS)</td>
           </tr>
           <tr>
             <td><span class="error-code">TV-101</span></td>
             <td><span class="http-badge http-401">401</span></td>
             <td><span class="error-msg">Unauthorized</span></td>
-            <td>Token do webhook não confere com o hash armazenado no evento</td>
+            <td>Token do webhook não confere com o hash armazenado no evento (apenas Asaas)</td>
           </tr>
           <tr>
             <td><span class="error-code">TV-102</span></td>
+            <td><span class="http-badge http-200">200</span></td>
+            <td><span class="error-msg">ok</span></td>
+            <td>Efí PIX: txid não encontrado na coleção <code>_efi_txid_map</code>. Cobrança pode ter sido criada antes da migração ou txid inválido.</td>
+          </tr>
+          <tr>
+            <td><span class="error-code">TV-103</span></td>
             <td><span class="http-badge http-500">500</span></td>
             <td><span class="error-msg">error</span></td>
             <td>Erro inesperado ao processar o webhook (catch genérico)</td>
@@ -716,7 +722,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <!-- ═══════════ 10. saveGatewayConfig ═══════════ -->
   <section class="section" id="gatewayconfig">
     <h2>10. saveGatewayConfig <span class="badge">POST /api/saveGatewayConfig</span></h2>
-    <p>Conecta e valida o gateway de pagamento do organizador. Fluxo em 2 etapas: <code>step=validate</code> (testa a chave) → <code>step=confirm</code> (salva e registra webhook).</p>
+    <p>Conecta e valida o gateway de pagamento do organizador (Asaas ou Efí Bank). Fluxo em 2 etapas: <code>step=validate</code> (testa credenciais) → <code>step=confirm</code> (salva e registra webhook). Asaas usa API key; Efí Bank usa Client ID + Client Secret + certificado .p12.</p>
     <div class="table-wrapper">
       <table>
         <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem</th><th>Causa / Ação</th></tr></thead>
@@ -730,8 +736,8 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
           <tr>
             <td><span class="error-code">TV002</span></td>
             <td><span class="http-badge http-400">400</span></td>
-            <td><span class="error-msg">Sua chave não tem permissão de acesso. Verifique no painel Asaas.</span></td>
-            <td>Gateway retornou 403 — chave sem permissão suficiente</td>
+            <td><span class="error-msg">Sua chave não tem permissão de acesso. Verifique no painel do gateway.</span></td>
+            <td>Gateway retornou 403 — chave/credencial sem permissão suficiente (Asaas: painel Asaas; Efí: painel Efí Bank)</td>
           </tr>
           <tr>
             <td><span class="error-code">TV003</span></td>
@@ -900,7 +906,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
   <!-- ═══════════ 14. refundCharge (estornos) ═══════════ -->
   <section class="section" id="estornos">
     <h2>14. refundCharge <span class="badge">POST /api/refundCharge</span></h2>
-    <p>Processa estornos de pagamentos automáticos (BYOG). O organizador solicita o estorno pelo painel, o Tovia chama a API do Asaas, e o participante recebe um e-mail com prazo estimado. Estornos parciais são suportados para PIX e cartão de crédito.</p>
+    <p>Processa estornos de pagamentos automáticos (BYOG). O organizador solicita o estorno pelo painel, o Tovia chama a API do gateway (Asaas ou Efí Bank), e o participante recebe um e-mail com prazo estimado. Estornos parciais são suportados para PIX e cartão de crédito.</p>
 
     <div class="error-group">
       <div class="error-group-header">Validação de entrada <span class="error-group-badge badge-client">client</span></div>
@@ -924,7 +930,7 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
               <td><span class="error-code">—</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">Este pagamento não possui um identificador no gateway.</span></td>
-              <td>Campo <code>gateway_payment_id</code> ausente. Webhook de confirmação pode não ter sido recebido. Verificar no painel Asaas.</td>
+              <td>Campo <code>gateway_payment_id</code> ausente. Webhook de confirmação pode não ter sido recebido. Verificar no painel do gateway (Asaas ou Efí Bank).</td>
             </tr>
             <tr>
               <td><span class="error-code">—</span></td>
@@ -990,46 +996,46 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
 
     <div class="error-group">
-      <div class="error-group-header">Erros do gateway Asaas <span class="error-group-badge badge-server">gateway</span></div>
+      <div class="error-group-header">Erros do gateway (Asaas / Efí Bank) <span class="error-group-badge badge-server">gateway</span></div>
       <div class="overflow-x">
         <table class="error-table">
-          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem exibida ao organizador</th><th>Causa original no Asaas</th></tr></thead>
+          <thead><tr><th>Código</th><th>HTTP</th><th>Mensagem exibida ao organizador</th><th>Causa original no gateway</th></tr></thead>
           <tbody>
             <tr>
               <td><span class="error-code">TV008</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">O valor do estorno é inválido. Verifique se não excede o valor original.</span></td>
-              <td>Asaas: "Payment value is not valid" — valor negativo, zero ou maior que o permitido.</td>
+              <td>Gateway: valor negativo, zero ou maior que o permitido (Asaas: "Payment value is not valid").</td>
             </tr>
             <tr>
               <td><span class="error-code">TV009</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">O gateway não permite estorno para este pagamento.</span></td>
-              <td>Asaas: "Payment refund is not allowed" — cobrança pendente, já estornada, ou tipo não suportado.</td>
+              <td>Gateway não permite estorno — cobrança pendente, já estornada, ou tipo não suportado.</td>
             </tr>
             <tr>
               <td><span class="error-code">TV010</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">Pagamento não encontrado no gateway.</span></td>
-              <td>Asaas: "Invalid payment" — cobrança removida diretamente no painel Asaas.</td>
+              <td>Cobrança não encontrada ou removida diretamente no painel do gateway.</td>
             </tr>
             <tr>
               <td><span class="error-code">TV011</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">O valor do estorno é maior que o valor do pagamento original.</span></td>
-              <td>Asaas: "Payment refund value is greater than the payment value" — estorno parcial com valor excessivo.</td>
+              <td>Estorno parcial com valor maior que o pagamento original.</td>
             </tr>
             <tr>
               <td><span class="error-code">TV012</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">Sua chave de API do gateway expirou ou foi revogada.</span></td>
-              <td>Asaas retornou 401 — chave API inválida. Reconectar em Configurações → Financeiro.</td>
+              <td>Gateway retornou 401 — credenciais inválidas ou expiradas. Reconectar em Configurações → Gateway.</td>
             </tr>
             <tr>
               <td><span class="error-code">TV013</span></td>
               <td><span class="http-badge http-400">400</span></td>
               <td><span class="error-msg">Sua chave de API não tem permissão para processar estornos.</span></td>
-              <td>Asaas retornou 403 — chave sem permissão de estorno. Verificar permissões no painel Asaas.</td>
+              <td>Gateway retornou 403 — credencial sem permissão de estorno. Verificar permissões no painel do gateway.</td>
             </tr>
           </tbody>
         </table>
@@ -1037,10 +1043,10 @@ section > p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; 
     </div>
 
     <div class="callout">
-      <p><strong>Comunicação ao participante:</strong> quando o webhook <code>PAYMENT_REFUNDED</code> chega do Asaas, o participante recebe um e-mail automático com: valor estornado, método original, e prazo estimado de devolução (PIX: 1 dia útil · Cartão: até 10 dias úteis · Boleto: até 5 dias úteis). Se o estorno falhar no gateway, apenas o organizador vê o erro no toast — o participante não é notificado, pois nenhum estorno foi de fato processado.</p>
+      <p><strong>Comunicação ao participante:</strong> quando o webhook <code>PAYMENT_REFUNDED</code> chega do gateway (Asaas ou Efí Bank), o participante recebe um e-mail automático com: valor estornado, método original, e prazo estimado de devolução (PIX: 1 dia útil · Cartão: até 10 dias úteis · Boleto: até 5 dias úteis). Se o estorno falhar no gateway, apenas o organizador vê o erro no toast — o participante não é notificado, pois nenhum estorno foi de fato processado.</p>
     </div>
     <div class="callout">
-      <p><strong>Erros mais comuns em produção:</strong> (1) Organizador tenta estornar pagamento que já foi estornado pelo painel do Asaas — resolve com TV009. (2) Chave API expirou entre a conexão e o primeiro estorno — resolve com TV012. (3) Estorno parcial com valor digitado incorretamente (ex: R$ 1.000 ao invés de R$ 100,00) — resolve com TV011.</p>
+      <p><strong>Erros mais comuns em produção:</strong> (1) Organizador tenta estornar pagamento que já foi estornado pelo painel do gateway — resolve com TV009. (2) Credenciais expiraram entre a conexão e o primeiro estorno — resolve com TV012. (3) Estorno parcial com valor digitado incorretamente (ex: R$ 1.000 ao invés de R$ 100,00) — resolve com TV011.</p>
     </div>
   </section>
 

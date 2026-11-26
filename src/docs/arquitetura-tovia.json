@@ -26,7 +26,7 @@
       "auth": "Firebase Authentication (Google + Email/Password)",
       "storage": "Firebase Storage",
       "email": "Resend API",
-      "payments": "Asaas (BYOG — organizador conecta próprio gateway)",
+      "payments": "Asaas / Efí Bank (BYOG — organizador conecta próprio gateway)",
       "monitoring": "Sentry",
       "ai": "Google GenAI SDK"
     },
@@ -119,7 +119,7 @@
   ],
   "api_routes": [
     { "path": "/api/asaasWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de planos (ativa/cancela plano do organizador)", "auth": "ASAAS_WEBHOOK_TOKEN (timing-safe)" },
-    { "path": "/api/eventPaymentWebhook", "method": "POST", "description": "Webhook Asaas — pagamento de eventos (atualiza inscrição para pago)", "auth": "SHA-256 hash do token por organizador" },
+    { "path": "/api/eventPaymentWebhook", "method": "POST", "description": "Webhook gateway (Asaas / Efí Bank) — pagamento de eventos (atualiza inscrição para pago)", "auth": "Asaas: SHA-256 hash do token por organizador; Efí PIX: mTLS (certificado)" },
     { "path": "/api/createCheckout", "method": "POST", "description": "Cria cobrança no Asaas — type='plan' para planos e type='credit' para créditos avulsos", "auth": "Firebase ID Token" },
     { "path": "/api/getBillingInfo", "method": "POST", "description": "Consulta info de cobrança do organizador no Asaas", "auth": "Firebase ID Token" },
     { "path": "/api/equipeJoin", "method": "POST", "description": "Adiciona membro à equipe do evento (admin SDK)", "auth": "Firebase ID Token" },
@@ -205,7 +205,8 @@
     { "service": "Cloud Firestore", "purpose": "Banco de dados principal", "data_flow": "Frontend ↔ Firestore (via SDK + regras)" },
     { "service": "Firebase Storage", "purpose": "Upload de imagens (perfil, eventos)", "data_flow": "Frontend → Storage → CDN" },
     { "service": "Vercel", "purpose": "Hosting + serverless functions", "data_flow": "DNS → Vercel Edge → SPA ou API" },
-    { "service": "Asaas", "purpose": "Gateway de pagamento (planos + eventos)", "data_flow": "API → Asaas → Webhook → API" },
+    { "service": "Asaas", "purpose": "Gateway de pagamento (planos + eventos BYOG)", "data_flow": "API → Asaas → Webhook → API" },
+    { "service": "Efí Bank", "purpose": "Gateway de pagamento (eventos BYOG — PIX, boleto, cartão)", "data_flow": "API → Efí → Webhook (mTLS) → API" },
     { "service": "Resend", "purpose": "Envio de emails transacionais", "data_flow": "API → Resend → Destinatário" },
     { "service": "Sentry", "purpose": "Monitoramento de erros", "data_flow": "Frontend → Sentry Cloud" },
     { "service": "Google GenAI", "purpose": "Funcionalidades de IA (SDK integrado)", "data_flow": "Frontend → Google AI" }
