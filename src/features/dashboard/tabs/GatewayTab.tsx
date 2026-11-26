@@ -158,6 +158,9 @@ export default function GatewayTab() {
     }
   };
 
+  const activeProvider = isConnected ? gatewayType : provider;
+  const activeLabel = GATEWAY_LABELS[activeProvider] ?? activeProvider;
+
   const howItWorks = (
     <Card className="p-6 rounded-3xl border-none bg-muted/20 h-fit">
       <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4">
@@ -172,18 +175,20 @@ export default function GatewayTab() {
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
-            title: `Tovia cria a cobrança na sua conta ${GATEWAY_LABELS[gatewayType] ?? gatewayType}`,
-            desc: 'Usando sua chave, geramos a cobrança automaticamente no momento da inscrição.',
+            title: `Tovia cria a cobrança na sua conta ${activeLabel}`,
+            desc: activeProvider === 'efi'
+              ? 'Usando suas credenciais e certificado, geramos a cobrança automaticamente no momento da inscrição.'
+              : 'Usando sua chave, geramos a cobrança automaticamente no momento da inscrição.',
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
-            title: `Pagamento confirmado pelo ${GATEWAY_LABELS[gatewayType] ?? gatewayType}`,
+            title: `Pagamento confirmado pelo ${activeLabel}`,
             desc: 'O gateway nos notifica via webhook e a inscrição é marcada como paga.',
           },
           {
             icon: <CheckCircle2 className="w-4 h-4 text-primary" />,
             title: 'Dinheiro cai direto na sua conta',
-            desc: `O Tovia nunca toca no dinheiro. Tudo vai para a sua conta ${GATEWAY_LABELS[gatewayType] ?? gatewayType} conforme as regras do gateway.`,
+            desc: `O Tovia nunca toca no dinheiro. Tudo vai para a sua conta ${activeLabel} conforme as regras do gateway.`,
           },
         ].map((item, i) => (
           <div key={i} className="flex items-start gap-3">
