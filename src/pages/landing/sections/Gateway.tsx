@@ -88,8 +88,8 @@ export function Gateway() {
               {[
                 { method: 'PIX',               fee: 'R$ 1,99 por transação',  color: 'bg-orange-50 text-primary' },
                 { method: 'Boleto Bancário',   fee: 'R$ 1,99 por boleto',     color: 'bg-orange-50 text-orange-700'  },
-                { method: 'Cartão de crédito', fee: '2,99% + R$ 0,49',       color: 'bg-blue-50 text-blue-700'      },
-                { method: 'Parcelado',         fee: '3,49% + R$ 0,49/parc.', color: 'bg-violet-50 text-violet-700'  },
+                { method: 'Cartão de Crédito à vista', fee: '2,99% + R$ 0,49',       color: 'bg-blue-50 text-blue-700'      },
+                { method: 'Cartão de Crédito Parcelado', fee: '3,49% + R$ 0,49/parc.', color: 'bg-violet-50 text-violet-700'  },
                 { method: 'PIX Automático',    fee: 'R$ 1,99 por transação',  color: 'bg-green-50 text-green-700'    },
               ].map(item => (
                 <div key={item.method} className="flex items-center justify-between">
@@ -112,8 +112,8 @@ export function Gateway() {
               {[
                 { method: 'PIX',               fee: '1,19% por transação',    color: 'bg-orange-50 text-primary' },
                 { method: 'Boleto Bancário',   fee: 'R$ 3,45 por boleto',     color: 'bg-orange-50 text-orange-700'  },
-                { method: 'Cartão de crédito', fee: '3,49%',                  color: 'bg-blue-50 text-blue-700'      },
-                { method: 'Parcelado',         fee: '4,39% (2-12x)',          color: 'bg-violet-50 text-violet-700'  },
+                { method: 'Cartão de Crédito à vista', fee: '3,49%',                  color: 'bg-blue-50 text-blue-700'      },
+                { method: 'Cartão de Crédito Parcelado', fee: '4,39% (2-12x)',          color: 'bg-violet-50 text-violet-700'  },
                 { method: 'PIX Automático',    fee: 'R$ 3,50 por transação',  color: 'bg-green-50 text-green-700'    },
               ].map(item => (
                 <div key={item.method} className="flex items-center justify-between">
