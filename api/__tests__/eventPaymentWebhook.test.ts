@@ -75,7 +75,7 @@ describe('eventPaymentWebhook', () => {
 
   it('rejects when webhook_token_hash is missing', async () => {
     seedDoc('eventos', 'evt1', { criado_por: 'org1' });
-    seedDoc('organizer_public', 'org1', {}); // no token hash
+    seedDoc('organizer_secrets', 'org1', { type: 'asaas' }); // no token hash
     const req = webhookReq('PAYMENT_CONFIRMED');
     const res = createMockRes();
     await handler(req, res);
